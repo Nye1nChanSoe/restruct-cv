@@ -1,13 +1,14 @@
 [project]
 name = "extractor-v1"
 version = "0.1.0"
-description = "Add your description here"
+description = "Minimal resume heading and section extractor"
 readme = "README.md"
 authors = [
     { name = "Nyein Chan Soe", email = "nyeinchansoe.business@gmail.com" }
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "pillow>=11.0",
     "pymupdf>=1.28.2",
     "sentence-transformers>=6.0.1",
 ]
