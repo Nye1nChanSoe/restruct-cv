@@ -65,10 +65,11 @@ def _line_from_pdf_dict(
 
 def extract_lines(
     document: pymupdf.Document,
-) -> tuple[list[ExtractedLine], list[dict[str, Any]]]:
+) -> tuple[list[ExtractedLine], list[dict[str, Any]], list[dict[str, Any]]]:
     """Capture native PyMuPDF blocks, then use OCR only when native text is absent."""
     lines: list[ExtractedLine] = []
     raw_pages: list[dict[str, Any]] = []
+    ocr_pages: list[dict[str, Any]] = []
     for page_index, page in enumerate(document):
         native_page_dict = page.get_text("dict", sort=True)
         native_text_blocks = [
@@ -101,6 +102,18 @@ def extract_lines(
                 full=True,
             )
             page_dict = page.get_text("dict", textpage=text_page, sort=True)
+            ocr_pages.append(
+                {
+                    "page": page_index + 1,
+                    "width": page.rect.width,
+                    "height": page.rect.height,
+                    "blocks": [
+                        block
+                        for block in page_dict.get("blocks", [])
+                        if block.get("type") == 0
+                    ],
+                }
+            )
         else:
             page_dict = native_page_dict
 
@@ -115,7 +128,7 @@ def extract_lines(
                 )
                 if line is not None:
                     lines.append(line)
-    return lines, raw_pages
+    return lines, raw_pages, ocr_pages
 
 
 def write_raw_extraction(
@@ -132,6 +145,29 @@ def write_raw_extraction(
             {
                 "source": pdf_path.name,
                 "pages": raw_pages,
+            },
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def write_ocr_extraction(
+    pdf_path: Path,
+    ocr_pages: list[dict[str, Any]],
+    output_path: Path,
+) -> None:
+    """Persist only the page dictionaries produced by the existing OCR fallback."""
+    if not SETTINGS.debug.ocr_extraction_enabled or not ocr_pages:
+        return
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(
+            {
+                "source": pdf_path.name,
+                "pages": ocr_pages,
             },
             indent=2,
             ensure_ascii=False,
@@ -320,11 +356,13 @@ def extract_resume(
     pdf_path: Path,
     output_directory: Path,
     raw_debug_path: Path,
+    ocr_debug_path: Path,
     model: SentenceTransformer,
 ) -> None:
     with pymupdf.open(pdf_path) as document:
-        lines, raw_pages = extract_lines(document)
+        lines, raw_pages, ocr_pages = extract_lines(document)
         write_raw_extraction(pdf_path, raw_pages, raw_debug_path)
+        write_ocr_extraction(pdf_path, ocr_pages, ocr_debug_path)
         headings = detect_headings(lines, model)
         sections = build_sections(lines, headings)
 
@@ -366,6 +404,7 @@ def main() -> None:
         input_directory = project_root / SETTINGS.paths.input_directory
         output_root = project_root / SETTINGS.paths.results_directory
     raw_debug_directory = project_root / SETTINGS.debug.raw_extraction_directory
+    ocr_debug_directory = project_root / SETTINGS.debug.ocr_extraction_directory
     model = SentenceTransformer(
         SETTINGS.model.name,
         revision=SETTINGS.model.revision,
@@ -378,10 +417,16 @@ def main() -> None:
             if arguments.truths
             else raw_debug_directory / f"{pdf_path.stem}.raw-pymupdf.json"
         )
+        ocr_debug_path = (
+            resume_output / "debug" / "ocr" / "raw-pymupdf.json"
+            if arguments.truths
+            else ocr_debug_directory / f"{pdf_path.stem}.ocr-pymupdf.json"
+        )
         extract_resume(
             pdf_path,
             resume_output,
             raw_debug_path,
+            ocr_debug_path,
             model,
         )
         print(f"extracted: {pdf_path.name}")

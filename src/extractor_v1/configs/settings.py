@@ -31,6 +31,8 @@ class HeadingSettings:
 class DebugSettings:
     raw_extraction_enabled: bool = True
     raw_extraction_directory: str = "debug"
+    ocr_extraction_enabled: bool = True
+    ocr_extraction_directory: str = "debug/ocr"
     scale: float = 2.0
     heading_stroke_width: int = 5
     content_stroke_width: int = 3
