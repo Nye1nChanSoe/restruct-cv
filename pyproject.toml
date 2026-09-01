@@ -7,7 +7,10 @@ authors = [
     { name = "Nyein Chan Soe", email = "nyeinchansoe.business@gmail.com" }
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "pymupdf>=1.28.2",
+    "sentence-transformers>=6.0.1",
+]
 
 [project.scripts]
 extractor-v1 = "extractor_v1:main"
