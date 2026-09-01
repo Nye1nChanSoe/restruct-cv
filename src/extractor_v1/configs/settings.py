@@ -53,6 +53,19 @@ class HeadingSettings:
 
 
 @dataclass(frozen=True)
+class SectionRouterSettings:
+    subheading_font_size_multiplier: float = 1.08
+    maximum_subheading_words: int = 12
+    maximum_subheading_characters: int = 100
+    paragraph_gap_multiplier: float = 1.25
+
+
+@dataclass(frozen=True)
+class UrlSettings:
+    annotation_bbox_tolerance: float = 2.0
+
+
+@dataclass(frozen=True)
 class HeaderProfileSettings:
     boundary_similarity_threshold: float = 0.72
     boundary_winner_margin: float = 0.08
@@ -107,6 +120,8 @@ class ExtractorSettings:
     ner: NerSettings = field(default_factory=NerSettings)
     ocr: OcrSettings = field(default_factory=OcrSettings)
     heading: HeadingSettings = field(default_factory=HeadingSettings)
+    section_router: SectionRouterSettings = field(default_factory=SectionRouterSettings)
+    url: UrlSettings = field(default_factory=UrlSettings)
     header_profile: HeaderProfileSettings = field(default_factory=HeaderProfileSettings)
     job_title: JobTitleSettings = field(default_factory=JobTitleSettings)
     debug: DebugSettings = field(default_factory=DebugSettings)

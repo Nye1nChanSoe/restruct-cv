@@ -45,6 +45,8 @@ class HeaderEntityMatch:
     end: int
     detection_method: str
     confidence: float | None = None
+    url: str | None = None
+    bbox: tuple[float, float, float, float] | None = None
 
 
 class NerPredictor(Protocol):
@@ -136,13 +138,10 @@ _URL_RE = re.compile(
     r"https?://[^\s|,;)]+"
     r"|www\.[^\s|,;)]+"
     r"|(?<![@\w.-])(?:linkedin|github)\.com/[^\s|,;)]+"
-    r"|(?<![@\w.-])[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?"
+    r"|(?<![@\w.-])[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])"
     r"(?:\.[a-z]{2,})+(?:/[^\s|,;)]*)?"
+    r"(?![@\w-]|\.[a-z0-9])"
     r")",
-    re.IGNORECASE,
-)
-_CONTACT_LABEL_RE = re.compile(
-    r"\b(?:linkedin|github|portfolio|website|personal site)\b",
     re.IGNORECASE,
 )
 _HEADER_SEGMENT_RE = re.compile(r"[^|•·]+")
@@ -445,6 +444,7 @@ def _append_regex_matches(
                 start=match.start(),
                 end=match.end(),
                 detection_method="regex",
+                url=match.group(0) if kind == "url" else None,
             )
         )
 
@@ -499,6 +499,186 @@ def _entity_box(
     else:
         rectangle = pymupdf.Rect(line.bbox)
     return [round(value, 2) for value in rectangle]
+
+
+def _annotation_text_span(
+    line: ExtractedLine,
+    annotation_rectangle: pymupdf.Rect,
+    page_words: list[tuple[Any, ...]],
+) -> tuple[str, int, int] | None:
+    """Map the visible words under a PDF link annotation back to one line."""
+    line_rectangle = pymupdf.Rect(line.bbox)
+    selected_words = [
+        str(word[4])
+        for word in page_words
+        if len(word) >= 5
+        and pymupdf.Rect(word[:4]).intersects(annotation_rectangle)
+        and pymupdf.Rect(word[:4]).intersects(line_rectangle)
+    ]
+    if selected_words:
+        folded_line = line.text.casefold()
+        cursor = 0
+        positions: list[tuple[int, int]] = []
+        for word in selected_words:
+            position = folded_line.find(word.casefold(), cursor)
+            if position < 0:
+                position = folded_line.find(word.casefold())
+            if position < 0:
+                continue
+            positions.append((position, position + len(word)))
+            cursor = position + len(word)
+        if positions:
+            start = min(position[0] for position in positions)
+            end = max(position[1] for position in positions)
+            return line.text[start:end], start, end
+
+    intersection = line_rectangle & annotation_rectangle
+    if intersection.is_empty or line_rectangle.width <= 0 or not line.text:
+        return None
+    start = round(
+        len(line.text)
+        * max(0.0, intersection.x0 - line_rectangle.x0)
+        / line_rectangle.width
+    )
+    end = round(
+        len(line.text)
+        * min(line_rectangle.width, intersection.x1 - line_rectangle.x0)
+        / line_rectangle.width
+    )
+    raw_text = line.text[start:end]
+    visible_text = raw_text.strip()
+    if not visible_text:
+        return None
+    start += len(raw_text) - len(raw_text.lstrip())
+    return visible_text, start, start + len(visible_text)
+
+
+def _annotation_url_matches(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    line_indexes: list[int],
+) -> list[HeaderEntityMatch]:
+    """Match PDF link rectangles to visible lines with a small bbox tolerance."""
+    indexes_by_page: dict[int, list[int]] = {}
+    for line_index in line_indexes:
+        indexes_by_page.setdefault(lines[line_index].page, []).append(line_index)
+
+    matches: list[HeaderEntityMatch] = []
+    tolerance = SETTINGS.url.annotation_bbox_tolerance
+    for page_number, page_line_indexes in indexes_by_page.items():
+        page = document[page_number - 1]
+        page_words = list(page.get_text("words", sort=True))
+        for link in page.get_links():
+            url = str(link.get("uri") or "").strip()
+            if not url or url.casefold().startswith(("mailto:", "tel:")):
+                continue
+            raw_rectangle = link.get("from")
+            if raw_rectangle is None:
+                continue
+            annotation_rectangle = pymupdf.Rect(raw_rectangle)
+            matching_rectangle = pymupdf.Rect(
+                annotation_rectangle.x0 - tolerance,
+                annotation_rectangle.y0 - tolerance,
+                annotation_rectangle.x1 + tolerance,
+                annotation_rectangle.y1 + tolerance,
+            )
+            exact_candidates: list[tuple[int, float]] = []
+            tolerant_candidates: list[tuple[int, float]] = []
+            for line_index in page_line_indexes:
+                line = lines[line_index]
+                line_rectangle = pymupdf.Rect(line.bbox)
+                center_distance = abs(
+                    (line_rectangle.y0 + line_rectangle.y1)
+                    - (annotation_rectangle.y0 + annotation_rectangle.y1)
+                )
+                if line_rectangle.intersects(annotation_rectangle):
+                    exact_candidates.append((line_index, center_distance))
+                elif line_rectangle.intersects(matching_rectangle):
+                    tolerant_candidates.append((line_index, center_distance))
+
+            candidates = sorted(
+                exact_candidates or tolerant_candidates,
+                key=lambda candidate: candidate[1],
+            )[:1]
+            for line_index, _ in candidates:
+                line = lines[line_index]
+                line_rectangle = pymupdf.Rect(line.bbox)
+                span = _annotation_text_span(
+                    line,
+                    matching_rectangle,
+                    page_words,
+                )
+                if span is None:
+                    continue
+                text, start, end = span
+                matches.append(
+                    HeaderEntityMatch(
+                        kind="url",
+                        text=text,
+                        line_index=line_index,
+                        start=start,
+                        end=end,
+                        detection_method="pdf_annotation",
+                        url=url,
+                        bbox=tuple(
+                            float(value)
+                            for value in (
+                                line_rectangle
+                                & (
+                                    annotation_rectangle
+                                    if line_rectangle.intersects(annotation_rectangle)
+                                    else matching_rectangle
+                                )
+                            )
+                        ),
+                    )
+                )
+    return matches
+
+
+def _url_matches_for_lines(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    line_indexes: list[int],
+) -> list[HeaderEntityMatch]:
+    """Prefer annotation targets, then fill remaining visible URLs with regex."""
+    matches = _annotation_url_matches(document, lines, line_indexes)
+    for line_index in line_indexes:
+        _append_regex_matches(
+            matches,
+            line_index=line_index,
+            text=lines[line_index].text,
+            kind="url",
+            pattern=_URL_RE,
+        )
+    return matches
+
+
+def _url_entity_value(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    match: HeaderEntityMatch,
+) -> dict[str, Any]:
+    """Serialize one URL match consistently for headers and later sections."""
+    line = lines[match.line_index]
+    return {
+        "type": "url",
+        "text": match.text,
+        "url": match.url or match.text,
+        "page": line.page,
+        "bbox": (
+            [round(value, 2) for value in match.bbox]
+            if match.bbox is not None
+            else _entity_box(
+                document,
+                line,
+                match.text,
+                match.start,
+                match.end,
+            )
+        ),
+        "detectionMethod": match.detection_method,
+    }
 
 
 def _expand_location_span(text: str, start: int, end: int) -> tuple[int, int]:
@@ -871,20 +1051,16 @@ def build_header_profile(
             kind="phone",
             pattern=_PHONE_RE,
         )
-        _append_regex_matches(
+
+    for url_match in _url_matches_for_lines(document, lines, profile_indexes):
+        if _overlaps_existing(
             matches,
-            line_index=line_index,
-            text=text,
-            kind="url",
-            pattern=_URL_RE,
-        )
-        _append_regex_matches(
-            matches,
-            line_index=line_index,
-            text=text,
-            kind="url",
-            pattern=_CONTACT_LABEL_RE,
-        )
+            line_index=url_match.line_index,
+            start=url_match.start,
+            end=url_match.end,
+        ):
+            continue
+        matches.append(url_match)
 
     # The selected NER backend receives contact-masked lines independently.
     ner_matches = _ner_matches_for_profile(
@@ -1061,15 +1237,21 @@ def build_header_profile(
             "type": match.kind,
             "text": match.text,
             "page": line.page,
-            "bbox": _entity_box(
-                document,
-                line,
-                match.text,
-                match.start,
-                match.end,
+            "bbox": (
+                [round(value, 2) for value in match.bbox]
+                if match.bbox is not None
+                else _entity_box(
+                    document,
+                    line,
+                    match.text,
+                    match.start,
+                    match.end,
+                )
             ),
             "detectionMethod": match.detection_method,
         }
+        if match.kind == "url":
+            entity["url"] = match.url or match.text
         if match.kind == "other":
             entity["inside"] = "headerProfile"
         if match.confidence is not None:
@@ -1094,6 +1276,180 @@ def build_header_profile(
         "stoppedAtSection": boundary_value,
         "entities": entities,
     }
+
+
+def _section_body_style(
+    content_lines: list[ExtractedLine],
+) -> tuple[float, bool]:
+    """Infer the ordinary prose style before testing possible subheadings."""
+    prose_lines = [
+        line
+        for line in content_lines
+        if len(line.text.split()) > SETTINGS.section_router.maximum_subheading_words
+        or line.text.rstrip().endswith((".", ",", ";", ":"))
+    ]
+    reference_lines = prose_lines or content_lines
+    sizes = [line.size for line in reference_lines if line.size > 0]
+    body_size = statistics.median(sizes) if sizes else 0.0
+    body_bold = bool(reference_lines) and sum(
+        line.bold for line in reference_lines
+    ) > len(reference_lines) / 2
+    return body_size, body_bold
+
+
+def _looks_like_subheading(
+    line: ExtractedLine,
+    *,
+    body_size: float,
+    body_bold: bool,
+) -> bool:
+    """Require a real typographic contrast; plain body text stays paragraph text."""
+    text = line.text.strip()
+    if not text or text.endswith((".", ",", ";", ":")):
+        return False
+    if len(text) > SETTINGS.section_router.maximum_subheading_characters:
+        return False
+    if len(text.split()) > SETTINGS.section_router.maximum_subheading_words:
+        return False
+
+    size_contrast = (
+        body_size > 0
+        and line.size
+        >= body_size * SETTINGS.section_router.subheading_font_size_multiplier
+    )
+    bold_contrast = line.bold and not body_bold
+    return size_contrast or bold_contrast
+
+
+def _content_blocks(
+    lines: list[ExtractedLine],
+    line_indexes: list[int],
+    url_entities_by_line: dict[int, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+    """Route section lines into typographic subheadings or paragraph blocks."""
+    content_lines = [lines[index] for index in line_indexes]
+    body_size, body_bold = _section_body_style(content_lines)
+    blocks: list[dict[str, Any]] = []
+
+    for line_index in line_indexes:
+        line = lines[line_index]
+        line_url_entities = url_entities_by_line.get(line_index, [])
+        role = (
+            "subheading"
+            if _looks_like_subheading(
+                line,
+                body_size=body_size,
+                body_bold=body_bold,
+            )
+            else "paragraph"
+        )
+        rounded_bbox = [round(value, 2) for value in line.bbox]
+        if role == "paragraph" and blocks and blocks[-1]["type"] == "paragraph":
+            previous = blocks[-1]
+            previous_box = pymupdf.Rect(previous["_lastLineBbox"])
+            current_box = pymupdf.Rect(line.bbox)
+            vertical_gap = current_box.y0 - previous_box.y1
+            horizontal_overlap = max(
+                0.0,
+                min(previous_box.x1, current_box.x1)
+                - max(previous_box.x0, current_box.x0),
+            )
+            maximum_gap = max(
+                previous_box.height,
+                current_box.height,
+            ) * SETTINGS.section_router.paragraph_gap_multiplier
+            if (
+                previous["page"] == line.page
+                and -2.0 <= vertical_gap <= maximum_gap
+                and horizontal_overlap > 0
+            ):
+                previous["text"] += "\n" + line.text
+                previous["bbox"] = [
+                    round(value, 2)
+                    for value in (pymupdf.Rect(previous["bbox"]) | current_box)
+                ]
+                previous["_lastLineBbox"] = rounded_bbox
+                if line_url_entities:
+                    previous.setdefault("entities", []).extend(line_url_entities)
+                continue
+
+        block: dict[str, Any] = {
+            "type": role,
+            "text": line.text,
+            "page": line.page,
+            "bbox": rounded_bbox,
+            "detectionMethod": (
+                "geometry_typography"
+                if role == "subheading"
+                else "geometry_default"
+            ),
+            "_lastLineBbox": rounded_bbox,
+        }
+        if line_url_entities:
+            block["entities"] = line_url_entities
+        blocks.append(block)
+
+    for block in blocks:
+        block.pop("_lastLineBbox", None)
+    return blocks
+
+
+def build_sections(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    headings: list[DetectedHeading],
+) -> list[dict[str, Any]]:
+    """Use MiniLM-confirmed headings as boundaries and geometry within sections."""
+    first_boundary = _first_header_boundary(lines, headings)
+    if first_boundary is None:
+        return []
+
+    routed_headings = sorted(
+        (
+            heading
+            for heading in headings
+            if heading.line_index >= first_boundary.line_index
+        ),
+        key=lambda heading: heading.line_index,
+    )
+    routed_line_indexes = list(range(first_boundary.line_index, len(lines)))
+    url_entities_by_line: dict[int, list[dict[str, Any]]] = {}
+    for match in _url_matches_for_lines(document, lines, routed_line_indexes):
+        url_entities_by_line.setdefault(match.line_index, []).append(
+            _url_entity_value(document, lines, match)
+        )
+
+    sections: list[dict[str, Any]] = []
+    for position, heading in enumerate(routed_headings):
+        next_heading_index = (
+            routed_headings[position + 1].line_index
+            if position + 1 < len(routed_headings)
+            else len(lines)
+        )
+        heading_line = lines[heading.line_index]
+        content_indexes = list(range(heading.line_index + 1, next_heading_index))
+        heading_value: dict[str, Any] = {
+            "text": heading_line.text,
+            "page": heading_line.page,
+            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "similarity": round(heading.similarity, 4),
+            "detectionMethod": "geometry_semantic",
+        }
+        heading_url_entities = url_entities_by_line.get(heading.line_index, [])
+        if heading_url_entities:
+            heading_value["entities"] = heading_url_entities
+        sections.append(
+            {
+                "sectionType": heading.section_type,
+                "heading": heading_value,
+                "content": _content_blocks(
+                    lines,
+                    content_indexes,
+                    url_entities_by_line,
+                ),
+            }
+        )
+    return sections
 
 
 def _union_boxes(lines: list[ExtractedLine]) -> list[dict[str, Any]]:
@@ -1197,9 +1553,12 @@ def extract_resume(
             model,
             ner_model,
         )
+        sections = build_sections(document, lines, headings)
 
         output_directory.mkdir(parents=True, exist_ok=True)
-        (output_directory / "header.json").write_text(
+        header_debug_directory = output_directory / "debug" / "header"
+        header_debug_directory.mkdir(parents=True, exist_ok=True)
+        (header_debug_directory / "header.json").write_text(
             json.dumps(
                 {
                     "source": pdf_path.name,
@@ -1216,10 +1575,24 @@ def extract_resume(
             + "\n",
             encoding="utf-8",
         )
+        (output_directory / "sections-debug.json").write_text(
+            json.dumps(
+                {
+                    "source": pdf_path.name,
+                    "model": SETTINGS.model.name,
+                    "modelRevision": SETTINGS.model.revision,
+                    "sections": sections,
+                },
+                indent=2,
+                ensure_ascii=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
         render_debug_images(
             document,
             header_profile,
-            output_directory / "debug" / "header",
+            header_debug_directory,
         )
 
 

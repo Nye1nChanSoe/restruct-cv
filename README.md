@@ -15,23 +15,31 @@ A deliberately small experiment:
 9. Up to three pipe, bullet, or spaced-slash segments per header line are compared
    with positive and negative job-title references; only confident title matches
    are emitted, with their original text unchanged.
-10. Pillow draws one large header box and a smaller labeled box per detected item.
+10. MiniLM-confirmed section headings route the remaining lines into sections;
+    relative font size and boldness distinguish subheadings from paragraph blocks.
+11. Pillow draws one large header box and a smaller labeled box per detected item.
 
 Input PDFs belong in `resumes-synthetic/`. Running the existing project entry point writes:
 
 ```text
 results/
   1/
-    header.json
+    sections-debug.json
     debug/
       header/
+        header.json
         page-1.png
 ```
 
-`header.json` contains the extracted top region and the first likely section that
-stopped it. Its debug image uses a dark outer box for the whole top region, then
+`debug/header/header.json` contains only the header extraction and the first likely
+section that stopped it. `sections-debug.json` contains the subsequent experimental
+section routing. The header debug image uses a dark outer box for the whole top region, then
 labeled colored boxes for `name`, `job_title`, `location`, `email`, `phone`, and
-`url` detections. This stage deliberately does not reconstruct later sections.
+`url` detections. URL entities preserve both their visible `text` and their PDF
+annotation destination in `url`; regex-only URLs use their visible text for both.
+The same URL extraction is applied to routed section headings and content blocks.
+Annotation rectangles are matched with a small bounding-box tolerance, and their
+destinations take precedence when the visible text also matches the URL regex.
 
 The first native PyMuPDF read is also written to `debug/<resume>.raw-pymupdf.json`.
 These generated dumps are ignored by Git; `debug/.gitkeep` retains the empty directory.
@@ -76,7 +84,7 @@ uv run extractor-v1 --ner-backend gliner
 ```
 
 Both backends use the same contact masking, line-by-line input, entity cleanup,
-and fallback pipeline, so their generated `header.json` metadata records which
+and fallback pipeline, so their generated `debug/header/header.json` metadata records which
 backend and model revision produced the result.
 
 The extractor does not download models at runtime. Populate the MiniLM and
@@ -95,7 +103,8 @@ The holdout results are kept separate from development results:
 
 ```text
 resumes-truths/*.pdf
-  -> results/0-truths/<resume>/header.json
+  -> results/0-truths/<resume>/sections-debug.json
+  -> results/0-truths/<resume>/debug/header/header.json
   -> results/0-truths/<resume>/raw-pymupdf.json
   -> results/0-truths/<resume>/debug/page-N.png
 ```
