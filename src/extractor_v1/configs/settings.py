@@ -14,12 +14,18 @@ from extractor_v1.configs.embedding_references import (
 class ModelSettings:
     name: str = "sentence-transformers/all-MiniLM-L6-v2"
     revision: str = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+    local_directory: str = "models/all-MiniLM-L6-v2"
 
 
 @dataclass(frozen=True)
 class NerSettings:
-    name: str = "urchade/gliner_small-v2.1"
-    revision: str = "main"
+    default_backend: str = "distilbert"
+    gliner_name: str = "urchade/gliner_small-v2.1"
+    gliner_revision: str = "4e091416cf7c3481db542c2a3d26156916f3a47f"
+    gliner_local_directory: str = "models/gliner_small-v2.1"
+    distilbert_name: str = "dslim/distilbert-NER"
+    distilbert_revision: str = "dfa2838a127384aabb82ed7719e16dab84c42a2a"
+    distilbert_local_directory: str = "models/distilbert-NER"
     minimum_confidence: float = 0.50
     labels: tuple[str, ...] = (
         "person name",
@@ -32,7 +38,7 @@ class NerSettings:
 class OcrSettings:
     enabled: bool = True
     language: str = "eng"
-    dpi: int = 300
+    dpi: int = 200
     native_text_min_characters: int = 20
 
 

@@ -146,19 +146,26 @@ name = "extractor-v1"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "gliner" },
     { name = "pillow" },
     { name = "pymupdf" },
     { name = "sentence-transformers" },
+    { name = "transformers" },
+]
+
+[package.optional-dependencies]
+gliner = [
+    { name = "gliner" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "gliner", specifier = ">=0.2.28" },
+    { name = "gliner", marker = "extra == 'gliner'", specifier = ">=0.2.28" },
     { name = "pillow", specifier = ">=11.0" },
     { name = "pymupdf", specifier = ">=1.28.2" },
     { name = "sentence-transformers", specifier = ">=6.0.1" },
+    { name = "transformers", specifier = ">=4.51.3,<5.14.0" },
 ]
+provides-extras = ["gliner"]
 
 [[package]]
 name = "filelock"

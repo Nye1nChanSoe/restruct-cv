@@ -7,7 +7,7 @@ A deliberately small experiment:
 3. `all-MiniLM-L6-v2` locates the first likely resume section heading.
 4. Everything above that boundary becomes one top-level `headerProfile` region.
 5. Contact regex claims and masks email, phone, and URL spans first.
-6. `urchade/gliner_small-v2.1` processes each remaining header line independently
+6. The selected NER backend processes each remaining header line independently
    for names, locations, and contextual nationalities.
 7. MiniLM and exact phrase matching classify split job-title candidates.
 8. Geometry fills missing identity fields, and unmatched visible text is retained
@@ -50,9 +50,40 @@ Run the project with:
 uv run extractor-v1
 ```
 
-The first run downloads MiniLM and GLiNER Small if they are not already cached.
-GLiNER processes contact-masked header lines independently with resume-specific
-entity labels; regex remains authoritative for deterministic contact formats.
+All inference weights are loaded from the gitignored project-local `models/`
+directory. The tracked `models/.gitkeep` preserves that directory without
+committing model weights:
+
+```text
+models/
+  all-MiniLM-L6-v2/
+  gliner_small-v2.1/
+  distilbert-NER/
+```
+
+DistilBERT is the default NER backend, so both commands below use it:
+
+```bash
+uv run extractor-v1
+uv run extractor-v1 --ner-backend distilbert
+```
+
+GLiNER is optional. Install its dependency and select it explicitly with:
+
+```bash
+uv sync --extra gliner
+uv run extractor-v1 --ner-backend gliner
+```
+
+Both backends use the same contact masking, line-by-line input, entity cleanup,
+and fallback pipeline, so their generated `header.json` metadata records which
+backend and model revision produced the result.
+
+The extractor does not download models at runtime. Populate the MiniLM and
+DistilBERT local model directories for the default setup; the GLiNER directory is
+needed only when that optional backend is selected. Both NER backends process
+contact-masked header lines independently, while regex remains authoritative for
+deterministic contact formats.
 
 Place holdout PDFs inside `resume-truths/`, then run the same pipeline against only those PDFs:
 

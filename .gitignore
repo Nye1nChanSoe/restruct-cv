@@ -20,3 +20,7 @@ debug/ocr/*
 resumes-truths/*
 !resumes-truths/.gitkeep
 results/0-truths/
+
+# Project-local Hugging Face weights stay untracked; retain the model store.
+models/*
+!models/.gitkeep

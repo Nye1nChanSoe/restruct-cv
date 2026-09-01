@@ -2,8 +2,9 @@
   "source": "2.pdf",
   "model": "sentence-transformers/all-MiniLM-L6-v2",
   "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
-  "nerModel": "urchade/gliner_small-v2.1",
-  "nerModelRevision": "main",
+  "nerBackend": "distilbert",
+  "nerModel": "dslim/distilbert-NER",
+  "nerModelRevision": "dfa2838a127384aabb82ed7719e16dab84c42a2a",
   "headerProfile": {
     "page": 1,
     "bbox": [
@@ -88,7 +89,7 @@
           177.61
         ],
         "detectionMethod": "gliner",
-        "confidence": 0.9271
+        "confidence": 0.9976
       },
       {
         "type": "other",
