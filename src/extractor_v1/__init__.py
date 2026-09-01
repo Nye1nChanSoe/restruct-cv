@@ -8,12 +8,12 @@ import re
 import statistics
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
 import pymupdf
-from gliner import GLiNER
 from PIL import Image, ImageDraw
 from sentence_transformers import SentenceTransformer
+from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
 
 from extractor_v1.configs import SETTINGS
 
@@ -45,6 +45,88 @@ class HeaderEntityMatch:
     end: int
     detection_method: str
     confidence: float | None = None
+
+
+class NerPredictor(Protocol):
+    def predict_entities(
+        self,
+        text: str,
+        labels: list[str],
+        threshold: float,
+    ) -> list[dict[str, Any]]: ...
+
+
+class DistilBertNerPredictor:
+    """Adapt fixed CoNLL entities to the dynamic GLiNER-style interface."""
+
+    _LABEL_TO_TYPE = {
+        "LABEL_0": "O",
+        "LABEL_1": "PER",
+        "LABEL_2": "PER",
+        "LABEL_3": "ORG",
+        "LABEL_4": "ORG",
+        "LABEL_5": "LOC",
+        "LABEL_6": "LOC",
+        "LABEL_7": "MISC",
+        "LABEL_8": "MISC",
+    }
+    _TYPE_TO_LABEL = {
+        "PER": "person name",
+        "LOC": "location",
+        "MISC": "nationality",
+    }
+
+    def __init__(self, model_directory: Path) -> None:
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_directory,
+            local_files_only=True,
+        )
+        model = AutoModelForTokenClassification.from_pretrained(
+            model_directory,
+            local_files_only=True,
+        )
+        self._pipeline = pipeline(
+            "token-classification",
+            model=model,
+            tokenizer=tokenizer,
+            aggregation_strategy="simple",
+            device=-1,
+        )
+
+    def predict_entities(
+        self,
+        text: str,
+        labels: list[str],
+        threshold: float,
+    ) -> list[dict[str, Any]]:
+        requested_labels = set(labels)
+        predictions: list[dict[str, Any]] = []
+        for prediction in self._pipeline(text):
+            raw_type = str(
+                prediction.get("entity_group", prediction.get("entity", ""))
+            ).upper()
+            entity_type = self._LABEL_TO_TYPE.get(
+                raw_type,
+                raw_type.removeprefix("B-").removeprefix("I-"),
+            )
+            label = self._TYPE_TO_LABEL.get(entity_type)
+            score = float(prediction.get("score", 0.0))
+            if label not in requested_labels or score < threshold:
+                continue
+            predictions.append(
+                {
+                    "label": label,
+                    "text": text[
+                        int(prediction.get("start", 0)) : int(
+                            prediction.get("end", 0)
+                        )
+                    ],
+                    "start": int(prediction.get("start", 0)),
+                    "end": int(prediction.get("end", 0)),
+                    "score": score,
+                }
+            )
+        return predictions
 
 
 _EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}")
@@ -453,7 +535,7 @@ def _expand_nationality_span(text: str, start: int, end: int) -> tuple[int, int]
     return start, end
 
 
-def _masked_line_for_gliner(
+def _masked_line_for_ner(
     text: str,
     line_index: int,
     existing_matches: list[HeaderEntityMatch],
@@ -481,13 +563,13 @@ def _looks_like_complete_name_line(text: str) -> bool:
     )
 
 
-def _gliner_matches_for_profile(
-    ner_model: GLiNER,
+def _ner_matches_for_profile(
+    ner_model: NerPredictor,
     lines: list[ExtractedLine],
     profile_indexes: list[int],
     existing_matches: list[HeaderEntityMatch],
 ) -> list[HeaderEntityMatch]:
-    """Run GLiNER independently on each contact-masked header line."""
+    """Run the selected NER backend on each contact-masked header line."""
     label_to_kind = {
         "person name": "name",
         "location": "location",
@@ -496,7 +578,7 @@ def _gliner_matches_for_profile(
     accepted: list[HeaderEntityMatch] = []
     for line_index in profile_indexes:
         text = lines[line_index].text
-        masked_text = _masked_line_for_gliner(text, line_index, existing_matches)
+        masked_text = _masked_line_for_ner(text, line_index, existing_matches)
         if not masked_text.strip():
             continue
         predictions = ner_model.predict_entities(
@@ -804,8 +886,8 @@ def build_header_profile(
             pattern=_CONTACT_LABEL_RE,
         )
 
-    # GLiNER receives each line separately with contact spans replaced by spaces.
-    ner_matches = _gliner_matches_for_profile(
+    # The selected NER backend receives contact-masked lines independently.
+    ner_matches = _ner_matches_for_profile(
         ner_model,
         lines,
         profile_indexes,
@@ -1098,7 +1180,10 @@ def extract_resume(
     raw_debug_path: Path,
     ocr_debug_path: Path,
     model: SentenceTransformer,
-    ner_model: Any,
+    ner_model: NerPredictor,
+    ner_backend: str,
+    ner_model_name: str,
+    ner_model_revision: str,
 ) -> None:
     with pymupdf.open(pdf_path) as document:
         lines, raw_pages, ocr_pages = extract_lines(document)
@@ -1120,8 +1205,9 @@ def extract_resume(
                     "source": pdf_path.name,
                     "model": SETTINGS.model.name,
                     "modelRevision": SETTINGS.model.revision,
-                    "nerModel": SETTINGS.ner.name,
-                    "nerModelRevision": SETTINGS.ner.revision,
+                    "nerBackend": ner_backend,
+                    "nerModel": ner_model_name,
+                    "nerModelRevision": ner_model_revision,
                     "headerProfile": header_profile,
                 },
                 indent=2,
@@ -1144,7 +1230,56 @@ def _parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Process only PDFs in resume-truths/ and write them under results/0-truths/.",
     )
+    parser.add_argument(
+        "--ner-backend",
+        choices=("gliner", "distilbert"),
+        default=SETTINGS.ner.default_backend,
+        help="Select the project-local NER model used for header entities.",
+    )
     return parser.parse_args()
+
+
+def _require_local_model(project_root: Path, relative_directory: str) -> Path:
+    model_directory = project_root / relative_directory
+    if not model_directory.is_dir():
+        raise FileNotFoundError(
+            f"local model directory is missing: {model_directory}"
+        )
+    return model_directory
+
+
+def _load_ner_backend(
+    project_root: Path,
+    backend: str,
+) -> tuple[NerPredictor, str, str]:
+    if backend == "gliner":
+        try:
+            from gliner import GLiNER
+        except ImportError as error:
+            raise RuntimeError(
+                "GLiNER is optional; install it with `uv sync --extra gliner`"
+            ) from error
+
+        model_directory = _require_local_model(
+            project_root,
+            SETTINGS.ner.gliner_local_directory,
+        )
+        return (
+            GLiNER.from_pretrained(str(model_directory)),
+            SETTINGS.ner.gliner_name,
+            SETTINGS.ner.gliner_revision,
+        )
+    if backend == "distilbert":
+        model_directory = _require_local_model(
+            project_root,
+            SETTINGS.ner.distilbert_local_directory,
+        )
+        return (
+            DistilBertNerPredictor(model_directory),
+            SETTINGS.ner.distilbert_name,
+            SETTINGS.ner.distilbert_revision,
+        )
+    raise ValueError(f"unsupported NER backend: {backend}")
 
 
 def main() -> None:
@@ -1159,10 +1294,17 @@ def main() -> None:
     raw_debug_directory = project_root / SETTINGS.debug.raw_extraction_directory
     ocr_debug_directory = project_root / SETTINGS.debug.ocr_extraction_directory
     model = SentenceTransformer(
-        SETTINGS.model.name,
-        revision=SETTINGS.model.revision,
+        str(
+            _require_local_model(
+                project_root,
+                SETTINGS.model.local_directory,
+            )
+        ),
     )
-    ner_model = GLiNER.from_pretrained(SETTINGS.ner.name)
+    ner_model, ner_model_name, ner_model_revision = _load_ner_backend(
+        project_root,
+        arguments.ner_backend,
+    )
 
     for pdf_path in sorted(input_directory.glob("*.pdf")):
         resume_output = output_root / pdf_path.stem
@@ -1183,5 +1325,8 @@ def main() -> None:
             ocr_debug_path,
             model,
             ner_model,
+            arguments.ner_backend,
+            ner_model_name,
+            ner_model_revision,
         )
         print(f"extracted: {pdf_path.name}")

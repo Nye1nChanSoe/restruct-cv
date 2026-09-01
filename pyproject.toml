@@ -8,10 +8,15 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "gliner>=0.2.28",
     "pillow>=11.0",
     "pymupdf>=1.28.2",
     "sentence-transformers>=6.0.1",
+    "transformers>=4.51.3,<5.14.0",
+]
+
+[project.optional-dependencies]
+gliner = [
+    "gliner>=0.2.28",
 ]
 
 [project.scripts]
