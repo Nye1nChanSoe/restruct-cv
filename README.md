@@ -22,6 +22,8 @@ results/
 
 The first native PyMuPDF read is also written to `debug/<resume>.raw-pymupdf.json`.
 These generated dumps are ignored by Git; `debug/.gitkeep` retains the empty directory.
+When OCR is actually used, its resulting PyMuPDF dictionary is written separately to
+`debug/ocr/<resume>.ocr-pymupdf.json`. Native-text pages do not create OCR dumps.
 
 Tesseract must be installed separately because it is a native program, not a Python package:
 
