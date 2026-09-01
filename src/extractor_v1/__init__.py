@@ -12,83 +12,7 @@ import pymupdf
 from PIL import Image, ImageDraw
 from sentence_transformers import SentenceTransformer
 
-
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-MODEL_REVISION = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
-
-# Conservative acceptance avoids forcing names, job titles, or body lines into sections.
-SIMILARITY_THRESHOLD = 0.55
-WINNER_MARGIN = 0.06
-NATIVE_TEXT_MIN_CHARACTERS = 20
-OCR_DPI = 200
-DEBUG_SCALE = 2.0
-
-SECTION_REFERENCES: dict[str, tuple[str, ...]] = {
-    "summary": (
-        "Professional Summary",
-        "Career Profile",
-        "Career Objective",
-        "About Me",
-    ),
-    "experience": (
-        "Work Experience",
-        "Professional Experience",
-        "Employment History",
-        "Career History",
-    ),
-    "education": (
-        "Education",
-        "Academic Background",
-        "Academic Qualifications",
-    ),
-    "skills": (
-        "Skills",
-        "Technical Skills",
-        "Core Competencies",
-        "Technologies and Tools",
-    ),
-    "projects": (
-        "Projects",
-        "Selected Projects",
-        "Personal Projects",
-        "Portfolio",
-    ),
-    "certifications": (
-        "Certifications",
-        "Certificates and Training",
-        "Professional Certifications",
-    ),
-    "languages": (
-        "Languages",
-        "Language Proficiency",
-    ),
-    "volunteering": (
-        "Volunteer Experience",
-        "Community Involvement",
-        "Community Service",
-    ),
-    "awards": (
-        "Awards and Honors",
-        "Achievements",
-    ),
-    "publications": (
-        "Publications",
-        "Research and Publications",
-    ),
-}
-
-SECTION_COLORS: dict[str, str] = {
-    "summary": "#2E7D32",
-    "experience": "#1565C0",
-    "education": "#7B1FA2",
-    "skills": "#00897B",
-    "projects": "#EF6C00",
-    "certifications": "#C2185B",
-    "languages": "#558B2F",
-    "volunteering": "#00838F",
-    "awards": "#F9A825",
-    "publications": "#6D4C41",
-}
+from extractor_v1.configs import SETTINGS
 
 
 @dataclass(frozen=True)
@@ -143,10 +67,18 @@ def extract_lines(document: pymupdf.Document) -> list[ExtractedLine]:
     lines: list[ExtractedLine] = []
     for page_index, page in enumerate(document):
         native_text = page.get_text("text")
-        used_ocr = _meaningful_character_count(native_text) < NATIVE_TEXT_MIN_CHARACTERS
+        used_ocr = (
+            SETTINGS.ocr.enabled
+            and _meaningful_character_count(native_text)
+            < SETTINGS.ocr.native_text_min_characters
+        )
 
         if used_ocr:
-            text_page = page.get_textpage_ocr(language="eng", dpi=OCR_DPI, full=True)
+            text_page = page.get_textpage_ocr(
+                language=SETTINGS.ocr.language,
+                dpi=SETTINGS.ocr.dpi,
+                full=True,
+            )
             page_dict = page.get_text("dict", textpage=text_page, sort=True)
         else:
             page_dict = page.get_text("dict", sort=True)
@@ -168,7 +100,9 @@ def extract_lines(document: pymupdf.Document) -> list[ExtractedLine]:
 def _looks_like_heading(line: ExtractedLine, page_median_size: float) -> bool:
     text = line.text.strip()
     words = text.split()
-    if not 1 <= len(words) <= 8 or len(text) > 80:
+    if not 1 <= len(words) <= SETTINGS.heading.maximum_words:
+        return False
+    if len(text) > SETTINGS.heading.maximum_characters:
         return False
     if "@" in text or text.startswith(("http://", "https://", "www.")):
         return False
@@ -176,8 +110,15 @@ def _looks_like_heading(line: ExtractedLine, page_median_size: float) -> bool:
         return False
 
     letters = [character for character in text if character.isalpha()]
-    uppercase = bool(letters) and sum(character.isupper() for character in letters) / len(letters) >= 0.8
-    larger = page_median_size > 0 and line.size >= page_median_size * 1.12
+    uppercase = (
+        bool(letters)
+        and sum(character.isupper() for character in letters) / len(letters)
+        >= SETTINGS.heading.uppercase_ratio
+    )
+    larger = (
+        page_median_size > 0
+        and line.size >= page_median_size * SETTINGS.heading.font_size_multiplier
+    )
     return line.bold or uppercase or larger
 
 
@@ -204,7 +145,7 @@ def detect_headings(
 
     reference_texts: list[str] = []
     reference_types: list[str] = []
-    for section_type, examples in SECTION_REFERENCES.items():
+    for section_type, examples in SETTINGS.section_references.items():
         for example in examples:
             reference_texts.append(example)
             reference_types.append(section_type)
@@ -224,9 +165,9 @@ def detect_headings(
 
         ranked = sorted(best_by_type.items(), key=lambda item: item[1], reverse=True)
         (winner_type, winner_score), (_, runner_up_score) = ranked[:2]
-        if winner_score < SIMILARITY_THRESHOLD:
+        if winner_score < SETTINGS.heading.similarity_threshold:
             continue
-        if winner_score - runner_up_score < WINNER_MARGIN:
+        if winner_score - runner_up_score < SETTINGS.heading.winner_margin:
             continue
         accepted.append(
             DetectedHeading(
@@ -282,7 +223,9 @@ def build_sections(
 
 
 def _pixel_box(bbox: list[float] | tuple[float, ...]) -> tuple[int, int, int, int]:
-    return tuple(round(value * DEBUG_SCALE) for value in bbox)  # type: ignore[return-value]
+    return tuple(
+        round(value * SETTINGS.debug.scale) for value in bbox
+    )  # type: ignore[return-value]
 
 
 def render_debug_images(
@@ -292,7 +235,7 @@ def render_debug_images(
 ) -> None:
     """Draw only heading boxes and their same-colored content regions."""
     output_directory.mkdir(parents=True, exist_ok=True)
-    matrix = pymupdf.Matrix(DEBUG_SCALE, DEBUG_SCALE)
+    matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
 
     for page_index, page in enumerate(document):
         page_number = page_index + 1
@@ -301,12 +244,19 @@ def render_debug_images(
         draw = ImageDraw.Draw(image)
 
         for section in sections:
-            color = SECTION_COLORS[section["sectionType"]]
+            color = SETTINGS.section_colors[section["sectionType"]]
             if section["page"] == page_number:
                 heading_box = _pixel_box(section["headingBox"])
-                draw.rectangle(heading_box, outline=color, width=5)
+                draw.rectangle(
+                    heading_box,
+                    outline=color,
+                    width=SETTINGS.debug.heading_stroke_width,
+                )
                 draw.text(
-                    (heading_box[0] + 4, max(0, heading_box[1] - 14)),
+                    (
+                        heading_box[0] + SETTINGS.debug.label_x_padding,
+                        max(0, heading_box[1] - SETTINGS.debug.label_y_offset),
+                    ),
                     section["sectionType"],
                     fill=color,
                 )
@@ -316,7 +266,7 @@ def render_debug_images(
                     draw.rectangle(
                         _pixel_box(content_box["bbox"]),
                         outline=color,
-                        width=3,
+                        width=SETTINGS.debug.content_stroke_width,
                     )
 
         image.save(output_directory / f"page-{page_number}.png")
@@ -337,8 +287,8 @@ def extract_resume(
             json.dumps(
                 {
                     "source": pdf_path.name,
-                    "model": MODEL_NAME,
-                    "modelRevision": MODEL_REVISION,
+                    "model": SETTINGS.model.name,
+                    "modelRevision": SETTINGS.model.revision,
                     "sections": sections,
                 },
                 indent=2,
@@ -354,7 +304,10 @@ def main() -> None:
     project_root = Path(__file__).resolve().parents[2]
     input_directory = project_root / "resumes-synthetic"
     output_root = project_root / "results"
-    model = SentenceTransformer(MODEL_NAME, revision=MODEL_REVISION)
+    model = SentenceTransformer(
+        SETTINGS.model.name,
+        revision=SETTINGS.model.revision,
+    )
 
     for pdf_path in sorted(input_directory.glob("*.pdf")):
         extract_resume(pdf_path, output_root / pdf_path.stem, model)
