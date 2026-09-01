@@ -4,10 +4,36 @@
   "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
   "sections": [
     {
+      "heading": "Senior Software Engineer",
+      "sectionType": "skills",
+      "similarity": 0.5862,
+      "runnerUpSimilarity": 0.4347,
+      "page": 1,
+      "headingBox": [
+        42.0,
+        55.3,
+        163.7,
+        69.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            42.0,
+            89.3,
+            90.88,
+            103.07
+          ]
+        }
+      ],
+      "content": "CONTACT",
+      "usedOcr": false
+    },
+    {
       "heading": "PROFILE",
       "sectionType": "summary",
-      "similarity": 0.6693,
-      "runnerUpSimilarity": 0.3072,
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.4314,
       "page": 1,
       "headingBox": [
         244.0,
@@ -32,8 +58,8 @@
     {
       "heading": "EXPERIENCE",
       "sectionType": "experience",
-      "similarity": 0.785,
-      "runnerUpSimilarity": 0.6083,
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.6231,
       "page": 1,
       "headingBox": [
         244.0,
@@ -41,18 +67,60 @@
         308.46,
         169.07
       ],
+      "contentBoxes": [],
+      "content": "",
+      "usedOcr": false
+    },
+    {
+      "heading": "TECHNICAL STACK",
+      "sectionType": "skills",
+      "similarity": 0.9021,
+      "runnerUpSimilarity": 0.3895,
+      "page": 1,
+      "headingBox": [
+        42.0,
+        168.3,
+        136.99,
+        182.07
+      ],
       "contentBoxes": [
         {
           "page": 1,
           "bbox": [
             42.0,
-            168.3,
+            173.3,
+            553.28,
+            199.57
+          ]
+        }
+      ],
+      "content": "Merlion Systems Pte. Ltd.\nSingapore\nTypeScript / Java / C++",
+      "usedOcr": false
+    },
+    {
+      "heading": "Senior Software Engineer",
+      "sectionType": "skills",
+      "similarity": 0.5862,
+      "runnerUpSimilarity": 0.4347,
+      "page": 1,
+      "headingBox": [
+        244.0,
+        189.37,
+        353.53,
+        201.76
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            42.0,
+            190.4,
             553.28,
             251.57
           ]
         }
       ],
-      "content": "TECHNICAL STACK\nMerlion Systems Pte. Ltd.\nSingapore\nTypeScript / Java / C++\nSenior Software Engineer\n2023 - Present\nNode.js / Spring Boot\nPostgreSQL / Redis\n-\nLed migration of a resume-processing API from a monolith to independently\ndeployable services, reducing release coupling.\nAWS / Docker / Kubernetes\n-\nDesigned typed event contracts and idempotent workers for document\ningestion and downstream enrichment.\nREST / event-driven systems",
+      "content": "2023 - Present\nNode.js / Spring Boot\nPostgreSQL / Redis\n-\nLed migration of a resume-processing API from a monolith to independently\ndeployable services, reducing release coupling.\nAWS / Docker / Kubernetes\n-\nDesigned typed event contracts and idempotent workers for document\ningestion and downstream enrichment.\nREST / event-driven systems",
       "usedOcr": false
     },
     {
@@ -71,21 +139,47 @@
         {
           "page": 1,
           "bbox": [
-            42.0,
+            244.0,
             251.76,
+            551.79,
+            274.57
+          ]
+        }
+      ],
+      "content": "-\nAdded structured tracing and service-level dashboards used during production\nincident reviews.",
+      "usedOcr": false
+    },
+    {
+      "heading": "Software Engineer",
+      "sectionType": "skills",
+      "similarity": 0.713,
+      "runnerUpSimilarity": 0.5118,
+      "page": 1,
+      "headingBox": [
+        244.0,
+        280.37,
+        323.02,
+        292.76
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            42.0,
+            278.69,
             553.28,
             317.57
           ]
         }
       ],
-      "content": "-\nAdded structured tracing and service-level dashboards used during production\nincident reviews.\nSoftware Engineer\n2020 - 2023\nNational University of Singapore\nB.Comp. in Computer Science, 2017\n-\nBuilt Java and TypeScript services for customer onboarding and internal\nworkflow automation.",
+      "content": "2020 - 2023\nNational University of Singapore\nB.Comp. in Computer Science, 2017\n-\nBuilt Java and TypeScript services for customer onboarding and internal\nworkflow automation.",
       "usedOcr": false
     },
     {
       "heading": "LANGUAGES",
       "sectionType": "languages",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4337,
+      "runnerUpSimilarity": 0.7367,
       "page": 1,
       "headingBox": [
         42.0,
@@ -109,18 +203,44 @@
             42.0,
             26.6,
             553.28,
+            54.14
+          ]
+        }
+      ],
+      "content": "-\nIntroduced contract tests for critical partner integrations and improved CI\nfeedback for backend teams.\nEnglish - fluent\nMandarin - conversational\nSynthetic fixture - fictional person and contact details - not for employment use\nPage 1 of 2\nSingapore\nAdrian Lim Wei Jian",
+      "usedOcr": false
+    },
+    {
+      "heading": "Senior Software Engineer - continued",
+      "sectionType": "skills",
+      "similarity": 0.5558,
+      "runnerUpSimilarity": 0.4376,
+      "page": 2,
+      "headingBox": [
+        42.0,
+        55.3,
+        220.37,
+        69.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            42.0,
+            89.3,
+            172.57,
             103.07
           ]
         }
       ],
-      "content": "-\nIntroduced contract tests for critical partner integrations and improved CI\nfeedback for backend teams.\nEnglish - fluent\nMandarin - conversational\nSynthetic fixture - fictional person and contact details - not for employment use\nPage 1 of 2\nSingapore\nAdrian Lim Wei Jian\nSenior Software Engineer - continued\nENGINEERING PRACTICES",
+      "content": "ENGINEERING PRACTICES",
       "usedOcr": false
     },
     {
       "heading": "EARLIER EXPERIENCE",
       "sectionType": "experience",
-      "similarity": 0.6207,
-      "runnerUpSimilarity": 0.507,
+      "similarity": 0.7232,
+      "runnerUpSimilarity": 0.5209,
       "page": 2,
       "headingBox": [
         244.0,
@@ -135,18 +255,44 @@
             42.0,
             107.3,
             553.28,
+            134.57
+          ]
+        }
+      ],
+      "content": "API contract design\nLion City Commerce\nSingapore\nCode review and mentoring",
+      "usedOcr": false
+    },
+    {
+      "heading": "Software Engineer",
+      "sectionType": "skills",
+      "similarity": 0.713,
+      "runnerUpSimilarity": 0.5118,
+      "page": 2,
+      "headingBox": [
+        244.0,
+        123.37,
+        323.02,
+        135.76
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            42.0,
+            124.4,
+            553.28,
             208.57
           ]
         }
       ],
-      "content": "API contract design\nLion City Commerce\nSingapore\nCode review and mentoring\nSoftware Engineer\n2017 - 2020\nIncident response\n-\nDeveloped order-management APIs and asynchronous reconciliation jobs for\na regional e-commerce platform.\nPerformance profiling\nCI/CD quality gates\n-\nWorked with product and operations teams to replace spreadsheet-heavy\nprocesses with auditable internal tools.\nArchitecture documentation\n-\nImproved batch-processing reliability by adding retry policies, metrics, and\nfailure summaries for operations teams.",
+      "content": "2017 - 2020\nIncident response\n-\nDeveloped order-management APIs and asynchronous reconciliation jobs for\na regional e-commerce platform.\nPerformance profiling\nCI/CD quality gates\n-\nWorked with product and operations teams to replace spreadsheet-heavy\nprocesses with auditable internal tools.\nArchitecture documentation\n-\nImproved batch-processing reliability by adding retry policies, metrics, and\nfailure summaries for operations teams.",
       "usedOcr": false
     },
     {
       "heading": "SELECTED TOOLS",
-      "sectionType": "skills",
-      "similarity": 0.6061,
-      "runnerUpSimilarity": 0.5106,
+      "sectionType": "tools_equipment",
+      "similarity": 0.7814,
+      "runnerUpSimilarity": 0.6407,
       "page": 2,
       "headingBox": [
         42.0,
@@ -172,7 +318,7 @@
       "heading": "SELECTED PROJECTS",
       "sectionType": "projects",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.384,
+      "runnerUpSimilarity": 0.4283,
       "page": 2,
       "headingBox": [
         244.0,
@@ -186,12 +332,54 @@
           "bbox": [
             42.0,
             232.76,
+            553.26,
+            316.57
+          ]
+        }
+      ],
+      "content": "OpenTelemetry\nDocument Pipeline Benchmark\nGrafana\nTerraform\nCreated a reproducible fixture suite for evaluating PDF text extraction, reading\norder, hyperlinks, and OCR routing.\nJUnit / Vitest\nService Reliability Toolkit\nLinux tooling\nBuilt reusable health-check, tracing, and deployment templates for small backend\nservices used across internal prototypes.",
+      "usedOcr": false
+    },
+    {
+      "heading": "INTERESTS",
+      "sectionType": "interests",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.4996,
+      "page": 2,
+      "headingBox": [
+        42.0,
+        309.3,
+        98.12,
+        323.07
+      ],
+      "contentBoxes": [],
+      "content": "",
+      "usedOcr": false
+    },
+    {
+      "heading": "ADDITIONAL CONTRIBUTIONS",
+      "sectionType": "projects",
+      "similarity": 0.6448,
+      "runnerUpSimilarity": 0.423,
+      "page": 2,
+      "headingBox": [
+        244.0,
+        324.3,
+        391.77,
+        338.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            42.0,
+            328.75,
             553.28,
             821.98
           ]
         }
       ],
-      "content": "OpenTelemetry\nDocument Pipeline Benchmark\nGrafana\nTerraform\nCreated a reproducible fixture suite for evaluating PDF text extraction, reading\norder, hyperlinks, and OCR routing.\nJUnit / Vitest\nService Reliability Toolkit\nLinux tooling\nBuilt reusable health-check, tracing, and deployment templates for small backend\nservices used across internal prototypes.\nINTERESTS\nADDITIONAL CONTRIBUTIONS\nDeveloper tooling, document processing,\ndistributed systems, and reproducible software\nexperiments.\n-\nMentored junior engineers on debugging production issues and writing\nsmaller, reviewable changes.\n-\nDocumented migration playbooks so service ownership could transfer without\nrelying on undocumented team knowledge.\nSynthetic fixture - fictional person and contact details - not for employment use\nPage 2 of 2",
+      "content": "Developer tooling, document processing,\ndistributed systems, and reproducible software\nexperiments.\n-\nMentored junior engineers on debugging production issues and writing\nsmaller, reviewable changes.\n-\nDocumented migration playbooks so service ownership could transfer without\nrelying on undocumented team knowledge.\nSynthetic fixture - fictional person and contact details - not for employment use\nPage 2 of 2",
       "usedOcr": false
     }
   ]

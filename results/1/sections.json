@@ -7,7 +7,7 @@
       "heading": "PROFESSIONAL SUMMARY",
       "sectionType": "summary",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.5481,
+      "runnerUpSimilarity": 0.6009,
       "page": 1,
       "headingBox": [
         72.0,
@@ -33,7 +33,7 @@
       "heading": "WORK EXPERIENCE",
       "sectionType": "experience",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.6247,
+      "runnerUpSimilarity": 0.6308,
       "page": 1,
       "headingBox": [
         72.0,
@@ -49,7 +49,7 @@
       "heading": "Industrial Maintenance Technician",
       "sectionType": "skills",
       "similarity": 0.5552,
-      "runnerUpSimilarity": 0.3769,
+      "runnerUpSimilarity": 0.4473,
       "page": 1,
       "headingBox": [
         72.0,
@@ -100,7 +100,7 @@
       "heading": "Higher Vocational Certificate (ปวส.) — Industrial Technology",
       "sectionType": "certifications",
       "similarity": 0.5777,
-      "runnerUpSimilarity": 0.4261,
+      "runnerUpSimilarity": 0.4547,
       "page": 2,
       "headingBox": [
         72.0,
@@ -126,7 +126,7 @@
       "heading": "Vocational Certificate (ปวช.) — Mechanical Technology",
       "sectionType": "certifications",
       "similarity": 0.5607,
-      "runnerUpSimilarity": 0.3985,
+      "runnerUpSimilarity": 0.4847,
       "page": 2,
       "headingBox": [
         72.0,
@@ -152,7 +152,7 @@
       "heading": "TECHNICAL SKILLS",
       "sectionType": "skills",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4861,
+      "runnerUpSimilarity": 0.6298,
       "page": 2,
       "headingBox": [
         72.0,
@@ -173,21 +173,47 @@
         {
           "page": 3,
           "bbox": [
-            72.0,
+            90.0,
             72.36,
+            275.41,
+            302.84
+          ]
+        }
+      ],
+      "content": "●​ Preventive Maintenance\n●​ Corrective Maintenance\n●​ Mechanical Troubleshooting\n●​ Industrial Machinery Maintenance\n●​ Conveyor Systems\n●​ Pumps and Electric Motors\n●​ Bearings, Belts and Chain Drives\n●​ Pneumatic Systems\n●​ Basic Hydraulic Systems\n●​ Basic Electrical Troubleshooting\n●​ Sensors and Limit Switches\n●​ Hand and Power Tools\n●​ Basic Welding and Fabrication\n●​ Equipment Installation\n●​ Maintenance Documentation\n●​ Spare Parts Inspection\n●​ 5S Workplace Organization",
+      "usedOcr": false
+    },
+    {
+      "heading": "SAFETY & TRAINING",
+      "sectionType": "licenses",
+      "similarity": 0.7411,
+      "runnerUpSimilarity": 0.6428,
+      "page": 3,
+      "headingBox": [
+        72.0,
+        323.3,
+        247.59,
+        342.29
+      ],
+      "contentBoxes": [
+        {
+          "page": 3,
+          "bbox": [
+            90.0,
+            357.58,
             339.16,
             428.05
           ]
         }
       ],
-      "content": "●​ Preventive Maintenance\n●​ Corrective Maintenance\n●​ Mechanical Troubleshooting\n●​ Industrial Machinery Maintenance\n●​ Conveyor Systems\n●​ Pumps and Electric Motors\n●​ Bearings, Belts and Chain Drives\n●​ Pneumatic Systems\n●​ Basic Hydraulic Systems\n●​ Basic Electrical Troubleshooting\n●​ Sensors and Limit Switches\n●​ Hand and Power Tools\n●​ Basic Welding and Fabrication\n●​ Equipment Installation\n●​ Maintenance Documentation\n●​ Spare Parts Inspection\n●​ 5S Workplace Organization\nSAFETY & TRAINING\n●​ Basic Occupational Safety Training\n●​ Lockout/Tagout Awareness\n●​ Fire Safety and Emergency Response Training\n●​ Forklift Safety Awareness\n●​ Internal 5S Training",
+      "content": "●​ Basic Occupational Safety Training\n●​ Lockout/Tagout Awareness\n●​ Fire Safety and Emergency Response Training\n●​ Forklift Safety Awareness\n●​ Internal 5S Training",
       "usedOcr": false
     },
     {
       "heading": "LANGUAGES",
       "sectionType": "languages",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4337,
+      "runnerUpSimilarity": 0.7367,
       "page": 3,
       "headingBox": [
         72.0,
@@ -213,7 +239,7 @@
       "heading": "English: Basic working proficiency",
       "sectionType": "languages",
       "similarity": 0.6862,
-      "runnerUpSimilarity": 0.5181,
+      "runnerUpSimilarity": 0.5274,
       "page": 3,
       "headingBox": [
         72.0,

@@ -7,7 +7,7 @@
       "heading": "PROFESSIONAL SUMMARY",
       "sectionType": "summary",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.5481,
+      "runnerUpSimilarity": 0.6009,
       "page": 1,
       "headingBox": [
         72.0,
@@ -33,7 +33,7 @@
       "heading": "PROFESSIONAL EXPERIENCE",
       "sectionType": "experience",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.6109,
+      "runnerUpSimilarity": 0.7038,
       "page": 1,
       "headingBox": [
         72.0,
@@ -56,12 +56,38 @@
           "bbox": [
             72.0,
             72.43,
+            500.06,
+            329.49
+          ]
+        }
+      ],
+      "content": "Supply Chain Analyst\nAster Consumer Products (Thailand) Co., Ltd.​\nBangkok, Thailand​\nJanuary 2024 – Present\n●​ Analyze inventory levels, sales history, purchase orders, and demand data for\napproximately 1,200 active SKUs.\n●​ Prepare weekly inventory reports covering stock availability, slow-moving inventory,\nstock-out risks, and excess stock.\n●​ Build and maintain Power BI dashboards for inventory and supplier performance\nmonitoring.\n●​ Support monthly demand and supply planning meetings by preparing historical sales\nand inventory data.\n●​ Coordinate with procurement and warehouse teams regarding delayed purchase\norders and critical stock items.\n●​ Use Excel and SQL to clean, combine, and analyze operational data from ERP\nexports.\n●​ Monitor supplier lead times and highlight significant delivery delays to procurement\nteams.\n●​ Perform root-cause analysis on inventory discrepancies and recurring stock\navailability issues.\n●​ Assist management with ad hoc analysis for promotions, product launches, and\ninventory planning.\nInventory Planning Officer\nMetro Distribution Services Co., Ltd.​\nBangkok, Thailand​\nJuly 2022 – December 2023\n●​ Monitored inventory movements across the company's central warehouse and\nregional distribution locations.\n●​ Prepared replenishment recommendations using sales history, current stock,\noutstanding orders, and minimum stock levels.\n●​ Maintained inventory planning spreadsheets and monthly KPI reports.\n●​ Coordinated with purchasing staff regarding replenishment orders and supplier\ndelivery schedules.\n●​ Investigated discrepancies between system inventory and warehouse reports.\n●​ Prepared reports on stock aging, inventory turnover, stock-outs, and excess\ninventory.\n●​ Worked with warehouse teams during monthly cycle counts and annual physical\ninventory checks.",
+      "usedOcr": false
+    },
+    {
+      "heading": "Procurement Intern",
+      "sectionType": "experience",
+      "similarity": 0.6263,
+      "runnerUpSimilarity": 0.43,
+      "page": 2,
+      "headingBox": [
+        72.0,
+        345.81,
+        195.49,
+        360.33
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            72.0,
+            374.94,
             525.73,
             530.14
           ]
         }
       ],
-      "content": "Supply Chain Analyst\nAster Consumer Products (Thailand) Co., Ltd.​\nBangkok, Thailand​\nJanuary 2024 – Present\n●​ Analyze inventory levels, sales history, purchase orders, and demand data for\napproximately 1,200 active SKUs.\n●​ Prepare weekly inventory reports covering stock availability, slow-moving inventory,\nstock-out risks, and excess stock.\n●​ Build and maintain Power BI dashboards for inventory and supplier performance\nmonitoring.\n●​ Support monthly demand and supply planning meetings by preparing historical sales\nand inventory data.\n●​ Coordinate with procurement and warehouse teams regarding delayed purchase\norders and critical stock items.\n●​ Use Excel and SQL to clean, combine, and analyze operational data from ERP\nexports.\n●​ Monitor supplier lead times and highlight significant delivery delays to procurement\nteams.\n●​ Perform root-cause analysis on inventory discrepancies and recurring stock\navailability issues.\n●​ Assist management with ad hoc analysis for promotions, product launches, and\ninventory planning.\nInventory Planning Officer\nMetro Distribution Services Co., Ltd.​\nBangkok, Thailand​\nJuly 2022 – December 2023\n●​ Monitored inventory movements across the company's central warehouse and\nregional distribution locations.\n●​ Prepared replenishment recommendations using sales history, current stock,\noutstanding orders, and minimum stock levels.\n●​ Maintained inventory planning spreadsheets and monthly KPI reports.\n●​ Coordinated with purchasing staff regarding replenishment orders and supplier\ndelivery schedules.\n●​ Investigated discrepancies between system inventory and warehouse reports.\n●​ Prepared reports on stock aging, inventory turnover, stock-outs, and excess\ninventory.\n●​ Worked with warehouse teams during monthly cycle counts and annual physical\ninventory checks.\nProcurement Intern\nThai Meridian Trading Co., Ltd.​\nBangkok, Thailand​\nJanuary 2022 – April 2022\n●​ Assisted procurement officers with purchase-order preparation and supplier quotation\ncomparisons.\n●​ Updated supplier information and purchasing records in Excel.\n●​ Followed up with suppliers regarding expected delivery dates.\n●​ Prepared basic purchasing and delivery-status reports.\n●​ Organized procurement documents including quotations, purchase orders, and\ndelivery records.",
+      "content": "Thai Meridian Trading Co., Ltd.​\nBangkok, Thailand​\nJanuary 2022 – April 2022\n●​ Assisted procurement officers with purchase-order preparation and supplier quotation\ncomparisons.\n●​ Updated supplier information and purchasing records in Excel.\n●​ Followed up with suppliers regarding expected delivery dates.\n●​ Prepared basic purchasing and delivery-status reports.\n●​ Organized procurement documents including quotations, purchase orders, and\ndelivery records.",
       "usedOcr": false
     },
     {
@@ -94,7 +120,7 @@
       "heading": "TECHNICAL SKILLS",
       "sectionType": "skills",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4861,
+      "runnerUpSimilarity": 0.6298,
       "page": 3,
       "headingBox": [
         72.0,
@@ -120,7 +146,7 @@
       "heading": "PROJECT",
       "sectionType": "projects",
       "similarity": 0.7638,
-      "runnerUpSimilarity": 0.4291,
+      "runnerUpSimilarity": 0.5087,
       "page": 3,
       "headingBox": [
         72.0,
@@ -145,8 +171,8 @@
     {
       "heading": "CERTIFICATIONS & TRAINING",
       "sectionType": "certifications",
-      "similarity": 0.8967,
-      "runnerUpSimilarity": 0.5428,
+      "similarity": 0.9719,
+      "runnerUpSimilarity": 0.6915,
       "page": 3,
       "headingBox": [
         72.0,
@@ -181,7 +207,7 @@
       "heading": "LANGUAGES",
       "sectionType": "languages",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4337,
+      "runnerUpSimilarity": 0.7367,
       "page": 4,
       "headingBox": [
         72.0,
@@ -207,7 +233,7 @@
       "heading": "English: Professional working proficiency",
       "sectionType": "languages",
       "similarity": 0.6661,
-      "runnerUpSimilarity": 0.5279,
+      "runnerUpSimilarity": 0.6037,
       "page": 4,
       "headingBox": [
         72.0,

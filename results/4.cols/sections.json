@@ -6,8 +6,8 @@
     {
       "heading": "SUMMARY",
       "sectionType": "summary",
-      "similarity": 0.7073,
-      "runnerUpSimilarity": 0.3522,
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.5186,
       "page": 1,
       "headingBox": [
         244.0,
@@ -33,7 +33,7 @@
       "heading": "CORE SKILLS",
       "sectionType": "skills",
       "similarity": 0.8082,
-      "runnerUpSimilarity": 0.4593,
+      "runnerUpSimilarity": 0.6007,
       "page": 1,
       "headingBox": [
         42.0,
@@ -48,8 +48,8 @@
     {
       "heading": "WORK HISTORY",
       "sectionType": "experience",
-      "similarity": 0.855,
-      "runnerUpSimilarity": 0.4594,
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.5906,
       "page": 1,
       "headingBox": [
         244.0,
@@ -101,7 +101,7 @@
       "heading": "LANGUAGES",
       "sectionType": "languages",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4337,
+      "runnerUpSimilarity": 0.7367,
       "page": 1,
       "headingBox": [
         42.0,
@@ -135,8 +135,8 @@
     {
       "heading": "EARLIER EXPERIENCE",
       "sectionType": "experience",
-      "similarity": 0.6207,
-      "runnerUpSimilarity": 0.507,
+      "similarity": 0.7232,
+      "runnerUpSimilarity": 0.5209,
       "page": 2,
       "headingBox": [
         244.0,
@@ -160,9 +160,9 @@
     },
     {
       "heading": "TOOLS",
-      "sectionType": "skills",
-      "similarity": 0.7889,
-      "runnerUpSimilarity": 0.5092,
+      "sectionType": "tools_equipment",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.8308,
       "page": 2,
       "headingBox": [
         42.0,

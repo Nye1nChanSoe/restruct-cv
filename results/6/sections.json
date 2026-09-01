@@ -7,7 +7,7 @@
       "heading": "PROFESSIONAL SUMMARY",
       "sectionType": "summary",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.5481,
+      "runnerUpSimilarity": 0.6009,
       "page": 1,
       "headingBox": [
         46.9,
@@ -33,7 +33,7 @@
       "heading": "TECHNICAL SKILLS",
       "sectionType": "skills",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4861,
+      "runnerUpSimilarity": 0.6298,
       "page": 1,
       "headingBox": [
         46.9,
@@ -41,25 +41,41 @@
         147.72,
         164.07
       ],
+      "contentBoxes": [],
+      "content": "",
+      "usedOcr": false
+    },
+    {
+      "heading": "Languages: TypeScript, JavaScript, Python, Go, SQL, Java",
+      "sectionType": "skills",
+      "similarity": 0.6083,
+      "runnerUpSimilarity": 0.498,
+      "page": 1,
+      "headingBox": [
+        46.9,
+        168.2,
+        300.09,
+        178.8
+      ],
       "contentBoxes": [
         {
           "page": 1,
           "bbox": [
             46.9,
-            168.2,
+            181.2,
             428.86,
             243.8
           ]
         }
       ],
-      "content": "Languages: TypeScript, JavaScript, Python, Go, SQL, Java\nBackend: Node.js, Express, FastAPI, REST APIs, WebSockets, background workers\nData: PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines\nCloud & DevOps: AWS, GCP, Docker, GitHub Actions, Linux, Nginx\nAI/ML: scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction\nTools: Git, Playwright, Neovim, Postman, Grafana",
+      "content": "Backend: Node.js, Express, FastAPI, REST APIs, WebSockets, background workers\nData: PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines\nCloud & DevOps: AWS, GCP, Docker, GitHub Actions, Linux, Nginx\nAI/ML: scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction\nTools: Git, Playwright, Neovim, Postman, Grafana",
       "usedOcr": false
     },
     {
       "heading": "PROFESSIONAL EXPERIENCE",
       "sectionType": "experience",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.6109,
+      "runnerUpSimilarity": 0.7038,
       "page": 1,
       "headingBox": [
         46.9,
@@ -85,7 +101,7 @@
       "heading": "PROJECTS",
       "sectionType": "projects",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.49,
+      "runnerUpSimilarity": 0.5413,
       "page": 1,
       "headingBox": [
         46.9,
@@ -162,8 +178,8 @@
     {
       "heading": "Languages: English (Professional), Burmese (Native), Thai (Conversational)",
       "sectionType": "languages",
-      "similarity": 0.5785,
-      "runnerUpSimilarity": 0.2553,
+      "similarity": 0.5822,
+      "runnerUpSimilarity": 0.3412,
       "page": 1,
       "headingBox": [
         46.9,

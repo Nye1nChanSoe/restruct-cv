@@ -7,7 +7,7 @@
       "heading": "PROFESSIONAL SUMMARY",
       "sectionType": "summary",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.5481,
+      "runnerUpSimilarity": 0.6009,
       "page": 1,
       "headingBox": [
         52.91,
@@ -33,7 +33,7 @@
       "heading": "CORE SKILLS",
       "sectionType": "skills",
       "similarity": 0.8082,
-      "runnerUpSimilarity": 0.4593,
+      "runnerUpSimilarity": 0.6007,
       "page": 1,
       "headingBox": [
         52.19,
@@ -59,7 +59,7 @@
       "heading": "PROFESSIONAL EXPERIENCE",
       "sectionType": "experience",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.6109,
+      "runnerUpSimilarity": 0.7038,
       "page": 1,
       "headingBox": [
         52.19,
@@ -94,7 +94,7 @@
       "heading": "SELECTED PROJECT EXPERIENCE",
       "sectionType": "projects",
       "similarity": 0.7566,
-      "runnerUpSimilarity": 0.5492,
+      "runnerUpSimilarity": 0.6351,
       "page": 2,
       "headingBox": [
         51.11,
@@ -145,8 +145,8 @@
     {
       "heading": "TRAINING & CERTIFICATIONS",
       "sectionType": "certifications",
-      "similarity": 0.8706,
-      "runnerUpSimilarity": 0.5646,
+      "similarity": 0.9845,
+      "runnerUpSimilarity": 0.6852,
       "page": 2,
       "headingBox": [
         51.11,
@@ -172,7 +172,7 @@
       "heading": "LANGUAGES & ADDITIONAL INFORMATION",
       "sectionType": "languages",
       "similarity": 0.7636,
-      "runnerUpSimilarity": 0.3189,
+      "runnerUpSimilarity": 0.5605,
       "page": 2,
       "headingBox": [
         52.19,

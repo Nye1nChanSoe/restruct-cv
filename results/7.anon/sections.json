@@ -7,7 +7,7 @@
       "heading": "PROFESSIONAL SUMMARY",
       "sectionType": "summary",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.5481,
+      "runnerUpSimilarity": 0.6009,
       "page": 1,
       "headingBox": [
         46.9,
@@ -33,7 +33,7 @@
       "heading": "CORE SKILLS",
       "sectionType": "skills",
       "similarity": 0.8082,
-      "runnerUpSimilarity": 0.4593,
+      "runnerUpSimilarity": 0.6007,
       "page": 1,
       "headingBox": [
         46.9,
@@ -57,9 +57,9 @@
     },
     {
       "heading": "Tools",
-      "sectionType": "skills",
-      "similarity": 0.7889,
-      "runnerUpSimilarity": 0.5092,
+      "sectionType": "tools_equipment",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.8308,
       "page": 1,
       "headingBox": [
         77.1,
@@ -71,21 +71,47 @@
         {
           "page": 1,
           "bbox": [
-            77.1,
+            170.7,
             344.4,
             520.2,
+            366.35
+          ]
+        }
+      ],
+      "content": "Angle grinder, cut-off saw, magnetic drill, bench drill, hand drill, oxy-fuel cutting, plasma\ncutter, measuring tape, vernier caliper, spirit level",
+      "usedOcr": false
+    },
+    {
+      "heading": "Safety",
+      "sectionType": "licenses",
+      "similarity": 0.6726,
+      "runnerUpSimilarity": 0.3577,
+      "page": 1,
+      "headingBox": [
+        77.1,
+        382.26,
+        104.1,
+        392.3
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            170.7,
+            382.26,
+            519.74,
             404.2
           ]
         }
       ],
-      "content": "Angle grinder, cut-off saw, magnetic drill, bench drill, hand drill, oxy-fuel cutting, plasma\ncutter, measuring tape, vernier caliper, spirit level\nSafety\nPPE, hot-work permit procedures, fire watch, lockout/tagout awareness, housekeeping,\nlifting awareness, toolbox talks, 5S",
+      "content": "PPE, hot-work permit procedures, fire watch, lockout/tagout awareness, housekeeping,\nlifting awareness, toolbox talks, 5S",
       "usedOcr": false
     },
     {
       "heading": "Work Style",
       "sectionType": "experience",
-      "similarity": 0.6013,
-      "runnerUpSimilarity": 0.42,
+      "similarity": 0.6262,
+      "runnerUpSimilarity": 0.4675,
       "page": 1,
       "headingBox": [
         77.1,
@@ -111,7 +137,7 @@
       "heading": "EMPLOYMENT HISTORY",
       "sectionType": "experience",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4484,
+      "runnerUpSimilarity": 0.5103,
       "page": 1,
       "headingBox": [
         46.9,
@@ -146,7 +172,7 @@
       "heading": "SELECTED PROJECTS & PRACTICAL EXPERIENCE",
       "sectionType": "projects",
       "similarity": 0.7528,
-      "runnerUpSimilarity": 0.5587,
+      "runnerUpSimilarity": 0.684,
       "page": 2,
       "headingBox": [
         46.9,
@@ -171,8 +197,8 @@
     {
       "heading": "TRAINING & CERTIFICATIONS",
       "sectionType": "certifications",
-      "similarity": 0.8706,
-      "runnerUpSimilarity": 0.5646,
+      "similarity": 0.9845,
+      "runnerUpSimilarity": 0.6852,
       "page": 2,
       "headingBox": [
         46.9,
@@ -187,8 +213,8 @@
     {
       "heading": "Training / Certification",
       "sectionType": "certifications",
-      "similarity": 0.853,
-      "runnerUpSimilarity": 0.5525,
+      "similarity": 0.9575,
+      "runnerUpSimilarity": 0.6994,
       "page": 2,
       "headingBox": [
         52.3,
@@ -249,7 +275,7 @@
       "heading": "LANGUAGES",
       "sectionType": "languages",
       "similarity": 1.0,
-      "runnerUpSimilarity": 0.4337,
+      "runnerUpSimilarity": 0.7367,
       "page": 3,
       "headingBox": [
         46.9,
