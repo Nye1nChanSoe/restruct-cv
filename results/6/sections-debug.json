@@ -1,0 +1,456 @@
+{
+  "source": "6.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "sections": [
+    {
+      "sectionType": "summary",
+      "heading": {
+        "text": "PROFESSIONAL SUMMARY",
+        "page": 1,
+        "bbox": [
+          46.9,
+          94.95,
+          186.8,
+          106.67
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Software engineer with 4+ years of experience building backend services, data pipelines, and internal platforms. Strong in\nTypeScript, Python, Go, PostgreSQL, REST APIs, and cloud-native systems. Experienced with event-driven processing,\nweb scraping, observability, and practical machine-learning integration.",
+          "page": 1,
+          "bbox": [
+            46.9,
+            110.8,
+            559.94,
+            146.4
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "skills",
+      "heading": {
+        "text": "TECHNICAL SKILLS",
+        "page": 1,
+        "bbox": [
+          46.9,
+          152.35,
+          147.72,
+          164.07
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": []
+    },
+    {
+      "sectionType": "skills",
+      "heading": {
+        "text": "Languages: TypeScript, JavaScript, Python, Go, SQL, Java",
+        "page": 1,
+        "bbox": [
+          46.9,
+          168.2,
+          300.09,
+          178.8
+        ],
+        "similarity": 0.6083,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Backend: Node.js, Express, FastAPI, REST APIs, WebSockets, background workers\nData: PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines\nCloud & DevOps: AWS, GCP, Docker, GitHub Actions, Linux, Nginx\nAI/ML: scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction\nTools: Git, Playwright, Neovim, Postman, Grafana",
+          "page": 1,
+          "bbox": [
+            46.9,
+            181.2,
+            428.86,
+            243.8
+          ],
+          "detectionMethod": "geometry_default",
+          "entities": [
+            {
+              "type": "url",
+              "text": "Node.js",
+              "url": "Node.js",
+              "page": 1,
+              "bbox": [
+                92.3,
+                181.2,
+                124.48,
+                191.8
+              ],
+              "detectionMethod": "regex"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sectionType": "experience",
+      "heading": {
+        "text": "PROFESSIONAL EXPERIENCE",
+        "page": 1,
+        "bbox": [
+          46.9,
+          249.75,
+          200.18,
+          261.47
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Orbit Labs Co., Ltd.",
+          "page": 1,
+          "bbox": [
+            46.9,
+            265.6,
+            134.9,
+            276.2
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Jan 2024 - Present",
+          "page": 1,
+          "bbox": [
+            453.95,
+            265.61,
+            532.93,
+            275.65
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Software Engineer",
+          "page": 1,
+          "bbox": [
+            46.9,
+            278.11,
+            120.89,
+            288.15
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Bangkok, Thailand\nDesigned and maintained TypeScript and Go services handling approximately 1.5 million API requests per day.\nBuilt a PostgreSQL-backed job processing system with retry policies, idempotency, and structured application logs.\nReduced median API latency by 38% by profiling database queries, adding targeted indexes, and introducing Redis caching.\nDeveloped Playwright-based data collectors that ran independently across multiple sources and persisted normalized results to\nSQLite.\nIntegrated local LLM inference for structured text extraction using JSON schemas and deterministic post-processing.",
+          "page": 1,
+          "bbox": [
+            52.65,
+            278.11,
+            567.59,
+            353.51
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Northstar Digital",
+          "page": 1,
+          "bbox": [
+            46.9,
+            353.4,
+            121.23,
+            364.0
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "Jun 2022 - Dec 2023",
+          "page": 1,
+          "bbox": [
+            447.4,
+            353.4,
+            532.89,
+            363.45
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Junior Backend Developer",
+          "page": 1,
+          "bbox": [
+            46.9,
+            365.9,
+            152.45,
+            375.95
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Yangon, Myanmar",
+          "page": 1,
+          "bbox": [
+            459.45,
+            365.9,
+            532.95,
+            375.95
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Implemented REST endpoints and background tasks in Python using FastAPI and PostgreSQL.\nCreated ETL scripts for CSV and API datasets, including validation, deduplication, and daily reporting.\nAdded Docker-based local development environments and CI checks that reduced environment-related onboarding issues.\nWrote unit and integration tests for authentication, billing, and data-import workflows.",
+          "page": 1,
+          "bbox": [
+            52.65,
+            377.2,
+            548.56,
+            420.46
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "projects",
+      "heading": {
+        "text": "PROJECTS",
+        "page": 1,
+        "bbox": [
+          46.9,
+          423.9,
+          103.41,
+          435.62
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "LinkedOut - Local Job Discovery & Resume Matching Platform",
+          "page": 1,
+          "bbox": [
+            46.9,
+            439.75,
+            329.04,
+            450.35
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Built a TypeScript + Playwright pipeline for collecting job listings and details into SQLite.\nImplemented resume and job-description extraction using deterministic parsing, NER enrichment, local LLM inference, and\nexplainable scoring.\nDesigned the pipeline so embeddings and semantic retrieval can be added later without changing the source-of-truth data\nmodel.",
+          "page": 1,
+          "bbox": [
+            52.65,
+            451.6,
+            549.92,
+            504.15
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Realtime Metrics Dashboard",
+          "page": 1,
+          "bbox": [
+            46.9,
+            504.95,
+            174.53,
+            515.55
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Created a Go backend and WebSocket stream for live application metrics with PostgreSQL persistence.\nContainerized services with Docker and deployed a small production environment on AWS.",
+          "page": 1,
+          "bbox": [
+            52.65,
+            516.8,
+            473.35,
+            539.06
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "education",
+      "heading": {
+        "text": "EDUCATION",
+        "page": 1,
+        "bbox": [
+          46.9,
+          542.5,
+          109.25,
+          554.22
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "Asia Institute of Technology",
+          "page": 1,
+          "bbox": [
+            46.9,
+            558.35,
+            173.97,
+            568.95
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "2020 - 2022",
+          "page": 1,
+          "bbox": [
+            484.95,
+            558.35,
+            532.97,
+            568.4
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "M.Sc. Computer Science",
+          "page": 1,
+          "bbox": [
+            46.9,
+            570.85,
+            146.37,
+            580.9
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Bangkok, Thailand",
+          "page": 1,
+          "bbox": [
+            458.45,
+            570.85,
+            532.95,
+            580.9
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Coursework: Distributed Systems, Machine Learning, Advanced Databases, Cloud Computing.",
+          "page": 1,
+          "bbox": [
+            52.65,
+            582.15,
+            436.91,
+            593.91
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Riverland University",
+          "page": 1,
+          "bbox": [
+            46.9,
+            593.8,
+            138.64,
+            604.4
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "2016 - 2020",
+          "page": 1,
+          "bbox": [
+            484.95,
+            593.8,
+            532.97,
+            603.85
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "B.Sc. Computer Science",
+          "page": 1,
+          "bbox": [
+            46.9,
+            606.3,
+            144.86,
+            616.35
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Yangon, Myanmar",
+          "page": 1,
+          "bbox": [
+            459.45,
+            606.3,
+            532.95,
+            616.35
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "certifications",
+      "heading": {
+        "text": "CERTIFICATIONS & LANGUAGES",
+        "page": 1,
+        "bbox": [
+          46.9,
+          622.3,
+          215.32,
+          634.02
+        ],
+        "similarity": 0.7624,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Certifications: AWS Certified Cloud Practitioner (2024); Google Cloud Digital Leader (2023)",
+          "page": 1,
+          "bbox": [
+            46.9,
+            638.15,
+            435.7,
+            648.75
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "languages",
+      "heading": {
+        "text": "Languages: English (Professional), Burmese (Native), Thai (Conversational)",
+        "page": 1,
+        "bbox": [
+          46.9,
+          651.15,
+          370.29,
+          661.75
+        ],
+        "similarity": 0.5822,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": []
+    }
+  ]
+}

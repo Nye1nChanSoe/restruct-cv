@@ -1,0 +1,757 @@
+{
+  "source": "7.anomaly.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "sections": [
+    {
+      "sectionType": "summary",
+      "heading": {
+        "text": "PROFESSIONAL SUMMARY",
+        "page": 1,
+        "bbox": [
+          46.9,
+          103.8,
+          186.8,
+          115.52
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Hands-on welder and metal fabricator with more than 9 years of experience supporting manufacturing, food-processing,\nwarehouse, and construction environments in Thailand. Experienced with MIG/MAG, SMAW (stick), basic TIG stainless-\nsteel work, cutting, grinding, fit-up, jig work, equipment repair, and preventive maintenance. Comfortable reading shop\ndrawings, taking measurements, preparing material, checking weld appearance and dimensions, and coordinating with\nThai and international supervisors. Strong record of shift attendance and safety compliance. Used to hot-work permits,\nconfined work areas, production deadlines, and physically demanding jobs. Seeking a stable welding, fabrication,\nmaintenance, or plant technician position in Thailand or elsewhere in Southeast Asia.",
+          "page": 1,
+          "bbox": [
+            46.9,
+            122.4,
+            551.26,
+            201.4
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "skills",
+      "heading": {
+        "text": "CORE SKILLS",
+        "page": 1,
+        "bbox": [
+          46.9,
+          210.25,
+          117.41,
+          221.97
+        ],
+        "similarity": 0.8082,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "Welding",
+          "page": 1,
+          "bbox": [
+            77.1,
+            230.85,
+            112.01,
+            240.9
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "MIG/MAG (GMAW), SMAW/arc welding, basic TIG (GTAW), tack welding, fillet and butt\njoints, vertical and overhead practice",
+          "page": 1,
+          "bbox": [
+            170.7,
+            230.85,
+            520.95,
+            252.8
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Fabrication",
+          "page": 1,
+          "bbox": [
+            77.1,
+            268.7,
+            125.56,
+            278.75
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Steel and stainless fit-up, measuring, marking, cutting, drilling, grinding, bevel preparation,\njigs, brackets, frames, handrails and guards",
+          "page": 1,
+          "bbox": [
+            170.7,
+            268.7,
+            531.73,
+            290.65
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Maintenance",
+          "page": 1,
+          "bbox": [
+            77.1,
+            306.56,
+            131.56,
+            316.6
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Minor machine repair, bearing/guard replacement support, conveyors, pumps, motors,\nworkshop repairs, preventive maintenance assistance",
+          "page": 1,
+          "bbox": [
+            170.7,
+            306.56,
+            515.76,
+            328.5
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "tools_equipment",
+      "heading": {
+        "text": "Tools",
+        "page": 1,
+        "bbox": [
+          77.1,
+          344.4,
+          101.03,
+          354.45
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Angle grinder, cut-off saw, magnetic drill, bench drill, hand drill, oxy-fuel cutting, plasma\ncutter, measuring tape, vernier caliper, spirit level",
+          "page": 1,
+          "bbox": [
+            170.7,
+            344.4,
+            520.2,
+            366.35
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "licenses",
+      "heading": {
+        "text": "Safety",
+        "page": 1,
+        "bbox": [
+          77.1,
+          382.26,
+          104.1,
+          392.3
+        ],
+        "similarity": 0.6726,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "PPE, hot-work permit procedures, fire watch, lockout/tagout awareness, housekeeping,\nlifting awareness, toolbox talks, 5S",
+          "page": 1,
+          "bbox": [
+            170.7,
+            382.26,
+            519.74,
+            404.2
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "experience",
+      "heading": {
+        "text": "Work Style",
+        "page": 1,
+        "bbox": [
+          77.1,
+          420.11,
+          123.57,
+          430.15
+        ],
+        "similarity": 0.6262,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Shift work, overtime, production support, team coordination, job handover, basic work\nrecords, material control",
+          "page": 1,
+          "bbox": [
+            170.7,
+            420.11,
+            512.74,
+            442.05
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "experience",
+      "heading": {
+        "text": "EMPLOYMENT HISTORY",
+        "page": 1,
+        "bbox": [
+          46.9,
+          464.0,
+          170.47,
+          475.72
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "Apr 2022 - Present",
+          "page": 1,
+          "bbox": [
+            456.15,
+            484.11,
+            535.13,
+            494.15
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Senior Welder / Fabricator | Eastern Process Systems Co., Ltd.\nBang Phli, Samut Prakan, Thailand\nFabricate carbon-steel and stainless-steel frames, machine guards, pipe supports, platforms, access ladders, handrails,\nbrackets and small process-equipment parts based on drawings and supervisor sketches.\nPerform MIG/MAG welding for general fabrication and SMAW for repair and site work; use TIG for selected stainless-\nsteel thin sections and finishing jobs under senior technician guidance.\nMeasure, mark, cut, drill, grind and fit components before welding; check squareness, alignment, overall dimensions\nand hole positions before sending completed items for installation or painting.\nSupport installation and repair work at customer factories around Samut Prakan, Chonburi and Rayong, including\nshutdown periods requiring night shifts and overtime.\nComplete daily hot-work checks, inspect cables and welding leads, keep fire extinguisher/fire blanket nearby, and\ncoordinate fire-watch requirements when working outside the workshop.\nHelp train 3 junior helpers on basic welding setup, safe grinding, material handling, tack sequence and workshop\nhousekeeping.\nReduced rework on repeated machine-guard jobs by using simple jigs and a measurement checklist before final\nwelding; supervisor reported noticeably fewer fit-up corrections during installation.\nAssist maintenance technicians with conveyor frame repairs, broken brackets, damaged guards, trolley repairs and\nurgent production-line welding when machines are stopped.",
+          "page": 1,
+          "bbox": [
+            51.2,
+            484.15,
+            564.21,
+            688.5
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Jan 2019 - Mar 2022",
+          "page": 1,
+          "bbox": [
+            450.6,
+            692.01,
+            535.1,
+            702.05
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Welder / Maintenance Helper | Siam Fresh Foods Manufacturing Co., Ltd.\nLat Krabang, Bangkok, Thailand\nWorked in the engineering maintenance team of a chilled and frozen food factory, supporting daily repairs and planned\nmaintenance in production, packing, warehouse and utility areas.\nSYNTHETIC RESUME FOR SOFTWARE / PARSER TESTING - NOT A REAL PERSON  |  Page 1",
+          "page": 1,
+          "bbox": [
+            51.2,
+            692.05,
+            560.01,
+            756.0
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Welded stainless and mild-steel guards, carts, racks, drain covers, work tables, pipe brackets and replacement support\nframes; carried out grinding and finishing where smooth, clean surfaces were required.\nAssisted technicians during conveyor belt replacement, roller replacement, motor changes, pump maintenance, bearing\nwork and alignment checks; prepared tools and cleaned equipment before restart.\nResponded to breakdown calls from production supervisors and helped isolate damaged mechanical parts so repairs\ncould be completed quickly and safely.\nFollowed hygiene-zone rules, tool-control procedures, PPE requirements and cleaning instructions for food-production\nareas. Learned to avoid leaving metal filings, welding rods or loose hardware in controlled zones.\nKept simple handwritten maintenance notes for completed workshop jobs, materials used and unfinished tasks for the\nnext shift.\nParticipated in annual shutdown maintenance and weekend repair work, regularly working 10-12 hour shifts during\nmajor maintenance periods.",
+          "page": 2,
+          "bbox": [
+            51.2,
+            39.7,
+            563.71,
+            172.9
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Jun 2016 - Dec 2018",
+          "page": 2,
+          "bbox": [
+            449.6,
+            176.4,
+            535.09,
+            186.45
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "Welder / Steel Fabrication Worker | Chao Phraya Steel & Engineering",
+          "page": 2,
+          "bbox": [
+            77.1,
+            176.45,
+            394.73,
+            187.61
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Nonthaburi and Bangkok project sites, Thailand\nFabricated and installed steel gates, awnings, stair railings, fencing, roof supports, equipment stands and general\nstructural items for small factories, warehouses, shops and residential projects.\nUsed SMAW extensively for site welding and MIG in the workshop; prepared joints with grinder, cut steel using chop\nsaw and oxy-fuel equipment, and corrected fit-up problems on site.\nLoaded and unloaded steel sections, moved fabricated parts with team members, set up work areas, and worked from\nladders or temporary platforms following supervisor instructions.\nRead basic dimensions from hand drawings and site measurements; checked level and plumb before final welding and\nbolting.\nWorked with crews of 4-8 people and sometimes stayed at provincial sites for several days until installation was\ncompleted.",
+          "page": 2,
+          "bbox": [
+            51.2,
+            189.6,
+            560.56,
+            314.05
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "May 2014 - May 2016",
+          "page": 2,
+          "bbox": [
+            447.1,
+            317.56,
+            535.14,
+            327.6
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "Workshop Helper / Junior Welder | Metro Metal Works",
+          "page": 2,
+          "bbox": [
+            77.1,
+            317.6,
+            327.16,
+            328.76
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Bang Khae, Bangkok, Thailand\nStarted as a general workshop helper preparing materials, cleaning steel, holding parts for fit-up, moving gas cylinders\nwith a trolley, sweeping work areas and assisting experienced welders.\nProgressed to basic tack welding and SMAW on non-critical frames after in-house practice and supervisor approval.\nLearned correct use of tape measure, square, grinder, drill press and common workshop hand tools, plus basic\nelectrode storage and machine cable checks.\nHelped fabricate shelving, carts, sign frames, gates and repair jobs for local customers.",
+          "page": 2,
+          "bbox": [
+            51.2,
+            330.76,
+            558.38,
+            411.66
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "projects",
+      "heading": {
+        "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE",
+        "page": 2,
+        "bbox": [
+          46.9,
+          419.3,
+          306.84,
+          431.02
+        ],
+        "similarity": 0.7528,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during\ninstallation, and supported overnight commissioning work in Chonburi.\nWarehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and\npedestrian barriers from repeated drawings and site measurements.\nProduction line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported\nreinstallation during a planned factory shutdown.\nCold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-\ntemperature areas using task-specific PPE and short work rotations.\nCommercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple\nBangkok-area construction and renovation jobs.",
+          "page": 2,
+          "bbox": [
+            51.2,
+            437.7,
+            554.16,
+            548.65
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "certifications",
+      "heading": {
+        "text": "TRAINING & CERTIFICATIONS",
+        "page": 2,
+        "bbox": [
+          46.9,
+          557.2,
+          199.0,
+          568.92
+        ],
+        "similarity": 0.9845,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": []
+    },
+    {
+      "sectionType": "certifications",
+      "heading": {
+        "text": "Training / Certification",
+        "page": 2,
+        "bbox": [
+          52.3,
+          576.31,
+          142.37,
+          585.79
+        ],
+        "similarity": 0.9575,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "Provider",
+          "page": 2,
+          "bbox": [
+            225.1,
+            576.31,
+            259.53,
+            585.79
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "Year",
+          "page": 2,
+          "bbox": [
+            397.9,
+            576.31,
+            416.3,
+            585.79
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "2022",
+          "page": 2,
+          "bbox": [
+            397.5,
+            589.11,
+            416.37,
+            598.59
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Welding Skills Development - SMAW &\nGMAW",
+          "page": 2,
+          "bbox": [
+            51.9,
+            589.11,
+            201.48,
+            608.39
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Private vocational training center, Samut\nPrakan",
+          "page": 2,
+          "bbox": [
+            224.7,
+            589.11,
+            379.49,
+            608.39
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "2023",
+          "page": 2,
+          "bbox": [
+            397.5,
+            614.21,
+            416.37,
+            623.69
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Basic TIG Welding for Stainless Steel",
+          "page": 2,
+          "bbox": [
+            51.9,
+            614.21,
+            193.01,
+            623.69
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Employer internal workshop / supervised\npractical training",
+          "page": 2,
+          "bbox": [
+            224.7,
+            614.21,
+            379.96,
+            633.49
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Safety for Hot Work and Fire Watch",
+          "page": 2,
+          "bbox": [
+            51.9,
+            639.31,
+            185.89,
+            648.79
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Employer annual safety training",
+          "page": 2,
+          "bbox": [
+            224.7,
+            639.31,
+            343.61,
+            648.79
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "2024, refreshed 2025",
+          "page": 2,
+          "bbox": [
+            397.5,
+            639.31,
+            478.2,
+            648.79
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Basic Lockout / Tagout Awareness",
+          "page": 2,
+          "bbox": [
+            51.9,
+            654.61,
+            182.65,
+            664.09
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Siam Fresh Foods Manufacturing",
+          "page": 2,
+          "bbox": [
+            224.7,
+            654.61,
+            350.21,
+            664.09
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "2021\n2020",
+          "page": 2,
+          "bbox": [
+            397.5,
+            654.61,
+            416.37,
+            679.39
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Forklift Safety Awareness (non-licensed\noperator training)",
+          "page": 2,
+          "bbox": [
+            51.9,
+            669.91,
+            203.86,
+            689.19
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Employer toolbox and warehouse safety\nprogram",
+          "page": 2,
+          "bbox": [
+            224.7,
+            669.91,
+            378.07,
+            689.19
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "First Aid Awareness",
+          "page": 2,
+          "bbox": [
+            51.9,
+            695.01,
+            127.39,
+            704.49
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Workplace safety day program",
+          "page": 2,
+          "bbox": [
+            224.7,
+            695.01,
+            339.83,
+            704.49
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "2024",
+          "page": 2,
+          "bbox": [
+            397.5,
+            695.01,
+            416.37,
+            704.49
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "education",
+      "heading": {
+        "text": "EDUCATION",
+        "page": 2,
+        "bbox": [
+          46.9,
+          715.85,
+          109.25,
+          727.57
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "SYNTHETIC RESUME FOR SOFTWARE / PARSER TESTING - NOT A REAL PERSON  |  Page 2",
+          "page": 2,
+          "bbox": [
+            151.5,
+            745.4,
+            460.78,
+            756.0
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "Vocational Certificate - Industrial Mechanics / Metal Work (Certificate Level)  |  Bangkok Technical Training Institute\n(fictional sample institution), Bangkok\nCompleted 2014. Coursework included workshop safety, basic welding, machine tools, technical drawing, measurement,\nmechanical maintenance and industrial practice.",
+          "page": 3,
+          "bbox": [
+            46.9,
+            39.9,
+            547.21,
+            88.2
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "languages",
+      "heading": {
+        "text": "LANGUAGES",
+        "page": 3,
+        "bbox": [
+          46.9,
+          98.1,
+          113.91,
+          109.82
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Thai - Native\nEnglish - Basic working level; can understand common workshop terms, tool names, safety instructions, simple\ndrawings and short supervisor instructions\nLao - Basic conversational understanding from coworkers and site work",
+          "page": 3,
+          "bbox": [
+            51.2,
+            116.5,
+            527.75,
+            161.66
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "ADDITIONAL INFORMATION",
+          "page": 3,
+          "bbox": [
+            46.9,
+            169.3,
+            188.56,
+            181.02
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Available for rotating shifts, night work, weekends and reasonable overtime.\nComfortable with factory, warehouse and construction-site environments; able to work standing for long periods and\nhandle normal workshop material movement as part of a team.\nValid Thai motorcycle and private-car driving licences (synthetic detail for testing).\nOpen to work in Bangkok, Samut Prakan, Chonburi, Rayong and other industrial areas; relocation within Southeast Asia\ncan be considered depending on employer requirements.\nExpected salary: negotiable based on shift allowance, overtime, location and job responsibilities.\nReferences: available on request.",
+          "page": 3,
+          "bbox": [
+            51.2,
+            187.7,
+            565.73,
+            277.41
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "SYNTHETIC RESUME FOR SOFTWARE / PARSER TESTING - NOT A REAL PERSON  |  Page 3",
+          "page": 3,
+          "bbox": [
+            151.5,
+            745.4,
+            460.78,
+            756.0
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    }
+  ]
+}
