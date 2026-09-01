@@ -113,7 +113,8 @@
           425.56,
           86.14
         ],
-        "detectionMethod": "regex"
+        "detectionMethod": "regex",
+        "url": "github.com/alexmorgan-dev"
       },
       {
         "type": "url",
@@ -125,7 +126,8 @@
           551.93,
           86.14
         ],
-        "detectionMethod": "regex"
+        "detectionMethod": "regex",
+        "url": "linkedin.com/in/alexmorgan-dev"
       }
     ]
   }
