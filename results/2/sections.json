@@ -1,0 +1,233 @@
+{
+  "source": "2.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "sections": [
+    {
+      "heading": "PROFESSIONAL SUMMARY",
+      "sectionType": "summary",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.5481,
+      "page": 1,
+      "headingBox": [
+        72.0,
+        227.16,
+        302.67,
+        246.15
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            72.0,
+            261.44,
+            507.68,
+            346.46
+          ]
+        }
+      ],
+      "content": "Supply Chain Analyst with 4 years of experience in inventory analysis, demand planning\nsupport, procurement coordination, and operational reporting within consumer goods and\ndistribution businesses. Experienced in using Excel, Power BI, SQL, and ERP data to\nmonitor inventory levels, identify stock risks, analyze supplier performance, and support\nmonthly planning activities. Comfortable working with procurement, warehouse, sales,\nfinance, and logistics teams.",
+      "usedOcr": false
+    },
+    {
+      "heading": "PROFESSIONAL EXPERIENCE",
+      "sectionType": "experience",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.6109,
+      "page": 1,
+      "headingBox": [
+        72.0,
+        366.91,
+        325.05,
+        385.91
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            72.0,
+            403.26,
+            521.68,
+            747.6
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            72.0,
+            72.43,
+            525.73,
+            530.14
+          ]
+        }
+      ],
+      "content": "Supply Chain Analyst\nAster Consumer Products (Thailand) Co., Ltd.​\nBangkok, Thailand​\nJanuary 2024 – Present\n●​ Analyze inventory levels, sales history, purchase orders, and demand data for\napproximately 1,200 active SKUs.\n●​ Prepare weekly inventory reports covering stock availability, slow-moving inventory,\nstock-out risks, and excess stock.\n●​ Build and maintain Power BI dashboards for inventory and supplier performance\nmonitoring.\n●​ Support monthly demand and supply planning meetings by preparing historical sales\nand inventory data.\n●​ Coordinate with procurement and warehouse teams regarding delayed purchase\norders and critical stock items.\n●​ Use Excel and SQL to clean, combine, and analyze operational data from ERP\nexports.\n●​ Monitor supplier lead times and highlight significant delivery delays to procurement\nteams.\n●​ Perform root-cause analysis on inventory discrepancies and recurring stock\navailability issues.\n●​ Assist management with ad hoc analysis for promotions, product launches, and\ninventory planning.\nInventory Planning Officer\nMetro Distribution Services Co., Ltd.​\nBangkok, Thailand​\nJuly 2022 – December 2023\n●​ Monitored inventory movements across the company's central warehouse and\nregional distribution locations.\n●​ Prepared replenishment recommendations using sales history, current stock,\noutstanding orders, and minimum stock levels.\n●​ Maintained inventory planning spreadsheets and monthly KPI reports.\n●​ Coordinated with purchasing staff regarding replenishment orders and supplier\ndelivery schedules.\n●​ Investigated discrepancies between system inventory and warehouse reports.\n●​ Prepared reports on stock aging, inventory turnover, stock-outs, and excess\ninventory.\n●​ Worked with warehouse teams during monthly cycle counts and annual physical\ninventory checks.\nProcurement Intern\nThai Meridian Trading Co., Ltd.​\nBangkok, Thailand​\nJanuary 2022 – April 2022\n●​ Assisted procurement officers with purchase-order preparation and supplier quotation\ncomparisons.\n●​ Updated supplier information and purchasing records in Excel.\n●​ Followed up with suppliers regarding expected delivery dates.\n●​ Prepared basic purchasing and delivery-status reports.\n●​ Organized procurement documents including quotations, purchase orders, and\ndelivery records.",
+      "usedOcr": false
+    },
+    {
+      "heading": "EDUCATION",
+      "sectionType": "education",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.5084,
+      "page": 2,
+      "headingBox": [
+        72.0,
+        550.59,
+        176.47,
+        569.59
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            72.0,
+            586.94,
+            524.76,
+            756.83
+          ]
+        }
+      ],
+      "content": "Bachelor of Business Administration in Logistics and Supply Chain\nManagement\nBurapha University​\nChon Buri, Thailand​\n2018 – 2022\nGPA: 3.31 / 4.00\nRelevant coursework included Supply Chain Management, Inventory Management, Logistics\nManagement, Procurement, Operations Management, Business Statistics, and Management\nInformation Systems.",
+      "usedOcr": false
+    },
+    {
+      "heading": "TECHNICAL SKILLS",
+      "sectionType": "skills",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.4861,
+      "page": 3,
+      "headingBox": [
+        72.0,
+        72.56,
+        240.04,
+        91.55
+      ],
+      "contentBoxes": [
+        {
+          "page": 3,
+          "bbox": [
+            72.0,
+            106.84,
+            261.35,
+            513.69
+          ]
+        }
+      ],
+      "content": "Data & Reporting\n●​ Microsoft Excel\n●​ PivotTables\n●​ XLOOKUP\n●​ Power Query\n●​ Power BI\n●​ SQL\n●​ Data Cleaning\n●​ Dashboard Development\nSupply Chain\n●​ Inventory Planning\n●​ Inventory Analysis\n●​ Demand Planning Support\n●​ Procurement Coordination\n●​ Supplier Performance Analysis\n●​ Purchase Order Monitoring\n●​ Stock Replenishment\n●​ Inventory Turnover Analysis\n●​ Stock Aging Analysis\n●​ Cycle Counting\nSystems\n●​ Microsoft Dynamics 365\n●​ Microsoft Office\n●​ Google Workspace",
+      "usedOcr": false
+    },
+    {
+      "heading": "PROJECT",
+      "sectionType": "projects",
+      "similarity": 0.7638,
+      "runnerUpSimilarity": 0.4291,
+      "page": 3,
+      "headingBox": [
+        72.0,
+        534.15,
+        156.98,
+        553.14
+      ],
+      "contentBoxes": [
+        {
+          "page": 3,
+          "bbox": [
+            72.0,
+            570.5,
+            522.96,
+            682.1
+          ]
+        }
+      ],
+      "content": "Inventory Performance Dashboard\n2023\nDeveloped an internal Power BI dashboard using inventory and sales exports from the\ncompany's ERP system. The dashboard tracked stock availability, inventory aging, inventory\nturnover, and slow-moving products. Used Power Query for data transformation and created\ncalculated measures for monthly reporting.",
+      "usedOcr": false
+    },
+    {
+      "heading": "CERTIFICATIONS & TRAINING",
+      "sectionType": "certifications",
+      "similarity": 0.8967,
+      "runnerUpSimilarity": 0.5428,
+      "page": 3,
+      "headingBox": [
+        72.0,
+        702.55,
+        321.84,
+        721.54
+      ],
+      "contentBoxes": [
+        {
+          "page": 3,
+          "bbox": [
+            72.0,
+            736.83,
+            296.17,
+            763.67
+          ]
+        },
+        {
+          "page": 4,
+          "bbox": [
+            72.0,
+            72.36,
+            281.53,
+            99.2
+          ]
+        }
+      ],
+      "content": "Microsoft Power BI for Business Analytics​\nInternal Corporate Training — 2024\nAdvanced Microsoft Excel for Business​\nProfessional Training Course — 2023",
+      "usedOcr": false
+    },
+    {
+      "heading": "LANGUAGES",
+      "sectionType": "languages",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.4337,
+      "page": 4,
+      "headingBox": [
+        72.0,
+        119.65,
+        185.29,
+        138.64
+      ],
+      "contentBoxes": [
+        {
+          "page": 4,
+          "bbox": [
+            72.0,
+            153.93,
+            135.53,
+            166.22
+          ]
+        }
+      ],
+      "content": "Thai: Native​",
+      "usedOcr": false
+    },
+    {
+      "heading": "English: Professional working proficiency",
+      "sectionType": "languages",
+      "similarity": 0.6661,
+      "runnerUpSimilarity": 0.5279,
+      "page": 4,
+      "headingBox": [
+        72.0,
+        168.48,
+        278.48,
+        180.77
+      ],
+      "contentBoxes": [
+        {
+          "page": 4,
+          "bbox": [
+            72.0,
+            201.22,
+            485.45,
+            291.43
+          ]
+        }
+      ],
+      "content": "ADDITIONAL INFORMATION\nLocation: Bangkok, Thailand​\nAvailability: One month's notice​\nWork Preference: Supply chain, inventory planning, operations analysis, or logistics\nanalytics positions",
+      "usedOcr": false
+    }
+  ]
+}

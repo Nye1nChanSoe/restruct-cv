@@ -1,0 +1,214 @@
+{
+  "source": "4.cols.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "sections": [
+    {
+      "heading": "SUMMARY",
+      "sectionType": "summary",
+      "similarity": 0.7073,
+      "runnerUpSimilarity": 0.3522,
+      "page": 1,
+      "headingBox": [
+        244.0,
+        89.3,
+        295.66,
+        103.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            42.0,
+            108.32,
+            540.12,
+            146.54
+          ]
+        }
+      ],
+      "content": "+95 9 777 123 456\nthiri.aung@example.com\nMyanmar-based analyst working across product operations, reporting, and\ndata quality. Experienced in turning operational questions into measurable\nmetrics and clear decision support.\nlinkedin.com/in/thiriaung-synthetic",
+      "usedOcr": false
+    },
+    {
+      "heading": "CORE SKILLS",
+      "sectionType": "skills",
+      "similarity": 0.8082,
+      "runnerUpSimilarity": 0.4593,
+      "page": 1,
+      "headingBox": [
+        42.0,
+        155.3,
+        109.23,
+        169.07
+      ],
+      "contentBoxes": [],
+      "content": "",
+      "usedOcr": false
+    },
+    {
+      "heading": "WORK HISTORY",
+      "sectionType": "experience",
+      "similarity": 0.855,
+      "runnerUpSimilarity": 0.4594,
+      "page": 1,
+      "headingBox": [
+        244.0,
+        155.3,
+        322.89,
+        169.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            42.0,
+            173.3,
+            553.28,
+            251.57
+          ]
+        }
+      ],
+      "content": "SQL / Excel / Power BI\nAyeyar Digital Services\nYangon\nPython for analysis\nProduct & Data Analyst\n2022 - Present\nProduct analytics\nExperiment design\n-\nBuilt recurring product dashboards for activation, retention, support volume,\nand operational turnaround time.\nRequirements mapping\n-\nPartnered with engineering to define event instrumentation and resolve\ninconsistent metric definitions.\nStakeholder reporting",
+      "usedOcr": false
+    },
+    {
+      "heading": "EDUCATION",
+      "sectionType": "education",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.5084,
+      "page": 1,
+      "headingBox": [
+        42.0,
+        259.3,
+        101.44,
+        273.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            42.0,
+            251.76,
+            550.83,
+            302.48
+          ]
+        }
+      ],
+      "content": "-\nAutomated monthly reporting checks and documented data-quality exceptions\nfor business stakeholders.\n-\nCreated lightweight experiment readouts that separated observed results from\nassumptions and follow-up questions.\nUniversity of Information Technology\nB.C.Sc., Information Science, 2019",
+      "usedOcr": false
+    },
+    {
+      "heading": "LANGUAGES",
+      "sectionType": "languages",
+      "similarity": 1.0,
+      "runnerUpSimilarity": 0.4337,
+      "page": 1,
+      "headingBox": [
+        42.0,
+        316.3,
+        105.89,
+        330.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 1,
+          "bbox": [
+            42.0,
+            335.86,
+            553.28,
+            821.98
+          ]
+        },
+        {
+          "page": 2,
+          "bbox": [
+            42.0,
+            26.6,
+            553.28,
+            103.07
+          ]
+        }
+      ],
+      "content": "Burmese - native\nEnglish - professional\nSynthetic fixture - fictional person and contact details - not for employment use\nPage 1 of 2\nYangon, Myanmar\nThiri Aung\nProduct & Data Analyst - continued\nMETHODS",
+      "usedOcr": false
+    },
+    {
+      "heading": "EARLIER EXPERIENCE",
+      "sectionType": "experience",
+      "similarity": 0.6207,
+      "runnerUpSimilarity": 0.507,
+      "page": 2,
+      "headingBox": [
+        244.0,
+        89.3,
+        355.13,
+        103.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            42.0,
+            107.3,
+            553.28,
+            208.57
+          ]
+        }
+      ],
+      "content": "Cohort analysis\nShwe Market Technologies\nYangon\nFunnel analysis\nOperations Analyst\n2019 - 2022\nData validation\n-\nAnalyzed merchant onboarding bottlenecks and produced weekly operational\nscorecards.\nMetric definitions\nOperational research\n-\nCreated SQL-based reconciliation checks that highlighted incomplete records\nbefore finance review.\nDashboard QA\n-\nPrepared concise decision notes combining quantitative findings with frontline\noperational feedback.",
+      "usedOcr": false
+    },
+    {
+      "heading": "TOOLS",
+      "sectionType": "skills",
+      "similarity": 0.7889,
+      "runnerUpSimilarity": 0.5092,
+      "page": 2,
+      "headingBox": [
+        42.0,
+        199.3,
+        76.45,
+        213.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            42.0,
+            209.76,
+            540.32,
+            308.57
+          ]
+        }
+      ],
+      "content": "PostgreSQL\n-\nMaintained shared metric definitions so operations and product teams used\nconsistent reporting logic.\nPower BI\nSELECTED ANALYSIS\nGoogle Sheets\nJupyter\n-\nMapped a multi-step onboarding funnel and identified stages where\nincomplete documentation caused repeat handling.\nGit\nIssue trackers\n-\nCompared support categories across monthly cohorts and proposed\ndashboard changes that made recurring issues easier to spot.",
+      "usedOcr": false
+    },
+    {
+      "heading": "COMMUNITY",
+      "sectionType": "volunteering",
+      "similarity": 0.7049,
+      "runnerUpSimilarity": 0.4066,
+      "page": 2,
+      "headingBox": [
+        42.0,
+        309.3,
+        103.66,
+        323.07
+      ],
+      "contentBoxes": [
+        {
+          "page": 2,
+          "bbox": [
+            42.0,
+            309.76,
+            553.28,
+            821.98
+          ]
+        }
+      ],
+      "content": "-\nReviewed dashboard calculations against source queries and documented\nexceptions before stakeholder distribution.\nWORKING STYLE\nVolunteer data mentor for fictional community\nworkshops introducing spreadsheet analysis\nand dashboard fundamentals.\nPrefers explicit metric definitions, reproducible queries, short written summaries,\nand clear separation between measured evidence and interpretation.\nSynthetic fixture - fictional person and contact details - not for employment use\nPage 2 of 2",
+      "usedOcr": false
+    }
+  ]
+}
