@@ -20,6 +20,9 @@ results/
 
 `sections.json` is the result to inspect. The images contain only heading and content boxes.
 
+The first native PyMuPDF read is also written to `debug/<resume>.raw-pymupdf.json`.
+These generated dumps are ignored by Git; `debug/.gitkeep` retains the empty directory.
+
 Tesseract must be installed separately because it is a native program, not a Python package:
 
 ```bash
@@ -33,3 +36,21 @@ uv run extractor-v1
 ```
 
 The first MiniLM load downloads its pinned model revision if it is not already cached.
+
+Place holdout PDFs inside `truths/`, then run the same pipeline against only those PDFs:
+
+```bash
+uv run extractor-v1 --truths
+```
+
+The holdout results are kept separate from development results:
+
+```text
+truths/*.pdf
+  -> results/truths/<resume>/sections.json
+  -> results/truths/<resume>/raw-pymupdf.json
+  -> results/truths/<resume>/debug/page-N.png
+```
+
+Without `--truths`, only `resumes-synthetic/*.pdf` is processed and written to
+`results/<resume>/` as usual.
