@@ -1,0 +1,132 @@
+{
+  "source": "1.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "nerModel": "urchade/gliner_small-v2.1",
+  "nerModelRevision": "main",
+  "headerProfile": {
+    "page": 1,
+    "bbox": [
+      72.0,
+      96.75,
+      454.83,
+      206.7
+    ],
+    "text": "SOMCHAI RATTANAKUL\nIndustrial Maintenance Technician | Mechanical & Electrical Maintenance\nSamut Prakan, Thailand​\nPhone: +66 81 555 2741​\nEmail: somchai.rattanakul.test@example.com",
+    "stoppedAtSection": {
+      "text": "PROFESSIONAL SUMMARY",
+      "sectionType": "summary",
+      "page": 1,
+      "bbox": [
+        72.0,
+        227.16,
+        302.67,
+        246.15
+      ],
+      "similarity": 1.0
+    },
+    "entities": [
+      {
+        "type": "name",
+        "text": "SOMCHAI RATTANAKUL",
+        "page": 1,
+        "bbox": [
+          72.0,
+          96.75,
+          341.92,
+          122.45
+        ],
+        "detectionMethod": "geometry_fallback"
+      },
+      {
+        "type": "job_title",
+        "text": "Industrial Maintenance Technician",
+        "page": 1,
+        "bbox": [
+          72.0,
+          138.77,
+          250.77,
+          151.06
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "job_title",
+        "text": "Mechanical & Electrical Maintenance",
+        "page": 1,
+        "bbox": [
+          259.95,
+          138.77,
+          451.77,
+          151.06
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 0.6947
+      },
+      {
+        "type": "location",
+        "text": "Samut Prakan, Thailand",
+        "page": 1,
+        "bbox": [
+          72.0,
+          165.32,
+          189.93,
+          177.61
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.9457
+      },
+      {
+        "type": "other",
+        "text": "Phone",
+        "page": 1,
+        "bbox": [
+          72.0,
+          179.87,
+          103.79,
+          192.16
+        ],
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
+      },
+      {
+        "type": "phone",
+        "text": "+66 81 555 2741",
+        "page": 1,
+        "bbox": [
+          109.89,
+          179.87,
+          192.72,
+          192.16
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "other",
+        "text": "Email",
+        "page": 1,
+        "bbox": [
+          72.0,
+          194.41,
+          99.49,
+          206.7
+        ],
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
+      },
+      {
+        "type": "email",
+        "text": "somchai.rattanakul.test@example.com",
+        "page": 1,
+        "bbox": [
+          105.59,
+          194.41,
+          295.16,
+          206.7
+        ],
+        "detectionMethod": "regex"
+      }
+    ]
+  }
+}

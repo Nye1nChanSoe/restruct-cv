@@ -1,0 +1,70 @@
+{
+  "source": "4.cols.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "nerModel": "urchade/gliner_small-v2.1",
+  "nerModelRevision": "main",
+  "headerProfile": {
+    "page": 1,
+    "bbox": [
+      42.0,
+      26.6,
+      553.28,
+      69.07
+    ],
+    "text": "Yangon, Myanmar\nThiri Aung\nProduct & Data Analyst",
+    "stoppedAtSection": {
+      "text": "SUMMARY",
+      "sectionType": "summary",
+      "page": 1,
+      "bbox": [
+        244.0,
+        89.3,
+        295.66,
+        103.07
+      ],
+      "similarity": 1.0
+    },
+    "entities": [
+      {
+        "type": "location",
+        "text": "Yangon, Myanmar",
+        "page": 1,
+        "bbox": [
+          483.83,
+          40.86,
+          553.28,
+          52.54
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.9114
+      },
+      {
+        "type": "name",
+        "text": "Thiri Aung",
+        "page": 1,
+        "bbox": [
+          42.0,
+          26.6,
+          142.0,
+          54.14
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.8435
+      },
+      {
+        "type": "job_title",
+        "text": "Product & Data Analyst",
+        "page": 1,
+        "bbox": [
+          42.0,
+          55.3,
+          153.13,
+          69.07
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 0.8135
+      }
+    ]
+  }
+}

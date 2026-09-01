@@ -1,0 +1,134 @@
+{
+  "source": "5.ocr.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "nerModel": "urchade/gliner_small-v2.1",
+  "nerModelRevision": "main",
+  "headerProfile": {
+    "page": 1,
+    "bbox": [
+      52.56,
+      92.64,
+      385.31,
+      137.05
+    ],
+    "text": "Civil Engineer\n| Site Engineer | Structural & Construction Works\nBangkok, Thailand\n| +66 8X XXX XXXxX | thanawat.prasert@example.com\nThai National\n| Available for site-based work and relocation within Thailand",
+    "stoppedAtSection": {
+      "text": "PROFESSIONAL SUMMARY",
+      "sectionType": "summary",
+      "page": 1,
+      "bbox": [
+        52.8,
+        161.04,
+        191.76,
+        169.69
+      ],
+      "similarity": 1.0
+    },
+    "entities": [
+      {
+        "type": "job_title",
+        "text": "Civil Engineer",
+        "page": 1,
+        "bbox": [
+          53.04,
+          92.64,
+          125.7,
+          103.93
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "job_title",
+        "text": "Site Engineer",
+        "page": 1,
+        "bbox": [
+          140.5,
+          92.64,
+          208.21,
+          103.93
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "job_title",
+        "text": "Structural & Construction Works",
+        "page": 1,
+        "bbox": [
+          223.84,
+          92.64,
+          385.31,
+          103.93
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 0.6986
+      },
+      {
+        "type": "location",
+        "text": "Bangkok, Thailand",
+        "page": 1,
+        "bbox": [
+          53.04,
+          114.0,
+          124.7,
+          123.61
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.9355
+      },
+      {
+        "type": "other",
+        "text": "+66 8X XXX XXXxX",
+        "page": 1,
+        "bbox": [
+          136.99,
+          114.0,
+          205.7,
+          123.61
+        ],
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
+      },
+      {
+        "type": "email",
+        "text": "thanawat.prasert@example.com",
+        "page": 1,
+        "bbox": [
+          218.59,
+          114.0,
+          338.83,
+          123.61
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "nationality",
+        "text": "Thai National",
+        "page": 1,
+        "bbox": [
+          52.56,
+          128.4,
+          103.58,
+          137.05
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.8014
+      },
+      {
+        "type": "other",
+        "text": "Available for site-based work and relocation within Thailand",
+        "page": 1,
+        "bbox": [
+          115.08,
+          128.4,
+          341.95,
+          137.05
+        ],
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
+      }
+    ]
+  }
+}

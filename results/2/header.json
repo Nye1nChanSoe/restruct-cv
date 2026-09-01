@@ -1,0 +1,145 @@
+{
+  "source": "2.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "nerModel": "urchade/gliner_small-v2.1",
+  "nerModelRevision": "main",
+  "headerProfile": {
+    "page": 1,
+    "bbox": [
+      72.0,
+      96.75,
+      377.45,
+      206.7
+    ],
+    "text": "NATTAYA WONGSAKUL\nSupply Chain Analyst | Inventory Planning | Data Analysis\nBangkok, Thailand​\nPhone: +66 92 555 6813​\nEmail: nattaya.wongsakul.test@example.com",
+    "stoppedAtSection": {
+      "text": "PROFESSIONAL SUMMARY",
+      "sectionType": "summary",
+      "page": 1,
+      "bbox": [
+        72.0,
+        227.16,
+        302.67,
+        246.15
+      ],
+      "similarity": 1.0
+    },
+    "entities": [
+      {
+        "type": "name",
+        "text": "NATTAYA WONGSAKUL",
+        "page": 1,
+        "bbox": [
+          72.0,
+          96.75,
+          333.87,
+          122.45
+        ],
+        "detectionMethod": "geometry_fallback"
+      },
+      {
+        "type": "job_title",
+        "text": "Supply Chain Analyst",
+        "page": 1,
+        "bbox": [
+          72.0,
+          138.77,
+          184.99,
+          151.06
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "job_title",
+        "text": "Inventory Planning",
+        "page": 1,
+        "bbox": [
+          194.18,
+          138.77,
+          293.12,
+          151.06
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 0.8691
+      },
+      {
+        "type": "job_title",
+        "text": "Data Analysis",
+        "page": 1,
+        "bbox": [
+          302.3,
+          138.77,
+          374.4,
+          151.06
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 0.6603
+      },
+      {
+        "type": "location",
+        "text": "Bangkok, Thailand",
+        "page": 1,
+        "bbox": [
+          72.0,
+          165.32,
+          163.05,
+          177.61
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.9271
+      },
+      {
+        "type": "other",
+        "text": "Phone",
+        "page": 1,
+        "bbox": [
+          72.0,
+          179.87,
+          103.79,
+          192.16
+        ],
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
+      },
+      {
+        "type": "phone",
+        "text": "+66 92 555 6813",
+        "page": 1,
+        "bbox": [
+          109.89,
+          179.87,
+          192.72,
+          192.16
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "other",
+        "text": "Email",
+        "page": 1,
+        "bbox": [
+          72.0,
+          194.41,
+          99.49,
+          206.7
+        ],
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
+      },
+      {
+        "type": "email",
+        "text": "nattaya.wongsakul.test@example.com",
+        "page": 1,
+        "bbox": [
+          105.59,
+          194.41,
+          293.95,
+          206.7
+        ],
+        "detectionMethod": "regex"
+      }
+    ]
+  }
+}

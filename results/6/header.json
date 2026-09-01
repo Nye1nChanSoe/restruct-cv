@@ -1,0 +1,131 @@
+{
+  "source": "6.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "nerModel": "urchade/gliner_small-v2.1",
+  "nerModelRevision": "main",
+  "headerProfile": {
+    "page": 1,
+    "bbox": [
+      59.85,
+      33.05,
+      551.93,
+      86.14
+    ],
+    "text": "ALEX MORGAN\nSoftware Engineer | Backend & Data Systems\nBangkok, Thailand | alex.morgan@example.com | +66 81 555 0184 | github.com/alexmorgan-dev | linkedin.com/in/alexmorgan-dev",
+    "stoppedAtSection": {
+      "text": "PROFESSIONAL SUMMARY",
+      "sectionType": "summary",
+      "page": 1,
+      "bbox": [
+        46.9,
+        94.95,
+        186.8,
+        106.67
+      ],
+      "similarity": 1.0
+    },
+    "entities": [
+      {
+        "type": "name",
+        "text": "ALEX MORGAN",
+        "page": 1,
+        "bbox": [
+          231.1,
+          33.05,
+          381.0,
+          55.37
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.7573
+      },
+      {
+        "type": "job_title",
+        "text": "Software Engineer",
+        "page": 1,
+        "bbox": [
+          187.2,
+          60.2,
+          283.69,
+          72.47
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "job_title",
+        "text": "Backend & Data Systems",
+        "page": 1,
+        "bbox": [
+          292.89,
+          60.2,
+          424.89,
+          72.47
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 0.6359
+      },
+      {
+        "type": "location",
+        "text": "Bangkok, Thailand",
+        "page": 1,
+        "bbox": [
+          59.85,
+          76.66,
+          130.18,
+          86.14
+        ],
+        "detectionMethod": "gliner",
+        "confidence": 0.9258
+      },
+      {
+        "type": "email",
+        "text": "alex.morgan@example.com",
+        "page": 1,
+        "bbox": [
+          137.09,
+          76.66,
+          242.98,
+          86.14
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "phone",
+        "text": "+66 81 555 0184",
+        "page": 1,
+        "bbox": [
+          249.88,
+          76.66,
+          313.86,
+          86.14
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "url",
+        "text": "github.com/alexmorgan-dev",
+        "page": 1,
+        "bbox": [
+          320.81,
+          76.66,
+          425.56,
+          86.14
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "url",
+        "text": "linkedin.com/in/alexmorgan-dev",
+        "page": 1,
+        "bbox": [
+          432.5,
+          76.66,
+          551.93,
+          86.14
+        ],
+        "detectionMethod": "regex"
+      }
+    ]
+  }
+}

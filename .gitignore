@@ -17,6 +17,6 @@ debug/ocr/*
 !debug/ocr/.gitkeep
 
 # Holdout inputs and their generated results stay local.
-truths/*
-!truths/.gitkeep
-results/truths/
+resumes-truths/*
+!resumes-truths/.gitkeep
+results/0-truths/
