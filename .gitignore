@@ -8,3 +8,12 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Generated native PyMuPDF inspection dumps; retain the empty directory.
+debug/*
+!debug/.gitkeep
+
+# Holdout inputs and their generated results stay local.
+truths/*
+!truths/.gitkeep
+results/truths/

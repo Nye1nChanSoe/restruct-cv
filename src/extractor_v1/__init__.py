@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import statistics
 from dataclasses import dataclass
@@ -62,11 +63,31 @@ def _line_from_pdf_dict(
     )
 
 
-def extract_lines(document: pymupdf.Document) -> list[ExtractedLine]:
-    """Extract ordered lines, using OCR only for pages without native text."""
+def extract_lines(
+    document: pymupdf.Document,
+) -> tuple[list[ExtractedLine], list[dict[str, Any]]]:
+    """Capture native PyMuPDF blocks, then use OCR only when native text is absent."""
     lines: list[ExtractedLine] = []
+    raw_pages: list[dict[str, Any]] = []
     for page_index, page in enumerate(document):
-        native_text = page.get_text("text")
+        native_page_dict = page.get_text("dict", sort=True)
+        native_text_blocks = [
+            block for block in native_page_dict.get("blocks", []) if block.get("type") == 0
+        ]
+        raw_pages.append(
+            {
+                "page": page_index + 1,
+                "width": page.rect.width,
+                "height": page.rect.height,
+                "blocks": native_text_blocks,
+            }
+        )
+        native_text = "".join(
+            str(span.get("text", ""))
+            for block in native_text_blocks
+            for raw_line in block.get("lines", [])
+            for span in raw_line.get("spans", [])
+        )
         used_ocr = (
             SETTINGS.ocr.enabled
             and _meaningful_character_count(native_text)
@@ -81,7 +102,7 @@ def extract_lines(document: pymupdf.Document) -> list[ExtractedLine]:
             )
             page_dict = page.get_text("dict", textpage=text_page, sort=True)
         else:
-            page_dict = page.get_text("dict", sort=True)
+            page_dict = native_page_dict
 
         for block in page_dict.get("blocks", []):
             if block.get("type") != 0:
@@ -94,7 +115,30 @@ def extract_lines(document: pymupdf.Document) -> list[ExtractedLine]:
                 )
                 if line is not None:
                     lines.append(line)
-    return lines
+    return lines, raw_pages
+
+
+def write_raw_extraction(
+    pdf_path: Path,
+    raw_pages: list[dict[str, Any]],
+    output_path: Path,
+) -> None:
+    """Persist the untouched native text blocks captured before OCR or MiniLM."""
+    if not SETTINGS.debug.raw_extraction_enabled:
+        return
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(
+            {
+                "source": pdf_path.name,
+                "pages": raw_pages,
+            },
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 def _looks_like_heading(line: ExtractedLine, page_median_size: float) -> bool:
@@ -275,10 +319,12 @@ def render_debug_images(
 def extract_resume(
     pdf_path: Path,
     output_directory: Path,
+    raw_debug_path: Path,
     model: SentenceTransformer,
 ) -> None:
     with pymupdf.open(pdf_path) as document:
-        lines = extract_lines(document)
+        lines, raw_pages = extract_lines(document)
+        write_raw_extraction(pdf_path, raw_pages, raw_debug_path)
         headings = detect_headings(lines, model)
         sections = build_sections(lines, headings)
 
@@ -300,15 +346,42 @@ def extract_resume(
         render_debug_images(document, sections, output_directory / "debug")
 
 
+def _parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Extract resume headings and their sections.")
+    parser.add_argument(
+        "--truths",
+        action="store_true",
+        help="Process only PDFs in truths/ and write them under results/truths/.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    arguments = _parse_arguments()
     project_root = Path(__file__).resolve().parents[2]
-    input_directory = project_root / "resumes-synthetic"
-    output_root = project_root / "results"
+    if arguments.truths:
+        input_directory = project_root / SETTINGS.paths.truths_input_directory
+        output_root = project_root / SETTINGS.paths.truths_results_directory
+    else:
+        input_directory = project_root / SETTINGS.paths.input_directory
+        output_root = project_root / SETTINGS.paths.results_directory
+    raw_debug_directory = project_root / SETTINGS.debug.raw_extraction_directory
     model = SentenceTransformer(
         SETTINGS.model.name,
         revision=SETTINGS.model.revision,
     )
 
     for pdf_path in sorted(input_directory.glob("*.pdf")):
-        extract_resume(pdf_path, output_root / pdf_path.stem, model)
+        resume_output = output_root / pdf_path.stem
+        raw_debug_path = (
+            resume_output / "raw-pymupdf.json"
+            if arguments.truths
+            else raw_debug_directory / f"{pdf_path.stem}.raw-pymupdf.json"
+        )
+        extract_resume(
+            pdf_path,
+            resume_output,
+            raw_debug_path,
+            model,
+        )
         print(f"extracted: {pdf_path.name}")

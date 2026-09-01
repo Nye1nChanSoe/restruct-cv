@@ -29,11 +29,21 @@ class HeadingSettings:
 
 @dataclass(frozen=True)
 class DebugSettings:
+    raw_extraction_enabled: bool = True
+    raw_extraction_directory: str = "debug"
     scale: float = 2.0
     heading_stroke_width: int = 5
     content_stroke_width: int = 3
     label_x_padding: int = 4
     label_y_offset: int = 14
+
+
+@dataclass(frozen=True)
+class PathSettings:
+    input_directory: str = "resumes-synthetic"
+    truths_input_directory: str = "truths"
+    results_directory: str = "results"
+    truths_results_directory: str = "results/truths"
 
 
 SECTION_REFERENCES: dict[str, tuple[str, ...]] = {
@@ -231,6 +241,7 @@ class ExtractorSettings:
     ocr: OcrSettings = field(default_factory=OcrSettings)
     heading: HeadingSettings = field(default_factory=HeadingSettings)
     debug: DebugSettings = field(default_factory=DebugSettings)
+    paths: PathSettings = field(default_factory=PathSettings)
     section_references: dict[str, tuple[str, ...]] = field(
         default_factory=lambda: dict(SECTION_REFERENCES)
     )
