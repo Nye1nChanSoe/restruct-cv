@@ -1,7 +1,7 @@
 [project]
-name = "extractor-v1"
+name = "restruct"
 version = "0.1.0"
-description = "Minimal resume heading and section extractor"
+description = "Explainable resume extraction from native and scanned PDFs"
 readme = "README.md"
 authors = [
     { name = "Nyein Chan Soe", email = "nyeinchansoe.business@gmail.com" }
