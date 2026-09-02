@@ -1,0 +1,302 @@
+{
+  "source": "2.pdf",
+  "others": {
+    "sectionType": "others",
+    "sections": [
+      {
+        "sectionType": "others",
+        "heading": {
+          "text": "ADDITIONAL INFORMATION",
+          "page": 4,
+          "bbox": [
+            72.0,
+            201.22,
+            304.83,
+            220.21
+          ],
+          "similarity": 0.0,
+          "detectionMethod": "geometry_unknown_boundary"
+        },
+        "rows": [
+          {
+            "page": 4,
+            "bbox": [
+              72.0,
+              235.51,
+              218.62,
+              247.8
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Location: Bangkok, Thailand​",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  235.51,
+                  218.62,
+                  247.8
+                ],
+                "lineIndex": 113
+              }
+            ]
+          },
+          {
+            "page": 4,
+            "bbox": [
+              72.0,
+              250.05,
+              233.76,
+              262.34
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Availability: One month's notice​",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  250.05,
+                  233.76,
+                  262.34
+                ],
+                "lineIndex": 114
+              }
+            ]
+          },
+          {
+            "page": 4,
+            "bbox": [
+              72.0,
+              264.6,
+              485.45,
+              276.89
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Work Preference: Supply chain, inventory planning, operations analysis, or logistics",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  264.6,
+                  485.45,
+                  276.89
+                ],
+                "lineIndex": 115
+              }
+            ]
+          },
+          {
+            "page": 4,
+            "bbox": [
+              72.0,
+              279.15,
+              164.26,
+              291.43
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "analytics positions",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  279.15,
+                  164.26,
+                  291.43
+                ],
+                "lineIndex": 116
+              }
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Location",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  235.51,
+                  117.81,
+                  247.8
+                ],
+                "detectionMethod": "delimiter_colon"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  235.51,
+                  218.62,
+                  247.8
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Location: Bangkok, Thailand​",
+                    "page": 4,
+                    "bbox": [
+                      72.0,
+                      235.51,
+                      218.62,
+                      247.8
+                    ],
+                    "lineIndex": 113
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "paragraphs": [
+              {
+                "text": "Bangkok, Thailand​",
+                "page": 4,
+                "bbox": [
+                  124.51,
+                  235.51,
+                  218.62,
+                  247.8
+                ],
+                "detectionMethod": "geometry_default"
+              }
+            ],
+            "bullets": []
+          },
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Availability",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  250.05,
+                  129.63,
+                  262.34
+                ],
+                "detectionMethod": "delimiter_colon"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  250.05,
+                  233.76,
+                  262.34
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Availability: One month's notice​",
+                    "page": 4,
+                    "bbox": [
+                      72.0,
+                      250.05,
+                      233.76,
+                      262.34
+                    ],
+                    "lineIndex": 114
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "paragraphs": [
+              {
+                "text": "One month's notice​",
+                "page": 4,
+                "bbox": [
+                  136.34,
+                  250.05,
+                  233.76,
+                  262.34
+                ],
+                "detectionMethod": "geometry_default"
+              }
+            ],
+            "bullets": []
+          },
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Work Preference",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  264.6,
+                  159.17,
+                  276.89
+                ],
+                "detectionMethod": "delimiter_colon"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  264.6,
+                  485.45,
+                  276.89
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Work Preference: Supply chain, inventory planning, operations analysis, or logistics",
+                    "page": 4,
+                    "bbox": [
+                      72.0,
+                      264.6,
+                      485.45,
+                      276.89
+                    ],
+                    "lineIndex": 115
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "paragraphs": [
+              {
+                "text": "Supply chain, inventory planning, operations analysis, or logistics",
+                "page": 4,
+                "bbox": [
+                  165.88,
+                  264.6,
+                  482.39,
+                  276.89
+                ],
+                "detectionMethod": "geometry_default"
+              },
+              {
+                "text": "analytics positions",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  279.15,
+                  164.26,
+                  291.43
+                ],
+                "detectionMethod": "geometry_default"
+              }
+            ],
+            "bullets": []
+          }
+        ],
+        "stoppedAtSection": null
+      }
+    ]
+  }
+}

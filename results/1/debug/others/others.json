@@ -1,0 +1,302 @@
+{
+  "source": "1.pdf",
+  "others": {
+    "sectionType": "others",
+    "sections": [
+      {
+        "sectionType": "others",
+        "heading": {
+          "text": "ADDITIONAL INFORMATION",
+          "page": 3,
+          "bbox": [
+            72.0,
+            530.08,
+            304.83,
+            549.07
+          ],
+          "similarity": 0.0,
+          "detectionMethod": "geometry_unknown_boundary"
+        },
+        "rows": [
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              564.37,
+              212.38,
+              576.65
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Availability: 30 days' notice​",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  564.37,
+                  212.38,
+                  576.65
+                ],
+                "lineIndex": 95
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              578.91,
+              257.72,
+              591.2
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Driving Licence: Thai driving licence​",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  578.91,
+                  257.72,
+                  591.2
+                ],
+                "lineIndex": 96
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              593.46,
+              515.98,
+              605.75
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Work Preference: Factory and industrial maintenance roles in Bangkok, Samut Prakan, or",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  593.46,
+                  515.98,
+                  605.75
+                ],
+                "lineIndex": 97
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              608.0,
+              123.94,
+              620.29
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Chon Buri",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  608.0,
+                  123.94,
+                  620.29
+                ],
+                "lineIndex": 98
+              }
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Availability",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  564.37,
+                  129.63,
+                  576.65
+                ],
+                "detectionMethod": "delimiter_colon"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  564.37,
+                  212.38,
+                  576.65
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Availability: 30 days' notice​",
+                    "page": 3,
+                    "bbox": [
+                      72.0,
+                      564.37,
+                      212.38,
+                      576.65
+                    ],
+                    "lineIndex": 95
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "paragraphs": [
+              {
+                "text": "30 days' notice​",
+                "page": 3,
+                "bbox": [
+                  136.34,
+                  564.37,
+                  212.38,
+                  576.65
+                ],
+                "detectionMethod": "geometry_default"
+              }
+            ],
+            "bullets": []
+          },
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Driving Licence",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  578.91,
+                  153.86,
+                  591.2
+                ],
+                "detectionMethod": "delimiter_colon"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  578.91,
+                  257.72,
+                  591.2
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Driving Licence: Thai driving licence​",
+                    "page": 3,
+                    "bbox": [
+                      72.0,
+                      578.91,
+                      257.72,
+                      591.2
+                    ],
+                    "lineIndex": 96
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "paragraphs": [
+              {
+                "text": "Thai driving licence​",
+                "page": 3,
+                "bbox": [
+                  160.57,
+                  578.91,
+                  257.72,
+                  591.2
+                ],
+                "detectionMethod": "geometry_default"
+              }
+            ],
+            "bullets": []
+          },
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Work Preference",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  593.46,
+                  159.17,
+                  605.75
+                ],
+                "detectionMethod": "delimiter_colon"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  593.46,
+                  515.98,
+                  605.75
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Work Preference: Factory and industrial maintenance roles in Bangkok, Samut Prakan, or",
+                    "page": 3,
+                    "bbox": [
+                      72.0,
+                      593.46,
+                      515.98,
+                      605.75
+                    ],
+                    "lineIndex": 97
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "paragraphs": [
+              {
+                "text": "Factory and industrial maintenance roles in Bangkok, Samut Prakan, or",
+                "page": 3,
+                "bbox": [
+                  165.88,
+                  593.46,
+                  512.92,
+                  605.75
+                ],
+                "detectionMethod": "geometry_default"
+              },
+              {
+                "text": "Chon Buri",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  608.0,
+                  123.94,
+                  620.29
+                ],
+                "detectionMethod": "geometry_default"
+              }
+            ],
+            "bullets": []
+          }
+        ],
+        "stoppedAtSection": null
+      }
+    ]
+  }
+}
