@@ -61,6 +61,20 @@ from extractor_v1.schema import build_v1_resume, write_v1_resume
 
 _EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}")
 _PHONE_RE = re.compile(r"(?<!\w)\+?\d[\d ()\-.]{6,}\d(?!\w)")
+_HEADER_ATTRIBUTE_LABEL_PATTERN = (
+    r"date\s+of\s+birth|birth\s+date|d\.?\s*o\.?\s*b\.?|dob|"
+    r"gender|sex|marital\s+status|civil\s+status|marital|"
+    r"nationality|citizenship|"
+    r"current\s+residen(?:ce|t)|current\s+location|place\s+of\s+residence|"
+    r"residen(?:ce|t)"
+)
+_HEADER_ATTRIBUTE_RE = re.compile(
+    rf"(?P<label>\b(?:{_HEADER_ATTRIBUTE_LABEL_PATTERN})\b)"
+    rf"(?:\s*(?::|[-\u2013\u2014])\s*|\t+|\s+)"
+    rf"(?P<value>.+?)"
+    rf"(?=\s*(?:[|\u2022\u00b7]|\b(?:{_HEADER_ATTRIBUTE_LABEL_PATTERN})\b)|$)",
+    re.IGNORECASE,
+)
 _URL_RE = re.compile(
     r"(?:"
     r"https?://[^\s|,;)]+"
@@ -354,11 +368,7 @@ def _append_regex_matches(
 ) -> None:
     for match in pattern.finditer(text):
         if _overlaps_existing(
-            [
-                existing
-                for existing in matches
-                if existing.kind in {"email", "phone", "url"}
-            ],
+            matches,
             line_index=line_index,
             start=match.start(),
             end=match.end(),
@@ -375,6 +385,56 @@ def _append_regex_matches(
                 url=match.group(0) if kind == "url" else None,
             )
         )
+
+
+def _header_attribute_kind(label: str) -> str:
+    normalized = re.sub(r"[^a-z]+", " ", label.casefold()).strip()
+    if normalized in {"date of birth", "birth date", "d o b", "dob"}:
+        return "date_of_birth"
+    if normalized in {"gender", "sex"}:
+        return "gender"
+    if normalized in {"marital status", "civil status", "marital"}:
+        return "marital_status"
+    if normalized in {"nationality", "citizenship"}:
+        return "nationality"
+    return "current_residence"
+
+
+def _labelled_header_attribute_matches(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    profile_indexes: list[int],
+) -> list[HeaderEntityMatch]:
+    matches: list[HeaderEntityMatch] = []
+    for line_index in profile_indexes:
+        line = lines[line_index]
+        for match in _HEADER_ATTRIBUTE_RE.finditer(line.text):
+            raw_value = match.group("value")
+            value = raw_value.strip(" \t|\u2022\u00b7,;:-\u2013\u2014\u200b\ufeff")
+            if not value or not any(character.isalnum() for character in value):
+                continue
+            value_start = match.start("value") + raw_value.find(value)
+            value_end = value_start + len(value)
+            matches.append(
+                HeaderEntityMatch(
+                    kind=_header_attribute_kind(match.group("label")),
+                    text=value,
+                    line_index=line_index,
+                    start=match.start(),
+                    end=match.end(),
+                    detection_method="label_pattern",
+                    bbox=tuple(
+                        _entity_box(
+                            document,
+                            line,
+                            value,
+                            value_start,
+                            value_end,
+                        )
+                    ),
+                )
+            )
+    return matches
 
 
 def _entity_box(
@@ -660,9 +720,14 @@ def build_header_profile(
     if not profile_indexes:
         return None
 
-    # Claim deterministic contact spans first so semantic models never see email
-    # usernames, domains, or phone fragments as possible named entities.
-    matches: list[HeaderEntityMatch] = []
+    # Claim labelled personal attributes before broad contact regexes so a
+    # numeric DOB cannot be consumed as a phone number. Then claim contacts so
+    # semantic models never see usernames, domains, or phone fragments.
+    matches = _labelled_header_attribute_matches(
+        document,
+        lines,
+        profile_indexes,
+    )
     for line_index in profile_indexes:
         text = lines[line_index].text
         _append_regex_matches(

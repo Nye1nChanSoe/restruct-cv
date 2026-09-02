@@ -7,7 +7,11 @@
       "Structural & Construction Works"
     ],
     "location": "Bangkok, Thailand",
+    "date_of_birth": null,
+    "gender": null,
+    "marital_status": null,
     "nationality": "Thai National",
+    "current_residence": null,
     "emails": [
       "thanawat.prasert@example.com"
     ],

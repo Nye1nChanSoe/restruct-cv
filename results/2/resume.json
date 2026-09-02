@@ -7,7 +7,11 @@
       "Data Analysis"
     ],
     "location": "Bangkok, Thailand",
+    "date_of_birth": null,
+    "gender": null,
+    "marital_status": null,
     "nationality": null,
+    "current_residence": null,
     "emails": [
       "nattaya.wongsakul.test@example.com"
     ],

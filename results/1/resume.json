@@ -6,7 +6,11 @@
       "Mechanical & Electrical Maintenance"
     ],
     "location": "Samut Prakan, Thailand",
+    "date_of_birth": null,
+    "gender": null,
+    "marital_status": null,
     "nationality": null,
+    "current_residence": null,
     "emails": [
       "somchai.rattanakul.test@example.com"
     ],
