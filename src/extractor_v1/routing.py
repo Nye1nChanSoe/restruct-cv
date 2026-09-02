@@ -57,9 +57,8 @@ _GPA_RE = re.compile(
     r"(?:\s*(?:/|out\s+of)\s*(?P<scale>\d+(?:\.\d+)?))?\b",
     re.IGNORECASE,
 )
-_EDUCATION_SKILLS_RE = re.compile(
-    r"^\s*(?:relevant\s+)?(?:coursework|courses?|subjects?|modules?|skills?|"
-    r"technologies|tools)\s*(?::|-|included\b)?\s*(?P<items>.+)$",
+_EDUCATION_PARAGRAPH_RE = re.compile(
+    r"^\s*(?:relevant\s+)?(?:coursework|courses?|subjects?|modules?)\b",
     re.IGNORECASE,
 )
 _PAGE_FOOTER_RE = re.compile(r"\bpage\s+\d+\s*$", re.IGNORECASE)
@@ -607,53 +606,6 @@ def _row_value(row: list[tuple[int, ExtractedLine]]) -> dict[str, Any]:
     }
 
 
-def _education_skills(
-    document: pymupdf.Document,
-    line: ExtractedLine,
-) -> list[dict[str, Any]]:
-    match = _EDUCATION_SKILLS_RE.match(line.text)
-    if match is None:
-        return []
-    raw_items = match.group("items").strip()
-    if "," not in raw_items and ";" not in raw_items:
-        return []
-    return _education_skill_items(
-        document,
-        line,
-        raw_items,
-        match.start("items"),
-    )
-
-
-def _education_skill_items(
-    document: pymupdf.Document,
-    line: ExtractedLine,
-    raw_items: str,
-    source_start: int = 0,
-) -> list[dict[str, Any]]:
-    pieces = re.split(r"\s*[,;]\s*", raw_items)
-    if pieces and re.search(r"\s+and\s+", pieces[-1], re.IGNORECASE):
-        pieces[-1:] = re.split(r"\s+and\s+", pieces[-1], maxsplit=1, flags=re.IGNORECASE)
-    skills: list[dict[str, Any]] = []
-    search_from = source_start
-    for piece in pieces:
-        text = piece.strip(" .")
-        if not text:
-            continue
-        start = line.text.casefold().find(text.casefold(), search_from)
-        if start < 0:
-            start = search_from
-        end = start + len(text)
-        search_from = end
-        skills.append({
-            "text": text,
-            "page": line.page,
-            "bbox": _span_bbox(document, line, text, start, end),
-            "detectionMethod": "labeled_comma_list",
-        })
-    return skills
-
-
 def _education_row_entities(
     document: pymupdf.Document,
     row: list[tuple[int, ExtractedLine]],
@@ -690,12 +642,6 @@ def _education_row_entities(
             })
         if gpa_matches:
             result["handledLineIndexes"].add(line_index)
-
-        skills = _education_skills(document, line)
-        if skills:
-            result["skills"].extend(skills)
-            result["handledLineIndexes"].add(line_index)
-            continue
 
         candidates = _metadata_candidates(
             line.text,
@@ -825,9 +771,48 @@ def build_education_debug(
             for _, line in row
         ):
             continue
-        entities = _education_row_entities(document, row, ner_model, url_entities_by_line)
+        explicit_metadata = any(
+            _DATE_RANGE_RE.search(line.text)
+            or _GPA_RE.search(line.text)
+            or _EDUCATION_TITLE_RE.search(line.text)
+            or _EDUCATION_INSTITUTION_RE.search(line.text)
+            for _, line in row
+        )
+        metadata_shape = explicit_metadata and any(
+            line.bold
+            or _EDUCATION_SEPARATOR_RE.search(line.text)
+            or len(line.text.split()) <= SETTINGS.section_router.maximum_subheading_words
+            for _, line in row
+        )
+        prose_row = any(
+            _EDUCATION_PARAGRAPH_RE.search(line.text)
+            or (
+                not metadata_shape
+                and (
+                    len(line.text.split()) > SETTINGS.section_router.maximum_subheading_words
+                    or line.text.rstrip().endswith((".", ";", ":"))
+                )
+            )
+            for _, line in row
+        )
+        continuing_body = bool(
+            current is not None
+            and current["_bodyStarted"]
+            and not explicit_metadata
+        )
+        if prose_row or continuing_body:
+            entities: dict[str, Any] = {
+                "titles": [], "institutions": [], "dates": [], "locations": [],
+                "gpa": [], "skills": [], "urls": [], "handledLineIndexes": set(),
+            }
+        else:
+            entities = _education_row_entities(
+                document,
+                row,
+                ner_model,
+                url_entities_by_line,
+            )
         primary = bool(entities["titles"] or entities["institutions"] or entities["dates"])
-        structured_body = bool(entities["skills"])
         metadata = primary or bool(entities["locations"] or entities["gpa"])
 
         if metadata:
@@ -848,15 +833,6 @@ def build_education_debug(
             current["metadataRows"].append(_row_value(row))
             for key in ("titles", "institutions", "dates", "locations", "gpa", "urls"):
                 current[key].extend(entities[key])
-            continue
-
-        if structured_body:
-            current = current or new_entry()
-            current["_bodyStarted"] = True
-            current["skills"].extend(entities["skills"])
-            current["urls"].extend(entities["urls"])
-            current["_lastBodyType"] = "skill"
-            current["_lastLineBbox"] = [round(value, 2) for value in row[-1][1].bbox]
             continue
 
         if (
@@ -886,18 +862,6 @@ def build_education_debug(
             bullet = _BULLET_RE.match(line.text)
             line_box = pymupdf.Rect(line.bbox)
             rounded_bbox = [round(value, 2) for value in line.bbox]
-            if current["_lastBodyType"] == "skill" and current["_lastLineBbox"] is not None:
-                previous_box = pymupdf.Rect(current["_lastLineBbox"])
-                gap = line_box.y0 - previous_box.y1
-                if (
-                    -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier
-                    and not bullet
-                ):
-                    current["skills"].extend(
-                        _education_skill_items(document, line, line.text)
-                    )
-                    current["_lastLineBbox"] = rounded_bbox
-                    continue
             if bullet:
                 current["bullets"].append({
                     "text": line.text[bullet.end():].strip(),
