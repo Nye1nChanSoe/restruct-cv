@@ -621,6 +621,76 @@ def _experience_line_entities(
             })
             continue
 
+        # A compact metadata segment may contain both the employer and its
+        # comma-delimited location. Split only when NER grounds both roles and
+        # there is a comma between the organization and location evidence.
+        if organizations and locations and "," in segment:
+            organization_end = max(
+                int(prediction["end"]) for prediction in organizations
+            )
+            location_start = min(
+                int(prediction["start"]) for prediction in locations
+            )
+            split_candidates = [
+                match.start()
+                for match in re.finditer(",", segment)
+                if organization_end <= match.start() < location_start
+            ]
+            if split_candidates:
+                split_at = split_candidates[-1]
+                raw_company = segment[:split_at]
+                raw_location = segment[split_at + 1:]
+                company_text = raw_company.strip()
+                location_text = raw_location.strip()
+                if company_text and location_text:
+                    company_start = start + raw_company.find(company_text)
+                    location_relative_start = split_at + 1 + raw_location.find(
+                        location_text
+                    )
+                    location_source_start = start + location_relative_start
+                    company_value: dict[str, Any] = {
+                        "text": company_text,
+                        "page": line.page,
+                        "bbox": _span_bbox(
+                            document,
+                            line,
+                            company_text,
+                            company_start,
+                            company_start + len(company_text),
+                        ),
+                        "confidence": round(
+                            max(
+                                float(prediction["score"])
+                                for prediction in organizations
+                            ),
+                            4,
+                        ),
+                        "detectionMethod": "distilbert_ner_reconciled",
+                    }
+                    if item["matchingUrls"]:
+                        company_value["urls"] = item["matchingUrls"]
+                    result["companies"].append(company_value)
+                    result["locations"].append({
+                        "text": location_text,
+                        "page": line.page,
+                        "bbox": _span_bbox(
+                            document,
+                            line,
+                            location_text,
+                            location_source_start,
+                            location_source_start + len(location_text),
+                        ),
+                        "confidence": round(
+                            max(
+                                float(prediction["score"])
+                                for prediction in locations
+                            ),
+                            4,
+                        ),
+                        "detectionMethod": "distilbert_ner_reconciled",
+                    })
+                    continue
+
         full_segment_company = bool(
             index in company_evidence_indexes
             or (
