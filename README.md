@@ -1,4 +1,11 @@
-# extractor-v1
+# Restruct
+
+Restruct turns messy PDF, DOCX, and scanned resumes into consistent, explainable, versioned JSON.
+It combines OCR, layout geometry, NER, semantic similarity, and deterministic rules so every result can be traced to its source.
+
+Built for use in applicant tracking systems, candidate search, analytics pipelines, talent platforms, and other systems that need trustworthy resume data.
+
+---
 
 The source is split by responsibility:
 
