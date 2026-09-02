@@ -1,0 +1,133 @@
+{
+  "source": "5.ocr.pdf",
+  "education": {
+    "sectionType": "education",
+    "heading": {
+      "text": "EDUCATION",
+      "page": 2,
+      "bbox": [
+        51.84,
+        443.04,
+        113.04,
+        451.2
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.84,
+              458.88,
+              544.08,
+              468.72
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Bachelor of Engineering (Civil Engineering) 2013 - 2017",
+                "page": 2,
+                "bbox": [
+                  51.84,
+                  458.88,
+                  544.08,
+                  468.72
+                ],
+                "lineIndex": 65
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              51.84,
+              471.84,
+              243.12,
+              480.96
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Rajamangala University of Technology - Thailand",
+                "page": 2,
+                "bbox": [
+                  51.84,
+                  471.84,
+                  243.12,
+                  480.96
+                ],
+                "lineIndex": 66
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "Bachelor of Engineering (Civil Engineering)",
+            "page": 2,
+            "bbox": [
+              51.84,
+              458.88,
+              436.68,
+              468.72
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Rajamangala University of Technology",
+            "page": 2,
+            "bbox": [
+              51.84,
+              471.84,
+              198.35,
+              480.96
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2013 - 2017",
+            "page": 2,
+            "bbox": [
+              445.63,
+              458.88,
+              544.08,
+              468.72
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Thailand",
+            "page": 2,
+            "bbox": [
+              210.56,
+              471.84,
+              243.12,
+              480.96
+            ],
+            "confidence": 0.9977,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "certifications",
+      "text": "TRAINING & CERTIFICATIONS"
+    }
+  }
+}

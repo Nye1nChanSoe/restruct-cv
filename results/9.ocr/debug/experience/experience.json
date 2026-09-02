@@ -1,0 +1,310 @@
+{
+  "source": "9.ocr.pdf",
+  "experience": {
+    "sectionType": "experience",
+    "heading": {
+      "text": "PROFESSIONAL EXPERIENCE",
+      "page": 1,
+      "bbox": [
+        44.39,
+        190.55,
+        197.23,
+        198.95
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "Senior Operations Analyst May 2023 - Present",
+            "page": 1,
+            "bbox": [
+              44.15,
+              210.23,
+              442.68,
+              220.55
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Archipelago Consumer Logistics, Jakarta, Indonesia",
+            "page": 1,
+            "bbox": [
+              43.91,
+              223.67,
+              227.46,
+              231.35
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Senior Operations Analyst",
+            "page": 1,
+            "bbox": [
+              44.15,
+              210.23,
+              270.59,
+              220.55
+            ],
+            "confidence": 0.8412,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [],
+        "dates": [
+          {
+            "text": "May 2023 - Present",
+            "page": 1,
+            "bbox": [
+              279.64,
+              210.23,
+              442.68,
+              220.55
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Archipelago Consumer Logistics, Jakarta, Indonesia",
+            "page": 1,
+            "bbox": [
+              43.91,
+              223.67,
+              227.46,
+              231.35
+            ],
+            "confidence": 0.9839,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Built weekly inventory and order-fulfilment dashboards for 6 distribution points, improving\nvisibility of stock ageing and service levels.\n¢ Reduced manual reporting time by approximately 35% by consolidating shipment, warehouse, and\nsales data into repeatable Excel and SQL workflows.\nSupported carrier and 3PL performance reviews using on-time delivery, damage-rate, and cost-\nper-order metrics.\nCoordinated root-cause reviews for fulfilment exceptions and documented corrective actions\nwith warehouse and customer-service teams.",
+            "page": 1,
+            "bbox": [
+              46.79,
+              236.39,
+              464.27,
+              323.03
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "Supply Chain Analyst Jul 2020 - Apr 2023",
+            "page": 1,
+            "bbox": [
+              44.87,
+              330.95,
+              442.68,
+              341.75
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Nusantara Retail Solutions, Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              45.11,
+              344.63,
+              215.22,
+              351.83
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Supply Chain Analyst",
+            "page": 1,
+            "bbox": [
+              44.87,
+              330.95,
+              243.77,
+              341.75
+            ],
+            "confidence": 1.0,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [],
+        "dates": [
+          {
+            "text": "Jul 2020 - Apr 2023",
+            "page": 1,
+            "bbox": [
+              253.72,
+              330.95,
+              442.68,
+              341.75
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Nusantara Retail Solutions, Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              45.11,
+              344.63,
+              215.22,
+              351.83
+            ],
+            "confidence": 0.9849,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Maintained demand and replenishment reports for fast-moving consumer goods across West Java.",
+            "page": 1,
+            "bbox": [
+              47.51,
+              356.15,
+              461.39,
+              367.91
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Prepared supplier scorecards and purchase-order tracking reports for procurement and finance\nstakeholders.\n¢ Helped standardize monthly stock reconciliation between warehouse records and ERP extracts.",
+            "page": 1,
+            "bbox": [
+              47.51,
+              368.39,
+              449.4,
+              401.03
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "Operations Intern Jan 2020 - Jun 2020",
+            "page": 1,
+            "bbox": [
+              45.35,
+              407.99,
+              444.6,
+              418.78
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "PT Citra Distribusi Mandiri, Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              45.59,
+              421.66,
+              214.02,
+              428.62
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "¢ Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.",
+            "page": 1,
+            "bbox": [
+              47.99,
+              434.38,
+              415.09,
+              444.22
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Operations Intern",
+            "page": 1,
+            "bbox": [
+              45.35,
+              407.99,
+              228.79,
+              418.78
+            ],
+            "confidence": 0.8059,
+            "detectionMethod": "minilm_reconciled"
+          },
+          {
+            "text": "¢ Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.",
+            "page": 1,
+            "bbox": [
+              47.99,
+              434.38,
+              415.09,
+              444.22
+            ],
+            "confidence": 0.5004,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [],
+        "dates": [
+          {
+            "text": "Jan 2020 - Jun 2020",
+            "page": 1,
+            "bbox": [
+              239.58,
+              407.99,
+              444.6,
+              418.78
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "PT Citra Distribusi Mandiri, Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              45.59,
+              421.66,
+              214.02,
+              428.62
+            ],
+            "confidence": 0.8844,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "¢ Prepared simple KP! summaries for route completion and delivery exceptions.",
+            "page": 1,
+            "bbox": [
+              47.99,
+              445.9,
+              376.94,
+              455.74
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "education",
+      "text": "EDUCATION"
+    }
+  }
+}

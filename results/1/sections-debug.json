@@ -1,0 +1,421 @@
+{
+  "source": "1.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "sections": [
+    {
+      "sectionType": "summary",
+      "heading": {
+        "text": "PROFESSIONAL SUMMARY",
+        "page": 1,
+        "bbox": [
+          72.0,
+          227.16,
+          302.67,
+          246.15
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Industrial Maintenance Technician with 7 years of hands-on experience maintaining\nproduction machinery, conveyor systems, pumps, motors, pneumatic equipment, and basic\nelectrical control systems in manufacturing environments. Experienced in preventive\nmaintenance, equipment troubleshooting, breakdown response, machine installation, and\nmaintenance documentation. Familiar with factory safety procedures, 5S, lockout/tagout\npractices, and working with production teams to reduce machine downtime.",
+          "page": 1,
+          "bbox": [
+            72.0,
+            261.44,
+            516.58,
+            346.46
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "experience",
+      "heading": {
+        "text": "WORK EXPERIENCE",
+        "page": 1,
+        "bbox": [
+          72.0,
+          366.91,
+          244.78,
+          385.91
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "Industrial Maintenance Technician",
+          "page": 1,
+          "bbox": [
+            72.0,
+            403.26,
+            286.97,
+            417.79
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "Siam Precision Components Co., Ltd.​",
+          "page": 1,
+          "bbox": [
+            72.0,
+            432.39,
+            271.11,
+            444.68
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Bang Phli, Samut Prakan, Thailand​",
+          "page": 1,
+          "bbox": [
+            72.0,
+            446.94,
+            246.15,
+            459.22
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "March 2022 – Present",
+          "page": 1,
+          "bbox": [
+            72.0,
+            461.48,
+            187.49,
+            473.77
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "●​ Perform preventive and corrective maintenance on production machinery, conveyor\nsystems, hydraulic units, pumps, motors, and pneumatic equipment.\n●​ Diagnose mechanical and basic electrical faults during production breakdowns.\n●​ Replace bearings, belts, chains, sensors, solenoid valves, cylinders, and other worn\nmachine components.\n●​ Inspect equipment according to daily, weekly, and monthly preventive maintenance\nschedules.\n●​ Support machine installation, alignment, testing, and commissioning activities.\n●​ Record maintenance activities, spare-parts usage, equipment faults, and completed\nrepairs.\n●​ Coordinate with production supervisors during emergency machine shutdowns.\n●​ Assist external contractors during major equipment servicing and facility\nmaintenance.\n●​ Follow factory safety procedures, PPE requirements, 5S standards, and\nlockout/tagout procedures.",
+          "page": 1,
+          "bbox": [
+            90.0,
+            488.03,
+            518.6,
+            703.97
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Maintenance Mechanic",
+          "page": 1,
+          "bbox": [
+            72.0,
+            720.29,
+            217.17,
+            734.81
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "Eastern Packaging Industries Co., Ltd.​",
+          "page": 2,
+          "bbox": [
+            72.0,
+            72.36,
+            276.01,
+            84.65
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Chon Buri, Thailand​",
+          "page": 2,
+          "bbox": [
+            72.0,
+            86.91,
+            172.21,
+            99.2
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "June 2019 – February 2022",
+          "page": 2,
+          "bbox": [
+            72.0,
+            101.45,
+            214.99,
+            113.74
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "●​ Maintained packaging machines, rollers, gearboxes, conveyors, air compressors,\nand utility equipment.\n●​ Responded to mechanical breakdowns and performed fault inspection before repair.\n●​ Conducted lubrication, belt tension adjustment, bearing replacement, and equipment\ncleaning.\n●​ Assisted electricians with motor replacement, proximity sensor installation, and\ncontrol-panel inspection.\n●​ Performed basic welding and fabrication for machine guards, brackets, frames, and\nrepair work.\n●​ Prepared tools and replacement parts for scheduled maintenance.\n●​ Reported recurring equipment problems to the maintenance supervisor.",
+          "page": 2,
+          "bbox": [
+            90.0,
+            128.0,
+            521.69,
+            285.75
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Junior Maintenance Technician",
+          "page": 2,
+          "bbox": [
+            72.0,
+            302.07,
+            268.19,
+            316.6
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "Metro Food Processing Co., Ltd.​",
+          "page": 2,
+          "bbox": [
+            72.0,
+            331.2,
+            244.22,
+            343.49
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Samut Prakan, Thailand​",
+          "page": 2,
+          "bbox": [
+            72.0,
+            345.74,
+            192.98,
+            358.03
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "May 2017 – May 2019",
+          "page": 2,
+          "bbox": [
+            72.0,
+            360.29,
+            185.06,
+            372.58
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "●​ Assisted senior technicians with preventive maintenance of food-processing and\npackaging equipment.\n●​ Inspected motors, pumps, bearings, chains, and pneumatic lines.\n●​ Replaced damaged mechanical components under supervision.\n●​ Maintained workshop tools and spare-parts storage areas.\n●​ Completed basic maintenance checklists and equipment inspection records.\n●​ Followed hygiene and safety requirements for food-production areas.",
+          "page": 2,
+          "bbox": [
+            90.0,
+            386.84,
+            500.89,
+            486.4
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "education",
+      "heading": {
+        "text": "EDUCATION",
+        "page": 2,
+        "bbox": [
+          72.0,
+          506.86,
+          176.47,
+          525.85
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "Higher Vocational Certificate (ปวส.) — Industrial Technology",
+          "page": 2,
+          "bbox": [
+            72.0,
+            541.97,
+            446.57,
+            557.73
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Samut Prakan Technical College​\nSamut Prakan, Thailand​\n2015 – 2017",
+          "page": 2,
+          "bbox": [
+            72.0,
+            572.33,
+            244.07,
+            613.71
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "Vocational Certificate (ปวช.) — Mechanical Technology",
+          "page": 2,
+          "bbox": [
+            72.0,
+            628.8,
+            414.69,
+            644.56
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Samut Prakan Technical College​\nSamut Prakan, Thailand​\n2012 – 2015",
+          "page": 2,
+          "bbox": [
+            72.0,
+            659.16,
+            244.07,
+            700.54
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "skills",
+      "heading": {
+        "text": "TECHNICAL SKILLS",
+        "page": 2,
+        "bbox": [
+          72.0,
+          721.0,
+          240.04,
+          739.99
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "●​ Preventive Maintenance",
+          "page": 2,
+          "bbox": [
+            90.0,
+            755.28,
+            228.99,
+            767.57
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "paragraph",
+          "text": "●​ Corrective Maintenance\n●​ Mechanical Troubleshooting\n●​ Industrial Machinery Maintenance\n●​ Conveyor Systems\n●​ Pumps and Electric Motors\n●​ Bearings, Belts and Chain Drives\n●​ Pneumatic Systems\n●​ Basic Hydraulic Systems\n●​ Basic Electrical Troubleshooting\n●​ Sensors and Limit Switches\n●​ Hand and Power Tools\n●​ Basic Welding and Fabrication\n●​ Equipment Installation\n●​ Maintenance Documentation\n●​ Spare Parts Inspection\n●​ 5S Workplace Organization",
+          "page": 3,
+          "bbox": [
+            90.0,
+            72.36,
+            275.41,
+            302.84
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "licenses",
+      "heading": {
+        "text": "SAFETY & TRAINING",
+        "page": 3,
+        "bbox": [
+          72.0,
+          323.3,
+          247.59,
+          342.29
+        ],
+        "similarity": 0.7411,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "●​ Basic Occupational Safety Training\n●​ Lockout/Tagout Awareness\n●​ Fire Safety and Emergency Response Training\n●​ Forklift Safety Awareness\n●​ Internal 5S Training",
+          "page": 3,
+          "bbox": [
+            90.0,
+            357.58,
+            339.16,
+            428.05
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "languages",
+      "heading": {
+        "text": "LANGUAGES",
+        "page": 3,
+        "bbox": [
+          72.0,
+          448.51,
+          185.29,
+          467.5
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Thai: Native​\nEnglish: Basic working proficiency",
+          "page": 3,
+          "bbox": [
+            72.0,
+            482.79,
+            244.87,
+            509.63
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "ADDITIONAL INFORMATION",
+          "page": 3,
+          "bbox": [
+            72.0,
+            530.08,
+            304.83,
+            549.07
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Availability: 30 days' notice​\nDriving Licence: Thai driving licence​\nWork Preference: Factory and industrial maintenance roles in Bangkok, Samut Prakan, or\nChon Buri",
+          "page": 3,
+          "bbox": [
+            72.0,
+            564.37,
+            515.98,
+            620.29
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    }
+  ]
+}

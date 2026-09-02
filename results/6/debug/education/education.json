@@ -1,0 +1,298 @@
+{
+  "source": "6.pdf",
+  "education": {
+    "sectionType": "education",
+    "heading": {
+      "text": "EDUCATION",
+      "page": 1,
+      "bbox": [
+        46.9,
+        542.5,
+        109.25,
+        554.22
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              46.9,
+              558.35,
+              532.97,
+              568.95
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Asia Institute of Technology",
+                "page": 1,
+                "bbox": [
+                  46.9,
+                  558.35,
+                  173.97,
+                  568.95
+                ],
+                "lineIndex": 44
+              },
+              {
+                "text": "2020 - 2022",
+                "page": 1,
+                "bbox": [
+                  484.95,
+                  558.35,
+                  532.97,
+                  568.4
+                ],
+                "lineIndex": 45
+              }
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              46.9,
+              570.85,
+              532.95,
+              580.9
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "M.Sc. Computer Science",
+                "page": 1,
+                "bbox": [
+                  46.9,
+                  570.85,
+                  146.37,
+                  580.9
+                ],
+                "lineIndex": 46
+              },
+              {
+                "text": "Bangkok, Thailand",
+                "page": 1,
+                "bbox": [
+                  458.45,
+                  570.85,
+                  532.95,
+                  580.9
+                ],
+                "lineIndex": 47
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "M.Sc. Computer Science",
+            "page": 1,
+            "bbox": [
+              46.9,
+              570.85,
+              146.37,
+              580.9
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Asia Institute of Technology",
+            "page": 1,
+            "bbox": [
+              46.9,
+              558.35,
+              173.97,
+              568.95
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2020 - 2022",
+            "page": 1,
+            "bbox": [
+              484.95,
+              558.35,
+              532.97,
+              568.4
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Bangkok, Thailand",
+            "page": 1,
+            "bbox": [
+              458.45,
+              570.85,
+              532.95,
+              580.9
+            ],
+            "confidence": 0.9959,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Coursework: Distributed Systems, Machine Learning, Advanced Databases, Cloud Computing.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              582.15,
+              436.91,
+              593.91
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              46.9,
+              593.8,
+              532.97,
+              604.4
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Riverland University",
+                "page": 1,
+                "bbox": [
+                  46.9,
+                  593.8,
+                  138.64,
+                  604.4
+                ],
+                "lineIndex": 49
+              },
+              {
+                "text": "2016 - 2020",
+                "page": 1,
+                "bbox": [
+                  484.95,
+                  593.8,
+                  532.97,
+                  603.85
+                ],
+                "lineIndex": 50
+              }
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              46.9,
+              606.3,
+              532.95,
+              616.35
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "B.Sc. Computer Science",
+                "page": 1,
+                "bbox": [
+                  46.9,
+                  606.3,
+                  144.86,
+                  616.35
+                ],
+                "lineIndex": 51
+              },
+              {
+                "text": "Yangon, Myanmar",
+                "page": 1,
+                "bbox": [
+                  459.45,
+                  606.3,
+                  532.95,
+                  616.35
+                ],
+                "lineIndex": 52
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "B.Sc. Computer Science",
+            "page": 1,
+            "bbox": [
+              46.9,
+              606.3,
+              144.86,
+              616.35
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Riverland University",
+            "page": 1,
+            "bbox": [
+              46.9,
+              593.8,
+              138.64,
+              604.4
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2016 - 2020",
+            "page": 1,
+            "bbox": [
+              484.95,
+              593.8,
+              532.97,
+              603.85
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Yangon, Myanmar",
+            "page": 1,
+            "bbox": [
+              459.45,
+              606.3,
+              532.95,
+              616.35
+            ],
+            "confidence": 0.9736,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "certifications",
+      "text": "CERTIFICATIONS & LANGUAGES"
+    }
+  }
+}

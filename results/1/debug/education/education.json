@@ -1,0 +1,334 @@
+{
+  "source": "1.pdf",
+  "education": {
+    "sectionType": "education",
+    "heading": {
+      "text": "EDUCATION",
+      "page": 2,
+      "bbox": [
+        72.0,
+        506.86,
+        176.47,
+        525.85
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              541.97,
+              446.57,
+              557.73
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Higher Vocational Certificate (ปวส.) — Industrial Technology",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  541.97,
+                  446.57,
+                  557.73
+                ],
+                "lineIndex": 59
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              572.33,
+              244.07,
+              584.62
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Samut Prakan Technical College​",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  572.33,
+                  244.07,
+                  584.62
+                ],
+                "lineIndex": 60
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              586.88,
+              192.98,
+              599.17
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Samut Prakan, Thailand​",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  586.88,
+                  192.98,
+                  599.17
+                ],
+                "lineIndex": 61
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              601.43,
+              136.19,
+              613.71
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "2015 – 2017",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  601.43,
+                  136.19,
+                  613.71
+                ],
+                "lineIndex": 62
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "Higher Vocational Certificate (ปวส.)",
+            "page": 2,
+            "bbox": [
+              72.0,
+              543.21,
+              288.68,
+              557.73
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Samut Prakan Technical College",
+            "page": 2,
+            "bbox": [
+              72.0,
+              572.33,
+              241.01,
+              584.62
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2015 – 2017",
+            "page": 2,
+            "bbox": [
+              72.0,
+              601.43,
+              133.13,
+              613.71
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Samut Prakan, Thailand",
+            "page": 2,
+            "bbox": [
+              72.0,
+              586.88,
+              189.93,
+              599.17
+            ],
+            "confidence": 0.9969,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              628.8,
+              414.69,
+              644.56
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Vocational Certificate (ปวช.) — Mechanical Technology",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  628.8,
+                  414.69,
+                  644.56
+                ],
+                "lineIndex": 63
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              659.16,
+              244.07,
+              671.45
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Samut Prakan Technical College​",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  659.16,
+                  244.07,
+                  671.45
+                ],
+                "lineIndex": 64
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              673.71,
+              192.98,
+              686.0
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Samut Prakan, Thailand​",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  673.71,
+                  192.98,
+                  686.0
+                ],
+                "lineIndex": 65
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              688.26,
+              136.19,
+              700.54
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "2012 – 2015",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  688.26,
+                  136.19,
+                  700.54
+                ],
+                "lineIndex": 66
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "Vocational Certificate (ปวช.)",
+            "page": 2,
+            "bbox": [
+              72.0,
+              630.04,
+              245.22,
+              644.56
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Samut Prakan Technical College",
+            "page": 2,
+            "bbox": [
+              72.0,
+              659.16,
+              241.01,
+              671.45
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2012 – 2015",
+            "page": 2,
+            "bbox": [
+              72.0,
+              688.26,
+              133.13,
+              700.54
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Samut Prakan, Thailand",
+            "page": 2,
+            "bbox": [
+              72.0,
+              673.71,
+              189.93,
+              686.0
+            ],
+            "confidence": 0.9969,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "skills",
+      "text": "TECHNICAL SKILLS"
+    }
+  }
+}

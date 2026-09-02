@@ -1,0 +1,200 @@
+{
+  "source": "9.ocr.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "sections": [
+    {
+      "sectionType": "summary",
+      "heading": {
+        "text": "PROFESSIONAL SUMMARY",
+        "page": 1,
+        "bbox": [
+          43.91,
+          117.36,
+          185.95,
+          125.52
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Operations and supply chain analyst with 5+ years of experience supporting regional distribution,\nvendor performance, inventory planning, and process improvement across Indonesia and Singapore-\nlinked operations. Strong in Excel, SQL, dashboarding, and cross-functional coordination with\nwarehouse, procurement, and commercial teams.",
+          "page": 1,
+          "bbox": [
+            43.67,
+            136.08,
+            461.63,
+            180.47
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "experience",
+      "heading": {
+        "text": "PROFESSIONAL EXPERIENCE",
+        "page": 1,
+        "bbox": [
+          44.39,
+          190.55,
+          197.23,
+          198.95
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Senior Operations Analyst May 2023 - Present\nArchipelago Consumer Logistics, Jakarta, Indonesia\n* Built weekly inventory and order-fulfilment dashboards for 6 distribution points, improving\nvisibility of stock ageing and service levels.\n¢ Reduced manual reporting time by approximately 35% by consolidating shipment, warehouse, and\nsales data into repeatable Excel and SQL workflows.\nSupported carrier and 3PL performance reviews using on-time delivery, damage-rate, and cost-\nper-order metrics.\nCoordinated root-cause reviews for fulfilment exceptions and documented corrective actions\nwith warehouse and customer-service teams.\nSupply Chain Analyst Jul 2020 - Apr 2023\nNusantara Retail Solutions, Bandung, Indonesia\n* Maintained demand and replenishment reports for fast-moving consumer goods across West Java.",
+          "page": 1,
+          "bbox": [
+            43.91,
+            210.23,
+            464.27,
+            367.91
+          ],
+          "detectionMethod": "geometry_default"
+        },
+        {
+          "type": "subheading",
+          "text": "* Prepared supplier scorecards and purchase-order tracking reports for procurement and finance",
+          "page": 1,
+          "bbox": [
+            47.51,
+            368.39,
+            448.68,
+            378.71
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "stakeholders.\n¢ Helped standardize monthly stock reconciliation between warehouse records and ERP extracts.\nOperations Intern Jan 2020 - Jun 2020\nPT Citra Distribusi Mandiri, Bandung, Indonesia\n¢ Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.\n¢ Prepared simple KP! summaries for route completion and delivery exceptions.",
+          "page": 1,
+          "bbox": [
+            45.35,
+            381.59,
+            449.4,
+            455.74
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "education",
+      "heading": {
+        "text": "EDUCATION",
+        "page": 1,
+        "bbox": [
+          46.07,
+          466.06,
+          107.73,
+          473.74
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "B.Sc. Industrial Engineering 2016 - 2020\nInstitut Teknologi Nasional Bandung (fictionalized sample entry)",
+          "page": 1,
+          "bbox": [
+            46.07,
+            485.26,
+            418.2,
+            506.14
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "skills",
+      "heading": {
+        "text": "SKILLS",
+        "page": 1,
+        "bbox": [
+          46.31,
+          515.98,
+          82.54,
+          523.42
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Data & Reporting: Microsoft Excel, SQL, Power BI, KPI dashboards, basic Python\nSupply Chain: Inventory analysis, order fulfilment, supplier performance, 3PL coordination\nLanguages: Bahasa Indonesia (native), English (professional working proficiency)",
+          "page": 1,
+          "bbox": [
+            46.31,
+            535.42,
+            428.04,
+            569.74
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    },
+    {
+      "sectionType": "certifications",
+      "heading": {
+        "text": "CERTIFICATIONS & ACTIVITIES",
+        "page": 1,
+        "bbox": [
+          46.31,
+          578.86,
+          209.22,
+          591.34
+        ],
+        "similarity": 0.8585,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
+        {
+          "type": "subheading",
+          "text": "¢ Lean Six Sigma Yellow Belt - training certificate, 2024",
+          "page": 1,
+          "bbox": [
+            48.95,
+            599.74,
+            277.36,
+            608.86
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "subheading",
+          "text": "¢ Volunteer logistics coordinator - community food distribution program, Bandung, 2022",
+          "page": 1,
+          "bbox": [
+            48.95,
+            610.06,
+            413.89,
+            619.9
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        {
+          "type": "paragraph",
+          "text": "Synthetic resume generated for testing/demo purposes - all personal details are fictional.",
+          "page": 1,
+          "bbox": [
+            47.75,
+            804.21,
+            369.26,
+            814.77
+          ],
+          "detectionMethod": "geometry_default"
+        }
+      ]
+    }
+  ]
+}

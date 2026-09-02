@@ -1,0 +1,385 @@
+{
+  "source": "2.pdf",
+  "education": {
+    "sectionType": "education",
+    "heading": {
+      "text": "EDUCATION",
+      "page": 2,
+      "bbox": [
+        72.0,
+        550.59,
+        176.47,
+        569.59
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              586.94,
+              492.99,
+              601.47
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Bachelor of Business Administration in Logistics and Supply Chain",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  586.94,
+                  492.99,
+                  601.47
+                ],
+                "lineIndex": 63
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              604.14,
+              155.05,
+              618.66
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Management",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  604.14,
+                  155.05,
+                  618.66
+                ],
+                "lineIndex": 64
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              633.26,
+              175.85,
+              645.55
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Burapha University​",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  633.26,
+                  175.85,
+                  645.55
+                ],
+                "lineIndex": 65
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              647.81,
+              172.21,
+              660.1
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Chon Buri, Thailand​",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  647.81,
+                  172.21,
+                  660.1
+                ],
+                "lineIndex": 66
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              662.35,
+              136.19,
+              674.64
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "2018 – 2022",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  662.35,
+                  136.19,
+                  674.64
+                ],
+                "lineIndex": 67
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              688.9,
+              156.73,
+              701.19
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "GPA: 3.31 / 4.00",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  688.9,
+                  156.73,
+                  701.19
+                ],
+                "lineIndex": 68
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "Bachelor of Business Administration in Logistics and Supply Chain\nManagement",
+            "page": 2,
+            "bbox": [
+              72.0,
+              586.94,
+              489.38,
+              618.66
+            ],
+            "detectionMethod": "education_title_geometry_continuation"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Burapha University",
+            "page": 2,
+            "bbox": [
+              72.0,
+              633.26,
+              172.79,
+              645.55
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2018 – 2022",
+            "page": 2,
+            "bbox": [
+              72.0,
+              662.35,
+              133.13,
+              674.64
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Chon Buri, Thailand",
+            "page": 2,
+            "bbox": [
+              72.0,
+              647.81,
+              169.16,
+              660.1
+            ],
+            "confidence": 0.9971,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "gpa": [
+          {
+            "text": "GPA: 3.31 / 4.00",
+            "value": 3.31,
+            "scale": 4.0,
+            "page": 2,
+            "bbox": [
+              72.0,
+              688.9,
+              153.67,
+              701.19
+            ],
+            "detectionMethod": "gpa_regex"
+          }
+        ],
+        "skills": [
+          {
+            "text": "Supply Chain Management",
+            "page": 2,
+            "bbox": [
+              221.69,
+              715.45,
+              354.3,
+              727.74
+            ],
+            "detectionMethod": "labeled_comma_list"
+          },
+          {
+            "text": "Inventory Management",
+            "page": 2,
+            "bbox": [
+              360.4,
+              715.45,
+              472.83,
+              727.74
+            ],
+            "detectionMethod": "labeled_comma_list"
+          },
+          {
+            "text": "Logistics",
+            "page": 2,
+            "bbox": [
+              478.94,
+              715.45,
+              521.71,
+              727.74
+            ],
+            "detectionMethod": "labeled_comma_list"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              729.99,
+              524.75,
+              742.28
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Management, Procurement, Operations Management, Business Statistics, and Management",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  729.99,
+                  524.75,
+                  742.28
+                ],
+                "lineIndex": 70
+              }
+            ]
+          }
+        ],
+        "titles": [],
+        "institutions": [
+          {
+            "text": "Statistics",
+            "page": 2,
+            "bbox": [
+              386.05,
+              729.99,
+              430.03,
+              742.28
+            ],
+            "confidence": 0.7705,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Management",
+            "page": 2,
+            "bbox": [
+              72.0,
+              729.99,
+              136.16,
+              742.28
+            ],
+            "confidence": 0.5613,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [],
+        "locations": [],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              72.0,
+              744.54,
+              178.3,
+              756.83
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Information Systems.",
+                "page": 2,
+                "bbox": [
+                  72.0,
+                  744.54,
+                  178.3,
+                  756.83
+                ],
+                "lineIndex": 71
+              }
+            ]
+          }
+        ],
+        "titles": [],
+        "institutions": [
+          {
+            "text": "Information Systems",
+            "page": 2,
+            "bbox": [
+              72.0,
+              744.54,
+              172.19,
+              756.83
+            ],
+            "confidence": 0.8407,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [],
+        "locations": [],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "skills",
+      "text": "TECHNICAL SKILLS"
+    }
+  }
+}

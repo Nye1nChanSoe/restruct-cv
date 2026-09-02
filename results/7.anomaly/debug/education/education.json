@@ -1,0 +1,157 @@
+{
+  "source": "7.anomaly.pdf",
+  "education": {
+    "sectionType": "education",
+    "heading": {
+      "text": "EDUCATION",
+      "page": 2,
+      "bbox": [
+        46.9,
+        715.85,
+        109.25,
+        727.57
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 3,
+            "bbox": [
+              46.9,
+              39.9,
+              547.21,
+              50.5
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Vocational Certificate - Industrial Mechanics / Metal Work (Certificate Level)  |  Bangkok Technical Training Institute",
+                "page": 3,
+                "bbox": [
+                  46.9,
+                  39.9,
+                  547.21,
+                  50.5
+                ],
+                "lineIndex": 130
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "Vocational Certificate",
+            "page": 3,
+            "bbox": [
+              46.9,
+              39.9,
+              143.94,
+              50.5
+            ],
+            "detectionMethod": "education_title_pattern"
+          },
+          {
+            "text": "Industrial Mechanics / Metal Work (Certificate Level)",
+            "page": 3,
+            "bbox": [
+              152.35,
+              39.9,
+              387.04,
+              50.5
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Bangkok Technical Training Institute",
+            "page": 3,
+            "bbox": [
+              399.68,
+              40.35,
+              544.72,
+              50.4
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [],
+        "locations": [],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 3,
+            "bbox": [
+              46.9,
+              52.35,
+              195.39,
+              62.4
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "(fictional sample institution), Bangkok",
+                "page": 3,
+                "bbox": [
+                  46.9,
+                  52.35,
+                  195.39,
+                  62.4
+                ],
+                "lineIndex": 131
+              }
+            ]
+          }
+        ],
+        "titles": [],
+        "institutions": [
+          {
+            "text": "(fictional sample institution), Bangkok",
+            "page": 3,
+            "bbox": [
+              46.9,
+              52.35,
+              195.39,
+              62.4
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [],
+        "locations": [],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Completed 2014. Coursework included workshop safety, basic welding, machine tools, technical drawing, measurement,\nmechanical maintenance and industrial practice.",
+            "page": 3,
+            "bbox": [
+              46.9,
+              66.26,
+              528.5,
+              88.2
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "languages",
+      "text": "LANGUAGES"
+    }
+  }
+}
