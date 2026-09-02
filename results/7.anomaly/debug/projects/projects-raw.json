@@ -402,48 +402,26 @@
             "detectionMethod": "year_regex"
           },
           {
-            "text": "2020",
+            "text": "2020-2021",
             "page": 2,
             "bbox": [
               199.65,
               504.65,
-              220.77,
-              515.25
-            ],
-            "detectionMethod": "year_regex"
-          },
-          {
-            "text": "2021",
-            "page": 2,
-            "bbox": [
-              223.93,
-              504.65,
               245.05,
               515.25
             ],
-            "detectionMethod": "year_regex"
+            "detectionMethod": "date_regex"
           },
           {
-            "text": "2016",
+            "text": "2016-2018",
             "page": 2,
             "bbox": [
               185.4,
               526.9,
-              206.52,
-              537.5
-            ],
-            "detectionMethod": "year_regex"
-          },
-          {
-            "text": "2018",
-            "page": 2,
-            "bbox": [
-              209.65,
-              526.9,
               230.8,
               537.5
             ],
-            "detectionMethod": "year_regex"
+            "detectionMethod": "date_regex"
           }
         ],
         "urls": [],

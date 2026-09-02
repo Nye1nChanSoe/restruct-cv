@@ -41,7 +41,8 @@
       "urls": [],
       "paragraphs": [],
       "bullets": [
-        "Built weekly inventory and order-fulfilment dashboards for 6 distribution points, improving\nvisibility of stock ageing and service levels.\n¢ Reduced manual reporting time by approximately 35% by consolidating shipment, warehouse, and\nsales data into repeatable Excel and SQL workflows.\nSupported carrier and 3PL performance reviews using on-time delivery, damage-rate, and cost-\nper-order metrics.\nCoordinated root-cause reviews for fulfilment exceptions and documented corrective actions\nwith warehouse and customer-service teams."
+        "Built weekly inventory and order-fulfilment dashboards for 6 distribution points, improving\nvisibility of stock ageing and service levels.",
+        "Reduced manual reporting time by approximately 35% by consolidating shipment, warehouse, and\nsales data into repeatable Excel and SQL workflows.\nSupported carrier and 3PL performance reviews using on-time delivery, damage-rate, and cost-\nper-order metrics.\nCoordinated root-cause reviews for fulfilment exceptions and documented corrective actions\nwith warehouse and customer-service teams."
       ]
     },
     {
@@ -61,13 +62,13 @@
       "paragraphs": [],
       "bullets": [
         "Maintained demand and replenishment reports for fast-moving consumer goods across West Java.",
-        "Prepared supplier scorecards and purchase-order tracking reports for procurement and finance\nstakeholders.\n¢ Helped standardize monthly stock reconciliation between warehouse records and ERP extracts."
+        "Prepared supplier scorecards and purchase-order tracking reports for procurement and finance\nstakeholders.",
+        "Helped standardize monthly stock reconciliation between warehouse records and ERP extracts."
       ]
     },
     {
       "job_titles": [
-        "Operations Intern",
-        "¢ Assisted with delivery scheduling, daily shipment logs, and warehouse documentation."
+        "Operations Intern"
       ],
       "companies": [
         "PT Citra Distribusi Mandiri"
@@ -79,10 +80,11 @@
         "Bandung, Indonesia"
       ],
       "urls": [],
-      "paragraphs": [
-        "¢ Prepared simple KP! summaries for route completion and delivery exceptions."
-      ],
-      "bullets": []
+      "paragraphs": [],
+      "bullets": [
+        "Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.",
+        "Prepared simple KP! summaries for route completion and delivery exceptions."
+      ]
     }
   ],
   "education": [
@@ -133,28 +135,19 @@
   "projects": null,
   "certifications": [
     {
-      "subheadings": [
-        "¢ Lean Six Sigma Yellow Belt - training certificate, 2024"
-      ],
+      "subheadings": [],
       "dates": [
-        "2024"
-      ],
-      "urls": [],
-      "paragraphs": [],
-      "bullets": []
-    },
-    {
-      "subheadings": [
-        "¢ Volunteer logistics coordinator - community food distribution program, Bandung, 2022"
-      ],
-      "dates": [
+        "2024",
         "2022"
       ],
       "urls": [],
       "paragraphs": [
         "Synthetic resume generated for testing/demo purposes - all personal details are fictional."
       ],
-      "bullets": []
+      "bullets": [
+        "Lean Six Sigma Yellow Belt - training certificate, 2024",
+        "Volunteer logistics coordinator - community food distribution program, Bandung, 2022"
+      ]
     }
   ],
   "licenses": null,

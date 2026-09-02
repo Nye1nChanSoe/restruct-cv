@@ -87,11 +87,22 @@
         "paragraphs": [],
         "bullets": [
           {
-            "text": "Built weekly inventory and order-fulfilment dashboards for 6 distribution points, improving\nvisibility of stock ageing and service levels.\n¢ Reduced manual reporting time by approximately 35% by consolidating shipment, warehouse, and\nsales data into repeatable Excel and SQL workflows.\nSupported carrier and 3PL performance reviews using on-time delivery, damage-rate, and cost-\nper-order metrics.\nCoordinated root-cause reviews for fulfilment exceptions and documented corrective actions\nwith warehouse and customer-service teams.",
+            "text": "Built weekly inventory and order-fulfilment dashboards for 6 distribution points, improving\nvisibility of stock ageing and service levels.",
             "page": 1,
             "bbox": [
               46.79,
               236.39,
+              428.28,
+              257.75
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Reduced manual reporting time by approximately 35% by consolidating shipment, warehouse, and\nsales data into repeatable Excel and SQL workflows.\nSupported carrier and 3PL performance reviews using on-time delivery, damage-rate, and cost-\nper-order metrics.\nCoordinated root-cause reviews for fulfilment exceptions and documented corrective actions\nwith warehouse and customer-service teams.",
+            "page": 1,
+            "bbox": [
+              46.79,
+              258.47,
               464.27,
               323.03
             ],
@@ -195,11 +206,22 @@
             "detectionMethod": "bullet_marker"
           },
           {
-            "text": "Prepared supplier scorecards and purchase-order tracking reports for procurement and finance\nstakeholders.\n¢ Helped standardize monthly stock reconciliation between warehouse records and ERP extracts.",
+            "text": "Prepared supplier scorecards and purchase-order tracking reports for procurement and finance\nstakeholders.",
             "page": 1,
             "bbox": [
               47.51,
               368.39,
+              448.68,
+              388.07
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Helped standardize monthly stock reconciliation between warehouse records and ERP extracts.",
+            "page": 1,
+            "bbox": [
+              47.75,
+              390.71,
               449.4,
               401.03
             ],
@@ -231,17 +253,6 @@
               428.62
             ],
             "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "¢ Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.",
-            "page": 1,
-            "bbox": [
-              47.99,
-              434.38,
-              415.09,
-              444.22
-            ],
-            "detectionMethod": "experience_metadata"
           }
         ],
         "jobTitles": [
@@ -255,18 +266,6 @@
               418.78
             ],
             "confidence": 0.8059,
-            "detectionMethod": "minilm_reconciled"
-          },
-          {
-            "text": "¢ Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.",
-            "page": 1,
-            "bbox": [
-              47.99,
-              434.38,
-              415.09,
-              444.22
-            ],
-            "confidence": 0.5004,
             "detectionMethod": "minilm_reconciled"
           }
         ],
@@ -312,9 +311,21 @@
           }
         ],
         "urls": [],
-        "paragraphs": [
+        "paragraphs": [],
+        "bullets": [
           {
-            "text": "¢ Prepared simple KP! summaries for route completion and delivery exceptions.",
+            "text": "Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.",
+            "page": 1,
+            "bbox": [
+              47.99,
+              434.38,
+              415.09,
+              444.22
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Prepared simple KP! summaries for route completion and delivery exceptions.",
             "page": 1,
             "bbox": [
               47.99,
@@ -322,10 +333,9 @@
               376.94,
               455.74
             ],
-            "detectionMethod": "geometry_default"
+            "detectionMethod": "bullet_marker"
           }
-        ],
-        "bullets": []
+        ]
       }
     ],
     "stoppedAtSection": {

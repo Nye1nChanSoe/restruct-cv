@@ -34,9 +34,12 @@ _MONTH_PATTERN = (
 )
 _DATED_YEAR_PATTERN = rf"(?:{_MONTH_PATTERN}(?:\s+|-))?(?:19|20)\d{{2}}"
 _DATE_RANGE_RE = re.compile(
-    rf"\b(?:From\s+)?{_DATED_YEAR_PATTERN}"
+    rf"\b(?:"
+    rf"(?:From\s+)?(?:19|20)\d{{2}}\s*-\s*(?:(?:19|20)\d{{2}}|Present|Current|Now)"
+    rf"|(?:From\s+)?{_DATED_YEAR_PATTERN}"
     rf"(?:\s+-\s+|\s*[\u2013\u2014]\s*|\s+to\s+)"
-    rf"(?:{_DATED_YEAR_PATTERN}|Present|Current|Now)\b",
+    rf"(?:{_DATED_YEAR_PATTERN}|Present|Current|Now)"
+    rf")\b",
     re.IGNORECASE,
 )
 _SINGLE_YEAR_RE = re.compile(r"\b(?:19|20)\d{2}\b")
