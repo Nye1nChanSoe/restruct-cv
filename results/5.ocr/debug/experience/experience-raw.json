@@ -65,8 +65,8 @@
               197.45,
               364.56
             ],
-            "confidence": 0.9673,
-            "detectionMethod": "distilbert_ner_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9673
           }
         ],
         "dates": [
@@ -227,7 +227,9 @@
             ],
             "confidence": 1.0,
             "detectionMethod": "minilm_reconciled"
-          },
+          }
+        ],
+        "companies": [
           {
             "text": "Metro Build & Engineering Co., Ltd.",
             "page": 2,
@@ -237,11 +239,10 @@
               202.44,
               76.56
             ],
-            "confidence": 0.5737,
-            "detectionMethod": "minilm_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9585
           }
         ],
-        "companies": [],
         "dates": [
           {
             "text": "Jun 2019 - Feb 2022",

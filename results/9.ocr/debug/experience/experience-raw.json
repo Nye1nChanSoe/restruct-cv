@@ -55,7 +55,20 @@
             "detectionMethod": "minilm_reconciled"
           }
         ],
-        "companies": [],
+        "companies": [
+          {
+            "text": "Archipelago Consumer Logistics, Jakarta, Indonesia",
+            "page": 1,
+            "bbox": [
+              43.91,
+              223.67,
+              227.46,
+              231.35
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.8995
+          }
+        ],
         "dates": [
           {
             "text": "May 2023 - Present",
@@ -69,20 +82,7 @@
             "detectionMethod": "date_regex"
           }
         ],
-        "locations": [
-          {
-            "text": "Archipelago Consumer Logistics, Jakarta, Indonesia",
-            "page": 1,
-            "bbox": [
-              43.91,
-              223.67,
-              227.46,
-              231.35
-            ],
-            "confidence": 0.9839,
-            "detectionMethod": "distilbert_ner_reconciled"
-          }
-        ],
+        "locations": [],
         "urls": [],
         "paragraphs": [],
         "bullets": [
@@ -139,7 +139,20 @@
             "detectionMethod": "minilm_reconciled"
           }
         ],
-        "companies": [],
+        "companies": [
+          {
+            "text": "Nusantara Retail Solutions, Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              45.11,
+              344.63,
+              215.22,
+              351.83
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9864
+          }
+        ],
         "dates": [
           {
             "text": "Jul 2020 - Apr 2023",
@@ -153,20 +166,7 @@
             "detectionMethod": "date_regex"
           }
         ],
-        "locations": [
-          {
-            "text": "Nusantara Retail Solutions, Bandung, Indonesia",
-            "page": 1,
-            "bbox": [
-              45.11,
-              344.63,
-              215.22,
-              351.83
-            ],
-            "confidence": 0.9849,
-            "detectionMethod": "distilbert_ner_reconciled"
-          }
-        ],
+        "locations": [],
         "urls": [],
         "paragraphs": [],
         "bullets": [
@@ -257,7 +257,20 @@
             "detectionMethod": "minilm_reconciled"
           }
         ],
-        "companies": [],
+        "companies": [
+          {
+            "text": "PT Citra Distribusi Mandiri, Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              45.59,
+              421.66,
+              214.02,
+              428.62
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9702
+          }
+        ],
         "dates": [
           {
             "text": "Jan 2020 - Jun 2020",
@@ -271,20 +284,7 @@
             "detectionMethod": "date_regex"
           }
         ],
-        "locations": [
-          {
-            "text": "PT Citra Distribusi Mandiri, Bandung, Indonesia",
-            "page": 1,
-            "bbox": [
-              45.59,
-              421.66,
-              214.02,
-              428.62
-            ],
-            "confidence": 0.8844,
-            "detectionMethod": "distilbert_ner_reconciled"
-          }
-        ],
+        "locations": [],
         "urls": [],
         "paragraphs": [
           {

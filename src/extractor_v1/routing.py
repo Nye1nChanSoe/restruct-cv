@@ -494,24 +494,59 @@ def _experience_line_entities(
         _EXPERIENCE_SEPARATOR_RE,
     )
     classifications = classify_job_title_candidates(model, [item[0] for item in candidates])
-    title_spans: list[tuple[int, int]] = []
-    for (text, start, end), (accepted, confidence) in zip(candidates, classifications, strict=True):
-        if accepted:
-            title_spans.append((start, end))
-            result["jobTitles"].append({
-                "text": text, "page": line.page,
-                "bbox": _span_bbox(document, line, text, start, end),
-                "confidence": round(confidence, 4),
-                "detectionMethod": "minilm_reconciled",
-            })
-
     company_markers = re.compile(
         r"\b(?:co\.?|company|ltd\.?|limited|inc\.?|corp\.?|corporation|llc|plc)\b",
         re.IGNORECASE,
     )
-    for segment, start, end in candidates:
-        if any(left < end and start < right for left, right in title_spans):
-            continue
+
+    def candidate_urls(
+        segment: str,
+        start: int,
+        end: int,
+    ) -> list[dict[str, Any]]:
+        normalized_segment = " ".join(
+            segment.replace("\u200b", "").replace("\ufeff", "").casefold().split()
+        ).strip(" |•·-–—")
+        segment_box = pymupdf.Rect(_span_bbox(document, line, segment, start, end))
+        matches: list[dict[str, Any]] = []
+        for url in urls:
+            normalized_text = " ".join(
+                str(url.get("text", ""))
+                .replace("\u200b", "")
+                .replace("\ufeff", "")
+                .casefold()
+                .split()
+            ).strip(" |•·-–—")
+            text_matches = bool(
+                normalized_segment
+                and normalized_text
+                and (
+                    normalized_segment == normalized_text
+                    or normalized_segment in normalized_text
+                    or normalized_text in normalized_segment
+                )
+            )
+            url_bbox = url.get("bbox")
+            geometry_matches = False
+            if url_bbox is not None:
+                url_box = pymupdf.Rect(url_bbox)
+                overlap = segment_box & url_box
+                geometry_matches = bool(
+                    overlap.width > 0
+                    and overlap.height > 0
+                    and overlap.get_area()
+                    >= min(segment_box.get_area(), url_box.get_area()) * 0.5
+                )
+            if text_matches or geometry_matches:
+                matches.append(url)
+        return matches
+
+    evidence: list[dict[str, Any]] = []
+    for (segment, start, end), (accepted, confidence) in zip(
+        candidates,
+        classifications,
+        strict=True,
+    ):
         predictions = ner_model.predict_entities(
             segment,
             ["organization", "location"],
@@ -519,18 +554,104 @@ def _experience_line_entities(
         )
         organizations = [item for item in predictions if item["label"] == "organization"]
         locations = [item for item in predictions if item["label"] == "location"]
-        if organizations and company_markers.search(segment):
+        matching_urls = candidate_urls(segment, start, end)
+        external_urls = [
+            url
+            for url in matching_urls
+            if not any(
+                excluded in str(url.get("url", "")).casefold()
+                for excluded in ("linkedin.com", "github.com", "mailto:", "tel:")
+            )
+        ]
+        evidence.append(
+            {
+                "segment": segment,
+                "start": start,
+                "end": end,
+                "titleAccepted": accepted,
+                "titleConfidence": confidence,
+                "organizations": organizations,
+                "locations": locations,
+                "matchingUrls": matching_urls,
+                "externalUrls": external_urls,
+                "companyMarker": company_markers.search(segment) is not None,
+            }
+        )
+
+    accepted_indexes = [
+        index for index, item in enumerate(evidence) if item["titleAccepted"]
+    ]
+    company_evidence_indexes = {
+        index
+        for index, item in enumerate(evidence)
+        if item["companyMarker"]
+        or (
+            len(evidence) > 1
+            and bool(item["externalUrls"])
+        )
+        or (
+            len(evidence) > 1
+            and bool(item["organizations"])
+            and any(other != index for other in accepted_indexes)
+        )
+    }
+    title_indexes = [
+        index for index in accepted_indexes if index not in company_evidence_indexes
+    ]
+    primary_title_index = (
+        max(title_indexes, key=lambda index: float(evidence[index]["titleConfidence"]))
+        if title_indexes
+        else None
+    )
+
+    for index, item in enumerate(evidence):
+        segment = str(item["segment"])
+        start = int(item["start"])
+        end = int(item["end"])
+        organizations = item["organizations"]
+        locations = item["locations"]
+
+        if index == primary_title_index:
+            result["jobTitles"].append({
+                "text": segment,
+                "page": line.page,
+                "bbox": _span_bbox(document, line, segment, start, end),
+                "confidence": round(float(item["titleConfidence"]), 4),
+                "detectionMethod": "minilm_reconciled",
+            })
+            continue
+
+        full_segment_company = bool(
+            index in company_evidence_indexes
+            or (
+                organizations
+                and (
+                    not item["titleAccepted"]
+                    or primary_title_index is not None
+                )
+            )
+        )
+        if full_segment_company:
             value: dict[str, Any] = {
                 "text": segment,
                 "page": line.page,
                 "bbox": _span_bbox(document, line, segment, start, end),
-                "confidence": round(max(float(item["score"]) for item in organizations), 4),
-                "detectionMethod": "distilbert_ner_reconciled",
+                "detectionMethod": (
+                    "url_company_reconciled"
+                    if item["externalUrls"]
+                    else "distilbert_ner_reconciled"
+                ),
             }
-            if urls:
-                value["urls"] = urls
+            if organizations:
+                value["confidence"] = round(
+                    max(float(prediction["score"]) for prediction in organizations),
+                    4,
+                )
+            if item["matchingUrls"]:
+                value["urls"] = item["matchingUrls"]
             result["companies"].append(value)
             continue
+
         if locations and ("," in segment or (len(locations) > 1 and not organizations)):
             result["locations"].append({
                 "text": segment,
@@ -540,7 +661,18 @@ def _experience_line_entities(
                 "detectionMethod": "distilbert_ner_reconciled",
             })
             continue
-        for prediction in predictions:
+
+        if item["titleAccepted"]:
+            result["jobTitles"].append({
+                "text": segment,
+                "page": line.page,
+                "bbox": _span_bbox(document, line, segment, start, end),
+                "confidence": round(float(item["titleConfidence"]), 4),
+                "detectionMethod": "minilm_reconciled",
+            })
+            continue
+
+        for prediction in [*organizations, *locations]:
             prediction_start = start + int(prediction["start"])
             prediction_end = start + int(prediction["end"])
             text = line.text[prediction_start:prediction_end].strip()
@@ -554,8 +686,8 @@ def _experience_line_entities(
                 "confidence": round(float(prediction["score"]), 4),
                 "detectionMethod": "distilbert_ner",
             }
-            if key == "companies" and urls:
-                value["urls"] = urls
+            if key == "companies" and item["matchingUrls"]:
+                value["urls"] = item["matchingUrls"]
             result[key].append(value)
     return result
 
@@ -2134,7 +2266,15 @@ def render_combined_debug_images(
             ):
                 color, label = experience_specs[item_type]
                 for value in entry[key]:
-                    add(item_type, value, color, label)
+                    item_label = (
+                        "annotation: company"
+                        if (
+                        item_type == "company"
+                        and value.get("detectionMethod") == "url_company_reconciled"
+                        )
+                        else label
+                    )
+                    add(item_type, value, color, item_label)
 
     if education is not None:
         add(
@@ -2266,7 +2406,19 @@ def render_experience_debug_images(
             ("locations", "location"),
             ("urls", "url"),
         ):
-            items.extend({"type": item_type, **item} for item in entry[key])
+            items.extend(
+                {
+                    "type": item_type,
+                    **item,
+                    **(
+                        {"_debugLabel": "annotation: company"}
+                        if item_type == "company"
+                        and item.get("detectionMethod") == "url_company_reconciled"
+                        else {}
+                    ),
+                }
+                for item in entry[key]
+            )
         items.extend({"type": "paragraph", **item} for item in entry["paragraphs"])
         items.extend({"type": "bullet", **item} for item in entry["bullets"])
     _render_entry_debug_images(

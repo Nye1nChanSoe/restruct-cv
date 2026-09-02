@@ -64,7 +64,9 @@
             ],
             "confidence": 0.7488,
             "detectionMethod": "minilm_reconciled"
-          },
+          }
+        ],
+        "companies": [
           {
             "text": "Eastern Process Systems Co., Ltd.",
             "page": 1,
@@ -74,11 +76,10 @@
               366.11,
               495.2
             ],
-            "confidence": 0.6027,
-            "detectionMethod": "minilm_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9888
           }
         ],
-        "companies": [],
         "dates": [
           {
             "text": "Apr 2022 - Present",
@@ -260,8 +261,8 @@
               412.0,
               703.1
             ],
-            "confidence": 0.9582,
-            "detectionMethod": "distilbert_ner_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9582
           }
         ],
         "dates": [
@@ -434,8 +435,8 @@
               394.73,
               187.5
             ],
-            "confidence": 0.9954,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9954
           }
         ],
         "dates": [
@@ -574,7 +575,9 @@
             ],
             "confidence": 0.7196,
             "detectionMethod": "minilm_reconciled"
-          },
+          }
+        ],
+        "companies": [
           {
             "text": "Metro Metal Works",
             "page": 2,
@@ -584,11 +587,10 @@
               327.16,
               328.65
             ],
-            "confidence": 0.5021,
-            "detectionMethod": "minilm_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.996
           }
         ],
-        "companies": [],
         "dates": [
           {
             "text": "May 2014 - May 2016",

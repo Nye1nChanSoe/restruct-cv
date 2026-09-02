@@ -87,8 +87,8 @@
               268.05,
               444.68
             ],
-            "confidence": 0.9471,
-            "detectionMethod": "distilbert_ner_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9471
           }
         ],
         "dates": [
@@ -294,8 +294,8 @@
               272.96,
               84.65
             ],
-            "confidence": 0.9913,
-            "detectionMethod": "distilbert_ner_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9913
           }
         ],
         "dates": [
@@ -479,8 +479,8 @@
               241.16,
               343.49
             ],
-            "confidence": 0.9813,
-            "detectionMethod": "distilbert_ner_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9813
           }
         ],
         "dates": [

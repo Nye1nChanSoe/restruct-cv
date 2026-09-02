@@ -87,8 +87,8 @@
               134.9,
               276.2
             ],
-            "confidence": 0.9841,
-            "detectionMethod": "distilbert_ner_reconciled"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9841
           }
         ],
         "dates": [
@@ -250,8 +250,8 @@
               121.23,
               364.0
             ],
-            "confidence": 0.9226,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9226
           }
         ],
         "dates": [
