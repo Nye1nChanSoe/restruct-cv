@@ -1,0 +1,234 @@
+{
+  "header_profile": {
+    "name": "NATTAYA WONGSAKUL",
+    "job_titles": [
+      "Supply Chain Analyst",
+      "Inventory Planning",
+      "Data Analysis"
+    ],
+    "location": "Bangkok, Thailand",
+    "nationality": null,
+    "emails": [
+      "nattaya.wongsakul.test@example.com"
+    ],
+    "phones": [
+      "+66 92 555 6813"
+    ],
+    "urls": []
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Supply Chain Analyst with 4 years of experience in inventory analysis, demand planning\nsupport, procurement coordination, and operational reporting within consumer goods and\ndistribution businesses. Experienced in using Excel, Power BI, SQL, and ERP data to\nmonitor inventory levels, identify stock risks, analyze supplier performance, and support\nmonthly planning activities. Comfortable working with procurement, warehouse, sales,\nfinance, and logistics teams."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Supply Chain Analyst"
+      ],
+      "companies": [
+        "Aster Consumer Products (Thailand) Co., Ltd."
+      ],
+      "dates": [
+        "January 2024 – Present"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Analyze inventory levels, sales history, purchase orders, and demand data for\napproximately 1,200 active SKUs.",
+        "Prepare weekly inventory reports covering stock availability, slow-moving inventory,\nstock-out risks, and excess stock.",
+        "Build and maintain Power BI dashboards for inventory and supplier performance\nmonitoring.",
+        "Support monthly demand and supply planning meetings by preparing historical sales\nand inventory data.",
+        "Coordinate with procurement and warehouse teams regarding delayed purchase\norders and critical stock items.",
+        "Use Excel and SQL to clean, combine, and analyze operational data from ERP\nexports.",
+        "Monitor supplier lead times and highlight significant delivery delays to procurement\nteams.",
+        "Perform root-cause analysis on inventory discrepancies and recurring stock\navailability issues.",
+        "Assist management with ad hoc analysis for promotions, product launches, and\ninventory planning."
+      ]
+    },
+    {
+      "job_titles": [
+        "Inventory Planning Officer"
+      ],
+      "companies": [
+        "Metro Distribution Services Co., Ltd."
+      ],
+      "dates": [
+        "July 2022 – December 2023"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Monitored inventory movements across the company's central warehouse and\nregional distribution locations.",
+        "Prepared replenishment recommendations using sales history, current stock,\noutstanding orders, and minimum stock levels.",
+        "Maintained inventory planning spreadsheets and monthly KPI reports.",
+        "Coordinated with purchasing staff regarding replenishment orders and supplier\ndelivery schedules.",
+        "Investigated discrepancies between system inventory and warehouse reports.",
+        "Prepared reports on stock aging, inventory turnover, stock-outs, and excess\ninventory.",
+        "Worked with warehouse teams during monthly cycle counts and annual physical\ninventory checks."
+      ]
+    },
+    {
+      "job_titles": [
+        "Procurement Intern"
+      ],
+      "companies": [
+        "Thai Meridian Trading Co., Ltd."
+      ],
+      "dates": [
+        "January 2022 – April 2022"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Assisted procurement officers with purchase-order preparation and supplier quotation\ncomparisons.",
+        "Updated supplier information and purchasing records in Excel.",
+        "Followed up with suppliers regarding expected delivery dates.",
+        "Prepared basic purchasing and delivery-status reports.",
+        "Organized procurement documents including quotations, purchase orders, and\ndelivery records."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Bachelor of Business Administration in Logistics and Supply Chain\nManagement"
+      ],
+      "institutions": [
+        "Burapha University"
+      ],
+      "dates": [
+        "2018 – 2022"
+      ],
+      "locations": [
+        "Chon Buri, Thailand"
+      ],
+      "gpa": [
+        "GPA: 3.31 / 4.00"
+      ],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [
+        "Relevant coursework included Supply Chain Management, Inventory Management, Logistics\nManagement, Procurement, Operations Management, Business Statistics, and Management\nInformation Systems."
+      ],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": "Data & Reporting",
+      "paragraphs": [],
+      "bullets": [
+        "Microsoft Excel",
+        "PivotTables",
+        "XLOOKUP",
+        "Power Query",
+        "Power BI",
+        "SQL",
+        "Data Cleaning",
+        "Dashboard Development"
+      ],
+      "urls": []
+    },
+    {
+      "subheading": "Supply Chain",
+      "paragraphs": [],
+      "bullets": [
+        "Inventory Planning",
+        "Inventory Analysis",
+        "Demand Planning Support",
+        "Procurement Coordination",
+        "Supplier Performance Analysis",
+        "Purchase Order Monitoring",
+        "Stock Replenishment",
+        "Inventory Turnover Analysis",
+        "Stock Aging Analysis",
+        "Cycle Counting"
+      ],
+      "urls": []
+    },
+    {
+      "subheading": "Systems",
+      "paragraphs": [],
+      "bullets": [
+        "Microsoft Dynamics 365",
+        "Microsoft Office",
+        "Google Workspace"
+      ],
+      "urls": []
+    }
+  ],
+  "projects": [
+    {
+      "subheadings": [
+        "Inventory Performance Dashboard"
+      ],
+      "dates": [
+        "2023"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "Developed an internal Power BI dashboard using inventory and sales exports from the\ncompany's ERP system. The dashboard tracked stock availability, inventory aging, inventory\nturnover, and slow-moving products. Used Power Query for data transformation and created\ncalculated measures for monthly reporting."
+      ],
+      "bullets": []
+    }
+  ],
+  "certifications": [
+    {
+      "subheadings": [
+        "Microsoft Power BI for Business Analytics"
+      ],
+      "dates": [
+        "2024"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "Internal Corporate Training — 2024"
+      ],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "Advanced Microsoft Excel for Business"
+      ],
+      "dates": [
+        "2023"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "Professional Training Course — 2023"
+      ],
+      "bullets": []
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Thai: Native\nEnglish: Professional working proficiency"
+      ],
+      "bullets": []
+    }
+  ],
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null
+}

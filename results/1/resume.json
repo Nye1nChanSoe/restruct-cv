@@ -1,0 +1,204 @@
+{
+  "header_profile": {
+    "name": "SOMCHAI RATTANAKUL",
+    "job_titles": [
+      "Industrial Maintenance Technician",
+      "Mechanical & Electrical Maintenance"
+    ],
+    "location": "Samut Prakan, Thailand",
+    "nationality": null,
+    "emails": [
+      "somchai.rattanakul.test@example.com"
+    ],
+    "phones": [
+      "+66 81 555 2741"
+    ],
+    "urls": []
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Industrial Maintenance Technician with 7 years of hands-on experience maintaining\nproduction machinery, conveyor systems, pumps, motors, pneumatic equipment, and basic\nelectrical control systems in manufacturing environments. Experienced in preventive\nmaintenance, equipment troubleshooting, breakdown response, machine installation, and\nmaintenance documentation. Familiar with factory safety procedures, 5S, lockout/tagout\npractices, and working with production teams to reduce machine downtime."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Industrial Maintenance Technician"
+      ],
+      "companies": [
+        "Siam Precision Components Co., Ltd."
+      ],
+      "dates": [
+        "March 2022 – Present"
+      ],
+      "locations": [
+        "Bang Phli, Samut Prakan, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Perform preventive and corrective maintenance on production machinery, conveyor\nsystems, hydraulic units, pumps, motors, and pneumatic equipment.",
+        "Diagnose mechanical and basic electrical faults during production breakdowns.",
+        "Replace bearings, belts, chains, sensors, solenoid valves, cylinders, and other worn\nmachine components.",
+        "Inspect equipment according to daily, weekly, and monthly preventive maintenance\nschedules.",
+        "Support machine installation, alignment, testing, and commissioning activities.",
+        "Record maintenance activities, spare-parts usage, equipment faults, and completed\nrepairs.",
+        "Coordinate with production supervisors during emergency machine shutdowns.",
+        "Assist external contractors during major equipment servicing and facility\nmaintenance.",
+        "Follow factory safety procedures, PPE requirements, 5S standards, and\nlockout/tagout procedures."
+      ]
+    },
+    {
+      "job_titles": [
+        "Maintenance Mechanic"
+      ],
+      "companies": [
+        "Eastern Packaging Industries Co., Ltd."
+      ],
+      "dates": [
+        "June 2019 – February 2022"
+      ],
+      "locations": [
+        "Chon Buri, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Maintained packaging machines, rollers, gearboxes, conveyors, air compressors,\nand utility equipment.",
+        "Responded to mechanical breakdowns and performed fault inspection before repair.",
+        "Conducted lubrication, belt tension adjustment, bearing replacement, and equipment\ncleaning.",
+        "Assisted electricians with motor replacement, proximity sensor installation, and\ncontrol-panel inspection.",
+        "Performed basic welding and fabrication for machine guards, brackets, frames, and\nrepair work.",
+        "Prepared tools and replacement parts for scheduled maintenance.",
+        "Reported recurring equipment problems to the maintenance supervisor."
+      ]
+    },
+    {
+      "job_titles": [
+        "Junior Maintenance Technician"
+      ],
+      "companies": [
+        "Metro Food Processing Co., Ltd."
+      ],
+      "dates": [
+        "May 2017 – May 2019"
+      ],
+      "locations": [
+        "Samut Prakan, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Assisted senior technicians with preventive maintenance of food-processing and\npackaging equipment.",
+        "Inspected motors, pumps, bearings, chains, and pneumatic lines.",
+        "Replaced damaged mechanical components under supervision.",
+        "Maintained workshop tools and spare-parts storage areas.",
+        "Completed basic maintenance checklists and equipment inspection records.",
+        "Followed hygiene and safety requirements for food-production areas."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Higher Vocational Certificate (ปวส.)"
+      ],
+      "institutions": [
+        "Samut Prakan Technical College"
+      ],
+      "dates": [
+        "2015 – 2017"
+      ],
+      "locations": [
+        "Samut Prakan, Thailand"
+      ],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    },
+    {
+      "titles": [
+        "Vocational Certificate (ปวช.)"
+      ],
+      "institutions": [
+        "Samut Prakan Technical College"
+      ],
+      "dates": [
+        "2012 – 2015"
+      ],
+      "locations": [
+        "Samut Prakan, Thailand"
+      ],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": null,
+      "paragraphs": [],
+      "bullets": [
+        "Preventive Maintenance",
+        "Corrective Maintenance",
+        "Mechanical Troubleshooting",
+        "Industrial Machinery Maintenance",
+        "Conveyor Systems",
+        "Pumps and Electric Motors",
+        "Bearings, Belts and Chain Drives",
+        "Pneumatic Systems",
+        "Basic Hydraulic Systems",
+        "Basic Electrical Troubleshooting",
+        "Sensors and Limit Switches",
+        "Hand and Power Tools",
+        "Basic Welding and Fabrication",
+        "Equipment Installation",
+        "Maintenance Documentation",
+        "Spare Parts Inspection",
+        "5S Workplace Organization"
+      ],
+      "urls": []
+    }
+  ],
+  "projects": null,
+  "certifications": null,
+  "licenses": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Basic Occupational Safety Training",
+        "Lockout/Tagout Awareness",
+        "Fire Safety and Emergency Response Training",
+        "Forklift Safety Awareness",
+        "Internal 5S Training"
+      ]
+    }
+  ],
+  "tools_equipment": null,
+  "languages": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Thai: Native\nEnglish: Basic working proficiency"
+      ],
+      "bullets": []
+    }
+  ],
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null
+}

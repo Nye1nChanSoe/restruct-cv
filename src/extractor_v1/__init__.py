@@ -56,6 +56,7 @@ from extractor_v1.routing import (
     write_supplementary_sections_debug,
     write_summary_debug,
 )
+from extractor_v1.schema import build_v1_resume, write_v1_resume
 
 
 _EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}")
@@ -1058,7 +1059,8 @@ def extract_resume(
         skills_debug_directory = output_directory / "debug" / "skills"
         projects_debug_directory = output_directory / "debug" / "projects"
         header_debug_directory.mkdir(parents=True, exist_ok=True)
-        (header_debug_directory / "header.json").write_text(
+        (header_debug_directory / "header.json").unlink(missing_ok=True)
+        (header_debug_directory / "header-raw.json").write_text(
             json.dumps(
                 {
                     "source": pdf_path.name,
@@ -1150,6 +1152,18 @@ def extract_resume(
             projects,
             supplementary_sections,
             output_directory / "debug",
+        )
+        write_v1_resume(
+            output_directory,
+            build_v1_resume(
+                header_profile=header_profile,
+                summary=summary,
+                experience=experience,
+                education=education,
+                skills=skills,
+                projects=projects,
+                supplementary_sections=supplementary_sections,
+            ),
         )
 
 

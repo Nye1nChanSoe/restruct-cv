@@ -1,0 +1,231 @@
+{
+  "header_profile": {
+    "name": null,
+    "job_titles": [
+      "ALEX MORGAN",
+      "Software Engineer",
+      "Backend & Data Systems"
+    ],
+    "location": "Bangkok, Thailand",
+    "nationality": null,
+    "emails": [
+      "alex.morgan@example.com"
+    ],
+    "phones": [
+      "+66 81 555 0184"
+    ],
+    "urls": [
+      {
+        "text": "github.com/alexmorgan-dev",
+        "url": "github.com/alexmorgan-dev"
+      },
+      {
+        "text": "linkedin.com/in/alexmorgan-dev",
+        "url": "linkedin.com/in/alexmorgan-dev"
+      }
+    ]
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Software engineer with 4+ years of experience building backend services, data pipelines, and internal platforms. Strong in\nTypeScript, Python, Go, PostgreSQL, REST APIs, and cloud-native systems. Experienced with event-driven processing,\nweb scraping, observability, and practical machine-learning integration."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Software Engineer"
+      ],
+      "companies": [
+        "Orbit Labs Co., Ltd."
+      ],
+      "dates": [
+        "Jan 2024 - Present"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Designed and maintained TypeScript and Go services handling approximately 1.5 million API requests per day.",
+        "Built a PostgreSQL-backed job processing system with retry policies, idempotency, and structured application logs.",
+        "Reduced median API latency by 38% by profiling database queries, adding targeted indexes, and introducing Redis caching.",
+        "Developed Playwright-based data collectors that ran independently across multiple sources and persisted normalized results to\nSQLite.",
+        "Integrated local LLM inference for structured text extraction using JSON schemas and deterministic post-processing."
+      ]
+    },
+    {
+      "job_titles": [
+        "Junior Backend Developer"
+      ],
+      "companies": [
+        "Northstar Digital"
+      ],
+      "dates": [
+        "Jun 2022 - Dec 2023"
+      ],
+      "locations": [
+        "Yangon, Myanmar"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Implemented REST endpoints and background tasks in Python using FastAPI and PostgreSQL.",
+        "Created ETL scripts for CSV and API datasets, including validation, deduplication, and daily reporting.",
+        "Added Docker-based local development environments and CI checks that reduced environment-related onboarding issues.",
+        "Wrote unit and integration tests for authentication, billing, and data-import workflows."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "M.Sc. Computer Science"
+      ],
+      "institutions": [
+        "Asia Institute of Technology"
+      ],
+      "dates": [
+        "2020 - 2022"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Coursework: Distributed Systems, Machine Learning, Advanced Databases, Cloud Computing."
+      ]
+    },
+    {
+      "titles": [
+        "B.Sc. Computer Science"
+      ],
+      "institutions": [
+        "Riverland University"
+      ],
+      "dates": [
+        "2016 - 2020"
+      ],
+      "locations": [
+        "Yangon, Myanmar"
+      ],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": "Languages",
+      "paragraphs": [
+        "TypeScript, JavaScript, Python, Go, SQL, Java"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Backend",
+      "paragraphs": [
+        "Node.js, Express, FastAPI, REST APIs, WebSockets, background workers"
+      ],
+      "bullets": [],
+      "urls": [
+        {
+          "text": "Node.js",
+          "url": "Node.js"
+        }
+      ]
+    },
+    {
+      "subheading": "Data",
+      "paragraphs": [
+        "PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Cloud & DevOps",
+      "paragraphs": [
+        "AWS, GCP, Docker, GitHub Actions, Linux, Nginx"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "AI/ML",
+      "paragraphs": [
+        "scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Tools",
+      "paragraphs": [
+        "Git, Playwright, Neovim, Postman, Grafana"
+      ],
+      "bullets": [],
+      "urls": []
+    }
+  ],
+  "projects": [
+    {
+      "subheadings": [
+        "LinkedOut - Local Job Discovery & Resume Matching Platform"
+      ],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Built a TypeScript + Playwright pipeline for collecting job listings and details into SQLite.",
+        "Implemented resume and job-description extraction using deterministic parsing, NER enrichment, local LLM inference, and\nexplainable scoring.",
+        "Designed the pipeline so embeddings and semantic retrieval can be added later without changing the source-of-truth data\nmodel."
+      ]
+    },
+    {
+      "subheadings": [
+        "Realtime Metrics Dashboard"
+      ],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Created a Go backend and WebSocket stream for live application metrics with PostgreSQL persistence.",
+        "Containerized services with Docker and deployed a small production environment on AWS."
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "subheadings": [
+        "Certifications: AWS Certified Cloud Practitioner (2024); Google Cloud Digital Leader (2023)"
+      ],
+      "dates": [
+        "2024",
+        "2023"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "Languages: English (Professional), Burmese (Native), Thai (Conversational)"
+      ],
+      "bullets": []
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": null,
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null
+}

@@ -1,0 +1,199 @@
+{
+  "header_profile": {
+    "name": "THANAWAT PRASERT",
+    "job_titles": [
+      "Civil Engineer",
+      "Site Engineer",
+      "Structural & Construction Works"
+    ],
+    "location": "Bangkok, Thailand",
+    "nationality": "Thai National",
+    "emails": [
+      "thanawat.prasert@example.com"
+    ],
+    "phones": [],
+    "urls": []
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Civil Engineer with over 7 years of experience in building construction, reinforced concrete works, structural coordination,\nquantity checking, subcontractor supervision, progress reporting, and site quality control. Experienced on commercial\nbuildings, residential towers, warehouse structures, drainage works, and renovation projects. Comfortable working directly\nwith consultants, foremen, subcontractors, suppliers, and project managers in fast-moving site environments."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Site Engineer"
+      ],
+      "companies": [
+        "Siam Urban Construction Co., Ltd."
+      ],
+      "dates": [
+        "Mar 2022 - Present"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Supervise structural and architectural works for a 28-storey mixed-use residential project, including foundations, columns,\nbeams, slabs, masonry, waterproofing, and finishing interfaces.",
+        "Coordinate daily activities of 4 subcontractor teams and approximately 60-90 site workers depending on construction stage.",
+        "Review IFC drawings, shop drawings, bar bending schedules, and site conditions before work proceeds; raise RFls when\ndrawings conflict with actual conditions.",
+        "Prepare inspection requests for rebar, formwork, embedded items, concrete pours, waterproofing, and completed works for\nconsultant approval.",
+        "Check quantity and delivery of concrete, reinforcement steel, formwork materials, blocks, and finishing materials against\nplanned usage.",
+        "Track weekly progress against the master schedule and prepare concise site progress updates for the project manager.",
+        "Coordinate concrete pours with batching plant, pump supplier, laboratory technician, and consultant inspector; monitor\nslump test, cube sampling, and pour sequence.",
+        "Support resolution of site issues including level differences, opening mismatches, MEP clashes, delayed materials, and\nsubcontractor manpower shortages."
+      ]
+    },
+    {
+      "job_titles": [
+        "Site Engineer",
+        "Metro Build & Engineering Co., Ltd."
+      ],
+      "companies": [],
+      "dates": [
+        "Jun 2019 - Feb 2022"
+      ],
+      "locations": [
+        "Samut Prakan, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Supervised construction of warehouse and light-industrial buildings including pile caps, ground beams, reinforced concrete\nfloors, steel structure interfaces, drainage, and external works.",
+        "Checked line, level, dimensions, reinforcement spacing, cover, anchor bolt locations, and embedded items before\ninspections and concrete placement.",
+        "Prepared daily site reports with manpower, equipment, work progress, material arrivals, weather conditions, and key site\nissues.",
+        "Worked with survey team for gridline setting out, slab levels, column positions, and external drainage alignment.",
+        "Verified subcontractor work quantities for progress claims and assisted quantity surveyor with measurement checks.",
+        "Maintained records of concrete test results, material approvals, inspection requests, and non-conformance corrective\nactions.",
+        "Coordinated corrective works when site installation did not match approved drawings or consultant comments."
+      ]
+    },
+    {
+      "job_titles": [
+        "Junior Civil Engineer",
+        "Eastern Infrastructure Services"
+      ],
+      "companies": [],
+      "dates": [
+        "May 2017 - May 2019"
+      ],
+      "locations": [
+        "Chonburi, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Assisted senior engineers with site supervision for road improvement, drainage, retaining wall, and small reinforced\nconcrete structures.",
+        "Measured completed work and prepared basic quantity calculations for earthwork, concrete, reinforcement, formwork, and\ndrainage pipes.",
+        "Checked contractor workmanship and reported defects or deviations to the supervising engineer.",
+        "Prepared AutoCAD mark-ups and simple as-built drawings based on field measurements.",
+        "Recorded site photos, inspection notes, daily progress, and material delivery information."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Bachelor of Engineering (Civil Engineering)"
+      ],
+      "institutions": [
+        "Rajamangala University of Technology"
+      ],
+      "dates": [
+        "2013 - 2017"
+      ],
+      "locations": [
+        "Thailand"
+      ],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": null,
+      "paragraphs": [],
+      "bullets": [
+        "Construction site supervision - QA/QC documentation",
+        "Reinforced concrete works - Concrete pour planning",
+        "Structural drawings & shop drawings - AutoCAD",
+        "Quantity take-off & BOQ checking - Microsoft Excel",
+        "Method statements & inspection requests - MS Project - basic",
+        "Daily/weekly progress reports - Survey coordination",
+        "Subcontractor coordination - Safety coordination"
+      ],
+      "urls": []
+    }
+  ],
+  "projects": [
+    {
+      "subheadings": [
+        "Rama IX Mixed-Use Residence, Bangkok"
+      ],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "28-storey reinforced concrete structure; approximately 42,000 sq.m. gross floor area. Responsible for structural floor cycle\ncoordination, inspections, pour planning, and subcontractor follow-up."
+      ],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "Bang Na Logistics Warehouse, Samut Prakan"
+      ],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Large warehouse development with RC foundations, slab-on-ground, drainage, loading areas, and structural steel interfaces.\nChonburi Industrial Access & Drainage Works\nRoad rehabilitation, side drains, manholes, culverts, and retaining wall works supporting industrial estate access."
+      ],
+      "bullets": []
+    }
+  ],
+  "certifications": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Construction Safety for Supervisors - internal certified training",
+        "Working at Height Awareness",
+        "Basic First Aid and Emergency Response",
+        "AutoCAD for Construction Drawings",
+        "Concrete Quality Control and Site Testing - company workshop"
+      ]
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Synthetic resume created for document extraction / OCR testing. Not a real person"
+      ],
+      "bullets": [
+        "Thai: Native",
+        "English: Working proficiency - comfortable reading drawings, specifications, RFls, and technical emails",
+        "Driving licence: Thai private car licence",
+        "Work preference: Site engineering, construction supervision, structural coordination, QA/QC support",
+        "Availability: 30 days' notice"
+      ]
+    }
+  ],
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null
+}
