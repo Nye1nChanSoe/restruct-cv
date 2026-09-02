@@ -1,0 +1,8 @@
+Contextual Understanding
+
+summary section:
+experience section:
+    Extracted paragraphs can later be analyzed by,
+    splitting into pharases/noun chunks.
+    Extract and alias matching against a skill dictionary
+    MiniLM similarity only for unmatched candidates

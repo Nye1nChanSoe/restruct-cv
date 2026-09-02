@@ -1,0 +1,46 @@
+{
+  "source": "7.anomaly.pdf",
+  "experience": {
+    "sectionType": "experience",
+    "heading": {
+      "text": "Work Style",
+      "page": 1,
+      "bbox": [
+        77.1,
+        420.11,
+        123.57,
+        430.15
+      ],
+      "similarity": 0.6262,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "subheadingLines": [],
+        "jobTitles": [],
+        "companies": [],
+        "dates": [],
+        "locations": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Shift work, overtime, production support, team coordination, job handover, basic work\nrecords, material control",
+            "page": 1,
+            "bbox": [
+              170.7,
+              420.11,
+              512.74,
+              442.05
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "experience",
+      "text": "EMPLOYMENT HISTORY"
+    }
+  }
+}

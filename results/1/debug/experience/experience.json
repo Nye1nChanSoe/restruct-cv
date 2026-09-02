@@ -1,0 +1,23 @@
+{
+  "source": "1.pdf",
+  "experience": {
+    "sectionType": "experience",
+    "heading": {
+      "text": "WORK EXPERIENCE",
+      "page": 1,
+      "bbox": [
+        72.0,
+        366.91,
+        244.78,
+        385.91
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [],
+    "stoppedAtSection": {
+      "sectionType": "skills",
+      "text": "Industrial Maintenance Technician"
+    }
+  }
+}

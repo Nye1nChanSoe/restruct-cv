@@ -1,0 +1,497 @@
+{
+  "source": "6.pdf",
+  "experience": {
+    "sectionType": "experience",
+    "heading": {
+      "text": "PROFESSIONAL EXPERIENCE",
+      "page": 1,
+      "bbox": [
+        46.9,
+        249.75,
+        200.18,
+        261.47
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "subheadingLines": [
+          {
+            "text": "Orbit Labs Co., Ltd.",
+            "page": 1,
+            "bbox": [
+              46.9,
+              265.6,
+              134.9,
+              276.2
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Jan 2024 - Present",
+            "page": 1,
+            "bbox": [
+              453.95,
+              265.61,
+              532.93,
+              275.65
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Software Engineer",
+            "page": 1,
+            "bbox": [
+              46.9,
+              278.11,
+              120.89,
+              288.15
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Bangkok, Thailand",
+            "page": 1,
+            "bbox": [
+              458.45,
+              278.11,
+              532.95,
+              288.15
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Software Engineer",
+            "page": 1,
+            "bbox": [
+              46.9,
+              278.11,
+              120.89,
+              288.15
+            ],
+            "confidence": 1.0,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [
+          {
+            "text": "Or",
+            "page": 1,
+            "bbox": [
+              46.9,
+              265.6,
+              57.95,
+              276.2
+            ],
+            "confidence": 0.9953,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "bit Labs Co., Ltd",
+            "page": 1,
+            "bbox": [
+              57.95,
+              265.6,
+              132.27,
+              276.2
+            ],
+            "confidence": 0.9841,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [
+          {
+            "text": "Jan 2024 - Present",
+            "page": 1,
+            "bbox": [
+              453.95,
+              265.61,
+              532.93,
+              275.65
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Bangkok",
+            "page": 1,
+            "bbox": [
+              458.45,
+              278.11,
+              493.46,
+              288.15
+            ],
+            "confidence": 0.9959,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Thailand",
+            "page": 1,
+            "bbox": [
+              498.45,
+              278.11,
+              532.95,
+              288.15
+            ],
+            "confidence": 0.9976,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Designed and maintained TypeScript and Go services handling approximately 1.5 million API requests per day.\nBuilt a PostgreSQL-backed job processing system with retry policies, idempotency, and structured application logs.\nReduced median API latency by 38% by profiling database queries, adding targeted indexes, and introducing Redis caching.\nDeveloped Playwright-based data collectors that ran independently across multiple sources and persisted normalized results to",
+            "page": 1,
+            "bbox": [
+              52.65,
+              289.4,
+              567.59,
+              332.66
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "SQLite.",
+            "page": 1,
+            "bbox": [
+              59.85,
+              332.06,
+              89.83,
+              342.1
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [],
+        "companies": [
+          {
+            "text": "S",
+            "page": 1,
+            "bbox": [
+              59.85,
+              332.06,
+              65.84,
+              342.1
+            ],
+            "confidence": 0.9683,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "QL",
+            "page": 1,
+            "bbox": [
+              65.84,
+              332.06,
+              77.84,
+              342.1
+            ],
+            "confidence": 0.884,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "ite",
+            "page": 1,
+            "bbox": [
+              77.84,
+              332.06,
+              87.34,
+              342.1
+            ],
+            "confidence": 0.8893,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [],
+        "locations": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Integrated local LLM inference for structured text extraction using JSON schemas and deterministic post-processing.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              341.75,
+              522.88,
+              353.51
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "Northstar Digital",
+            "page": 1,
+            "bbox": [
+              46.9,
+              353.4,
+              121.23,
+              364.0
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Jun 2022 - Dec 2023",
+            "page": 1,
+            "bbox": [
+              447.4,
+              353.4,
+              532.89,
+              363.45
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Junior Backend Developer",
+            "page": 1,
+            "bbox": [
+              46.9,
+              365.9,
+              152.45,
+              375.95
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Yangon, Myanmar",
+            "page": 1,
+            "bbox": [
+              459.45,
+              365.9,
+              532.95,
+              375.95
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Implemented REST endpoints and background tasks in Python using FastAPI and PostgreSQL.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              377.2,
+              440.41,
+              388.96
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Created ETL scripts for CSV and API datasets, including validation, deduplication, and daily reporting.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              387.7,
+              464.89,
+              399.46
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Junior Backend Developer",
+            "page": 1,
+            "bbox": [
+              46.9,
+              365.9,
+              152.45,
+              375.95
+            ],
+            "confidence": 0.7954,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [
+          {
+            "text": "North",
+            "page": 1,
+            "bbox": [
+              46.9,
+              353.4,
+              72.19,
+              364.0
+            ],
+            "confidence": 0.9226,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "star Digital",
+            "page": 1,
+            "bbox": [
+              72.19,
+              353.4,
+              121.23,
+              364.0
+            ],
+            "confidence": 0.9625,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Fast",
+            "page": 1,
+            "bbox": [
+              336.92,
+              377.86,
+              354.41,
+              387.9
+            ],
+            "confidence": 0.603,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "AP",
+            "page": 1,
+            "bbox": [
+              354.41,
+              377.86,
+              366.4,
+              387.9
+            ],
+            "confidence": 0.8404,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "I",
+            "page": 1,
+            "bbox": [
+              59.85,
+              377.86,
+              62.34,
+              387.9
+            ],
+            "confidence": 0.8293,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "g",
+            "page": 1,
+            "bbox": [
+              218.86,
+              377.86,
+              223.87,
+              387.9
+            ],
+            "confidence": 0.5273,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "re",
+            "page": 1,
+            "bbox": [
+              114.34,
+              377.86,
+              126.83,
+              387.9
+            ],
+            "confidence": 0.5574,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "QL",
+            "page": 1,
+            "bbox": [
+              425.92,
+              377.86,
+              437.91,
+              387.9
+            ],
+            "confidence": 0.5673,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "API",
+            "page": 1,
+            "bbox": [
+              193.31,
+              388.36,
+              207.79,
+              398.4
+            ],
+            "confidence": 0.508,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [
+          {
+            "text": "Jun 2022 - Dec 2023",
+            "page": 1,
+            "bbox": [
+              447.4,
+              353.4,
+              532.89,
+              363.45
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Yang",
+            "page": 1,
+            "bbox": [
+              459.45,
+              365.9,
+              480.46,
+              375.95
+            ],
+            "confidence": 0.9736,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "on",
+            "page": 1,
+            "bbox": [
+              480.46,
+              365.9,
+              490.46,
+              375.95
+            ],
+            "confidence": 0.9807,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Myanmar",
+            "page": 1,
+            "bbox": [
+              495.45,
+              365.9,
+              532.95,
+              375.95
+            ],
+            "confidence": 0.9953,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Added Docker-based local development environments and CI checks that reduced environment-related onboarding issues.\nWrote unit and integration tests for authentication, billing, and data-import workflows.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              398.2,
+              548.56,
+              420.46
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "projects",
+      "text": "PROJECTS"
+    }
+  }
+}

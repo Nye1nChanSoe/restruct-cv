@@ -65,6 +65,7 @@ class DistilBertNerPredictor:
     }
     _TYPE_TO_LABEL = {
         "PER": "person name",
+        "ORG": "organization",
         "LOC": "location",
         "MISC": "nationality",
     }
@@ -544,3 +545,44 @@ def semantic_job_title_matches(
             continue
         accepted.append(phrase_match)
     return accepted
+
+
+def classify_job_title_candidates(
+    model: EmbeddingModel,
+    candidates: list[str],
+) -> list[tuple[bool, float]]:
+    """Classify short experience metadata segments as possible job titles."""
+    if not candidates:
+        return []
+    positive_references = [
+        reference
+        for references in SETTINGS.job_title_references.values()
+        for reference in references
+    ]
+    negative_references = [
+        reference
+        for references in SETTINGS.job_title_negative_references.values()
+        for reference in references
+    ]
+    positive_embeddings = model.encode(
+        positive_references,
+        normalize_embeddings=True,
+    )
+    negative_embeddings = model.encode(
+        negative_references,
+        normalize_embeddings=True,
+    )
+    candidate_embeddings = model.encode(candidates, normalize_embeddings=True)
+    classified: list[tuple[bool, float]] = []
+    for embedding in candidate_embeddings:
+        positive_score = float((embedding @ positive_embeddings.T).max())
+        negative_score = float((embedding @ negative_embeddings.T).max())
+        classified.append(
+            (
+                positive_score >= SETTINGS.job_title.similarity_threshold
+                and positive_score - negative_score
+                >= SETTINGS.job_title.winner_margin,
+                positive_score,
+            )
+        )
+    return classified

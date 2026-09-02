@@ -1,0 +1,652 @@
+{
+  "source": "5.ocr.pdf",
+  "experience": {
+    "sectionType": "experience",
+    "heading": {
+      "text": "PROFESSIONAL EXPERIENCE",
+      "page": 1,
+      "bbox": [
+        52.08,
+        325.92,
+        204.48,
+        334.8
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "subheadingLines": [
+          {
+            "text": "Senior Site Engineer Mar 2022 - Present",
+            "page": 1,
+            "bbox": [
+              51.6,
+              342.24,
+              544.32,
+              352.32
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Siam Urban Construction Co., Ltd. - Bangkok, Thailand",
+            "page": 1,
+            "bbox": [
+              51.6,
+              354.96,
+              285.84,
+              364.56
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "* Supervise structural and architectural works for a 28-storey mixed-use residential project, including foundations, columns,",
+            "page": 1,
+            "bbox": [
+              51.6,
+              368.88,
+              532.56,
+              379.68
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "* Supervise structural and architectural works for a 28-storey mixed-use residential project, including foundations, columns",
+            "page": 1,
+            "bbox": [
+              51.6,
+              368.88,
+              528.71,
+              379.68
+            ],
+            "confidence": 0.4808,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [
+          {
+            "text": "Si",
+            "page": 1,
+            "bbox": [
+              51.6,
+              354.96,
+              60.44,
+              364.56
+            ],
+            "confidence": 0.9897,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "am Urban Construction Co., Ltd",
+            "page": 1,
+            "bbox": [
+              60.44,
+              354.96,
+              193.03,
+              364.56
+            ],
+            "confidence": 0.9206,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [
+          {
+            "text": "Mar 2022 - Present",
+            "page": 1,
+            "bbox": [
+              316.91,
+              342.24,
+              544.32,
+              352.32
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Bangkok",
+            "page": 1,
+            "bbox": [
+              210.71,
+              354.96,
+              241.64,
+              364.56
+            ],
+            "confidence": 0.9737,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Thailand",
+            "page": 1,
+            "bbox": [
+              250.48,
+              354.96,
+              285.84,
+              364.56
+            ],
+            "confidence": 0.9937,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "beams, slabs, masonry, waterproofing, and finishing interfaces.\n* Coordinate daily activities of 4 subcontractor teams and approximately 60-90 site workers depending on construction stage.\n* Review IFC drawings, shop drawings, bar bending schedules, and site conditions before work proceeds; raise RFls when\ndrawings conflict with actual conditions.\n* Prepare inspection requests for rebar, formwork, embedded items, concrete pours, waterproofing, and completed works for",
+            "page": 1,
+            "bbox": [
+              51.36,
+              380.16,
+              540.24,
+              440.64
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "consultant approval.",
+            "page": 1,
+            "bbox": [
+              60.96,
+              441.36,
+              138.96,
+              450.0
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "consultant approval.",
+            "page": 1,
+            "bbox": [
+              60.96,
+              441.36,
+              138.96,
+              450.0
+            ],
+            "confidence": 0.7911,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [],
+        "dates": [],
+        "locations": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "* Check quantity and delivery of concrete, reinforcement steel, formwork materials, blocks, and finishing materials against\nplanned usage.",
+            "page": 1,
+            "bbox": [
+              51.12,
+              453.84,
+              526.8,
+              473.76
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "* Track weekly progress against the master schedule and prepare concise site progress updates for the project manager.",
+            "page": 1,
+            "bbox": [
+              50.88,
+              478.08,
+              525.36,
+              488.88
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "* Coordinate concrete pours with batching plant, pump supplier, laboratory technician, and consultant inspector; monitor",
+            "page": 1,
+            "bbox": [
+              50.88,
+              490.8,
+              520.32,
+              501.6
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "* Track weekly progress against the master schedule and prepare concise site progress updates for the project manager.",
+            "page": 1,
+            "bbox": [
+              50.88,
+              478.08,
+              525.36,
+              488.88
+            ],
+            "confidence": 0.5156,
+            "detectionMethod": "semantic_similarity"
+          },
+          {
+            "text": "* Coordinate concrete pours with batching plant, pump supplier, laboratory technician, and consultant inspector; monitor",
+            "page": 1,
+            "bbox": [
+              50.88,
+              490.8,
+              520.32,
+              501.6
+            ],
+            "confidence": 0.4824,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [],
+        "dates": [],
+        "locations": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "slump test, cube sampling, and pour sequence.\n* Support resolution of site issues including level differences, opening mismatches, MEP clashes, delayed materials, and\nsubcontractor manpower shortages.",
+            "page": 1,
+            "bbox": [
+              50.88,
+              502.08,
+              523.2,
+              535.2
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "Site Engineer Jun 2019 - Feb 2022",
+            "page": 2,
+            "bbox": [
+              50.16,
+              54.48,
+              542.88,
+              64.8
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Metro Build & Engineering Co., Ltd. - Samut Prakan, Thailand",
+            "page": 2,
+            "bbox": [
+              50.4,
+              67.2,
+              311.04,
+              76.56
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [],
+        "companies": [
+          {
+            "text": "Metro Build & Engineering Co.",
+            "page": 2,
+            "bbox": [
+              50.4,
+              67.2,
+              176.38,
+              76.56
+            ],
+            "confidence": 0.9915,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Ltd",
+            "page": 2,
+            "bbox": [
+              185.06,
+              67.2,
+              198.1,
+              76.56
+            ],
+            "confidence": 0.6356,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Sam",
+            "page": 2,
+            "bbox": [
+              215.47,
+              67.2,
+              228.5,
+              76.56
+            ],
+            "confidence": 0.8472,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "ut",
+            "page": 2,
+            "bbox": [
+              228.5,
+              67.2,
+              237.19,
+              76.56
+            ],
+            "confidence": 0.8217,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [
+          {
+            "text": "Jun 2019 - Feb 2022",
+            "page": 2,
+            "bbox": [
+              259.19,
+              54.48,
+              542.88,
+              64.8
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Prakan",
+            "page": 2,
+            "bbox": [
+              241.54,
+              67.2,
+              267.6,
+              76.56
+            ],
+            "confidence": 0.5285,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Thailand",
+            "page": 2,
+            "bbox": [
+              276.29,
+              67.2,
+              311.04,
+              76.56
+            ],
+            "confidence": 0.9901,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "* Supervised construction of warehouse and light-industrial buildings including pile caps, ground beams, reinforced concrete\nfloors, steel structure interfaces, drainage, and external works.\n* Checked line, level, dimensions, reinforcement spacing, cover, anchor bolt locations, and embedded items before\ninspections and concrete placement.\n* Prepared daily site reports with manpower, equipment, work progress, material arrivals, weather conditions, and key site\nissues.\n* Worked with survey team for gridline setting out, slab levels, column positions, and external drainage alignment.",
+            "page": 2,
+            "bbox": [
+              50.16,
+              81.12,
+              535.44,
+              162.72
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "+ Verified subcontractor work quantities for progress claims and assisted quantity surveyor with measurement checks.",
+            "page": 2,
+            "bbox": [
+              50.4,
+              166.08,
+              510.96,
+              175.68
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "+ Verified subcontractor work quantities for progress claims and assisted quantity surveyor with measurement checks.",
+            "page": 2,
+            "bbox": [
+              50.4,
+              166.08,
+              510.96,
+              175.68
+            ],
+            "confidence": 0.722,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [],
+        "dates": [],
+        "locations": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "* Maintained records of concrete test results, material approvals, inspection requests, and non-conformance corrective\nactions.\n* Coordinated corrective works when site installation did not match approved drawings or consultant comments.",
+            "page": 2,
+            "bbox": [
+              50.64,
+              179.04,
+              514.32,
+              212.16
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "Junior Civil Engineer May 2017 - May 2019",
+            "page": 2,
+            "bbox": [
+              50.4,
+              219.6,
+              543.36,
+              229.92
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Eastern Infrastructure Services - Chonburi, Thailand",
+            "page": 2,
+            "bbox": [
+              50.88,
+              232.32,
+              273.6,
+              240.96
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "* Assisted senior engineers with site supervision for road improvement, drainage, retaining wall, and small reinforced",
+            "page": 2,
+            "bbox": [
+              50.88,
+              245.76,
+              507.36,
+              255.36
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "* Assisted senior engineers with site supervision for road improvement, drainage, retaining wall, and small reinforced",
+            "page": 2,
+            "bbox": [
+              50.88,
+              245.76,
+              507.36,
+              255.36
+            ],
+            "confidence": 0.503,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [
+          {
+            "text": "Eastern Infrastructure Services",
+            "page": 2,
+            "bbox": [
+              50.88,
+              232.32,
+              183.66,
+              240.96
+            ],
+            "confidence": 0.9873,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [
+          {
+            "text": "May 2017 - May 2019",
+            "page": 2,
+            "bbox": [
+              314.92,
+              219.6,
+              543.36,
+              229.92
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Cho",
+            "page": 2,
+            "bbox": [
+              196.5,
+              232.32,
+              209.35,
+              240.96
+            ],
+            "confidence": 0.9899,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "n",
+            "page": 2,
+            "bbox": [
+              209.35,
+              232.32,
+              213.64,
+              240.96
+            ],
+            "confidence": 0.9764,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "bur",
+            "page": 2,
+            "bbox": [
+              213.64,
+              232.32,
+              226.49,
+              240.96
+            ],
+            "confidence": 0.9857,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "i",
+            "page": 2,
+            "bbox": [
+              226.49,
+              232.32,
+              230.77,
+              240.96
+            ],
+            "confidence": 0.9939,
+            "detectionMethod": "distilbert_ner"
+          },
+          {
+            "text": "Thailand",
+            "page": 2,
+            "bbox": [
+              239.34,
+              232.32,
+              273.6,
+              240.96
+            ],
+            "confidence": 0.9974,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "concrete structures.\n* Measured completed work and prepared basic quantity calculations for earthwork, concrete, reinforcement, formwork, and",
+            "page": 2,
+            "bbox": [
+              50.88,
+              258.72,
+              534.72,
+              279.36
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "drainage pipes.",
+            "page": 2,
+            "bbox": [
+              60.72,
+              282.24,
+              120.0,
+              290.64
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "drainage pipes.",
+            "page": 2,
+            "bbox": [
+              60.72,
+              282.24,
+              120.0,
+              290.64
+            ],
+            "confidence": 0.538,
+            "detectionMethod": "semantic_similarity"
+          }
+        ],
+        "companies": [],
+        "dates": [],
+        "locations": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "* Checked contractor workmanship and reported defects or deviations to the supervising engineer.\n* Prepared AutoCAD mark-ups and simple as-built drawings based on field measurements.\n+ Recorded site photos, inspection notes, daily progress, and material delivery information.",
+            "page": 2,
+            "bbox": [
+              50.88,
+              294.24,
+              436.56,
+              330.0
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "projects",
+      "text": "SELECTED PROJECT EXPERIENCE"
+    }
+  }
+}
