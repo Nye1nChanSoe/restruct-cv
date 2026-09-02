@@ -1063,6 +1063,8 @@ def _render_entry_debug_images(
         pixmap = page.get_pixmap(matrix=matrix, alpha=False)
         image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
         draw = ImageDraw.Draw(image)
+        page_item_boxes = [_pixel_box(item["bbox"]) for item in page_items]
+        placed_label_boxes: list[tuple[int, int, int, int]] = []
         for item_index, item in enumerate(page_items):
             item_type = item["type"]
             box = _pixel_box(item["bbox"])
@@ -1081,7 +1083,6 @@ def _render_entry_debug_images(
                     )
                 ),
             )
-            label_level = item_index % 3 + 1
             label = labels[item_type]
             measured_label_box = draw.textbbox((0, 0), label)
             label_width = measured_label_box[2] - measured_label_box[0]
@@ -1102,14 +1103,41 @@ def _render_entry_debug_images(
             else:
                 label_position = (
                     box[0] + SETTINGS.debug.label_x_padding,
-                    max(
-                        0,
-                        box[1] - SETTINGS.debug.label_y_offset * label_level,
-                    ),
+                    max(0, box[1] - SETTINGS.debug.label_y_offset),
                 )
             label_box = draw.textbbox(label_position, label)
+            collides = any(
+                label_box[0] < other_box[2]
+                and other_box[0] < label_box[2]
+                and label_box[1] < other_box[3]
+                and other_box[1] < label_box[3]
+                for other_index, other_box in enumerate(page_item_boxes)
+                if other_index != item_index
+            ) or any(
+                label_box[0] < other_box[2]
+                and other_box[0] < label_box[2]
+                and label_box[1] < other_box[3]
+                and other_box[1] < label_box[3]
+                for other_box in placed_label_boxes
+            )
+            if collides:
+                label_position = (
+                    max(
+                        0,
+                        box[0] - label_width - SETTINGS.debug.label_x_padding,
+                    ),
+                    max(
+                        0,
+                        min(
+                            image.height - label_height,
+                            (box[1] + box[3] - label_height) // 2,
+                        ),
+                    ),
+                )
+                label_box = draw.textbbox(label_position, label)
             draw.rectangle(label_box, fill="#FFFFFF")
             draw.text(label_position, label, fill=colors[item_type])
+            placed_label_boxes.append(label_box)
         image.save(output_directory / f"page-{page_number}.png")
 
 
