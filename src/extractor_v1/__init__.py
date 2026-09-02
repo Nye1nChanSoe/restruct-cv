@@ -34,12 +34,15 @@ from extractor_v1.model import (
     semantic_job_title_matches,
 )
 from extractor_v1.routing import (
+    build_education_debug,
     build_experience_debug,
     build_sections,
     first_header_boundary,
+    render_education_debug_images,
     render_experience_debug_images,
     render_summary_debug_images,
     summary_debug_value,
+    write_education_debug,
     write_experience_debug,
     write_summary_debug,
 )
@@ -1011,11 +1014,19 @@ def extract_resume(
             ner_model,
             url_entities_by_line,
         )
+        education = build_education_debug(
+            document,
+            lines,
+            headings,
+            ner_model,
+            url_entities_by_line,
+        )
 
         output_directory.mkdir(parents=True, exist_ok=True)
         header_debug_directory = output_directory / "debug" / "header"
         summary_debug_directory = output_directory / "debug" / "summary"
         experience_debug_directory = output_directory / "debug" / "experience"
+        education_debug_directory = output_directory / "debug" / "education"
         header_debug_directory.mkdir(parents=True, exist_ok=True)
         (header_debug_directory / "header.json").write_text(
             json.dumps(
@@ -1072,6 +1083,16 @@ def extract_resume(
             document,
             experience,
             experience_debug_directory,
+        )
+        write_education_debug(
+            pdf_path,
+            education,
+            education_debug_directory,
+        )
+        render_education_debug_images(
+            document,
+            education,
+            education_debug_directory,
         )
 
 

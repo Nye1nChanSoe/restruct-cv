@@ -1,4 +1,4 @@
-"""Geometry-aware section and summary routing."""
+"""Geometry-aware routing and reconstruction for resume sections."""
 
 from __future__ import annotations
 
@@ -26,15 +26,43 @@ _BULLET_RE = re.compile(
     r"[\s\u200b\ufeff]*"
 )
 _EXPERIENCE_SEPARATOR_RE = re.compile(r"\s*(?:[|•·]|–|—|\s-\s)\s*")
+_EDUCATION_SEPARATOR_RE = re.compile(r"\s*(?:[|•·]|–|—|\s-\s)\s*")
+_MONTH_PATTERN = (
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|"
+    r"Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|"
+    r"Dec(?:ember)?)"
+)
+_DATED_YEAR_PATTERN = rf"(?:{_MONTH_PATTERN}(?:\s+|-))?(?:19|20)\d{{2}}"
 _DATE_RANGE_RE = re.compile(
-    r"\b(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|"
-    r"Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|"
-    r"Dec(?:ember)?)\s+)?(?:19|20)\d{2}\s*(?:-|\u2013|\u2014|to)\s*"
-    r"(?:(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|"
-    r"Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|"
-    r"Dec(?:ember)?)\s+)?(?:19|20)\d{2}|Present|Current|Now)\b",
+    rf"\b(?:From\s+)?{_DATED_YEAR_PATTERN}"
+    rf"(?:\s+-\s+|\s*[\u2013\u2014]\s*|\s+to\s+)"
+    rf"(?:{_DATED_YEAR_PATTERN}|Present|Current|Now)\b",
     re.IGNORECASE,
 )
+_EDUCATION_TITLE_RE = re.compile(
+    r"\b(?:associate(?:'s)?|bachelor(?:'s)?|master(?:'s)?|doctor(?:ate|al)?|"
+    r"ph\.?\s*d\.?|m\.?\s*(?:sc|s|a|eng|ba)\.?|b\.?\s*(?:sc|s|a|eng|ba)\.?|"
+    r"a\.?\s*(?:a|s)\.?|mba|degree|diploma|certificate|certification|"
+    r"undergraduate|graduate|postgraduate|vocational)\b",
+    re.IGNORECASE,
+)
+_EDUCATION_INSTITUTION_RE = re.compile(
+    r"\b(?:university|college|institute|institution|school|academy|polytechnic|"
+    r"conservatory|seminary|faculty)\b",
+    re.IGNORECASE,
+)
+_GPA_RE = re.compile(
+    r"\b(?P<label>c?gpa|grade(?:\s+point\s+average)?)\s*:?[\s-]*"
+    r"(?P<value>\d+(?:\.\d+)?)"
+    r"(?:\s*(?:/|out\s+of)\s*(?P<scale>\d+(?:\.\d+)?))?\b",
+    re.IGNORECASE,
+)
+_EDUCATION_SKILLS_RE = re.compile(
+    r"^\s*(?:relevant\s+)?(?:coursework|courses?|subjects?|modules?|skills?|"
+    r"technologies|tools)\s*(?::|-|included\b)?\s*(?P<items>.+)$",
+    re.IGNORECASE,
+)
+_PAGE_FOOTER_RE = re.compile(r"\bpage\s+\d+\s*$", re.IGNORECASE)
 
 
 def first_header_boundary(
@@ -258,6 +286,61 @@ def _span_bbox(
     ]
 
 
+def _metadata_candidates(
+    text: str,
+    date_spans: list[re.Match[str]],
+    separator_re: re.Pattern[str],
+    *,
+    preserve_education_hyphens: bool = False,
+) -> list[tuple[str, int, int]]:
+    """Split metadata while retaining exact character offsets into its source line."""
+    segment_ranges: list[tuple[int, int]] = []
+    cursor = 0
+    for separator in separator_re.finditer(text):
+        if any(
+            match.start() < separator.end() and separator.start() < match.end()
+            for match in date_spans
+        ):
+            continue
+        separator_text = separator.group(0).strip()
+        if preserve_education_hyphens and separator_text == "-":
+            left = text[cursor:separator.start()].strip()
+            right = text[separator.end():].strip()
+            should_split = bool(
+                (_EDUCATION_TITLE_RE.search(left) and _EDUCATION_INSTITUTION_RE.search(right))
+                or _EDUCATION_INSTITUTION_RE.search(left)
+            )
+            if not should_split:
+                continue
+        segment_ranges.append((cursor, separator.start()))
+        cursor = separator.end()
+    segment_ranges.append((cursor, len(text)))
+
+    candidates: list[tuple[str, int, int]] = []
+    for base_start, base_end in segment_ranges:
+        residual_ranges = [(base_start, base_end)]
+        for date_match in date_spans:
+            occupied_start, occupied_end = date_match.start(), date_match.end()
+            next_ranges: list[tuple[int, int]] = []
+            for start, end in residual_ranges:
+                if occupied_end <= start or end <= occupied_start:
+                    next_ranges.append((start, end))
+                    continue
+                if start < occupied_start:
+                    next_ranges.append((start, occupied_start))
+                if occupied_end < end:
+                    next_ranges.append((occupied_end, end))
+            residual_ranges = next_ranges
+        for raw_start, raw_end in residual_ranges:
+            raw = text[raw_start:raw_end]
+            value = raw.strip(" \t,;:-–—\u200b\ufeff")
+            if not value:
+                continue
+            start = raw_start + raw.find(value)
+            candidates.append((value, start, start + len(value)))
+    return candidates
+
+
 def _experience_line_entities(
     document: pymupdf.Document,
     line: ExtractedLine,
@@ -276,37 +359,11 @@ def _experience_line_entities(
             "detectionMethod": "date_regex",
         })
 
-    segment_ranges: list[tuple[int, int]] = []
-    cursor = 0
-    for separator in _EXPERIENCE_SEPARATOR_RE.finditer(line.text):
-        if any(match.start() < separator.end() and separator.start() < match.end() for match in date_spans):
-            continue
-        segment_ranges.append((cursor, separator.start()))
-        cursor = separator.end()
-    segment_ranges.append((cursor, len(line.text)))
-
-    candidates: list[tuple[str, int, int]] = []
-    for base_start, base_end in segment_ranges:
-        residual_ranges = [(base_start, base_end)]
-        for date_match in date_spans:
-            occupied_start, occupied_end = date_match.start(), date_match.end()
-            next_ranges: list[tuple[int, int]] = []
-            for start, end in residual_ranges:
-                if occupied_end <= start or end <= occupied_start:
-                    next_ranges.append((start, end))
-                    continue
-                if start < occupied_start:
-                    next_ranges.append((start, occupied_start))
-                if occupied_end < end:
-                    next_ranges.append((occupied_end, end))
-            residual_ranges = next_ranges
-        for raw_start, raw_end in residual_ranges:
-            raw = line.text[raw_start:raw_end]
-            text = raw.strip(" \t,;:-–—\u200b\ufeff")
-            if not text:
-                continue
-            start = raw_start + raw.find(text)
-            candidates.append((text, start, start + len(text)))
+    candidates = _metadata_candidates(
+        line.text,
+        date_spans,
+        _EXPERIENCE_SEPARATOR_RE,
+    )
     classifications = classify_job_title_candidates(model, [item[0] for item in candidates])
     title_spans: list[tuple[int, int]] = []
     for (text, start, end), (accepted, confidence) in zip(candidates, classifications, strict=True):
@@ -502,6 +559,412 @@ def build_experience_debug(
     }
 
 
+def _visual_rows(
+    lines: list[ExtractedLine],
+    line_indexes: range,
+) -> list[list[tuple[int, ExtractedLine]]]:
+    """Cluster separately extracted left/right cells into visual rows."""
+    ordered = sorted(
+        ((index, lines[index]) for index in line_indexes),
+        key=lambda item: (item[1].page, item[1].bbox[1], item[1].bbox[0]),
+    )
+    rows: list[list[tuple[int, ExtractedLine]]] = []
+    for line_index, line in ordered:
+        line_box = pymupdf.Rect(line.bbox)
+        if rows and rows[-1][0][1].page == line.page:
+            row_boxes = [pymupdf.Rect(item.bbox) for _, item in rows[-1]]
+            row_y0 = min(box.y0 for box in row_boxes)
+            row_y1 = max(box.y1 for box in row_boxes)
+            overlap = min(row_y1, line_box.y1) - max(row_y0, line_box.y0)
+            minimum_height = min(row_y1 - row_y0, line_box.height)
+            center_difference = abs((row_y0 + row_y1) / 2 - (line_box.y0 + line_box.y1) / 2)
+            if overlap >= minimum_height * 0.45 or center_difference <= minimum_height * 0.35:
+                rows[-1].append((line_index, line))
+                rows[-1].sort(key=lambda item: item[1].bbox[0])
+                continue
+        rows.append([(line_index, line)])
+    return rows
+
+
+def _row_value(row: list[tuple[int, ExtractedLine]]) -> dict[str, Any]:
+    boxes = [pymupdf.Rect(line.bbox) for _, line in row]
+    row_box = boxes[0]
+    for box in boxes[1:]:
+        row_box |= box
+    return {
+        "page": row[0][1].page,
+        "bbox": [round(value, 2) for value in row_box],
+        "detectionMethod": "geometry_row",
+        "cells": [
+            {
+                "text": line.text,
+                "page": line.page,
+                "bbox": [round(value, 2) for value in line.bbox],
+                "lineIndex": line_index,
+            }
+            for line_index, line in row
+        ],
+    }
+
+
+def _education_skills(
+    document: pymupdf.Document,
+    line: ExtractedLine,
+) -> list[dict[str, Any]]:
+    match = _EDUCATION_SKILLS_RE.match(line.text)
+    if match is None:
+        return []
+    raw_items = match.group("items").strip()
+    if "," not in raw_items and ";" not in raw_items:
+        return []
+    return _education_skill_items(
+        document,
+        line,
+        raw_items,
+        match.start("items"),
+    )
+
+
+def _education_skill_items(
+    document: pymupdf.Document,
+    line: ExtractedLine,
+    raw_items: str,
+    source_start: int = 0,
+) -> list[dict[str, Any]]:
+    pieces = re.split(r"\s*[,;]\s*", raw_items)
+    if pieces and re.search(r"\s+and\s+", pieces[-1], re.IGNORECASE):
+        pieces[-1:] = re.split(r"\s+and\s+", pieces[-1], maxsplit=1, flags=re.IGNORECASE)
+    skills: list[dict[str, Any]] = []
+    search_from = source_start
+    for piece in pieces:
+        text = piece.strip(" .")
+        if not text:
+            continue
+        start = line.text.casefold().find(text.casefold(), search_from)
+        if start < 0:
+            start = search_from
+        end = start + len(text)
+        search_from = end
+        skills.append({
+            "text": text,
+            "page": line.page,
+            "bbox": _span_bbox(document, line, text, start, end),
+            "detectionMethod": "labeled_comma_list",
+        })
+    return skills
+
+
+def _education_row_entities(
+    document: pymupdf.Document,
+    row: list[tuple[int, ExtractedLine]],
+    ner_model: DistilBertNerPredictor,
+    url_entities_by_line: dict[int, list[dict[str, Any]]],
+) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "titles": [], "institutions": [], "dates": [], "locations": [],
+        "gpa": [], "skills": [], "urls": [], "handledLineIndexes": set(),
+    }
+    for line_index, line in row:
+        line_urls = url_entities_by_line.get(line_index, [])
+        result["urls"].extend(line_urls)
+        if _BULLET_RE.match(line.text):
+            continue
+        date_spans = list(_DATE_RANGE_RE.finditer(line.text))
+        for match in date_spans:
+            result["dates"].append({
+                "text": match.group(0),
+                "page": line.page,
+                "bbox": _span_bbox(document, line, match.group(0), match.start(), match.end()),
+                "detectionMethod": "date_regex",
+            })
+
+        gpa_matches = list(_GPA_RE.finditer(line.text))
+        for match in gpa_matches:
+            result["gpa"].append({
+                "text": match.group(0),
+                "value": float(match.group("value")),
+                "scale": float(match.group("scale")) if match.group("scale") else None,
+                "page": line.page,
+                "bbox": _span_bbox(document, line, match.group(0), match.start(), match.end()),
+                "detectionMethod": "gpa_regex",
+            })
+        if gpa_matches:
+            result["handledLineIndexes"].add(line_index)
+
+        skills = _education_skills(document, line)
+        if skills:
+            result["skills"].extend(skills)
+            result["handledLineIndexes"].add(line_index)
+            continue
+
+        candidates = _metadata_candidates(
+            line.text,
+            date_spans,
+            _EDUCATION_SEPARATOR_RE,
+            preserve_education_hyphens=True,
+        )
+        for segment, start, end in candidates:
+            if any(match.start() < end and start < match.end() for match in gpa_matches):
+                continue
+            has_title = _EDUCATION_TITLE_RE.search(segment) is not None
+            has_institution = _EDUCATION_INSTITUTION_RE.search(segment) is not None
+            if has_title and not has_institution:
+                result["titles"].append({
+                    "text": segment,
+                    "page": line.page,
+                    "bbox": _span_bbox(document, line, segment, start, end),
+                    "detectionMethod": "education_title_pattern",
+                })
+                continue
+            if has_institution:
+                value: dict[str, Any] = {
+                    "text": segment,
+                    "page": line.page,
+                    "bbox": _span_bbox(document, line, segment, start, end),
+                    "detectionMethod": "institution_pattern",
+                }
+                if line_urls:
+                    value["urls"] = line_urls
+                result["institutions"].append(value)
+                if has_title:
+                    result["titles"].append({
+                        "text": segment,
+                        "page": line.page,
+                        "bbox": _span_bbox(document, line, segment, start, end),
+                        "detectionMethod": "education_title_pattern",
+                    })
+                continue
+
+            predictions = ner_model.predict_entities(
+                segment,
+                ["organization", "location"],
+                SETTINGS.ner.minimum_confidence,
+            )
+            organizations = [
+                prediction
+                for prediction in predictions
+                if prediction["label"] == "organization"
+            ]
+            locations = [
+                prediction
+                for prediction in predictions
+                if prediction["label"] == "location"
+            ]
+            if locations and not organizations and "," in segment:
+                result["locations"].append({
+                    "text": segment,
+                    "page": line.page,
+                    "bbox": _span_bbox(document, line, segment, start, end),
+                    "confidence": round(
+                        max(float(prediction["score"]) for prediction in locations),
+                        4,
+                    ),
+                    "detectionMethod": "distilbert_ner_reconciled",
+                })
+                continue
+            for prediction in predictions:
+                prediction_start = start + int(prediction["start"])
+                prediction_end = start + int(prediction["end"])
+                text = line.text[prediction_start:prediction_end].strip()
+                if not text:
+                    continue
+                key = "institutions" if prediction["label"] == "organization" else "locations"
+                value = {
+                    "text": text,
+                    "page": line.page,
+                    "bbox": _span_bbox(document, line, text, prediction_start, prediction_end),
+                    "confidence": round(float(prediction["score"]), 4),
+                    "detectionMethod": "distilbert_ner",
+                }
+                if key == "institutions" and line_urls:
+                    value["urls"] = line_urls
+                result[key].append(value)
+    return result
+
+
+def build_education_debug(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    headings: list[DetectedHeading],
+    ner_model: DistilBertNerPredictor,
+    url_entities_by_line: dict[int, list[dict[str, Any]]],
+) -> dict[str, Any] | None:
+    """Reconstruct education entries from visual rows and grounded entities."""
+    routed = sorted(
+        (
+            heading for heading in headings
+            if _is_reliable_section_heading(lines[heading.line_index], heading)
+        ),
+        key=lambda item: item.line_index,
+    )
+    position = next((i for i, item in enumerate(routed) if item.section_type == "education"), None)
+    if position is None:
+        return None
+    heading = routed[position]
+    end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
+    heading_line = lines[heading.line_index]
+    rows = _visual_rows(lines, range(heading.line_index + 1, end))
+    entries: list[dict[str, Any]] = []
+    current: dict[str, Any] | None = None
+
+    def new_entry() -> dict[str, Any]:
+        entry: dict[str, Any] = {
+            "detectionMethod": "geometry_ner_reconstruction",
+            "metadataRows": [], "titles": [], "institutions": [], "dates": [],
+            "locations": [], "gpa": [], "skills": [], "urls": [],
+            "paragraphs": [], "bullets": [], "_bodyStarted": False,
+            "_lastBodyType": None, "_lastLineBbox": None,
+        }
+        entries.append(entry)
+        return entry
+
+    for row in rows:
+        if all(
+            _PAGE_FOOTER_RE.search(line.text) is not None
+            and line.bbox[1] >= document[line.page - 1].rect.height * 0.88
+            for _, line in row
+        ):
+            continue
+        entities = _education_row_entities(document, row, ner_model, url_entities_by_line)
+        primary = bool(entities["titles"] or entities["institutions"] or entities["dates"])
+        structured_body = bool(entities["skills"])
+        metadata = primary or bool(entities["locations"] or entities["gpa"])
+
+        if metadata:
+            repeated_anchor = bool(
+                current is not None
+                and (
+                    (entities["institutions"] and current["institutions"])
+                    or (entities["dates"] and current["dates"])
+                    or (
+                        entities["titles"]
+                        and current["titles"]
+                        and current["institutions"]
+                    )
+                )
+            )
+            if current is None or (primary and current["_bodyStarted"]) or repeated_anchor:
+                current = new_entry()
+            current["metadataRows"].append(_row_value(row))
+            for key in ("titles", "institutions", "dates", "locations", "gpa", "urls"):
+                current[key].extend(entities[key])
+            continue
+
+        if structured_body:
+            current = current or new_entry()
+            current["_bodyStarted"] = True
+            current["skills"].extend(entities["skills"])
+            current["urls"].extend(entities["urls"])
+            current["_lastBodyType"] = "skill"
+            current["_lastLineBbox"] = [round(value, 2) for value in row[-1][1].bbox]
+            continue
+
+        if (
+            current is not None
+            and not current["_bodyStarted"]
+            and current["titles"]
+            and not current["institutions"]
+            and len(row) == 1
+            and len(row[0][1].text.split()) <= SETTINGS.section_router.maximum_subheading_words
+        ):
+            line = row[0][1]
+            previous = current["titles"][-1]
+            previous["text"] += "\n" + line.text
+            previous["bbox"] = [
+                round(value, 2)
+                for value in (pymupdf.Rect(previous["bbox"]) | pymupdf.Rect(line.bbox))
+            ]
+            previous["detectionMethod"] = "education_title_geometry_continuation"
+            current["metadataRows"].append(_row_value(row))
+            continue
+
+        current = current or new_entry()
+        current["_bodyStarted"] = True
+        for line_index, line in row:
+            if line_index in entities["handledLineIndexes"]:
+                continue
+            bullet = _BULLET_RE.match(line.text)
+            line_box = pymupdf.Rect(line.bbox)
+            rounded_bbox = [round(value, 2) for value in line.bbox]
+            if current["_lastBodyType"] == "skill" and current["_lastLineBbox"] is not None:
+                previous_box = pymupdf.Rect(current["_lastLineBbox"])
+                gap = line_box.y0 - previous_box.y1
+                if (
+                    -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier
+                    and not bullet
+                ):
+                    current["skills"].extend(
+                        _education_skill_items(document, line, line.text)
+                    )
+                    current["_lastLineBbox"] = rounded_bbox
+                    continue
+            if bullet:
+                current["bullets"].append({
+                    "text": line.text[bullet.end():].strip(),
+                    "page": line.page,
+                    "bbox": rounded_bbox,
+                    "detectionMethod": "bullet_marker",
+                })
+                current["_lastBodyType"] = "bullet"
+                current["_lastLineBbox"] = rounded_bbox
+                continue
+            if current["_lastBodyType"] == "bullet" and current["bullets"]:
+                previous_box = pymupdf.Rect(current["_lastLineBbox"])
+                gap = line_box.y0 - previous_box.y1
+                if -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
+                    previous = current["bullets"][-1]
+                    previous["text"] += "\n" + line.text
+                    previous["bbox"] = [round(value, 2) for value in (pymupdf.Rect(previous["bbox"]) | line_box)]
+                    current["_lastLineBbox"] = rounded_bbox
+                    continue
+            if current["paragraphs"] and current["paragraphs"][-1]["page"] == line.page:
+                previous = current["paragraphs"][-1]
+                previous_box = pymupdf.Rect(previous["bbox"])
+                gap = line_box.y0 - previous_box.y1
+                horizontal_overlap = max(
+                    0.0,
+                    min(previous_box.x1, line_box.x1) - max(previous_box.x0, line_box.x0),
+                )
+                if (
+                    -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier
+                    and horizontal_overlap > 0
+                ):
+                    previous["text"] += "\n" + line.text
+                    previous["bbox"] = [round(value, 2) for value in (previous_box | line_box)]
+                    current["_lastBodyType"] = "paragraph"
+                    current["_lastLineBbox"] = rounded_bbox
+                    continue
+            current["paragraphs"].append({
+                "text": line.text,
+                "page": line.page,
+                "bbox": rounded_bbox,
+                "detectionMethod": "geometry_default",
+            })
+            current["_lastBodyType"] = "paragraph"
+            current["_lastLineBbox"] = rounded_bbox
+
+    for entry in entries:
+        entry.pop("_bodyStarted", None)
+        entry.pop("_lastBodyType", None)
+        entry.pop("_lastLineBbox", None)
+    next_heading = routed[position + 1] if position + 1 < len(routed) else None
+    return {
+        "sectionType": "education",
+        "heading": {
+            "text": heading_line.text,
+            "page": heading_line.page,
+            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "similarity": round(heading.similarity, 4),
+            "detectionMethod": "geometry_semantic",
+        },
+        "entries": entries,
+        "stoppedAtSection": (
+            {"sectionType": next_heading.section_type, "text": lines[next_heading.line_index].text}
+            if next_heading else None
+        ),
+    }
+
+
 def summary_debug_value(
     sections: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
@@ -618,51 +1081,17 @@ def write_experience_debug(
     )
 
 
-def render_experience_debug_images(
+def _render_entry_debug_images(
     document: pymupdf.Document,
-    experience: dict[str, Any] | None,
+    items: list[dict[str, Any]],
     output_directory: Path,
+    colors: dict[str, str],
+    labels: dict[str, str],
+    metadata_types: set[str],
 ) -> None:
-    if experience is None:
-        return
-    items: list[dict[str, Any]] = [{"type": "section_heading", **experience["heading"]}]
-    for entry in experience["entries"]:
-        items.extend({"type": "experience_subheading", **item} for item in entry["subheadingLines"])
-        for key, item_type in (
-            ("jobTitles", "job_title"),
-            ("companies", "company"),
-            ("dates", "date"),
-            ("locations", "location"),
-            ("urls", "url"),
-        ):
-            items.extend({"type": item_type, **item} for item in entry[key])
-        items.extend({"type": "paragraph", **item} for item in entry["paragraphs"])
-        items.extend({"type": "bullet", **item} for item in entry["bullets"])
     items_by_page: dict[int, list[dict[str, Any]]] = {}
     for item in items:
         items_by_page.setdefault(int(item["page"]), []).append(item)
-    colors = {
-        "section_heading": SETTINGS.section_colors["experience"],
-        "experience_subheading": "#B0BEC5",
-        "job_title": "#00897B",
-        "company": "#D81B60",
-        "date": "#F9A825",
-        "location": "#1E88E5",
-        "url": "#6D4C41",
-        "paragraph": "#CFD8DC",
-        "bullet": "#B0BEC5",
-    }
-    labels = {
-        "section_heading": "route: section_heading",
-        "experience_subheading": "route: metadata_line",
-        "job_title": "MiniLM: job_title",
-        "company": "NER: company",
-        "date": "regex: date",
-        "location": "NER: location",
-        "url": "annotation: url",
-        "paragraph": "route: paragraph",
-        "bullet": "route: bullet",
-    }
     output_directory.mkdir(parents=True, exist_ok=True)
     matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
     for page_number, page_items in sorted(items_by_page.items()):
@@ -673,7 +1102,8 @@ def render_experience_debug_images(
         for item_index, item in enumerate(page_items):
             item_type = item["type"]
             box = _pixel_box(item["bbox"])
-            model_entity = item_type in {"job_title", "company", "location"}
+            detection_method = str(item.get("detectionMethod", ""))
+            model_entity = detection_method.startswith(("distilbert", "minilm"))
             draw.rectangle(
                 box,
                 outline=colors[item_type],
@@ -692,7 +1122,7 @@ def render_experience_debug_images(
             measured_label_box = draw.textbbox((0, 0), label)
             label_width = measured_label_box[2] - measured_label_box[0]
             label_height = measured_label_box[3] - measured_label_box[1]
-            if item_type == "experience_subheading":
+            if item_type in metadata_types:
                 label_position = (
                     min(
                         image.width - label_width,
@@ -717,3 +1147,123 @@ def render_experience_debug_images(
             draw.rectangle(label_box, fill="#FFFFFF")
             draw.text(label_position, label, fill=colors[item_type])
         image.save(output_directory / f"page-{page_number}.png")
+
+
+def render_experience_debug_images(
+    document: pymupdf.Document,
+    experience: dict[str, Any] | None,
+    output_directory: Path,
+) -> None:
+    if experience is None:
+        return
+    items: list[dict[str, Any]] = [{"type": "section_heading", **experience["heading"]}]
+    for entry in experience["entries"]:
+        items.extend({"type": "experience_subheading", **item} for item in entry["subheadingLines"])
+        for key, item_type in (
+            ("jobTitles", "job_title"),
+            ("companies", "company"),
+            ("dates", "date"),
+            ("locations", "location"),
+            ("urls", "url"),
+        ):
+            items.extend({"type": item_type, **item} for item in entry[key])
+        items.extend({"type": "paragraph", **item} for item in entry["paragraphs"])
+        items.extend({"type": "bullet", **item} for item in entry["bullets"])
+    _render_entry_debug_images(
+        document,
+        items,
+        output_directory,
+        {
+            "section_heading": SETTINGS.section_colors["experience"],
+            "experience_subheading": "#B0BEC5",
+            "job_title": "#00897B",
+            "company": "#D81B60",
+            "date": "#F9A825",
+            "location": "#1E88E5",
+            "url": "#6D4C41",
+            "paragraph": "#CFD8DC",
+            "bullet": "#B0BEC5",
+        },
+        {
+            "section_heading": "route: section_heading",
+            "experience_subheading": "route: metadata_line",
+            "job_title": "MiniLM: job_title",
+            "company": "NER: company",
+            "date": "regex: date",
+            "location": "NER: location",
+            "url": "annotation: url",
+            "paragraph": "route: paragraph",
+            "bullet": "route: bullet",
+        },
+        {"experience_subheading"},
+    )
+
+
+def write_education_debug(
+    pdf_path: Path,
+    education: dict[str, Any] | None,
+    output_directory: Path,
+) -> None:
+    if education is None:
+        return
+    output_directory.mkdir(parents=True, exist_ok=True)
+    (output_directory / "education.json").write_text(
+        json.dumps({"source": pdf_path.name, "education": education}, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def render_education_debug_images(
+    document: pymupdf.Document,
+    education: dict[str, Any] | None,
+    output_directory: Path,
+) -> None:
+    if education is None:
+        return
+    items: list[dict[str, Any]] = [{"type": "section_heading", **education["heading"]}]
+    for entry in education["entries"]:
+        items.extend({"type": "education_metadata", **item} for item in entry["metadataRows"])
+        for key, item_type in (
+            ("titles", "education_title"),
+            ("institutions", "institution"),
+            ("dates", "date"),
+            ("locations", "location"),
+            ("gpa", "gpa"),
+            ("skills", "skill"),
+            ("urls", "url"),
+        ):
+            items.extend({"type": item_type, **item} for item in entry[key])
+        items.extend({"type": "paragraph", **item} for item in entry["paragraphs"])
+        items.extend({"type": "bullet", **item} for item in entry["bullets"])
+    _render_entry_debug_images(
+        document,
+        items,
+        output_directory,
+        {
+            "section_heading": SETTINGS.section_colors["education"],
+            "education_metadata": "#D1C4E9",
+            "education_title": "#00897B",
+            "institution": "#D81B60",
+            "date": "#F9A825",
+            "location": "#1E88E5",
+            "gpa": "#8E24AA",
+            "skill": "#43A047",
+            "url": "#6D4C41",
+            "paragraph": "#CFD8DC",
+            "bullet": "#B0BEC5",
+        },
+        {
+            "section_heading": "route: section_heading",
+            "education_metadata": "route: geometry_row",
+            "education_title": "pattern: education_title",
+            "institution": "entity: institution",
+            "date": "regex: date",
+            "location": "NER: location",
+            "gpa": "regex: GPA",
+            "skill": "route: skill",
+            "url": "annotation: url",
+            "paragraph": "route: paragraph",
+            "bullet": "route: bullet",
+        },
+        {"education_metadata"},
+    )
