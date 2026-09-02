@@ -16,6 +16,7 @@
     },
     "entries": [
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Orbit Labs Co., Ltd.",
@@ -73,21 +74,21 @@
               288.15
             ],
             "confidence": 1.0,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
           {
-            "text": "Orbit Labs Co., Ltd",
+            "text": "Orbit Labs Co., Ltd.",
             "page": 1,
             "bbox": [
               46.9,
               265.6,
-              132.27,
+              134.9,
               276.2
             ],
             "confidence": 0.9841,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -114,7 +115,7 @@
               288.15
             ],
             "confidence": 0.9959,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -178,6 +179,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Northstar Digital",
@@ -235,7 +237,7 @@
               375.95
             ],
             "confidence": 0.7954,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
@@ -276,7 +278,7 @@
               375.95
             ],
             "confidence": 0.9736,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],

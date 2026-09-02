@@ -16,6 +16,7 @@
     },
     "entries": [
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Apr 2022 - Present",
@@ -62,23 +63,22 @@
               495.31
             ],
             "confidence": 0.7488,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [
+            "detectionMethod": "minilm_reconciled"
+          },
           {
-            "text": "Eastern Process Systems Co., Ltd",
+            "text": "Eastern Process Systems Co., Ltd.",
             "page": 1,
             "bbox": [
               209.44,
               484.6,
-              363.48,
+              366.11,
               495.2
             ],
-            "confidence": 0.9896,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.6027,
+            "detectionMethod": "minilm_reconciled"
           }
         ],
+        "companies": [],
         "dates": [
           {
             "text": "Apr 2022 - Present",
@@ -94,40 +94,16 @@
         ],
         "locations": [
           {
-            "text": "Bang",
+            "text": "Bang Phli, Samut Prakan, Thailand",
             "page": 1,
             "bbox": [
               77.1,
-              497.31,
-              98.11,
-              507.35
-            ],
-            "confidence": 0.7406,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Samut",
-            "page": 1,
-            "bbox": [
-              120.58,
-              497.31,
-              146.57,
-              507.35
-            ],
-            "confidence": 0.705,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Thailand",
-            "page": 1,
-            "bbox": [
-              182.59,
               497.31,
               217.09,
               507.35
             ],
             "confidence": 0.9974,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -224,6 +200,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Jan 2019 - Mar 2022",
@@ -270,21 +247,21 @@
               703.21
             ],
             "confidence": 0.751,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
           {
-            "text": "Siam Fresh Foods Manufacturing Co., Ltd",
+            "text": "Siam Fresh Foods Manufacturing Co., Ltd.",
             "page": 1,
             "bbox": [
               221.09,
               692.5,
-              409.37,
+              412.0,
               703.1
             ],
-            "confidence": 0.9806,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.9582,
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -311,7 +288,7 @@
               715.25
             ],
             "confidence": 0.848,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -397,6 +374,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Jun 2016 - Dec 2018",
@@ -434,29 +412,29 @@
         ],
         "jobTitles": [
           {
-            "text": "Welder",
+            "text": "Welder / Steel Fabrication Worker",
             "page": 2,
             "bbox": [
               77.1,
               176.45,
-              110.38,
+              236.41,
               187.61
             ],
-            "confidence": 1.0,
-            "detectionMethod": "semantic_similarity"
+            "confidence": 0.7727,
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
           {
-            "text": "/ Steel Fabrication Worker | Chao Phraya Steel & Engineering",
+            "text": "Chao Phraya Steel & Engineering",
             "page": 2,
             "bbox": [
-              113.17,
-              176.45,
+              244.44,
+              176.9,
               394.73,
-              187.61
+              187.5
             ],
-            "confidence": 0.786,
+            "confidence": 0.9954,
             "detectionMethod": "distilbert_ner"
           }
         ],
@@ -475,40 +453,16 @@
         ],
         "locations": [
           {
-            "text": "Nonthaburi",
+            "text": "Nonthaburi and Bangkok project sites, Thailand",
             "page": 2,
             "bbox": [
               77.1,
-              189.6,
-              121.1,
-              199.65
-            ],
-            "confidence": 0.9817,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Bangkok",
-            "page": 2,
-            "bbox": [
-              141.1,
-              189.6,
-              176.14,
-              199.65
-            ],
-            "confidence": 0.9922,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Thailand",
-            "page": 2,
-            "bbox": [
-              231.61,
               189.6,
               266.15,
               199.65
             ],
             "confidence": 0.9982,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -572,6 +526,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "May 2014 - May 2016",
@@ -618,10 +573,8 @@
               328.76
             ],
             "confidence": 0.7196,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [
+            "detectionMethod": "minilm_reconciled"
+          },
           {
             "text": "Metro Metal Works",
             "page": 2,
@@ -631,10 +584,11 @@
               327.16,
               328.65
             ],
-            "confidence": 0.995,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.5021,
+            "detectionMethod": "minilm_reconciled"
           }
         ],
+        "companies": [],
         "dates": [
           {
             "text": "May 2014 - May 2016",
@@ -659,7 +613,7 @@
               340.8
             ],
             "confidence": 0.8017,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],

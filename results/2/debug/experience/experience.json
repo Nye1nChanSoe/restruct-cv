@@ -16,6 +16,7 @@
     },
     "entries": [
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Supply Chain Analyst",
@@ -73,33 +74,21 @@
               417.79
             ],
             "confidence": 1.0,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
           {
-            "text": "Aster Consumer Products (",
+            "text": "Aster Consumer Products (Thailand) Co., Ltd.",
             "page": 1,
             "bbox": [
               72.0,
               432.39,
-              214.93,
+              310.79,
               444.68
             ],
             "confidence": 0.8966,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": ") Co., Ltd",
-            "page": 1,
-            "bbox": [
-              260.12,
-              432.39,
-              307.74,
-              444.68
-            ],
-            "confidence": 0.6219,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -117,18 +106,6 @@
         ],
         "locations": [
           {
-            "text": "Thailand",
-            "page": 1,
-            "bbox": [
-              214.93,
-              432.39,
-              260.12,
-              444.68
-            ],
-            "confidence": 0.7783,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
             "text": "Bangkok, Thailand",
             "page": 1,
             "bbox": [
@@ -138,7 +115,7 @@
               459.22
             ],
             "confidence": 0.9959,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -246,6 +223,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Inventory Planning Officer",
@@ -303,21 +281,21 @@
               86.95
             ],
             "confidence": 0.8684,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
           {
-            "text": "Metro Distribution Services Co., Ltd",
+            "text": "Metro Distribution Services Co., Ltd.",
             "page": 2,
             "bbox": [
               72.0,
               101.55,
-              258.9,
+              261.95,
               113.84
             ],
             "confidence": 0.9791,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -344,7 +322,7 @@
               128.39
             ],
             "confidence": 0.9959,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -430,6 +408,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Procurement Intern",
@@ -487,21 +466,21 @@
               360.33
             ],
             "confidence": 0.7798,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
           {
-            "text": "Thai Meridian Trading Co., Ltd",
+            "text": "Thai Meridian Trading Co., Ltd.",
             "page": 2,
             "bbox": [
               72.0,
               374.94,
-              229.56,
+              232.61,
               387.22
             ],
             "confidence": 0.9709,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -528,7 +507,7 @@
               401.77
             ],
             "confidence": 0.9959,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],

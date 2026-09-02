@@ -16,6 +16,7 @@
     },
     "entries": [
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Senior Site Engineer Mar 2022 - Present",
@@ -51,21 +52,21 @@
               352.32
             ],
             "confidence": 0.8191,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "minilm_reconciled"
           }
         ],
         "companies": [
           {
-            "text": "Siam Urban Construction Co., Ltd",
+            "text": "Siam Urban Construction Co., Ltd.",
             "page": 1,
             "bbox": [
               51.6,
               354.96,
-              193.03,
+              197.45,
               364.56
             ],
-            "confidence": 0.9206,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.9673,
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -91,8 +92,8 @@
               285.84,
               364.56
             ],
-            "confidence": 0.9737,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.9959,
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -189,6 +190,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Site Engineer Jun 2019 - Feb 2022",
@@ -224,35 +226,22 @@
               64.8
             ],
             "confidence": 1.0,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [
+            "detectionMethod": "minilm_reconciled"
+          },
           {
-            "text": "Metro Build & Engineering Co., Ltd",
+            "text": "Metro Build & Engineering Co., Ltd.",
             "page": 2,
             "bbox": [
               50.4,
               67.2,
-              198.1,
+              202.44,
               76.56
             ],
-            "confidence": 0.6356,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Samut",
-            "page": 2,
-            "bbox": [
-              215.47,
-              67.2,
-              237.19,
-              76.56
-            ],
-            "confidence": 0.8217,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.5737,
+            "detectionMethod": "minilm_reconciled"
           }
         ],
+        "companies": [],
         "dates": [
           {
             "text": "Jun 2019 - Feb 2022",
@@ -268,16 +257,16 @@
         ],
         "locations": [
           {
-            "text": "Prakan, Thailand",
+            "text": "Samut Prakan, Thailand",
             "page": 2,
             "bbox": [
-              241.54,
+              215.47,
               67.2,
               311.04,
               76.56
             ],
-            "confidence": 0.5285,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.9969,
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
@@ -363,6 +352,7 @@
         ]
       },
       {
+        "detectionMethod": "ner_minilm_reconciliation",
         "subheadingLines": [
           {
             "text": "Junior Civil Engineer May 2017 - May 2019",
@@ -398,10 +388,8 @@
               229.92
             ],
             "confidence": 0.8715,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [
+            "detectionMethod": "minilm_reconciled"
+          },
           {
             "text": "Eastern Infrastructure Services",
             "page": 2,
@@ -411,10 +399,11 @@
               183.66,
               240.96
             ],
-            "confidence": 0.9873,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.5205,
+            "detectionMethod": "minilm_reconciled"
           }
         ],
+        "companies": [],
         "dates": [
           {
             "text": "May 2017 - May 2019",
@@ -438,8 +427,8 @@
               273.6,
               240.96
             ],
-            "confidence": 0.9764,
-            "detectionMethod": "distilbert_ner"
+            "confidence": 0.9707,
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "urls": [],
