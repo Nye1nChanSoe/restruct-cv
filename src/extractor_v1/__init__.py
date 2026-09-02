@@ -39,17 +39,20 @@ from extractor_v1.routing import (
     build_projects_debug,
     build_sections,
     build_skills_debug,
+    build_supplementary_sections_debug,
     first_header_boundary,
     render_education_debug_images,
     render_experience_debug_images,
     render_projects_debug_images,
     render_skills_debug_images,
+    render_supplementary_sections_debug_images,
     render_summary_debug_images,
     summary_debug_value,
     write_education_debug,
     write_experience_debug,
     write_projects_debug,
     write_skills_debug,
+    write_supplementary_sections_debug,
     write_summary_debug,
 )
 
@@ -1039,6 +1042,12 @@ def extract_resume(
             headings,
             url_entities_by_line,
         )
+        supplementary_sections = build_supplementary_sections_debug(
+            document,
+            lines,
+            headings,
+            url_entities_by_line,
+        )
 
         output_directory.mkdir(parents=True, exist_ok=True)
         header_debug_directory = output_directory / "debug" / "header"
@@ -1133,6 +1142,16 @@ def extract_resume(
             document,
             projects,
             projects_debug_directory,
+        )
+        write_supplementary_sections_debug(
+            pdf_path,
+            supplementary_sections,
+            output_directory / "debug",
+        )
+        render_supplementary_sections_debug_images(
+            document,
+            supplementary_sections,
+            output_directory / "debug",
         )
 
 

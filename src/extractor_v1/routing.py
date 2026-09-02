@@ -68,6 +68,17 @@ _SKILL_INLINE_TAB_RE = re.compile(r"^(?P<label>[^\t]{1,60})\t+\s*(?P<body>.+)$")
 _SKILL_INLINE_DASH_RE = re.compile(
     r"^(?P<label>.{1,60}?)\s+(?:-|\u2013|\u2014)\s+(?P<body>.+)$"
 )
+_SUPPLEMENTARY_SECTION_TYPES = (
+    "certifications",
+    "licenses",
+    "tools_equipment",
+    "languages",
+    "volunteering",
+    "awards",
+    "publications",
+    "references",
+    "interests",
+)
 
 
 def first_header_boundary(
@@ -1385,7 +1396,7 @@ def build_skills_debug(
     }
 
 
-def _project_date_matches(text: str) -> list[re.Match[str]]:
+def _grouped_section_date_matches(text: str) -> list[re.Match[str]]:
     ranges = list(_DATE_RANGE_RE.finditer(text))
     singles = [
         match
@@ -1398,7 +1409,7 @@ def _project_date_matches(text: str) -> list[re.Match[str]]:
     return sorted([*ranges, *singles], key=lambda match: match.start())
 
 
-def _project_entry() -> dict[str, Any]:
+def _grouped_section_entry() -> dict[str, Any]:
     return {
         "detectionMethod": "geometry_reconstruction",
         "subheadingLines": [],
@@ -1412,15 +1423,19 @@ def _project_entry() -> dict[str, Any]:
     }
 
 
-def build_projects_debug(
+def _build_grouped_section_debug(
     document: pymupdf.Document,
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    section_type: str,
 ) -> dict[str, Any] | None:
-    """Group project titles, dates, paragraphs, bullets, and annotated URLs."""
+    """Group titles, dates, paragraphs, bullets, and URLs for a minor section."""
     routed = _routed_section_headings(lines, headings)
-    position = next((i for i, item in enumerate(routed) if item.section_type == "projects"), None)
+    position = next(
+        (i for i, item in enumerate(routed) if item.section_type == section_type),
+        None,
+    )
     if position is None:
         return None
     heading = routed[position]
@@ -1429,6 +1444,15 @@ def build_projects_debug(
     line_range = range(heading.line_index + 1, end)
     rows = _visual_rows(lines, line_range)
     body_size, body_bold = _section_body_style([lines[index] for index in line_range])
+    titled_section = section_type in {
+        "projects",
+        "certifications",
+        "licenses",
+        "volunteering",
+        "awards",
+        "publications",
+        "references",
+    }
     entries: list[dict[str, Any]] = []
     visible_rows: list[list[tuple[int, ExtractedLine]]] = []
     current: dict[str, Any] | None = None
@@ -1442,7 +1466,7 @@ def build_projects_debug(
             continue
         visible_rows.append(row)
         dates_by_line = {
-            line_index: _project_date_matches(line.text)
+            line_index: _grouped_section_date_matches(line.text)
             for line_index, line in row
         }
         row_has_date = any(dates_by_line.values())
@@ -1466,6 +1490,8 @@ def build_projects_debug(
             )
             row_title = row_has_date and len(row) >= 2
             first_title = (
+                titled_section
+                and
                 current is None
                 and len(line.text.split()) <= SETTINGS.section_router.maximum_subheading_words
                 and not line.text.rstrip().endswith((".", ";", ":"))
@@ -1486,7 +1512,7 @@ def build_projects_debug(
                 <= max(title_cells[0][1].size, 1.0) * 0.65
             )
             if not should_continue_title:
-                current = _project_entry()
+                current = _grouped_section_entry()
                 entries.append(current)
             for line_index, line in title_cells:
                 value: dict[str, Any] = {
@@ -1504,7 +1530,7 @@ def build_projects_debug(
 
         if row_has_date:
             if current is None:
-                current = _project_entry()
+                current = _grouped_section_entry()
                 entries.append(current)
             for line_index, line in row:
                 for match in dates_by_line[line_index]:
@@ -1537,7 +1563,7 @@ def build_projects_debug(
                 if not residual.strip(" ()[]{}|,;:-–—"):
                     continue
             if current is None:
-                current = _project_entry()
+                current = _grouped_section_entry()
                 entries.append(current)
             line_urls = url_entities_by_line.get(line_index, [])
             rounded_bbox = [round(number, 2) for number in line.bbox]
@@ -1590,7 +1616,7 @@ def build_projects_debug(
         entry.pop("_lastLineBbox", None)
     next_heading = routed[position + 1] if position + 1 < len(routed) else None
     return {
-        "sectionType": "projects",
+        "sectionType": section_type,
         "heading": {
             "text": heading_line.text,
             "page": heading_line.page,
@@ -1609,6 +1635,41 @@ def build_projects_debug(
             if next_heading else None
         ),
     }
+
+
+def build_projects_debug(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    headings: list[DetectedHeading],
+    url_entities_by_line: dict[int, list[dict[str, Any]]],
+) -> dict[str, Any] | None:
+    return _build_grouped_section_debug(
+        document,
+        lines,
+        headings,
+        url_entities_by_line,
+        "projects",
+    )
+
+
+def build_supplementary_sections_debug(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    headings: list[DetectedHeading],
+    url_entities_by_line: dict[int, list[dict[str, Any]]],
+) -> dict[str, dict[str, Any]]:
+    sections: dict[str, dict[str, Any]] = {}
+    for section_type in _SUPPLEMENTARY_SECTION_TYPES:
+        section = _build_grouped_section_debug(
+            document,
+            lines,
+            headings,
+            url_entities_by_line,
+            section_type,
+        )
+        if section is not None:
+            sections[section_type] = section
+    return sections
 
 
 def summary_debug_value(
@@ -2049,3 +2110,68 @@ def render_projects_debug_images(
         },
         {"project_row"},
     )
+
+
+def write_supplementary_sections_debug(
+    pdf_path: Path,
+    sections: dict[str, dict[str, Any]],
+    debug_directory: Path,
+) -> None:
+    for section_type, section in sections.items():
+        output_directory = debug_directory / section_type
+        output_directory.mkdir(parents=True, exist_ok=True)
+        (output_directory / f"{section_type}.json").write_text(
+            json.dumps(
+                {"source": pdf_path.name, section_type: section},
+                indent=2,
+                ensure_ascii=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+
+def render_supplementary_sections_debug_images(
+    document: pymupdf.Document,
+    sections: dict[str, dict[str, Any]],
+    debug_directory: Path,
+) -> None:
+    for section_type, section in sections.items():
+        items: list[dict[str, Any]] = [
+            {"type": "section_heading", **section["heading"]}
+        ]
+        items.extend({"type": "grouped_row", **item} for item in section["rows"])
+        for entry in section["entries"]:
+            items.extend(
+                {"type": "grouped_subheading", **item}
+                for item in entry["subheadingLines"]
+            )
+            items.extend({"type": "date", **item} for item in entry["dates"])
+            items.extend({"type": "url", **item} for item in entry["urls"])
+            items.extend({"type": "paragraph", **item} for item in entry["paragraphs"])
+            items.extend({"type": "bullet", **item} for item in entry["bullets"])
+        section_color = SETTINGS.section_colors[section_type]
+        _render_entry_debug_images(
+            document,
+            items,
+            debug_directory / section_type,
+            {
+                "section_heading": section_color,
+                "grouped_row": "#ECEFF1",
+                "grouped_subheading": section_color,
+                "date": "#F9A825",
+                "url": "#6D4C41",
+                "paragraph": "#90A4AE",
+                "bullet": "#5C6BC0",
+            },
+            {
+                "section_heading": "route: section_heading",
+                "grouped_row": "route: geometry_row",
+                "grouped_subheading": "route: subheading",
+                "date": "regex: date",
+                "url": "annotation: url",
+                "paragraph": "route: paragraph",
+                "bullet": "route: bullet",
+            },
+            {"grouped_row"},
+        )
