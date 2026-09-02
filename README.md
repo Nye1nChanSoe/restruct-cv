@@ -75,13 +75,11 @@ Contributions are warmly welcome.
 
 You can contribute by:
 
-- fixing bugs or improving extraction reliability,
-- adding support for Burmese/English mixed-language resumes,
-- improving recognition of Myanmar-specific names, phone numbers, addresses, universities, job titles, and date formats,
-- contributing anonymized or synthetic Myanmar-style resume test cases,
-- improving OCR (`tesseract`) handling for scanned resumes,
-- testing the extractor against different resume formats and reporting edge cases,
-- improving documentation or developer setup instructions.
+- Fixing bugs or improving extraction reliability,
+- Improving OCR (`tesseract`) handling for scanned resumes,
+- Testing the extractor against different resume formats and reporting edge cases,
+- Improving documentation or developer setup instructions.
+- Adding support for Burmese/English mixed-language resumes,
 
 Please avoid submitting **real** resumes containing PII data. Use anonymized data whenever possible.
 
