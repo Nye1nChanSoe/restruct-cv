@@ -76,7 +76,7 @@
           130.18,
           86.14
         ],
-        "detectionMethod": "gliner",
+        "detectionMethod": "distilbert_ner",
         "confidence": 0.9968
       },
       {

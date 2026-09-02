@@ -88,7 +88,7 @@
           161.48,
           93.9
         ],
-        "detectionMethod": "gliner",
+        "detectionMethod": "distilbert_ner",
         "confidence": 0.9943
       },
       {
@@ -125,7 +125,7 @@
           449.89,
           93.9
         ],
-        "detectionMethod": "gliner",
+        "detectionMethod": "distilbert_ner",
         "confidence": 0.9976
       },
       {

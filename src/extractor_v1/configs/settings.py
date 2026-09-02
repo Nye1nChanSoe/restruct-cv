@@ -19,10 +19,6 @@ class ModelSettings:
 
 @dataclass(frozen=True)
 class NerSettings:
-    default_backend: str = "distilbert"
-    gliner_name: str = "urchade/gliner_small-v2.1"
-    gliner_revision: str = "4e091416cf7c3481db542c2a3d26156916f3a47f"
-    gliner_local_directory: str = "models/gliner_small-v2.1"
     distilbert_name: str = "dslim/distilbert-NER"
     distilbert_revision: str = "dfa2838a127384aabb82ed7719e16dab84c42a2a"
     distilbert_local_directory: str = "models/distilbert-NER"
@@ -38,7 +34,10 @@ class NerSettings:
 class OcrSettings:
     enabled: bool = True
     language: str = "eng"
-    dpi: int = 200
+    dpi: int = 300
+    engine_mode: int = 1
+    page_segmentation_mode: int = 3
+    tesseract_command: str = "tesseract"
     native_text_min_characters: int = 20
 
 

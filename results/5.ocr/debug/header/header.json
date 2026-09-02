@@ -8,34 +8,46 @@
   "headerProfile": {
     "page": 1,
     "bbox": [
-      52.55,
-      92.5,
-      385.19,
-      137.14
+      52.56,
+      63.36,
+      385.44,
+      136.8
     ],
-    "text": "Civil Engineer | Site Engineer\n| Structural\n& Construction Works\nBangkok, Thailand\n| +66 8X XXX XXXxX\n| thanawat.prasert@example.com\nThai National\n| Available for site-based work and relocation within Thailand",
+    "text": "THANAWAT PRASERT\nCivil Engineer | Site Engineer | Structural & Construction Works\nBangkok, Thailand | +66 8X XXX XXXxX | thanawat.prasert@example.com\nThai National | Available for site-based work and relocation within Thailand",
     "stoppedAtSection": {
       "text": "PROFESSIONAL SUMMARY",
       "sectionType": "summary",
       "page": 1,
       "bbox": [
-        52.91,
-        161.25,
-        191.73,
-        169.89
+        52.8,
+        160.8,
+        192.0,
+        169.44
       ],
       "similarity": 1.0
     },
     "entities": [
       {
+        "type": "name",
+        "text": "THANAWAT PRASERT",
+        "page": 1,
+        "bbox": [
+          52.8,
+          63.36,
+          269.28,
+          79.44
+        ],
+        "detectionMethod": "geometry_fallback"
+      },
+      {
         "type": "job_title",
         "text": "Civil Engineer",
         "page": 1,
         "bbox": [
-          52.91,
-          92.5,
-          123.96,
-          104.03
+          52.8,
+          92.16,
+          125.56,
+          103.68
         ],
         "detectionMethod": "semantic_similarity",
         "confidence": 1.0
@@ -45,74 +57,62 @@
         "text": "Site Engineer",
         "page": 1,
         "bbox": [
-          139.18,
-          92.5,
-          205.16,
-          104.03
+          141.16,
+          92.16,
+          208.73,
+          103.68
         ],
         "detectionMethod": "semantic_similarity",
         "confidence": 1.0
       },
       {
         "type": "job_title",
-        "text": "Structural",
+        "text": "Structural & Construction Works",
         "page": 1,
         "bbox": [
-          218.82,
-          92.5,
-          265.55,
-          104.03
+          224.32,
+          92.16,
+          385.44,
+          103.68
         ],
         "detectionMethod": "semantic_similarity",
-        "confidence": 0.5391
-      },
-      {
-        "type": "job_title",
-        "text": "& Construction Works",
-        "page": 1,
-        "bbox": [
-          273.9,
-          92.5,
-          385.19,
-          104.03
-        ],
-        "detectionMethod": "semantic_similarity",
-        "confidence": 0.6145
+        "confidence": 0.6986
       },
       {
         "type": "location",
         "text": "Bangkok, Thailand",
         "page": 1,
         "bbox": [
-          52.91,
-          114.1,
-          124.82,
-          123.82
+          53.04,
+          113.76,
+          125.87,
+          123.36
         ],
-        "detectionMethod": "gliner",
-        "confidence": 0.9976
+        "detectionMethod": "distilbert_ner",
+        "confidence": 0.9975
       },
       {
-        "type": "name",
-        "text": "| +66 8X XXX XXXxX",
+        "type": "other",
+        "text": "+66 8X XXX XXXxX",
         "page": 1,
         "bbox": [
-          128.49,
-          114.1,
-          206.4,
-          123.82
+          138.72,
+          113.76,
+          207.27,
+          123.36
         ],
-        "detectionMethod": "geometry_fallback"
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
       },
       {
         "type": "email",
         "text": "thanawat.prasert@example.com",
         "page": 1,
         "bbox": [
-          218.45,
-          114.1,
-          338.97,
-          123.82
+          220.12,
+          113.76,
+          340.08,
+          123.36
         ],
         "detectionMethod": "regex"
       },
@@ -121,23 +121,22 @@
         "text": "Thai National",
         "page": 1,
         "bbox": [
-          52.55,
-          128.49,
-          103.44,
-          137.14
+          52.56,
+          127.92,
+          102.11,
+          136.8
         ],
-        "detectionMethod": "gliner",
-        "confidence": 0.9485
+        "detectionMethod": "regex_context_fallback"
       },
       {
         "type": "other",
         "text": "Available for site-based work and relocation within Thailand",
         "page": 1,
         "bbox": [
-          114.83,
-          128.49,
-          342.0,
-          137.14
+          113.55,
+          127.92,
+          342.24,
+          136.8
         ],
         "detectionMethod": "unclassified",
         "inside": "headerProfile"
