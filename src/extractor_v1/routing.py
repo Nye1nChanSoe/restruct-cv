@@ -21,7 +21,10 @@ from extractor_v1.model import (
 )
 
 
-_BULLET_RE = re.compile(r"^\s*(?:[-•●▪◦‣]|\d+[.)])\s+")
+_BULLET_RE = re.compile(
+    r"^\s*(?:[-+*•●▪◦‣]|\d+[.)])"
+    r"[\s\u200b\ufeff]*"
+)
 _EXPERIENCE_SEPARATOR_RE = re.compile(r"\s*(?:[|•·]|–|—|\s-\s)\s*")
 _DATE_RANGE_RE = re.compile(
     r"\b(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|"
@@ -39,25 +42,35 @@ def first_header_boundary(
     headings: list[DetectedHeading],
 ) -> DetectedHeading | None:
     """Return the first high-confidence section heading on page one."""
+    for heading in headings:
+        line = lines[heading.line_index]
+        if line.page != 1 or heading.line_index == 0:
+            continue
+        if _is_reliable_section_heading(line, heading):
+            return heading
+    return None
+
+
+def _is_reliable_section_heading(
+    line: ExtractedLine,
+    heading: DetectedHeading,
+) -> bool:
+    text = line.text.replace("\u200b", "").replace("\ufeff", "").strip()
     exact_references = {
         reference.casefold().strip()
         for references in SETTINGS.section_references.values()
         for reference in references
     }
-    for heading in headings:
-        line = lines[heading.line_index]
-        if line.page != 1 or heading.line_index == 0:
-            continue
-        exact_match = line.text.casefold().strip() in exact_references
-        strong_semantic_match = (
-            heading.similarity
-            >= SETTINGS.header_profile.boundary_similarity_threshold
-            and heading.similarity - heading.runner_up_similarity
-            >= SETTINGS.header_profile.boundary_winner_margin
-        )
-        if exact_match or strong_semantic_match:
-            return heading
-    return None
+    if text.casefold() in exact_references:
+        return True
+    letters = [character for character in text if character.isalpha()]
+    uppercase = bool(letters) and sum(character.isupper() for character in letters) / len(letters) >= SETTINGS.heading.uppercase_ratio
+    return (
+        uppercase
+        and heading.similarity >= SETTINGS.header_profile.boundary_similarity_threshold
+        and heading.similarity - heading.runner_up_similarity
+        >= SETTINGS.header_profile.boundary_winner_margin
+    )
 
 
 def _section_body_style(
@@ -187,6 +200,7 @@ def build_sections(
             heading
             for heading in headings
             if heading.line_index >= first_boundary.line_index
+            and _is_reliable_section_heading(lines[heading.line_index], heading)
         ),
         key=lambda heading: heading.line_index,
     )
@@ -282,20 +296,32 @@ def _experience_line_entities(
         occupied.append((start, end))
 
     candidates: list[tuple[str, int, int]] = []
+    base_ranges: list[tuple[int, int]] = []
     cursor = 0
     for separator in _EXPERIENCE_SEPARATOR_RE.finditer(line.text):
-        raw_start, raw_end = cursor, separator.start()
+        base_ranges.append((cursor, separator.start()))
         cursor = separator.end()
-        raw = line.text[raw_start:raw_end]
-        text = raw.strip(" \t,;:")
-        start = raw_start + raw.find(text) if text else raw_start
-        if text and not any(left < start + len(text) and start < right for left, right in occupied):
+    base_ranges.append((cursor, len(line.text)))
+    for base_start, base_end in base_ranges:
+        residual_ranges = [(base_start, base_end)]
+        for occupied_start, occupied_end in occupied:
+            next_ranges: list[tuple[int, int]] = []
+            for start, end in residual_ranges:
+                if occupied_end <= start or end <= occupied_start:
+                    next_ranges.append((start, end))
+                    continue
+                if start < occupied_start:
+                    next_ranges.append((start, occupied_start))
+                if occupied_end < end:
+                    next_ranges.append((occupied_end, end))
+            residual_ranges = next_ranges
+        for raw_start, raw_end in residual_ranges:
+            raw = line.text[raw_start:raw_end]
+            text = raw.strip(" \t,;:-–—\u200b\ufeff")
+            if not text:
+                continue
+            start = raw_start + raw.find(text)
             candidates.append((text, start, start + len(text)))
-    raw = line.text[cursor:]
-    text = raw.strip(" \t,;:")
-    start = cursor + raw.find(text) if text else cursor
-    if text and not any(left < start + len(text) and start < right for left, right in occupied):
-        candidates.append((text, start, start + len(text)))
     classifications = classify_job_title_candidates(model, [item[0] for item in candidates])
     for (text, start, end), (accepted, confidence) in zip(candidates, classifications, strict=True):
         if accepted:
@@ -316,7 +342,13 @@ def build_experience_debug(
     ner_model: DistilBertNerPredictor,
     url_entities_by_line: dict[int, list[dict[str, Any]]],
 ) -> dict[str, Any] | None:
-    routed = sorted(headings, key=lambda item: item.line_index)
+    routed = sorted(
+        (
+            heading for heading in headings
+            if _is_reliable_section_heading(lines[heading.line_index], heading)
+        ),
+        key=lambda item: item.line_index,
+    )
     position = next((i for i, item in enumerate(routed) if item.section_type == "experience"), None)
     if position is None:
         return None
@@ -330,7 +362,7 @@ def build_experience_debug(
         entry: dict[str, Any] = {
             "subheadingLines": [], "jobTitles": [], "companies": [], "dates": [],
             "locations": [], "urls": [], "paragraphs": [], "bullets": [],
-            "_bodyStarted": False,
+            "_bodyStarted": False, "_lastBodyType": None, "_lastLineBbox": None,
         }
         entries.append(entry)
         return entry
@@ -346,10 +378,22 @@ def build_experience_debug(
                 "bbox": [round(value, 2) for value in line.bbox],
                 "detectionMethod": "bullet_marker",
             })
+            current["_lastBodyType"] = "bullet"
+            current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
             continue
 
-        entities = _experience_line_entities(
-            document, line, model, ner_model, url_entities_by_line.get(line_index, [])
+        can_be_metadata = (
+            current is None
+            or not current["_bodyStarted"]
+            or line.bold
+            or _DATE_RANGE_RE.search(line.text) is not None
+        )
+        entities = (
+            _experience_line_entities(
+                document, line, model, ner_model, url_entities_by_line.get(line_index, [])
+            )
+            if can_be_metadata
+            else {"jobTitles": [], "companies": [], "dates": [], "locations": [], "urls": []}
         )
         primary = bool(entities["jobTitles"] or entities["companies"] or entities["dates"])
         metadata = primary or (bool(entities["locations"]) and current is not None and not current["_bodyStarted"])
@@ -367,6 +411,16 @@ def build_experience_debug(
 
         current = current or new_entry()
         current["_bodyStarted"] = True
+        current_box = pymupdf.Rect(line.bbox)
+        if current["_lastBodyType"] == "bullet" and current["bullets"]:
+            previous_box = pymupdf.Rect(current["_lastLineBbox"])
+            gap = current_box.y0 - previous_box.y1
+            if -2.0 <= gap <= max(previous_box.height, current_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
+                previous = current["bullets"][-1]
+                previous["text"] += "\n" + line.text
+                previous["bbox"] = [round(value, 2) for value in (pymupdf.Rect(previous["bbox"]) | current_box)]
+                current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
+                continue
         paragraph = {
             "text": line.text, "page": line.page,
             "bbox": [round(value, 2) for value in line.bbox],
@@ -379,11 +433,17 @@ def build_experience_debug(
             if -2.0 <= gap <= max(previous_box.height, current_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
                 previous["text"] += "\n" + line.text
                 previous["bbox"] = [round(value, 2) for value in (previous_box | current_box)]
+                current["_lastBodyType"] = "paragraph"
+                current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
                 continue
         current["paragraphs"].append(paragraph)
+        current["_lastBodyType"] = "paragraph"
+        current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
 
     for entry in entries:
         entry.pop("_bodyStarted", None)
+        entry.pop("_lastBodyType", None)
+        entry.pop("_lastLineBbox", None)
     next_heading = routed[position + 1] if position + 1 < len(routed) else None
     return {
         "sectionType": "experience",
@@ -558,9 +618,24 @@ def render_experience_debug_images(
         pixmap = page.get_pixmap(matrix=matrix, alpha=False)
         image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
         draw = ImageDraw.Draw(image)
-        for item in page_items:
+        for item_index, item in enumerate(page_items):
             item_type = item["type"]
             box = _pixel_box(item["bbox"])
-            draw.rectangle(box, outline=colors[item_type], width=SETTINGS.debug.content_stroke_width)
-            draw.text((box[0] + SETTINGS.debug.label_x_padding, max(0, box[1] - SETTINGS.debug.label_y_offset)), item_type, fill=colors[item_type])
+            draw.rectangle(
+                box,
+                outline=colors[item_type],
+                width=SETTINGS.debug.content_stroke_width,
+            )
+            label_level = item_index % 3 + 1
+            draw.text(
+                (
+                    box[0] + SETTINGS.debug.label_x_padding,
+                    max(
+                        0,
+                        box[1] - SETTINGS.debug.label_y_offset * label_level,
+                    ),
+                ),
+                item_type,
+                fill=colors[item_type],
+            )
         image.save(output_directory / f"page-{page_number}.png")

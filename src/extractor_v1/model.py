@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import statistics
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
@@ -94,8 +95,16 @@ class DistilBertNerPredictor:
         threshold: float,
     ) -> list[dict[str, Any]]:
         requested_labels = set(labels)
+        normalized_characters: list[str] = []
+        original_indexes: list[int] = []
+        for index, character in enumerate(text):
+            if unicodedata.category(character) == "Cf":
+                continue
+            normalized_characters.append(character)
+            original_indexes.append(index)
+        normalized_text = "".join(normalized_characters)
         predictions: list[dict[str, Any]] = []
-        for prediction in self._pipeline(text):
+        for prediction in self._pipeline(normalized_text):
             raw_type = str(
                 prediction.get("entity_group", prediction.get("entity", ""))
             ).upper()
@@ -107,8 +116,12 @@ class DistilBertNerPredictor:
             score = float(prediction.get("score", 0.0))
             if label not in requested_labels or score < threshold:
                 continue
-            start = int(prediction.get("start", 0))
-            end = int(prediction.get("end", 0))
+            normalized_start = int(prediction.get("start", 0))
+            normalized_end = int(prediction.get("end", 0))
+            if not original_indexes or normalized_start >= len(original_indexes):
+                continue
+            start = original_indexes[normalized_start]
+            end = original_indexes[min(normalized_end - 1, len(original_indexes) - 1)] + 1
             predictions.append(
                 {
                     "label": label,
@@ -118,7 +131,17 @@ class DistilBertNerPredictor:
                     "score": score,
                 }
             )
-        return predictions
+        merged: list[dict[str, Any]] = []
+        for prediction in predictions:
+            if merged and merged[-1]["label"] == prediction["label"]:
+                gap = text[int(merged[-1]["end"]):int(prediction["start"])]
+                if len(gap) <= 3 and not any(character.isalnum() for character in gap):
+                    merged[-1]["end"] = prediction["end"]
+                    merged[-1]["text"] = text[int(merged[-1]["start"]):int(prediction["end"])]
+                    merged[-1]["score"] = min(float(merged[-1]["score"]), float(prediction["score"]))
+                    continue
+            merged.append(prediction)
+        return merged
 
 
 def _require_local_model(project_root: Path, relative_directory: str) -> Path:

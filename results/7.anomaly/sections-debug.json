@@ -147,24 +147,19 @@
             366.35
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "licenses",
-      "heading": {
-        "text": "Safety",
-        "page": 1,
-        "bbox": [
-          77.1,
-          382.26,
-          104.1,
-          392.3
-        ],
-        "similarity": 0.6726,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
+        {
+          "type": "subheading",
+          "text": "Safety",
+          "page": 1,
+          "bbox": [
+            77.1,
+            382.26,
+            104.1,
+            392.3
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "paragraph",
           "text": "PPE, hot-work permit procedures, fire watch, lockout/tagout awareness, housekeeping,\nlifting awareness, toolbox talks, 5S",
@@ -176,24 +171,19 @@
             404.2
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "experience",
-      "heading": {
-        "text": "Work Style",
-        "page": 1,
-        "bbox": [
-          77.1,
-          420.11,
-          123.57,
-          430.15
-        ],
-        "similarity": 0.6262,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
+        {
+          "type": "subheading",
+          "text": "Work Style",
+          "page": 1,
+          "bbox": [
+            77.1,
+            420.11,
+            123.57,
+            430.15
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "paragraph",
           "text": "Shift work, overtime, production support, team coordination, job handover, basic work\nrecords, material control",
@@ -354,24 +344,19 @@
             411.66
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "projects",
-      "heading": {
-        "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE",
-        "page": 2,
-        "bbox": [
-          46.9,
-          419.3,
-          306.84,
-          431.02
-        ],
-        "similarity": 0.7528,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
+        {
+          "type": "subheading",
+          "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE",
+          "page": 2,
+          "bbox": [
+            46.9,
+            419.3,
+            306.84,
+            431.02
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "paragraph",
           "text": "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during\ninstallation, and supported overnight commissioning work in Chonburi.\nWarehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and\npedestrian barriers from repeated drawings and site measurements.\nProduction line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported\nreinstallation during a planned factory shutdown.\nCold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-\ntemperature areas using task-specific PPE and short work rotations.\nCommercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple\nBangkok-area construction and renovation jobs.",
@@ -400,23 +385,19 @@
         "similarity": 0.9845,
         "detectionMethod": "geometry_semantic"
       },
-      "content": []
-    },
-    {
-      "sectionType": "certifications",
-      "heading": {
-        "text": "Training / Certification",
-        "page": 2,
-        "bbox": [
-          52.3,
-          576.31,
-          142.37,
-          585.79
-        ],
-        "similarity": 0.9575,
-        "detectionMethod": "geometry_semantic"
-      },
       "content": [
+        {
+          "type": "subheading",
+          "text": "Training / Certification",
+          "page": 2,
+          "bbox": [
+            52.3,
+            576.31,
+            142.37,
+            585.79
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "subheading",
           "text": "Provider",

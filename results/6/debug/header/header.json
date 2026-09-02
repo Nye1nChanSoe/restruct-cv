@@ -77,7 +77,7 @@
           86.14
         ],
         "detectionMethod": "distilbert_ner",
-        "confidence": 0.9968
+        "confidence": 0.9947
       },
       {
         "type": "email",

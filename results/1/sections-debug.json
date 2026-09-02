@@ -46,23 +46,19 @@
         "similarity": 1.0,
         "detectionMethod": "geometry_semantic"
       },
-      "content": []
-    },
-    {
-      "sectionType": "skills",
-      "heading": {
-        "text": "Industrial Maintenance Technician",
-        "page": 1,
-        "bbox": [
-          72.0,
-          403.26,
-          286.97,
-          417.79
-        ],
-        "similarity": 0.5552,
-        "detectionMethod": "geometry_semantic"
-      },
       "content": [
+        {
+          "type": "subheading",
+          "text": "Industrial Maintenance Technician",
+          "page": 1,
+          "bbox": [
+            72.0,
+            403.26,
+            286.97,
+            417.79
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "subheading",
           "text": "Siam Precision Components Co., Ltd.​",
@@ -247,23 +243,19 @@
         "similarity": 1.0,
         "detectionMethod": "geometry_semantic"
       },
-      "content": []
-    },
-    {
-      "sectionType": "certifications",
-      "heading": {
-        "text": "Higher Vocational Certificate (ปวส.) — Industrial Technology",
-        "page": 2,
-        "bbox": [
-          72.0,
-          541.97,
-          446.57,
-          557.73
-        ],
-        "similarity": 0.5777,
-        "detectionMethod": "geometry_semantic"
-      },
       "content": [
+        {
+          "type": "subheading",
+          "text": "Higher Vocational Certificate (ปวส.) — Industrial Technology",
+          "page": 2,
+          "bbox": [
+            72.0,
+            541.97,
+            446.57,
+            557.73
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "paragraph",
           "text": "Samut Prakan Technical College​\nSamut Prakan, Thailand​\n2015 – 2017",
@@ -275,24 +267,19 @@
             613.71
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "certifications",
-      "heading": {
-        "text": "Vocational Certificate (ปวช.) — Mechanical Technology",
-        "page": 2,
-        "bbox": [
-          72.0,
-          628.8,
-          414.69,
-          644.56
-        ],
-        "similarity": 0.5607,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
+        {
+          "type": "subheading",
+          "text": "Vocational Certificate (ปวช.) — Mechanical Technology",
+          "page": 2,
+          "bbox": [
+            72.0,
+            628.8,
+            414.69,
+            644.56
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "paragraph",
           "text": "Samut Prakan Technical College​\nSamut Prakan, Thailand​\n2012 – 2015",
@@ -394,33 +381,16 @@
       "content": [
         {
           "type": "paragraph",
-          "text": "Thai: Native​",
+          "text": "Thai: Native​\nEnglish: Basic working proficiency",
           "page": 3,
           "bbox": [
             72.0,
             482.79,
-            135.53,
-            495.08
+            244.87,
+            509.63
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "languages",
-      "heading": {
-        "text": "English: Basic working proficiency",
-        "page": 3,
-        "bbox": [
-          72.0,
-          497.34,
-          244.87,
-          509.63
-        ],
-        "similarity": 0.6862,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
         {
           "type": "subheading",
           "text": "ADDITIONAL INFORMATION",

@@ -166,24 +166,19 @@
             329.49
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "experience",
-      "heading": {
-        "text": "Procurement Intern",
-        "page": 2,
-        "bbox": [
-          72.0,
-          345.81,
-          195.49,
-          360.33
-        ],
-        "similarity": 0.6263,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
+        {
+          "type": "subheading",
+          "text": "Procurement Intern",
+          "page": 2,
+          "bbox": [
+            72.0,
+            345.81,
+            195.49,
+            360.33
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "subheading",
           "text": "Thai Meridian Trading Co., Ltd.​",
@@ -559,33 +554,16 @@
       "content": [
         {
           "type": "paragraph",
-          "text": "Thai: Native​",
+          "text": "Thai: Native​\nEnglish: Professional working proficiency",
           "page": 4,
           "bbox": [
             72.0,
             153.93,
-            135.53,
-            166.22
+            278.48,
+            180.77
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "languages",
-      "heading": {
-        "text": "English: Professional working proficiency",
-        "page": 4,
-        "bbox": [
-          72.0,
-          168.48,
-          278.48,
-          180.77
-        ],
-        "similarity": 0.6661,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
         {
           "type": "subheading",
           "text": "ADDITIONAL INFORMATION",

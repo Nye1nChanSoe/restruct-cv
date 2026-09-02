@@ -89,7 +89,7 @@
           123.36
         ],
         "detectionMethod": "distilbert_ner",
-        "confidence": 0.9975
+        "confidence": 0.997
       },
       {
         "type": "other",

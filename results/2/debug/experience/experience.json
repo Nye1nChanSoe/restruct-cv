@@ -60,39 +60,6 @@
               473.77
             ],
             "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "●​ Analyze inventory levels, sales history, purchase orders, and demand data for",
-            "page": 1,
-            "bbox": [
-              90.0,
-              488.03,
-              488.45,
-              500.32
-            ],
-            "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "approximately 1,200 active SKUs.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              502.57,
-              276.02,
-              514.86
-            ],
-            "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "●​ Prepare weekly inventory reports covering stock availability, slow-moving inventory,",
-            "page": 1,
-            "bbox": [
-              90.0,
-              517.12,
-              515.08,
-              529.41
-            ],
-            "detectionMethod": "experience_metadata"
           }
         ],
         "jobTitles": [
@@ -107,50 +74,14 @@
             ],
             "confidence": 1.0,
             "detectionMethod": "semantic_similarity"
-          },
-          {
-            "text": "●​ Analyze inventory levels, sales history, purchase orders, and demand data for",
-            "page": 1,
-            "bbox": [
-              90.0,
-              488.03,
-              485.4,
-              500.32
-            ],
-            "confidence": 0.5499,
-            "detectionMethod": "semantic_similarity"
-          },
-          {
-            "text": "●​ Prepare weekly inventory reports covering stock availability, slow-moving inventory",
-            "page": 1,
-            "bbox": [
-              90.0,
-              517.12,
-              509.79,
-              529.41
-            ],
-            "confidence": 0.5613,
-            "detectionMethod": "semantic_similarity"
           }
         ],
         "companies": [
           {
-            "text": "As",
+            "text": "Aster Consumer Products (",
             "page": 1,
             "bbox": [
               72.0,
-              432.39,
-              86.05,
-              444.68
-            ],
-            "confidence": 0.9636,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "ter Consumer Products (",
-            "page": 1,
-            "bbox": [
-              86.05,
               432.39,
               214.93,
               444.68
@@ -159,39 +90,15 @@
             "detectionMethod": "distilbert_ner"
           },
           {
-            "text": ") Co",
+            "text": ") Co., Ltd",
             "page": 1,
             "bbox": [
               260.12,
               432.39,
-              281.49,
-              444.68
-            ],
-            "confidence": 0.6219,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "., Ltd",
-            "page": 1,
-            "bbox": [
-              281.48,
-              432.39,
               307.74,
               444.68
             ],
-            "confidence": 0.7037,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "SK",
-            "page": 1,
-            "bbox": [
-              241.81,
-              502.57,
-              256.48,
-              514.86
-            ],
-            "confidence": 0.7947,
+            "confidence": 0.6219,
             "detectionMethod": "distilbert_ner"
           }
         ],
@@ -222,282 +129,100 @@
             "detectionMethod": "distilbert_ner"
           },
           {
-            "text": "Bangkok",
+            "text": "Bangkok, Thailand",
             "page": 1,
             "bbox": [
               72.0,
               446.94,
-              114.78,
+              163.05,
               459.22
             ],
             "confidence": 0.9959,
             "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Thailand",
-            "page": 1,
-            "bbox": [
-              120.89,
-              446.94,
-              163.05,
-              459.22
-            ],
-            "confidence": 0.9976,
-            "detectionMethod": "distilbert_ner"
           }
         ],
         "urls": [],
-        "paragraphs": [
+        "paragraphs": [],
+        "bullets": [
           {
-            "text": "stock-out risks, and excess stock.\n●​ Build and maintain Power BI dashboards for inventory and supplier performance\nmonitoring.",
+            "text": "Analyze inventory levels, sales history, purchase orders, and demand data for\napproximately 1,200 active SKUs.",
             "page": 1,
             "bbox": [
               90.0,
-              531.67,
+              488.03,
+              488.45,
+              514.86
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Prepare weekly inventory reports covering stock availability, slow-moving inventory,\nstock-out risks, and excess stock.",
+            "page": 1,
+            "bbox": [
+              90.0,
+              517.12,
+              515.08,
+              543.96
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Build and maintain Power BI dashboards for inventory and supplier performance\nmonitoring.",
+            "page": 1,
+            "bbox": [
+              90.0,
+              546.21,
               500.89,
               573.05
             ],
-            "detectionMethod": "geometry_default"
-          }
-        ],
-        "bullets": []
-      },
-      {
-        "subheadingLines": [
+            "detectionMethod": "bullet_marker"
+          },
           {
-            "text": "●​ Support monthly demand and supply planning meetings by preparing historical sales",
+            "text": "Support monthly demand and supply planning meetings by preparing historical sales\nand inventory data.",
             "page": 1,
             "bbox": [
               90.0,
               575.31,
               521.68,
-              587.6
-            ],
-            "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "and inventory data.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              589.85,
-              204.56,
               602.14
             ],
-            "detectionMethod": "experience_metadata"
-          }
-        ],
-        "jobTitles": [
-          {
-            "text": "●​ Support monthly demand and supply planning meetings by preparing historical sales",
-            "page": 1,
-            "bbox": [
-              90.0,
-              575.31,
-              518.62,
-              587.6
-            ],
-            "confidence": 0.56,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "bullet_marker"
           },
           {
-            "text": "and inventory data.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              589.85,
-              201.5,
-              602.14
-            ],
-            "confidence": 0.54,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [],
-        "dates": [],
-        "locations": [],
-        "urls": [],
-        "paragraphs": [
-          {
-            "text": "●​ Coordinate with procurement and warehouse teams regarding delayed purchase",
+            "text": "Coordinate with procurement and warehouse teams regarding delayed purchase\norders and critical stock items.",
             "page": 1,
             "bbox": [
               90.0,
               604.4,
               502.74,
-              616.69
-            ],
-            "detectionMethod": "geometry_default"
-          }
-        ],
-        "bullets": []
-      },
-      {
-        "subheadingLines": [
-          {
-            "text": "orders and critical stock items.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              618.94,
-              258.89,
               631.23
             ],
-            "detectionMethod": "experience_metadata"
+            "detectionMethod": "bullet_marker"
           },
           {
-            "text": "●​ Use Excel and SQL to clean, combine, and analyze operational data from ERP",
+            "text": "Use Excel and SQL to clean, combine, and analyze operational data from ERP\nexports.",
             "page": 1,
             "bbox": [
               90.0,
               633.49,
               494.17,
-              645.78
+              660.33
             ],
-            "detectionMethod": "experience_metadata"
-          }
-        ],
-        "jobTitles": [
-          {
-            "text": "orders and critical stock items.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              618.94,
-              255.83,
-              631.23
-            ],
-            "confidence": 0.4914,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [
-          {
-            "text": "Ex",
-            "page": 1,
-            "bbox": [
-              130.6,
-              633.49,
-              143.43,
-              645.78
-            ],
-            "confidence": 0.9733,
-            "detectionMethod": "distilbert_ner"
+            "detectionMethod": "bullet_marker"
           },
           {
-            "text": "cel",
-            "page": 1,
-            "bbox": [
-              143.43,
-              633.49,
-              157.48,
-              645.78
-            ],
-            "confidence": 0.9871,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "S",
-            "page": 1,
-            "bbox": [
-              115.94,
-              633.49,
-              121.44,
-              645.78
-            ],
-            "confidence": 0.9929,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "QL",
-            "page": 1,
-            "bbox": [
-              189.26,
-              633.49,
-              203.93,
-              645.78
-            ],
-            "confidence": 0.983,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "ER",
-            "page": 1,
-            "bbox": [
-              373.8,
-              633.49,
-              383.58,
-              645.78
-            ],
-            "confidence": 0.6681,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "P",
-            "page": 1,
-            "bbox": [
-              367.69,
-              633.49,
-              373.81,
-              645.78
-            ],
-            "confidence": 0.7385,
-            "detectionMethod": "distilbert_ner"
-          }
-        ],
-        "dates": [],
-        "locations": [],
-        "urls": [],
-        "paragraphs": [
-          {
-            "text": "exports.\n●​ Monitor supplier lead times and highlight significant delivery delays to procurement",
+            "text": "Monitor supplier lead times and highlight significant delivery delays to procurement\nteams.",
             "page": 1,
             "bbox": [
               90.0,
-              648.04,
+              662.58,
               512.48,
-              674.87
-            ],
-            "detectionMethod": "geometry_default"
-          }
-        ],
-        "bullets": []
-      },
-      {
-        "subheadingLines": [
-          {
-            "text": "teams.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              677.13,
-              144.05,
               689.42
             ],
-            "detectionMethod": "experience_metadata"
-          }
-        ],
-        "jobTitles": [
+            "detectionMethod": "bullet_marker"
+          },
           {
-            "text": "teams.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              677.13,
-              140.99,
-              689.42
-            ],
-            "confidence": 0.5752,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [],
-        "dates": [],
-        "locations": [],
-        "urls": [],
-        "paragraphs": [
-          {
-            "text": "●​ Perform root-cause analysis on inventory discrepancies and recurring stock\navailability issues.",
+            "text": "Perform root-cause analysis on inventory discrepancies and recurring stock\navailability issues.",
             "page": 1,
             "bbox": [
               90.0,
@@ -505,35 +230,23 @@
               477.63,
               718.51
             ],
-            "detectionMethod": "geometry_default"
-          }
-        ],
-        "bullets": []
-      },
-      {
-        "subheadingLines": [
+            "detectionMethod": "bullet_marker"
+          },
           {
-            "text": "●​ Assist management with ad hoc analysis for promotions, product launches, and",
+            "text": "Assist management with ad hoc analysis for promotions, product launches, and\ninventory planning.",
             "page": 1,
             "bbox": [
               90.0,
               720.77,
               496.6,
-              733.06
-            ],
-            "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "inventory planning.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              735.31,
-              203.33,
               747.6
             ],
-            "detectionMethod": "experience_metadata"
-          },
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "subheadingLines": [
           {
             "text": "Inventory Planning Officer",
             "page": 2,
@@ -577,44 +290,9 @@
               142.93
             ],
             "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "●​ Monitored inventory movements across the company's central warehouse and",
-            "page": 2,
-            "bbox": [
-              90.0,
-              157.19,
-              490.74,
-              169.48
-            ],
-            "detectionMethod": "experience_metadata"
           }
         ],
         "jobTitles": [
-          {
-            "text": "●​ Assist management with ad hoc analysis for promotions, product launches, and",
-            "page": 1,
-            "bbox": [
-              90.0,
-              720.77,
-              493.55,
-              733.06
-            ],
-            "confidence": 0.5165,
-            "detectionMethod": "semantic_similarity"
-          },
-          {
-            "text": "inventory planning.",
-            "page": 1,
-            "bbox": [
-              108.0,
-              735.31,
-              200.28,
-              747.6
-            ],
-            "confidence": 0.8572,
-            "detectionMethod": "semantic_similarity"
-          },
           {
             "text": "Inventory Planning Officer",
             "page": 2,
@@ -625,18 +303,6 @@
               86.95
             ],
             "confidence": 0.8684,
-            "detectionMethod": "semantic_similarity"
-          },
-          {
-            "text": "●​ Monitored inventory movements across the company's central warehouse and",
-            "page": 2,
-            "bbox": [
-              90.0,
-              157.19,
-              487.69,
-              169.48
-            ],
-            "confidence": 0.5688,
             "detectionMethod": "semantic_similarity"
           }
         ],
@@ -669,97 +335,45 @@
         ],
         "locations": [
           {
-            "text": "Bangkok",
+            "text": "Bangkok, Thailand",
             "page": 2,
             "bbox": [
               72.0,
               116.1,
-              114.78,
+              163.05,
               128.39
             ],
             "confidence": 0.9959,
             "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Thailand",
-            "page": 2,
-            "bbox": [
-              120.89,
-              116.1,
-              163.05,
-              128.39
-            ],
-            "confidence": 0.9976,
-            "detectionMethod": "distilbert_ner"
           }
         ],
         "urls": [],
-        "paragraphs": [
+        "paragraphs": [],
+        "bullets": [
           {
-            "text": "regional distribution locations.",
+            "text": "Monitored inventory movements across the company's central warehouse and\nregional distribution locations.",
             "page": 2,
             "bbox": [
-              108.0,
-              171.74,
-              255.87,
+              90.0,
+              157.19,
+              490.74,
               184.03
             ],
-            "detectionMethod": "geometry_default"
-          }
-        ],
-        "bullets": []
-      },
-      {
-        "subheadingLines": [
+            "detectionMethod": "bullet_marker"
+          },
           {
-            "text": "●​ Prepared replenishment recommendations using sales history, current stock,",
+            "text": "Prepared replenishment recommendations using sales history, current stock,\noutstanding orders, and minimum stock levels.",
             "page": 2,
             "bbox": [
               90.0,
               186.28,
               483.54,
-              198.57
-            ],
-            "detectionMethod": "experience_metadata"
-          }
-        ],
-        "jobTitles": [
-          {
-            "text": "●​ Prepared replenishment recommendations using sales history, current stock",
-            "page": 2,
-            "bbox": [
-              90.0,
-              186.28,
-              477.43,
-              198.57
-            ],
-            "confidence": 0.5666,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [],
-        "dates": [],
-        "locations": [],
-        "urls": [],
-        "paragraphs": [
-          {
-            "text": "outstanding orders, and minimum stock levels.",
-            "page": 2,
-            "bbox": [
-              108.0,
-              200.83,
-              337.11,
               213.12
             ],
-            "detectionMethod": "geometry_default"
-          }
-        ],
-        "bullets": []
-      },
-      {
-        "subheadingLines": [
+            "detectionMethod": "bullet_marker"
+          },
           {
-            "text": "●​ Maintained inventory planning spreadsheets and monthly KPI reports.",
+            "text": "Maintained inventory planning spreadsheets and monthly KPI reports.",
             "page": 2,
             "bbox": [
               90.0,
@@ -767,173 +381,220 @@
               450.18,
               227.66
             ],
-            "detectionMethod": "experience_metadata"
+            "detectionMethod": "bullet_marker"
           },
           {
-            "text": "●​ Coordinated with purchasing staff regarding replenishment orders and supplier",
+            "text": "Coordinated with purchasing staff regarding replenishment orders and supplier\ndelivery schedules.",
             "page": 2,
             "bbox": [
               90.0,
               229.92,
               492.75,
-              242.21
-            ],
-            "detectionMethod": "experience_metadata"
-          },
-          {
-            "text": "delivery schedules.",
-            "page": 2,
-            "bbox": [
-              108.0,
-              244.47,
-              204.54,
               256.76
             ],
-            "detectionMethod": "experience_metadata"
-          }
-        ],
-        "jobTitles": [
-          {
-            "text": "●​ Maintained inventory planning spreadsheets and monthly KPI reports.",
-            "page": 2,
-            "bbox": [
-              90.0,
-              215.37,
-              447.13,
-              227.66
-            ],
-            "confidence": 0.7038,
-            "detectionMethod": "semantic_similarity"
+            "detectionMethod": "bullet_marker"
           },
           {
-            "text": "●​ Coordinated with purchasing staff regarding replenishment orders and supplier",
-            "page": 2,
-            "bbox": [
-              90.0,
-              229.92,
-              489.7,
-              242.21
-            ],
-            "confidence": 0.5292,
-            "detectionMethod": "semantic_similarity"
-          },
-          {
-            "text": "delivery schedules.",
-            "page": 2,
-            "bbox": [
-              108.0,
-              244.47,
-              201.49,
-              256.76
-            ],
-            "confidence": 0.6811,
-            "detectionMethod": "semantic_similarity"
-          }
-        ],
-        "companies": [],
-        "dates": [],
-        "locations": [],
-        "urls": [],
-        "paragraphs": [
-          {
-            "text": "●​ Investigated discrepancies between system inventory and warehouse reports.\n●​ Prepared reports on stock aging, inventory turnover, stock-outs, and excess",
+            "text": "Investigated discrepancies between system inventory and warehouse reports.",
             "page": 2,
             "bbox": [
               90.0,
               259.01,
               489.27,
-              285.85
+              271.3
             ],
-            "detectionMethod": "geometry_default"
-          }
-        ],
-        "bullets": []
-      },
-      {
-        "subheadingLines": [
-          {
-            "text": "inventory.",
-            "page": 2,
-            "bbox": [
-              108.0,
-              288.11,
-              157.9,
-              300.4
-            ],
-            "detectionMethod": "experience_metadata"
+            "detectionMethod": "bullet_marker"
           },
           {
-            "text": "●​ Worked with warehouse teams during monthly cycle counts and annual physical",
+            "text": "Prepared reports on stock aging, inventory turnover, stock-outs, and excess\ninventory.",
+            "page": 2,
+            "bbox": [
+              90.0,
+              273.56,
+              478.88,
+              300.4
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Worked with warehouse teams during monthly cycle counts and annual physical\ninventory checks.",
             "page": 2,
             "bbox": [
               90.0,
               302.65,
               500.06,
-              314.94
+              329.49
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "subheadingLines": [
+          {
+            "text": "Procurement Intern",
+            "page": 2,
+            "bbox": [
+              72.0,
+              345.81,
+              195.49,
+              360.33
             ],
             "detectionMethod": "experience_metadata"
           },
           {
-            "text": "inventory checks.",
+            "text": "Thai Meridian Trading Co., Ltd.​",
             "page": 2,
             "bbox": [
-              108.0,
-              317.2,
-              195.98,
-              329.49
+              72.0,
+              374.94,
+              235.67,
+              387.22
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Bangkok, Thailand​",
+            "page": 2,
+            "bbox": [
+              72.0,
+              389.48,
+              166.11,
+              401.77
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "January 2022 – April 2022",
+            "page": 2,
+            "bbox": [
+              72.0,
+              404.03,
+              209.49,
+              416.32
             ],
             "detectionMethod": "experience_metadata"
           }
         ],
         "jobTitles": [
           {
-            "text": "inventory.",
+            "text": "Procurement Intern",
             "page": 2,
             "bbox": [
-              108.0,
-              288.11,
-              154.84,
-              300.4
+              72.0,
+              345.81,
+              191.88,
+              360.33
             ],
-            "confidence": 0.6186,
-            "detectionMethod": "semantic_similarity"
-          },
-          {
-            "text": "●​ Worked with warehouse teams during monthly cycle counts and annual physical",
-            "page": 2,
-            "bbox": [
-              90.0,
-              302.65,
-              497.0,
-              314.94
-            ],
-            "confidence": 0.5383,
-            "detectionMethod": "semantic_similarity"
-          },
-          {
-            "text": "inventory checks.",
-            "page": 2,
-            "bbox": [
-              108.0,
-              317.2,
-              192.93,
-              329.49
-            ],
-            "confidence": 0.5738,
+            "confidence": 0.7798,
             "detectionMethod": "semantic_similarity"
           }
         ],
-        "companies": [],
-        "dates": [],
-        "locations": [],
+        "companies": [
+          {
+            "text": "Thai Meridian Trading Co., Ltd",
+            "page": 2,
+            "bbox": [
+              72.0,
+              374.94,
+              229.56,
+              387.22
+            ],
+            "confidence": 0.9709,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [
+          {
+            "text": "January 2022 – April 2022",
+            "page": 2,
+            "bbox": [
+              72.0,
+              404.03,
+              206.44,
+              416.32
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Bangkok, Thailand",
+            "page": 2,
+            "bbox": [
+              72.0,
+              389.48,
+              163.05,
+              401.77
+            ],
+            "confidence": 0.9959,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
         "urls": [],
         "paragraphs": [],
-        "bullets": []
+        "bullets": [
+          {
+            "text": "Assisted procurement officers with purchase-order preparation and supplier quotation\ncomparisons.",
+            "page": 2,
+            "bbox": [
+              90.0,
+              430.57,
+              525.73,
+              457.41
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Updated supplier information and purchasing records in Excel.",
+            "page": 2,
+            "bbox": [
+              90.0,
+              459.67,
+              414.12,
+              471.96
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Followed up with suppliers regarding expected delivery dates.",
+            "page": 2,
+            "bbox": [
+              90.0,
+              474.21,
+              411.07,
+              486.5
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Prepared basic purchasing and delivery-status reports.",
+            "page": 2,
+            "bbox": [
+              90.0,
+              488.76,
+              377.45,
+              501.05
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Organized procurement documents including quotations, purchase orders, and\ndelivery records.",
+            "page": 2,
+            "bbox": [
+              90.0,
+              503.31,
+              493.57,
+              530.14
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
       }
     ],
     "stoppedAtSection": {
-      "sectionType": "experience",
-      "text": "Procurement Intern"
+      "sectionType": "education",
+      "text": "EDUCATION"
     }
   }
 }

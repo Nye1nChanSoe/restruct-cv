@@ -46,30 +46,14 @@
         "similarity": 1.0,
         "detectionMethod": "geometry_semantic"
       },
-      "content": []
-    },
-    {
-      "sectionType": "skills",
-      "heading": {
-        "text": "Languages: TypeScript, JavaScript, Python, Go, SQL, Java",
-        "page": 1,
-        "bbox": [
-          46.9,
-          168.2,
-          300.09,
-          178.8
-        ],
-        "similarity": 0.6083,
-        "detectionMethod": "geometry_semantic"
-      },
       "content": [
         {
           "type": "paragraph",
-          "text": "Backend: Node.js, Express, FastAPI, REST APIs, WebSockets, background workers\nData: PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines\nCloud & DevOps: AWS, GCP, Docker, GitHub Actions, Linux, Nginx\nAI/ML: scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction\nTools: Git, Playwright, Neovim, Postman, Grafana",
+          "text": "Languages: TypeScript, JavaScript, Python, Go, SQL, Java\nBackend: Node.js, Express, FastAPI, REST APIs, WebSockets, background workers\nData: PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines\nCloud & DevOps: AWS, GCP, Docker, GitHub Actions, Linux, Nginx\nAI/ML: scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction\nTools: Git, Playwright, Neovim, Postman, Grafana",
           "page": 1,
           "bbox": [
             46.9,
-            181.2,
+            168.2,
             428.86,
             243.8
           ],
@@ -424,33 +408,17 @@
       "content": [
         {
           "type": "paragraph",
-          "text": "Certifications: AWS Certified Cloud Practitioner (2024); Google Cloud Digital Leader (2023)",
+          "text": "Certifications: AWS Certified Cloud Practitioner (2024); Google Cloud Digital Leader (2023)\nLanguages: English (Professional), Burmese (Native), Thai (Conversational)",
           "page": 1,
           "bbox": [
             46.9,
             638.15,
             435.7,
-            648.75
+            661.75
           ],
           "detectionMethod": "geometry_default"
         }
       ]
-    },
-    {
-      "sectionType": "languages",
-      "heading": {
-        "text": "Languages: English (Professional), Burmese (Native), Thai (Conversational)",
-        "page": 1,
-        "bbox": [
-          46.9,
-          651.15,
-          370.29,
-          661.75
-        ],
-        "similarity": 0.5822,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": []
     }
   ]
 }
