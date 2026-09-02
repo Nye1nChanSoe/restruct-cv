@@ -14,11 +14,6 @@ dependencies = [
     "transformers>=4.51.3,<5.14.0",
 ]
 
-[project.optional-dependencies]
-gliner = [
-    "gliner>=0.2.28",
-]
-
 [project.scripts]
 extractor-v1 = "extractor_v1:main"
 

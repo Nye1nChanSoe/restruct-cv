@@ -3,7 +3,8 @@
 A deliberately small experiment:
 
 1. PyMuPDF extracts native PDF lines and geometry.
-2. Pages without meaningful native text fall back to PyMuPDF's Tesseract OCR integration.
+2. Pages without meaningful native text are rendered to temporary PNGs by PyMuPDF;
+   Tesseract CLI TSV output is converted back into line geometry.
 3. `all-MiniLM-L6-v2` locates the first likely resume section heading.
 4. Everything above that boundary becomes one top-level `headerProfile` region.
 5. Contact regex claims and masks email, phone, and URL spans first.
@@ -43,14 +44,20 @@ destinations take precedence when the visible text also matches the URL regex.
 
 The first native PyMuPDF read is also written to `debug/<resume>.raw-pymupdf.json`.
 These generated dumps are ignored by Git; `debug/.gitkeep` retains the empty directory.
-When OCR is actually used, its resulting PyMuPDF dictionary is written separately to
-`debug/ocr/<resume>.ocr-pymupdf.json`. Native-text pages do not create OCR dumps.
+When OCR is actually used, its reconstructed Tesseract blocks are written separately to
+`debug/ocr/<resume>.ocr-tesseract.json`. Native-text pages do not create OCR dumps.
 
-Tesseract must be installed separately because it is a native program, not a Python package:
+Tesseract must be installed separately because it is a native program, not a
+Python package:
 
 ```bash
 brew install tesseract
 ```
+
+PyMuPDF renders each OCR page at 300 DPI, then Python invokes `tesseract` directly
+without a shell. OCR uses the installed English language data, LSTM engine mode 1,
+and page segmentation mode 3. Temporary page PNGs are deleted automatically after
+each PDF.
 
 Run the project with:
 
@@ -65,31 +72,21 @@ committing model weights:
 ```text
 models/
   all-MiniLM-L6-v2/
-  gliner_small-v2.1/
   distilbert-NER/
 ```
 
-DistilBERT is the default NER backend, so both commands below use it:
+DistilBERT performs header NER:
 
 ```bash
 uv run extractor-v1
-uv run extractor-v1 --ner-backend distilbert
 ```
 
-GLiNER is optional. Install its dependency and select it explicitly with:
-
-```bash
-uv sync --extra gliner
-uv run extractor-v1 --ner-backend gliner
-```
-
-Both backends use the same contact masking, line-by-line input, entity cleanup,
-and fallback pipeline, so their generated `debug/header/header.json` metadata records which
-backend and model revision produced the result.
+DistilBERT uses contact masking, line-by-line input, entity cleanup, and the
+fallback pipeline. Generated `debug/header/header.json` metadata records the model
+and revision that produced the result.
 
 The extractor does not download models at runtime. Populate the MiniLM and
-DistilBERT local model directories for the default setup; the GLiNER directory is
-needed only when that optional backend is selected. Both NER backends process
+DistilBERT local model directories before running it. DistilBERT processes
 contact-masked header lines independently, while regex remains authoritative for
 deterministic contact formats.
 

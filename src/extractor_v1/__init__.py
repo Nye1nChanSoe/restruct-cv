@@ -3,12 +3,16 @@
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import json
 import re
 import statistics
+import subprocess
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any
 
 import pymupdf
 from PIL import Image, ImageDraw
@@ -49,17 +53,8 @@ class HeaderEntityMatch:
     bbox: tuple[float, float, float, float] | None = None
 
 
-class NerPredictor(Protocol):
-    def predict_entities(
-        self,
-        text: str,
-        labels: list[str],
-        threshold: float,
-    ) -> list[dict[str, Any]]: ...
-
-
 class DistilBertNerPredictor:
-    """Adapt fixed CoNLL entities to the dynamic GLiNER-style interface."""
+    """Adapt fixed CoNLL entities to the resume header entity interface."""
 
     _LABEL_TO_TYPE = {
         "LABEL_0": "O",
@@ -193,71 +188,200 @@ def _line_from_pdf_dict(
     )
 
 
+def _run_ocr_command(arguments: list[str], program_name: str) -> subprocess.CompletedProcess[str]:
+    """Run one required native OCR command with a focused error message."""
+    try:
+        return subprocess.run(
+            arguments,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError as error:
+        raise RuntimeError(
+            f"required OCR program is not installed: {program_name}"
+        ) from error
+    except subprocess.CalledProcessError as error:
+        detail = error.stderr.strip() or error.stdout.strip() or "unknown error"
+        raise RuntimeError(f"{program_name} failed: {detail}") from error
+
+
+def _tesseract_page_dict(
+    page: pymupdf.Page,
+    page_index: int,
+    temporary_directory: Path,
+) -> dict[str, Any]:
+    """Render one PDF page with PyMuPDF and rebuild line geometry from TSV."""
+    page_number = page_index + 1
+    image_path = temporary_directory / f"page-{page_number}.png"
+    pixmap = page.get_pixmap(dpi=SETTINGS.ocr.dpi, alpha=False)
+    pixmap.save(image_path)
+    pixel_width, pixel_height = pixmap.width, pixmap.height
+    x_scale = page.rect.width / pixel_width
+    y_scale = page.rect.height / pixel_height
+
+    tesseract_result = _run_ocr_command(
+        [
+            SETTINGS.ocr.tesseract_command,
+            str(image_path),
+            "stdout",
+            "-l",
+            SETTINGS.ocr.language,
+            "--oem",
+            str(SETTINGS.ocr.engine_mode),
+            "--psm",
+            str(SETTINGS.ocr.page_segmentation_mode),
+            "tsv",
+        ],
+        SETTINGS.ocr.tesseract_command,
+    )
+
+    words_by_line: dict[tuple[int, int, int], list[dict[str, Any]]] = {}
+    reader = csv.DictReader(
+        io.StringIO(tesseract_result.stdout),
+        delimiter="\t",
+        quoting=csv.QUOTE_NONE,
+    )
+    for row in reader:
+        text = str(row.get("text") or "").strip()
+        if row.get("level") != "5" or not text:
+            continue
+        left = int(row["left"])
+        top = int(row["top"])
+        width = int(row["width"])
+        height = int(row["height"])
+        word = {
+            "text": text,
+            "bbox": (
+                left * x_scale,
+                top * y_scale,
+                (left + width) * x_scale,
+                (top + height) * y_scale,
+            ),
+            "confidence": float(row.get("conf") or -1.0),
+            "size": height * y_scale,
+        }
+        line_key = (
+            int(row["block_num"]),
+            int(row["par_num"]),
+            int(row["line_num"]),
+        )
+        words_by_line.setdefault(line_key, []).append(word)
+
+    lines_by_block: dict[int, list[dict[str, Any]]] = {}
+    for (block_number, _, _), words in words_by_line.items():
+        rectangle = pymupdf.Rect(words[0]["bbox"])
+        for word in words[1:]:
+            rectangle |= pymupdf.Rect(word["bbox"])
+        line_text = " ".join(str(word["text"]) for word in words)
+        confidence_values = [
+            float(word["confidence"])
+            for word in words
+            if float(word["confidence"]) >= 0
+        ]
+        raw_line = {
+            "bbox": tuple(float(value) for value in rectangle),
+            "spans": [
+                {
+                    "text": line_text,
+                    "bbox": tuple(float(value) for value in rectangle),
+                    "size": statistics.median(
+                        float(word["size"]) for word in words
+                    ),
+                    "font": "TesseractOCR",
+                    "flags": 0,
+                }
+            ],
+            "ocrConfidence": (
+                sum(confidence_values) / len(confidence_values)
+                if confidence_values
+                else None
+            ),
+        }
+        lines_by_block.setdefault(block_number, []).append(raw_line)
+
+    blocks: list[dict[str, Any]] = []
+    for block_number, block_lines in lines_by_block.items():
+        block_rectangle = pymupdf.Rect(block_lines[0]["bbox"])
+        for raw_line in block_lines[1:]:
+            block_rectangle |= pymupdf.Rect(raw_line["bbox"])
+        blocks.append(
+            {
+                "type": 0,
+                "number": block_number,
+                "bbox": tuple(float(value) for value in block_rectangle),
+                "lines": block_lines,
+            }
+        )
+    return {
+        "page": page_number,
+        "width": page.rect.width,
+        "height": page.rect.height,
+        "engine": "tesseract_cli",
+        "renderer": "pymupdf_pixmap",
+        "dpi": SETTINGS.ocr.dpi,
+        "pageSegmentationMode": SETTINGS.ocr.page_segmentation_mode,
+        "blocks": blocks,
+    }
+
+
 def extract_lines(
     document: pymupdf.Document,
 ) -> tuple[list[ExtractedLine], list[dict[str, Any]], list[dict[str, Any]]]:
-    """Capture native PyMuPDF blocks, then use OCR only when native text is absent."""
+    """Use PyMuPDF for native text/rendering and Tesseract TSV for OCR pages."""
     lines: list[ExtractedLine] = []
     raw_pages: list[dict[str, Any]] = []
     ocr_pages: list[dict[str, Any]] = []
-    for page_index, page in enumerate(document):
-        native_page_dict = page.get_text("dict", sort=True)
-        native_text_blocks = [
-            block for block in native_page_dict.get("blocks", []) if block.get("type") == 0
-        ]
-        raw_pages.append(
-            {
-                "page": page_index + 1,
-                "width": page.rect.width,
-                "height": page.rect.height,
-                "blocks": native_text_blocks,
-            }
-        )
-        native_text = "".join(
-            str(span.get("text", ""))
-            for block in native_text_blocks
-            for raw_line in block.get("lines", [])
-            for span in raw_line.get("spans", [])
-        )
-        used_ocr = (
-            SETTINGS.ocr.enabled
-            and _meaningful_character_count(native_text)
-            < SETTINGS.ocr.native_text_min_characters
-        )
-
-        if used_ocr:
-            text_page = page.get_textpage_ocr(
-                language=SETTINGS.ocr.language,
-                dpi=SETTINGS.ocr.dpi,
-                full=True,
-            )
-            page_dict = page.get_text("dict", textpage=text_page, sort=True)
-            ocr_pages.append(
+    with tempfile.TemporaryDirectory(prefix="extractor-v1-ocr-") as temporary_name:
+        temporary_directory = Path(temporary_name)
+        for page_index, page in enumerate(document):
+            native_page_dict = page.get_text("dict", sort=True)
+            native_text_blocks = [
+                block
+                for block in native_page_dict.get("blocks", [])
+                if block.get("type") == 0
+            ]
+            raw_pages.append(
                 {
                     "page": page_index + 1,
                     "width": page.rect.width,
                     "height": page.rect.height,
-                    "blocks": [
-                        block
-                        for block in page_dict.get("blocks", [])
-                        if block.get("type") == 0
-                    ],
+                    "blocks": native_text_blocks,
                 }
             )
-        else:
-            page_dict = native_page_dict
+            native_text = "".join(
+                str(span.get("text", ""))
+                for block in native_text_blocks
+                for raw_line in block.get("lines", [])
+                for span in raw_line.get("spans", [])
+            )
+            used_ocr = (
+                SETTINGS.ocr.enabled
+                and _meaningful_character_count(native_text)
+                < SETTINGS.ocr.native_text_min_characters
+            )
 
-        for block in page_dict.get("blocks", []):
-            if block.get("type") != 0:
-                continue
-            for raw_line in block.get("lines", []):
-                line = _line_from_pdf_dict(
-                    raw_line,
-                    page_number=page_index + 1,
-                    used_ocr=used_ocr,
+            if used_ocr:
+                page_dict = _tesseract_page_dict(
+                    page,
+                    page_index,
+                    temporary_directory,
                 )
-                if line is not None:
-                    lines.append(line)
+                ocr_pages.append(page_dict)
+            else:
+                page_dict = native_page_dict
+
+            for block in page_dict.get("blocks", []):
+                if block.get("type") != 0:
+                    continue
+                for raw_line in block.get("lines", []):
+                    line = _line_from_pdf_dict(
+                        raw_line,
+                        page_number=page_index + 1,
+                        used_ocr=used_ocr,
+                    )
+                    if line is not None:
+                        lines.append(line)
     return lines, raw_pages, ocr_pages
 
 
@@ -289,7 +413,7 @@ def write_ocr_extraction(
     ocr_pages: list[dict[str, Any]],
     output_path: Path,
 ) -> None:
-    """Persist only the page dictionaries produced by the existing OCR fallback."""
+    """Persist reconstructed blocks produced from Tesseract TSV output."""
     if not SETTINGS.debug.ocr_extraction_enabled or not ocr_pages:
         return
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -744,12 +868,12 @@ def _looks_like_complete_name_line(text: str) -> bool:
 
 
 def _ner_matches_for_profile(
-    ner_model: NerPredictor,
+    ner_model: DistilBertNerPredictor,
     lines: list[ExtractedLine],
     profile_indexes: list[int],
     existing_matches: list[HeaderEntityMatch],
 ) -> list[HeaderEntityMatch]:
-    """Run the selected NER backend on each contact-masked header line."""
+    """Run DistilBERT NER on each contact-masked header line."""
     label_to_kind = {
         "person name": "name",
         "location": "location",
@@ -799,7 +923,7 @@ def _ner_matches_for_profile(
                     line_index=line_index,
                     start=start,
                     end=end,
-                    detection_method="gliner",
+                    detection_method="distilbert_ner",
                     confidence=float(prediction.get("score", 0.0)),
                 )
             )
@@ -1536,10 +1660,7 @@ def extract_resume(
     raw_debug_path: Path,
     ocr_debug_path: Path,
     model: SentenceTransformer,
-    ner_model: NerPredictor,
-    ner_backend: str,
-    ner_model_name: str,
-    ner_model_revision: str,
+    ner_model: DistilBertNerPredictor,
 ) -> None:
     with pymupdf.open(pdf_path) as document:
         lines, raw_pages, ocr_pages = extract_lines(document)
@@ -1564,9 +1685,9 @@ def extract_resume(
                     "source": pdf_path.name,
                     "model": SETTINGS.model.name,
                     "modelRevision": SETTINGS.model.revision,
-                    "nerBackend": ner_backend,
-                    "nerModel": ner_model_name,
-                    "nerModelRevision": ner_model_revision,
+                    "nerBackend": "distilbert",
+                    "nerModel": SETTINGS.ner.distilbert_name,
+                    "nerModelRevision": SETTINGS.ner.distilbert_revision,
                     "headerProfile": header_profile,
                 },
                 indent=2,
@@ -1603,12 +1724,6 @@ def _parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Process only PDFs in resume-truths/ and write them under results/0-truths/.",
     )
-    parser.add_argument(
-        "--ner-backend",
-        choices=("gliner", "distilbert"),
-        default=SETTINGS.ner.default_backend,
-        help="Select the project-local NER model used for header entities.",
-    )
     return parser.parse_args()
 
 
@@ -1621,38 +1736,12 @@ def _require_local_model(project_root: Path, relative_directory: str) -> Path:
     return model_directory
 
 
-def _load_ner_backend(
-    project_root: Path,
-    backend: str,
-) -> tuple[NerPredictor, str, str]:
-    if backend == "gliner":
-        try:
-            from gliner import GLiNER
-        except ImportError as error:
-            raise RuntimeError(
-                "GLiNER is optional; install it with `uv sync --extra gliner`"
-            ) from error
-
-        model_directory = _require_local_model(
-            project_root,
-            SETTINGS.ner.gliner_local_directory,
-        )
-        return (
-            GLiNER.from_pretrained(str(model_directory)),
-            SETTINGS.ner.gliner_name,
-            SETTINGS.ner.gliner_revision,
-        )
-    if backend == "distilbert":
-        model_directory = _require_local_model(
-            project_root,
-            SETTINGS.ner.distilbert_local_directory,
-        )
-        return (
-            DistilBertNerPredictor(model_directory),
-            SETTINGS.ner.distilbert_name,
-            SETTINGS.ner.distilbert_revision,
-        )
-    raise ValueError(f"unsupported NER backend: {backend}")
+def _load_ner_model(project_root: Path) -> DistilBertNerPredictor:
+    model_directory = _require_local_model(
+        project_root,
+        SETTINGS.ner.distilbert_local_directory,
+    )
+    return DistilBertNerPredictor(model_directory)
 
 
 def main() -> None:
@@ -1674,10 +1763,7 @@ def main() -> None:
             )
         ),
     )
-    ner_model, ner_model_name, ner_model_revision = _load_ner_backend(
-        project_root,
-        arguments.ner_backend,
-    )
+    ner_model = _load_ner_model(project_root)
 
     for pdf_path in sorted(input_directory.glob("*.pdf")):
         resume_output = output_root / pdf_path.stem
@@ -1687,9 +1773,9 @@ def main() -> None:
             else raw_debug_directory / f"{pdf_path.stem}.raw-pymupdf.json"
         )
         ocr_debug_path = (
-            resume_output / "debug" / "ocr" / "raw-pymupdf.json"
+            resume_output / "debug" / "ocr" / "raw-tesseract.json"
             if arguments.truths
-            else ocr_debug_directory / f"{pdf_path.stem}.ocr-pymupdf.json"
+            else ocr_debug_directory / f"{pdf_path.stem}.ocr-tesseract.json"
         )
         extract_resume(
             pdf_path,
@@ -1698,8 +1784,5 @@ def main() -> None:
             ocr_debug_path,
             model,
             ner_model,
-            arguments.ner_backend,
-            ner_model_name,
-            ner_model_revision,
         )
         print(f"extracted: {pdf_path.name}")
