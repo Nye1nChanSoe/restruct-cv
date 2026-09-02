@@ -1847,7 +1847,8 @@ def write_summary_debug(
     if summary is None:
         return
     output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "summary.json").write_text(
+    (output_directory / "summary.json").unlink(missing_ok=True)
+    (output_directory / "summary-raw.json").write_text(
         json.dumps(
             {
                 "source": pdf_path.name,
@@ -1932,7 +1933,8 @@ def write_experience_debug(
     if experience is None:
         return
     output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "experience.json").write_text(
+    (output_directory / "experience.json").unlink(missing_ok=True)
+    (output_directory / "experience-raw.json").write_text(
         json.dumps({"source": pdf_path.name, "experience": experience}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
@@ -2305,7 +2307,8 @@ def write_education_debug(
     if education is None:
         return
     output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "education.json").write_text(
+    (output_directory / "education.json").unlink(missing_ok=True)
+    (output_directory / "education-raw.json").write_text(
         json.dumps({"source": pdf_path.name, "education": education}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
@@ -2375,7 +2378,8 @@ def write_skills_debug(
     if skills is None:
         return
     output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "skills.json").write_text(
+    (output_directory / "skills.json").unlink(missing_ok=True)
+    (output_directory / "skills-raw.json").write_text(
         json.dumps({"source": pdf_path.name, "skills": skills}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
@@ -2428,7 +2432,8 @@ def write_projects_debug(
     if projects is None:
         return
     output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "projects.json").write_text(
+    (output_directory / "projects.json").unlink(missing_ok=True)
+    (output_directory / "projects-raw.json").write_text(
         json.dumps({"source": pdf_path.name, "projects": projects}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
@@ -2483,7 +2488,8 @@ def write_supplementary_sections_debug(
     for section_type, section in sections.items():
         output_directory = debug_directory / section_type
         output_directory.mkdir(parents=True, exist_ok=True)
-        (output_directory / f"{section_type}.json").write_text(
+        (output_directory / f"{section_type}.json").unlink(missing_ok=True)
+        (output_directory / f"{section_type}-raw.json").write_text(
             json.dumps(
                 {"source": pdf_path.name, section_type: section},
                 indent=2,
