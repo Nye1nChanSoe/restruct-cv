@@ -79,7 +79,7 @@ You can contribute by:
 - Improving OCR (`tesseract`) handling for scanned resumes,
 - Testing the extractor against different resume formats and reporting edge cases,
 - Improving documentation or developer setup instructions.
-- Adding support for Burmese/English mixed-language resumes,
+- Adding support for Burmese/English mixed-language resumes.
 
 Please avoid submitting **real** resumes containing PII data. Use anonymized data whenever possible.
 
