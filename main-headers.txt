@@ -1,0 +1,17 @@
+v1: Main Headers
+---------------
+header profile
+summary
+experience
+education
+skills
+projects
+certifications
+licenses
+tools equipment
+languages
+volunteering
+awards
+publications
+references
+interests
