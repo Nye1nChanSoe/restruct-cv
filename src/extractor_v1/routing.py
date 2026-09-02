@@ -39,6 +39,7 @@ _DATE_RANGE_RE = re.compile(
     rf"(?:{_DATED_YEAR_PATTERN}|Present|Current|Now)\b",
     re.IGNORECASE,
 )
+_SINGLE_YEAR_RE = re.compile(r"\b(?:19|20)\d{2}\b")
 _EDUCATION_TITLE_RE = re.compile(
     r"\b(?:associate(?:'s)?|bachelor(?:'s)?|master(?:'s)?|doctor(?:ate|al)?|"
     r"ph\.?\s*d\.?|m\.?\s*(?:sc|s|a|eng|ba)\.?|b\.?\s*(?:sc|s|a|eng|ba)\.?|"
@@ -144,6 +145,60 @@ def _is_local_subheading_candidate(
     )
 
 
+def _referenced_section_type(text: str) -> str | None:
+    normalized = " ".join(
+        text.replace("\u200b", "").replace("\ufeff", "").casefold().split()
+    )
+    matches: list[tuple[int, int, str]] = []
+    for section_type, references in SETTINGS.section_references.items():
+        for reference in references:
+            normalized_reference = " ".join(reference.casefold().split())
+            position = normalized.find(normalized_reference)
+            if position < 0:
+                continue
+            left_boundary = position == 0 or not normalized[position - 1].isalnum()
+            end = position + len(normalized_reference)
+            right_boundary = end == len(normalized) or not normalized[end].isalnum()
+            if left_boundary and right_boundary:
+                matches.append((position, -len(normalized_reference), section_type))
+    if not matches:
+        return None
+    return min(matches)[2]
+
+
+def _peer_sized_section_heading(
+    lines: list[ExtractedLine],
+    line_index: int,
+    parent_heading: DetectedHeading,
+) -> DetectedHeading | None:
+    line = lines[line_index]
+    parent = lines[parent_heading.line_index]
+    text = line.text.replace("\u200b", "").replace("\ufeff", "").strip()
+    if (
+        not text
+        or _BULLET_RE.match(text)
+        or len(text) > SETTINGS.heading.maximum_characters
+        or len(text.split()) > SETTINGS.heading.maximum_words
+        or line.size < parent.size * 0.98
+    ):
+        return None
+    letters = [character for character in text if character.isalpha()]
+    uppercase = bool(letters) and sum(
+        character.isupper() for character in letters
+    ) / len(letters) >= SETTINGS.heading.uppercase_ratio
+    if not uppercase and not line.bold:
+        return None
+    section_type = _referenced_section_type(text)
+    if section_type is None or section_type == parent_heading.section_type:
+        return None
+    return DetectedHeading(
+        line_index=line_index,
+        section_type=section_type,
+        similarity=1.0,
+        runner_up_similarity=0.0,
+    )
+
+
 def _routed_section_headings(
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
@@ -151,17 +206,19 @@ def _routed_section_headings(
     minimum_line_index: int = 0,
 ) -> list[DetectedHeading]:
     """Keep major section boundaries while demoting geometric child labels."""
-    candidates = sorted(
-        (
-            heading
-            for heading in headings
-            if heading.line_index >= minimum_line_index
-            and _is_reliable_section_heading(lines[heading.line_index], heading)
-        ),
-        key=lambda heading: heading.line_index,
-    )
+    reliable_by_index = {
+        heading.line_index: heading
+        for heading in headings
+        if heading.line_index >= minimum_line_index
+        and _is_reliable_section_heading(lines[heading.line_index], heading)
+    }
     routed: list[DetectedHeading] = []
-    for heading in candidates:
+    for line_index in range(minimum_line_index, len(lines)):
+        heading = reliable_by_index.get(line_index)
+        if heading is None and routed:
+            heading = _peer_sized_section_heading(lines, line_index, routed[-1])
+        if heading is None:
+            continue
         if routed and _is_local_subheading_candidate(lines, heading, routed[-1]):
             continue
         routed.append(heading)
@@ -1328,6 +1385,232 @@ def build_skills_debug(
     }
 
 
+def _project_date_matches(text: str) -> list[re.Match[str]]:
+    ranges = list(_DATE_RANGE_RE.finditer(text))
+    singles = [
+        match
+        for match in _SINGLE_YEAR_RE.finditer(text)
+        if not any(
+            date_range.start() < match.end() and match.start() < date_range.end()
+            for date_range in ranges
+        )
+    ]
+    return sorted([*ranges, *singles], key=lambda match: match.start())
+
+
+def _project_entry() -> dict[str, Any]:
+    return {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [],
+        "metadataRows": [],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [],
+        "_lastType": None,
+        "_lastLineBbox": None,
+    }
+
+
+def build_projects_debug(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    headings: list[DetectedHeading],
+    url_entities_by_line: dict[int, list[dict[str, Any]]],
+) -> dict[str, Any] | None:
+    """Group project titles, dates, paragraphs, bullets, and annotated URLs."""
+    routed = _routed_section_headings(lines, headings)
+    position = next((i for i, item in enumerate(routed) if item.section_type == "projects"), None)
+    if position is None:
+        return None
+    heading = routed[position]
+    end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
+    heading_line = lines[heading.line_index]
+    line_range = range(heading.line_index + 1, end)
+    rows = _visual_rows(lines, line_range)
+    body_size, body_bold = _section_body_style([lines[index] for index in line_range])
+    entries: list[dict[str, Any]] = []
+    visible_rows: list[list[tuple[int, ExtractedLine]]] = []
+    current: dict[str, Any] | None = None
+
+    for row in rows:
+        if all(
+            _PAGE_FOOTER_RE.search(line.text) is not None
+            and line.bbox[1] >= document[line.page - 1].rect.height * 0.88
+            for _, line in row
+        ):
+            continue
+        visible_rows.append(row)
+        dates_by_line = {
+            line_index: _project_date_matches(line.text)
+            for line_index, line in row
+        }
+        row_has_date = any(dates_by_line.values())
+        title_cells: list[tuple[int, ExtractedLine]] = []
+        for line_index, line in row:
+            bullet = _BULLET_RE.match(line.text)
+            matches = dates_by_line[line_index]
+            date_only = bool(matches) and all(
+                not character.strip(" ()[]{}|,;:-–—")
+                for character in (
+                    line.text[:matches[0].start()],
+                    line.text[matches[-1].end():],
+                )
+            )
+            if bullet or date_only:
+                continue
+            typographic_title = _looks_like_subheading(
+                line,
+                body_size=body_size,
+                body_bold=body_bold,
+            )
+            row_title = row_has_date and len(row) >= 2
+            first_title = (
+                current is None
+                and len(line.text.split()) <= SETTINGS.section_router.maximum_subheading_words
+                and not line.text.rstrip().endswith((".", ";", ":"))
+            )
+            if typographic_title or row_title or first_title:
+                title_cells.append((line_index, line))
+
+        if title_cells:
+            should_continue_title = bool(
+                current is not None
+                and current["subheadingLines"]
+                and not current["dates"]
+                and not current["paragraphs"]
+                and not current["bullets"]
+                and title_cells[0][1].page == current["subheadingLines"][-1]["page"]
+                and pymupdf.Rect(title_cells[0][1].bbox).y0
+                - pymupdf.Rect(current["subheadingLines"][-1]["bbox"]).y1
+                <= max(title_cells[0][1].size, 1.0) * 0.65
+            )
+            if not should_continue_title:
+                current = _project_entry()
+                entries.append(current)
+            for line_index, line in title_cells:
+                value: dict[str, Any] = {
+                    "text": line.text,
+                    "page": line.page,
+                    "bbox": [round(number, 2) for number in line.bbox],
+                    "detectionMethod": "geometry_typography",
+                }
+                line_urls = url_entities_by_line.get(line_index, [])
+                if line_urls:
+                    value["entities"] = line_urls
+                    current["urls"].extend(line_urls)
+                current["subheadingLines"].append(value)
+            current["metadataRows"].append(_row_value(row))
+
+        if row_has_date:
+            if current is None:
+                current = _project_entry()
+                entries.append(current)
+            for line_index, line in row:
+                for match in dates_by_line[line_index]:
+                    current["dates"].append({
+                        "text": match.group(0),
+                        "page": line.page,
+                        "bbox": _span_bbox(
+                            document,
+                            line,
+                            match.group(0),
+                            match.start(),
+                            match.end(),
+                        ),
+                        "detectionMethod": (
+                            "date_regex" if _DATE_RANGE_RE.fullmatch(match.group(0)) else "year_regex"
+                        ),
+                    })
+            if not title_cells:
+                current["metadataRows"].append(_row_value(row))
+
+        title_indexes = {line_index for line_index, _ in title_cells}
+        for line_index, line in row:
+            if line_index in title_indexes:
+                continue
+            matches = dates_by_line[line_index]
+            if matches:
+                residual = line.text
+                for match in reversed(matches):
+                    residual = residual[:match.start()] + residual[match.end():]
+                if not residual.strip(" ()[]{}|,;:-–—"):
+                    continue
+            if current is None:
+                current = _project_entry()
+                entries.append(current)
+            line_urls = url_entities_by_line.get(line_index, [])
+            rounded_bbox = [round(number, 2) for number in line.bbox]
+            bullet = _BULLET_RE.match(line.text)
+            if bullet:
+                value: dict[str, Any] = {
+                    "text": line.text[bullet.end():].strip(),
+                    "page": line.page,
+                    "bbox": rounded_bbox,
+                    "detectionMethod": "bullet_marker",
+                }
+                if line_urls:
+                    value["entities"] = line_urls
+                current["bullets"].append(value)
+                current["urls"].extend(line_urls)
+                current["_lastType"] = "bullet"
+                current["_lastLineBbox"] = rounded_bbox
+                continue
+            if current["_lastType"] == "bullet" and current["_lastLineBbox"] is not None:
+                previous_box = pymupdf.Rect(current["_lastLineBbox"])
+                line_box = pymupdf.Rect(line.bbox)
+                gap = line_box.y0 - previous_box.y1
+                if (
+                    -2.0 <= gap
+                    <= max(previous_box.height, line_box.height)
+                    * SETTINGS.section_router.paragraph_gap_multiplier
+                ):
+                    previous = current["bullets"][-1]
+                    previous["text"] += "\n" + line.text
+                    previous["bbox"] = [
+                        round(number, 2)
+                        for number in (pymupdf.Rect(previous["bbox"]) | line_box)
+                    ]
+                    if line_urls:
+                        previous.setdefault("entities", []).extend(line_urls)
+                    current["urls"].extend(line_urls)
+                    current["_lastLineBbox"] = rounded_bbox
+                    continue
+            _append_skill_paragraph(
+                current,
+                text=line.text,
+                page=line.page,
+                bbox=rounded_bbox,
+                entities=line_urls,
+            )
+            current["urls"].extend(line_urls)
+
+    for entry in entries:
+        entry.pop("_lastType", None)
+        entry.pop("_lastLineBbox", None)
+    next_heading = routed[position + 1] if position + 1 < len(routed) else None
+    return {
+        "sectionType": "projects",
+        "heading": {
+            "text": heading_line.text,
+            "page": heading_line.page,
+            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "similarity": round(heading.similarity, 4),
+            "detectionMethod": (
+                "geometry_reference_boundary"
+                if heading.line_index not in {item.line_index for item in headings}
+                else "geometry_semantic"
+            ),
+        },
+        "rows": [_row_value(row) for row in visible_rows],
+        "entries": entries,
+        "stoppedAtSection": (
+            {"sectionType": next_heading.section_type, "text": lines[next_heading.line_index].text}
+            if next_heading else None
+        ),
+    }
+
+
 def summary_debug_value(
     sections: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
@@ -1710,4 +1993,59 @@ def render_skills_debug_images(
             "url": "annotation: url",
         },
         {"skill_row"},
+    )
+
+
+def write_projects_debug(
+    pdf_path: Path,
+    projects: dict[str, Any] | None,
+    output_directory: Path,
+) -> None:
+    if projects is None:
+        return
+    output_directory.mkdir(parents=True, exist_ok=True)
+    (output_directory / "projects.json").write_text(
+        json.dumps({"source": pdf_path.name, "projects": projects}, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def render_projects_debug_images(
+    document: pymupdf.Document,
+    projects: dict[str, Any] | None,
+    output_directory: Path,
+) -> None:
+    if projects is None:
+        return
+    items: list[dict[str, Any]] = [{"type": "section_heading", **projects["heading"]}]
+    items.extend({"type": "project_row", **item} for item in projects["rows"])
+    for entry in projects["entries"]:
+        items.extend({"type": "project_subheading", **item} for item in entry["subheadingLines"])
+        items.extend({"type": "date", **item} for item in entry["dates"])
+        items.extend({"type": "url", **item} for item in entry["urls"])
+        items.extend({"type": "paragraph", **item} for item in entry["paragraphs"])
+        items.extend({"type": "bullet", **item} for item in entry["bullets"])
+    _render_entry_debug_images(
+        document,
+        items,
+        output_directory,
+        {
+            "section_heading": SETTINGS.section_colors["projects"],
+            "project_row": "#FFE0B2",
+            "project_subheading": "#EF6C00",
+            "date": "#F9A825",
+            "url": "#6D4C41",
+            "paragraph": "#90A4AE",
+            "bullet": "#5C6BC0",
+        },
+        {
+            "section_heading": "route: section_heading",
+            "project_row": "route: geometry_row",
+            "project_subheading": "route: project_subheading",
+            "date": "regex: date",
+            "url": "annotation: url",
+            "paragraph": "route: paragraph",
+            "bullet": "route: bullet",
+        },
+        {"project_row"},
     )

@@ -1,0 +1,515 @@
+{
+  "source": "7.anomaly.pdf",
+  "projects": {
+    "sectionType": "projects",
+    "heading": {
+      "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE",
+      "page": 2,
+      "bbox": [
+        46.9,
+        419.3,
+        306.84,
+        431.02
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 2,
+        "bbox": [
+          51.2,
+          437.7,
+          535.74,
+          449.46
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during",
+            "page": 2,
+            "bbox": [
+              51.2,
+              437.7,
+              535.74,
+              449.46
+            ],
+            "lineIndex": 91
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          59.85,
+          449.05,
+          354.24,
+          459.65
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "installation, and supported overnight commissioning work in Chonburi.",
+            "page": 2,
+            "bbox": [
+              59.85,
+              449.05,
+              354.24,
+              459.65
+            ],
+            "lineIndex": 92
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.2,
+          459.95,
+          542.59,
+          471.71
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Warehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and",
+            "page": 2,
+            "bbox": [
+              51.2,
+              459.95,
+              542.59,
+              471.71
+            ],
+            "lineIndex": 93
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          59.85,
+          471.3,
+          345.27,
+          481.9
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "pedestrian barriers from repeated drawings and site measurements.",
+            "page": 2,
+            "bbox": [
+              59.85,
+              471.3,
+              345.27,
+              481.9
+            ],
+            "lineIndex": 94
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.2,
+          482.2,
+          539.94,
+          493.96
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Production line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported",
+            "page": 2,
+            "bbox": [
+              51.2,
+              482.2,
+              539.94,
+              493.96
+            ],
+            "lineIndex": 95
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          59.85,
+          493.55,
+          263.49,
+          504.15
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "reinstallation during a planned factory shutdown.",
+            "page": 2,
+            "bbox": [
+              59.85,
+              493.55,
+              263.49,
+              504.15
+            ],
+            "lineIndex": 96
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.2,
+          504.45,
+          533.08,
+          516.21
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Cold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-",
+            "page": 2,
+            "bbox": [
+              51.2,
+              504.45,
+              533.08,
+              516.21
+            ],
+            "lineIndex": 97
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          59.85,
+          515.8,
+          345.74,
+          526.4
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "temperature areas using task-specific PPE and short work rotations.",
+            "page": 2,
+            "bbox": [
+              59.85,
+              515.8,
+              345.74,
+              526.4
+            ],
+            "lineIndex": 98
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.2,
+          526.7,
+          554.16,
+          538.46
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Commercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple",
+            "page": 2,
+            "bbox": [
+              51.2,
+              526.7,
+              554.16,
+              538.46
+            ],
+            "lineIndex": 99
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          59.85,
+          538.05,
+          260.87,
+          548.65
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Bangkok-area construction and renovation jobs.",
+            "page": 2,
+            "bbox": [
+              59.85,
+              538.05,
+              260.87,
+              548.65
+            ],
+            "lineIndex": 100
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.2,
+              437.7,
+              535.74,
+              449.46
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during",
+                "page": 2,
+                "bbox": [
+                  51.2,
+                  437.7,
+                  535.74,
+                  449.46
+                ],
+                "lineIndex": 91
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              51.2,
+              459.95,
+              542.59,
+              471.71
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Warehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and",
+                "page": 2,
+                "bbox": [
+                  51.2,
+                  459.95,
+                  542.59,
+                  471.71
+                ],
+                "lineIndex": 93
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              51.2,
+              482.2,
+              539.94,
+              493.96
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Production line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported",
+                "page": 2,
+                "bbox": [
+                  51.2,
+                  482.2,
+                  539.94,
+                  493.96
+                ],
+                "lineIndex": 95
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              51.2,
+              504.45,
+              533.08,
+              516.21
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Cold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-",
+                "page": 2,
+                "bbox": [
+                  51.2,
+                  504.45,
+                  533.08,
+                  516.21
+                ],
+                "lineIndex": 97
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              51.2,
+              526.7,
+              554.16,
+              538.46
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Commercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple",
+                "page": 2,
+                "bbox": [
+                  51.2,
+                  526.7,
+                  554.16,
+                  538.46
+                ],
+                "lineIndex": 99
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2024",
+            "page": 2,
+            "bbox": [
+              197.55,
+              437.9,
+              218.67,
+              448.5
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2023",
+            "page": 2,
+            "bbox": [
+              230.77,
+              460.15,
+              251.89,
+              470.75
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2022",
+            "page": 2,
+            "bbox": [
+              172.2,
+              482.4,
+              193.32,
+              493.0
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2020",
+            "page": 2,
+            "bbox": [
+              199.65,
+              504.65,
+              220.77,
+              515.25
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2021",
+            "page": 2,
+            "bbox": [
+              223.93,
+              504.65,
+              245.05,
+              515.25
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2016",
+            "page": 2,
+            "bbox": [
+              185.4,
+              526.9,
+              206.52,
+              537.5
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2018",
+            "page": 2,
+            "bbox": [
+              209.65,
+              526.9,
+              230.8,
+              537.5
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during\ninstallation, and supported overnight commissioning work in Chonburi.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              437.7,
+              535.74,
+              459.65
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Warehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and\npedestrian barriers from repeated drawings and site measurements.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              459.95,
+              542.59,
+              481.9
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Production line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported\nreinstallation during a planned factory shutdown.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              482.2,
+              539.94,
+              504.15
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Cold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-\ntemperature areas using task-specific PPE and short work rotations.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              504.45,
+              533.08,
+              526.4
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Commercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple\nBangkok-area construction and renovation jobs.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              526.7,
+              554.16,
+              548.65
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "certifications",
+      "text": "TRAINING & CERTIFICATIONS"
+    }
+  }
+}

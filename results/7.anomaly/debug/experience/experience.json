@@ -653,68 +653,13 @@
             "detectionMethod": "bullet_marker"
           },
           {
-            "text": "Helped fabricate shelving, carts, sign frames, gates and repair jobs for local customers.\nSELECTED PROJECTS & PRACTICAL EXPERIENCE",
+            "text": "Helped fabricate shelving, carts, sign frames, gates and repair jobs for local customers.",
             "page": 2,
             "bbox": [
-              46.9,
+              51.2,
               399.9,
               425.42,
-              431.02
-            ],
-            "detectionMethod": "bullet_marker"
-          },
-          {
-            "text": "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during\ninstallation, and supported overnight commissioning work in Chonburi.",
-            "page": 2,
-            "bbox": [
-              51.2,
-              437.7,
-              535.74,
-              459.65
-            ],
-            "detectionMethod": "bullet_marker"
-          },
-          {
-            "text": "Warehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and\npedestrian barriers from repeated drawings and site measurements.",
-            "page": 2,
-            "bbox": [
-              51.2,
-              459.95,
-              542.59,
-              481.9
-            ],
-            "detectionMethod": "bullet_marker"
-          },
-          {
-            "text": "Production line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported\nreinstallation during a planned factory shutdown.",
-            "page": 2,
-            "bbox": [
-              51.2,
-              482.2,
-              539.94,
-              504.15
-            ],
-            "detectionMethod": "bullet_marker"
-          },
-          {
-            "text": "Cold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-\ntemperature areas using task-specific PPE and short work rotations.",
-            "page": 2,
-            "bbox": [
-              51.2,
-              504.45,
-              533.08,
-              526.4
-            ],
-            "detectionMethod": "bullet_marker"
-          },
-          {
-            "text": "Commercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple\nBangkok-area construction and renovation jobs.",
-            "page": 2,
-            "bbox": [
-              51.2,
-              526.7,
-              554.16,
-              548.65
+              411.66
             ],
             "detectionMethod": "bullet_marker"
           }
@@ -722,8 +667,8 @@
       }
     ],
     "stoppedAtSection": {
-      "sectionType": "certifications",
-      "text": "TRAINING & CERTIFICATIONS"
+      "sectionType": "projects",
+      "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE"
     }
   }
 }

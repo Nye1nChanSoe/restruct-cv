@@ -1,0 +1,256 @@
+{
+  "source": "2.pdf",
+  "projects": {
+    "sectionType": "projects",
+    "heading": {
+      "text": "PROJECT",
+      "page": 3,
+      "bbox": [
+        72.0,
+        534.15,
+        156.98,
+        553.14
+      ],
+      "similarity": 0.7638,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          570.5,
+          288.67,
+          585.02
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Inventory Performance Dashboard",
+            "page": 3,
+            "bbox": [
+              72.0,
+              570.5,
+              288.67,
+              585.02
+            ],
+            "lineIndex": 98
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          599.62,
+          99.51,
+          611.91
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "2023",
+            "page": 3,
+            "bbox": [
+              72.0,
+              599.62,
+              99.51,
+              611.91
+            ],
+            "lineIndex": 99
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          626.17,
+          494.23,
+          638.46
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Developed an internal Power BI dashboard using inventory and sales exports from the",
+            "page": 3,
+            "bbox": [
+              72.0,
+              626.17,
+              494.23,
+              638.46
+            ],
+            "lineIndex": 100
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          640.72,
+          522.96,
+          653.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "company's ERP system. The dashboard tracked stock availability, inventory aging, inventory",
+            "page": 3,
+            "bbox": [
+              72.0,
+              640.72,
+              522.96,
+              653.0
+            ],
+            "lineIndex": 101
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          655.26,
+          522.3,
+          667.55
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "turnover, and slow-moving products. Used Power Query for data transformation and created",
+            "page": 3,
+            "bbox": [
+              72.0,
+              655.26,
+              522.3,
+              667.55
+            ],
+            "lineIndex": 102
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          669.81,
+          282.79,
+          682.1
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "calculated measures for monthly reporting.",
+            "page": 3,
+            "bbox": [
+              72.0,
+              669.81,
+              282.79,
+              682.1
+            ],
+            "lineIndex": 103
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Inventory Performance Dashboard",
+            "page": 3,
+            "bbox": [
+              72.0,
+              570.5,
+              288.67,
+              585.02
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              570.5,
+              288.67,
+              585.02
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Inventory Performance Dashboard",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  570.5,
+                  288.67,
+                  585.02
+                ],
+                "lineIndex": 98
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              599.62,
+              99.51,
+              611.91
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "2023",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  599.62,
+                  99.51,
+                  611.91
+                ],
+                "lineIndex": 99
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2023",
+            "page": 3,
+            "bbox": [
+              72.0,
+              599.62,
+              96.46,
+              611.91
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Developed an internal Power BI dashboard using inventory and sales exports from the\ncompany's ERP system. The dashboard tracked stock availability, inventory aging, inventory\nturnover, and slow-moving products. Used Power Query for data transformation and created\ncalculated measures for monthly reporting.",
+            "page": 3,
+            "bbox": [
+              72.0,
+              626.17,
+              522.96,
+              682.1
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "certifications",
+      "text": "CERTIFICATIONS & TRAINING"
+    }
+  }
+}

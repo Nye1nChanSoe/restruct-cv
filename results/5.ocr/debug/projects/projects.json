@@ -1,0 +1,301 @@
+{
+  "source": "5.ocr.pdf",
+  "projects": {
+    "sectionType": "projects",
+    "heading": {
+      "text": "SELECTED PROJECT EXPERIENCE",
+      "page": 2,
+      "bbox": [
+        51.12,
+        337.44,
+        229.44,
+        346.32
+      ],
+      "similarity": 0.7566,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 2,
+        "bbox": [
+          51.36,
+          354.48,
+          224.16,
+          363.36
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Rama IX Mixed-Use Residence, Bangkok",
+            "page": 2,
+            "bbox": [
+              51.36,
+              354.48,
+              224.16,
+              363.36
+            ],
+            "lineIndex": 57
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.12,
+          365.04,
+          514.08,
+          374.64
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "28-storey reinforced concrete structure; approximately 42,000 sq.m. gross floor area. Responsible for structural floor cycle",
+            "page": 2,
+            "bbox": [
+              51.12,
+              365.04,
+              514.08,
+              374.64
+            ],
+            "lineIndex": 58
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.12,
+          376.8,
+          314.64,
+          385.68
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "coordination, inspections, pour planning, and subcontractor follow-up.",
+            "page": 2,
+            "bbox": [
+              51.12,
+              376.8,
+              314.64,
+              385.68
+            ],
+            "lineIndex": 59
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.6,
+          391.44,
+          245.04,
+          400.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Bang Na Logistics Warehouse, Samut Prakan",
+            "page": 2,
+            "bbox": [
+              51.6,
+              391.44,
+              245.04,
+              400.8
+            ],
+            "lineIndex": 60
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.36,
+          401.76,
+          524.4,
+          411.84
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Large warehouse development with RC foundations, slab-on-ground, drainage, loading areas, and structural steel interfaces.",
+            "page": 2,
+            "bbox": [
+              51.36,
+              401.76,
+              524.4,
+              411.84
+            ],
+            "lineIndex": 61
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.36,
+          417.84,
+          247.68,
+          426.72
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Chonburi Industrial Access & Drainage Works",
+            "page": 2,
+            "bbox": [
+              51.36,
+              417.84,
+              247.68,
+              426.72
+            ],
+            "lineIndex": 62
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          428.64,
+          478.08,
+          437.28
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Road rehabilitation, side drains, manholes, culverts, and retaining wall works supporting industrial estate access.",
+            "page": 2,
+            "bbox": [
+              51.84,
+              428.64,
+              478.08,
+              437.28
+            ],
+            "lineIndex": 63
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Rama IX Mixed-Use Residence, Bangkok",
+            "page": 2,
+            "bbox": [
+              51.36,
+              354.48,
+              224.16,
+              363.36
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.36,
+              354.48,
+              224.16,
+              363.36
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Rama IX Mixed-Use Residence, Bangkok",
+                "page": 2,
+                "bbox": [
+                  51.36,
+                  354.48,
+                  224.16,
+                  363.36
+                ],
+                "lineIndex": 57
+              }
+            ]
+          }
+        ],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "28-storey reinforced concrete structure; approximately 42,000 sq.m. gross floor area. Responsible for structural floor cycle\ncoordination, inspections, pour planning, and subcontractor follow-up.",
+            "page": 2,
+            "bbox": [
+              51.12,
+              365.04,
+              514.08,
+              385.68
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Bang Na Logistics Warehouse, Samut Prakan",
+            "page": 2,
+            "bbox": [
+              51.6,
+              391.44,
+              245.04,
+              400.8
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.6,
+              391.44,
+              245.04,
+              400.8
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Bang Na Logistics Warehouse, Samut Prakan",
+                "page": 2,
+                "bbox": [
+                  51.6,
+                  391.44,
+                  245.04,
+                  400.8
+                ],
+                "lineIndex": 60
+              }
+            ]
+          }
+        ],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Large warehouse development with RC foundations, slab-on-ground, drainage, loading areas, and structural steel interfaces.\nChonburi Industrial Access & Drainage Works\nRoad rehabilitation, side drains, manholes, culverts, and retaining wall works supporting industrial estate access.",
+            "page": 2,
+            "bbox": [
+              51.36,
+              401.76,
+              524.4,
+              437.28
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "education",
+      "text": "EDUCATION"
+    }
+  }
+}

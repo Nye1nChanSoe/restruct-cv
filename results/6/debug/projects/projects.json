@@ -1,0 +1,380 @@
+{
+  "source": "6.pdf",
+  "projects": {
+    "sectionType": "projects",
+    "heading": {
+      "text": "PROJECTS",
+      "page": 1,
+      "bbox": [
+        46.9,
+        423.9,
+        103.41,
+        435.62
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          439.75,
+          329.04,
+          450.35
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "LinkedOut - Local Job Discovery & Resume Matching Platform",
+            "page": 1,
+            "bbox": [
+              46.9,
+              439.75,
+              329.04,
+              450.35
+            ],
+            "lineIndex": 34
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.65,
+          451.6,
+          408.59,
+          463.36
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Built a TypeScript + Playwright pipeline for collecting job listings and details into SQLite.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              451.6,
+              408.59,
+              463.36
+            ],
+            "lineIndex": 35
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.65,
+          462.1,
+          549.92,
+          473.86
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Implemented resume and job-description extraction using deterministic parsing, NER enrichment, local LLM inference, and",
+            "page": 1,
+            "bbox": [
+              52.65,
+              462.1,
+              549.92,
+              473.86
+            ],
+            "lineIndex": 36
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          59.85,
+          473.26,
+          139.36,
+          483.3
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "explainable scoring.",
+            "page": 1,
+            "bbox": [
+              59.85,
+              473.26,
+              139.36,
+              483.3
+            ],
+            "lineIndex": 37
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.65,
+          482.95,
+          546.06,
+          494.71
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Designed the pipeline so embeddings and semantic retrieval can be added later without changing the source-of-truth data",
+            "page": 1,
+            "bbox": [
+              52.65,
+              482.95,
+              546.06,
+              494.71
+            ],
+            "lineIndex": 38
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          59.85,
+          494.11,
+          86.84,
+          504.15
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "model.",
+            "page": 1,
+            "bbox": [
+              59.85,
+              494.11,
+              86.84,
+              504.15
+            ],
+            "lineIndex": 39
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          504.95,
+          174.53,
+          515.55
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Realtime Metrics Dashboard",
+            "page": 1,
+            "bbox": [
+              46.9,
+              504.95,
+              174.53,
+              515.55
+            ],
+            "lineIndex": 40
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.65,
+          516.8,
+          473.35,
+          528.56
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Created a Go backend and WebSocket stream for live application metrics with PostgreSQL persistence.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              516.8,
+              473.35,
+              528.56
+            ],
+            "lineIndex": 41
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.65,
+          527.3,
+          422.41,
+          539.06
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Containerized services with Docker and deployed a small production environment on AWS.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              527.3,
+              422.41,
+              539.06
+            ],
+            "lineIndex": 42
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "LinkedOut - Local Job Discovery & Resume Matching Platform",
+            "page": 1,
+            "bbox": [
+              46.9,
+              439.75,
+              329.04,
+              450.35
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              46.9,
+              439.75,
+              329.04,
+              450.35
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "LinkedOut - Local Job Discovery & Resume Matching Platform",
+                "page": 1,
+                "bbox": [
+                  46.9,
+                  439.75,
+                  329.04,
+                  450.35
+                ],
+                "lineIndex": 34
+              }
+            ]
+          }
+        ],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Built a TypeScript + Playwright pipeline for collecting job listings and details into SQLite.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              451.6,
+              408.59,
+              463.36
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Implemented resume and job-description extraction using deterministic parsing, NER enrichment, local LLM inference, and\nexplainable scoring.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              462.1,
+              549.92,
+              483.3
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Designed the pipeline so embeddings and semantic retrieval can be added later without changing the source-of-truth data\nmodel.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              482.95,
+              546.06,
+              504.15
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Realtime Metrics Dashboard",
+            "page": 1,
+            "bbox": [
+              46.9,
+              504.95,
+              174.53,
+              515.55
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              46.9,
+              504.95,
+              174.53,
+              515.55
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Realtime Metrics Dashboard",
+                "page": 1,
+                "bbox": [
+                  46.9,
+                  504.95,
+                  174.53,
+                  515.55
+                ],
+                "lineIndex": 40
+              }
+            ]
+          }
+        ],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Created a Go backend and WebSocket stream for live application metrics with PostgreSQL persistence.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              516.8,
+              473.35,
+              528.56
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Containerized services with Docker and deployed a small production environment on AWS.",
+            "page": 1,
+            "bbox": [
+              52.65,
+              527.3,
+              422.41,
+              539.06
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "education",
+      "text": "EDUCATION"
+    }
+  }
+}

@@ -339,19 +339,24 @@
             411.66
           ],
           "detectionMethod": "geometry_default"
-        },
-        {
-          "type": "subheading",
-          "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE",
-          "page": 2,
-          "bbox": [
-            46.9,
-            419.3,
-            306.84,
-            431.02
-          ],
-          "detectionMethod": "geometry_typography"
-        },
+        }
+      ]
+    },
+    {
+      "sectionType": "projects",
+      "heading": {
+        "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE",
+        "page": 2,
+        "bbox": [
+          46.9,
+          419.3,
+          306.84,
+          431.02
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      },
+      "content": [
         {
           "type": "paragraph",
           "text": "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during\ninstallation, and supported overnight commissioning work in Chonburi.\nWarehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and\npedestrian barriers from repeated drawings and site measurements.\nProduction line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported\nreinstallation during a planned factory shutdown.\nCold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-\ntemperature areas using task-specific PPE and short work rotations.\nCommercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple\nBangkok-area construction and renovation jobs.",
