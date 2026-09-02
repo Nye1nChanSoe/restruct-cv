@@ -185,6 +185,177 @@
             "lineIndex": 20
           }
         ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          77.1,
+          344.4,
+          520.2,
+          354.45
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Tools",
+            "page": 1,
+            "bbox": [
+              77.1,
+              344.4,
+              101.03,
+              354.45
+            ],
+            "lineIndex": 21
+          },
+          {
+            "text": "Angle grinder, cut-off saw, magnetic drill, bench drill, hand drill, oxy-fuel cutting, plasma",
+            "page": 1,
+            "bbox": [
+              170.7,
+              344.4,
+              520.2,
+              354.45
+            ],
+            "lineIndex": 22
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          170.7,
+          356.31,
+          366.68,
+          366.35
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "cutter, measuring tape, vernier caliper, spirit level",
+            "page": 1,
+            "bbox": [
+              170.7,
+              356.31,
+              366.68,
+              366.35
+            ],
+            "lineIndex": 23
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          77.1,
+          382.26,
+          519.74,
+          392.3
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Safety",
+            "page": 1,
+            "bbox": [
+              77.1,
+              382.26,
+              104.1,
+              392.3
+            ],
+            "lineIndex": 24
+          },
+          {
+            "text": "PPE, hot-work permit procedures, fire watch, lockout/tagout awareness, housekeeping,",
+            "page": 1,
+            "bbox": [
+              170.7,
+              382.26,
+              519.74,
+              392.3
+            ],
+            "lineIndex": 25
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          170.7,
+          394.15,
+          308.69,
+          404.2
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "lifting awareness, toolbox talks, 5S",
+            "page": 1,
+            "bbox": [
+              170.7,
+              394.15,
+              308.69,
+              404.2
+            ],
+            "lineIndex": 26
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          77.1,
+          420.11,
+          512.74,
+          430.15
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Work Style",
+            "page": 1,
+            "bbox": [
+              77.1,
+              420.11,
+              123.57,
+              430.15
+            ],
+            "lineIndex": 27
+          },
+          {
+            "text": "Shift work, overtime, production support, team coordination, job handover, basic work",
+            "page": 1,
+            "bbox": [
+              170.7,
+              420.11,
+              512.74,
+              430.15
+            ],
+            "lineIndex": 28
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          170.7,
+          432.01,
+          267.17,
+          442.05
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "records, material control",
+            "page": 1,
+            "bbox": [
+              170.7,
+              432.01,
+              267.17,
+              442.05
+            ],
+            "lineIndex": 29
+          }
+        ]
       }
     ],
     "groups": [
@@ -271,11 +442,95 @@
         ],
         "bullets": [],
         "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Tools",
+          "page": 1,
+          "bbox": [
+            77.1,
+            344.4,
+            101.03,
+            354.45
+          ],
+          "detectionMethod": "geometry_table_cell"
+        },
+        "paragraphs": [
+          {
+            "text": "Angle grinder, cut-off saw, magnetic drill, bench drill, hand drill, oxy-fuel cutting, plasma\ncutter, measuring tape, vernier caliper, spirit level",
+            "page": 1,
+            "bbox": [
+              170.7,
+              344.4,
+              520.2,
+              366.35
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Safety",
+          "page": 1,
+          "bbox": [
+            77.1,
+            382.26,
+            104.1,
+            392.3
+          ],
+          "detectionMethod": "geometry_table_cell"
+        },
+        "paragraphs": [
+          {
+            "text": "PPE, hot-work permit procedures, fire watch, lockout/tagout awareness, housekeeping,\nlifting awareness, toolbox talks, 5S",
+            "page": 1,
+            "bbox": [
+              170.7,
+              382.26,
+              519.74,
+              404.2
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Work Style",
+          "page": 1,
+          "bbox": [
+            77.1,
+            420.11,
+            123.57,
+            430.15
+          ],
+          "detectionMethod": "geometry_table_cell"
+        },
+        "paragraphs": [
+          {
+            "text": "Shift work, overtime, production support, team coordination, job handover, basic work\nrecords, material control",
+            "page": 1,
+            "bbox": [
+              170.7,
+              420.11,
+              512.74,
+              442.05
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
       }
     ],
     "stoppedAtSection": {
-      "sectionType": "tools_equipment",
-      "text": "Tools"
+      "sectionType": "experience",
+      "text": "EMPLOYMENT HISTORY"
     }
   }
 }

@@ -105,6 +105,69 @@ def _is_reliable_section_heading(
     )
 
 
+def _shares_visual_row_with_right_content(
+    lines: list[ExtractedLine],
+    line_index: int,
+) -> bool:
+    candidate = lines[line_index]
+    candidate_box = pymupdf.Rect(candidate.bbox)
+    for other_index, other in enumerate(lines):
+        if other_index == line_index or other.page != candidate.page:
+            continue
+        other_box = pymupdf.Rect(other.bbox)
+        if other_box.x0 <= candidate_box.x1 + max(2.0, candidate.size * 0.5):
+            continue
+        vertical_overlap = min(candidate_box.y1, other_box.y1) - max(
+            candidate_box.y0,
+            other_box.y0,
+        )
+        if vertical_overlap >= min(candidate_box.height, other_box.height) * 0.45:
+            return True
+    return False
+
+
+def _is_local_subheading_candidate(
+    lines: list[ExtractedLine],
+    heading: DetectedHeading,
+    parent_heading: DetectedHeading,
+) -> bool:
+    candidate = lines[heading.line_index]
+    parent = lines[parent_heading.line_index]
+    if candidate.page < parent.page:
+        return False
+    smaller = candidate.size < parent.size * 0.98
+    indented = candidate.bbox[0] > parent.bbox[0] + max(4.0, parent.size * 0.5)
+    return (
+        smaller
+        and indented
+        and _shares_visual_row_with_right_content(lines, heading.line_index)
+    )
+
+
+def _routed_section_headings(
+    lines: list[ExtractedLine],
+    headings: list[DetectedHeading],
+    *,
+    minimum_line_index: int = 0,
+) -> list[DetectedHeading]:
+    """Keep major section boundaries while demoting geometric child labels."""
+    candidates = sorted(
+        (
+            heading
+            for heading in headings
+            if heading.line_index >= minimum_line_index
+            and _is_reliable_section_heading(lines[heading.line_index], heading)
+        ),
+        key=lambda heading: heading.line_index,
+    )
+    routed: list[DetectedHeading] = []
+    for heading in candidates:
+        if routed and _is_local_subheading_candidate(lines, heading, routed[-1]):
+            continue
+        routed.append(heading)
+    return routed
+
+
 def _section_body_style(
     content_lines: list[ExtractedLine],
 ) -> tuple[float, bool]:
@@ -227,14 +290,10 @@ def build_sections(
     first_boundary = first_header_boundary(lines, headings)
     if first_boundary is None:
         return []
-    routed_headings = sorted(
-        (
-            heading
-            for heading in headings
-            if heading.line_index >= first_boundary.line_index
-            and _is_reliable_section_heading(lines[heading.line_index], heading)
-        ),
-        key=lambda heading: heading.line_index,
+    routed_headings = _routed_section_headings(
+        lines,
+        headings,
+        minimum_line_index=first_boundary.line_index,
     )
 
     sections: list[dict[str, Any]] = []
@@ -443,13 +502,7 @@ def build_experience_debug(
     ner_model: DistilBertNerPredictor,
     url_entities_by_line: dict[int, list[dict[str, Any]]],
 ) -> dict[str, Any] | None:
-    routed = sorted(
-        (
-            heading for heading in headings
-            if _is_reliable_section_heading(lines[heading.line_index], heading)
-        ),
-        key=lambda item: item.line_index,
-    )
+    routed = _routed_section_headings(lines, headings)
     position = next((i for i, item in enumerate(routed) if item.section_type == "experience"), None)
     if position is None:
         return None
@@ -741,13 +794,7 @@ def build_education_debug(
     url_entities_by_line: dict[int, list[dict[str, Any]]],
 ) -> dict[str, Any] | None:
     """Reconstruct education entries from visual rows and grounded entities."""
-    routed = sorted(
-        (
-            heading for heading in headings
-            if _is_reliable_section_heading(lines[heading.line_index], heading)
-        ),
-        key=lambda item: item.line_index,
-    )
+    routed = _routed_section_headings(lines, headings)
     position = next((i for i, item in enumerate(routed) if item.section_type == "education"), None)
     if position is None:
         return None
@@ -1064,13 +1111,7 @@ def build_skills_debug(
     url_entities_by_line: dict[int, list[dict[str, Any]]],
 ) -> dict[str, Any] | None:
     """Preserve skill prose and attach vertical bullets to geometric groups."""
-    routed = sorted(
-        (
-            heading for heading in headings
-            if _is_reliable_section_heading(lines[heading.line_index], heading)
-        ),
-        key=lambda item: item.line_index,
-    )
+    routed = _routed_section_headings(lines, headings)
     position = next((i for i, item in enumerate(routed) if item.section_type == "skills"), None)
     if position is None:
         return None

@@ -118,24 +118,19 @@
             328.5
           ],
           "detectionMethod": "geometry_default"
-        }
-      ]
-    },
-    {
-      "sectionType": "tools_equipment",
-      "heading": {
-        "text": "Tools",
-        "page": 1,
-        "bbox": [
-          77.1,
-          344.4,
-          101.03,
-          354.45
-        ],
-        "similarity": 1.0,
-        "detectionMethod": "geometry_semantic"
-      },
-      "content": [
+        },
+        {
+          "type": "subheading",
+          "text": "Tools",
+          "page": 1,
+          "bbox": [
+            77.1,
+            344.4,
+            101.03,
+            354.45
+          ],
+          "detectionMethod": "geometry_typography"
+        },
         {
           "type": "paragraph",
           "text": "Angle grinder, cut-off saw, magnetic drill, bench drill, hand drill, oxy-fuel cutting, plasma\ncutter, measuring tape, vernier caliper, spirit level",
