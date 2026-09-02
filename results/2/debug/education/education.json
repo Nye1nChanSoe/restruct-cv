@@ -225,155 +225,21 @@
             "detectionMethod": "gpa_regex"
           }
         ],
-        "skills": [
-          {
-            "text": "Supply Chain Management",
-            "page": 2,
-            "bbox": [
-              221.69,
-              715.45,
-              354.3,
-              727.74
-            ],
-            "detectionMethod": "labeled_comma_list"
-          },
-          {
-            "text": "Inventory Management",
-            "page": 2,
-            "bbox": [
-              360.4,
-              715.45,
-              472.83,
-              727.74
-            ],
-            "detectionMethod": "labeled_comma_list"
-          },
-          {
-            "text": "Logistics",
-            "page": 2,
-            "bbox": [
-              478.94,
-              715.45,
-              521.71,
-              727.74
-            ],
-            "detectionMethod": "labeled_comma_list"
-          }
-        ],
-        "urls": [],
-        "paragraphs": [],
-        "bullets": []
-      },
-      {
-        "detectionMethod": "geometry_ner_reconstruction",
-        "metadataRows": [
-          {
-            "page": 2,
-            "bbox": [
-              72.0,
-              729.99,
-              524.75,
-              742.28
-            ],
-            "detectionMethod": "geometry_row",
-            "cells": [
-              {
-                "text": "Management, Procurement, Operations Management, Business Statistics, and Management",
-                "page": 2,
-                "bbox": [
-                  72.0,
-                  729.99,
-                  524.75,
-                  742.28
-                ],
-                "lineIndex": 70
-              }
-            ]
-          }
-        ],
-        "titles": [],
-        "institutions": [
-          {
-            "text": "Statistics",
-            "page": 2,
-            "bbox": [
-              386.05,
-              729.99,
-              430.03,
-              742.28
-            ],
-            "confidence": 0.7705,
-            "detectionMethod": "distilbert_ner"
-          },
-          {
-            "text": "Management",
-            "page": 2,
-            "bbox": [
-              72.0,
-              729.99,
-              136.16,
-              742.28
-            ],
-            "confidence": 0.5613,
-            "detectionMethod": "distilbert_ner"
-          }
-        ],
-        "dates": [],
-        "locations": [],
-        "gpa": [],
         "skills": [],
         "urls": [],
-        "paragraphs": [],
-        "bullets": []
-      },
-      {
-        "detectionMethod": "geometry_ner_reconstruction",
-        "metadataRows": [
+        "paragraphs": [
           {
+            "text": "Relevant coursework included Supply Chain Management, Inventory Management, Logistics\nManagement, Procurement, Operations Management, Business Statistics, and Management\nInformation Systems.",
             "page": 2,
             "bbox": [
               72.0,
-              744.54,
-              178.3,
+              715.45,
+              524.76,
               756.83
             ],
-            "detectionMethod": "geometry_row",
-            "cells": [
-              {
-                "text": "Information Systems.",
-                "page": 2,
-                "bbox": [
-                  72.0,
-                  744.54,
-                  178.3,
-                  756.83
-                ],
-                "lineIndex": 71
-              }
-            ]
+            "detectionMethod": "geometry_default"
           }
         ],
-        "titles": [],
-        "institutions": [
-          {
-            "text": "Information Systems",
-            "page": 2,
-            "bbox": [
-              72.0,
-              744.54,
-              172.19,
-              756.83
-            ],
-            "confidence": 0.8407,
-            "detectionMethod": "distilbert_ner"
-          }
-        ],
-        "dates": [],
-        "locations": [],
-        "gpa": [],
-        "skills": [],
-        "urls": [],
-        "paragraphs": [],
         "bullets": []
       }
     ],
