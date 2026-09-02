@@ -1,0 +1,611 @@
+{
+  "source": "1.pdf",
+  "skills": {
+    "sectionType": "skills",
+    "heading": {
+      "text": "TECHNICAL SKILLS",
+      "page": 2,
+      "bbox": [
+        72.0,
+        721.0,
+        240.04,
+        739.99
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 2,
+        "bbox": [
+          90.0,
+          755.28,
+          228.99,
+          767.57
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Preventive Maintenance",
+            "page": 2,
+            "bbox": [
+              90.0,
+              755.28,
+              228.99,
+              767.57
+            ],
+            "lineIndex": 68
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          72.36,
+          227.14,
+          84.65
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Corrective Maintenance",
+            "page": 3,
+            "bbox": [
+              90.0,
+              72.36,
+              227.14,
+              84.65
+            ],
+            "lineIndex": 69
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          86.91,
+          248.13,
+          99.2
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Mechanical Troubleshooting",
+            "page": 3,
+            "bbox": [
+              90.0,
+              86.91,
+              248.13,
+              99.2
+            ],
+            "lineIndex": 70
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          101.45,
+          275.41,
+          113.74
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Industrial Machinery Maintenance",
+            "page": 3,
+            "bbox": [
+              90.0,
+              101.45,
+              275.41,
+              113.74
+            ],
+            "lineIndex": 71
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          116.0,
+          203.3,
+          128.29
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Conveyor Systems",
+            "page": 3,
+            "bbox": [
+              90.0,
+              116.0,
+              203.3,
+              128.29
+            ],
+            "lineIndex": 72
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          130.54,
+          242.4,
+          142.83
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Pumps and Electric Motors",
+            "page": 3,
+            "bbox": [
+              90.0,
+              130.54,
+              242.4,
+              142.83
+            ],
+            "lineIndex": 73
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          145.09,
+          272.36,
+          157.38
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Bearings, Belts and Chain Drives",
+            "page": 3,
+            "bbox": [
+              90.0,
+              145.09,
+              272.36,
+              157.38
+            ],
+            "lineIndex": 74
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          159.64,
+          208.19,
+          171.93
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Pneumatic Systems",
+            "page": 3,
+            "bbox": [
+              90.0,
+              159.64,
+              208.19,
+              171.93
+            ],
+            "lineIndex": 75
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          174.18,
+          232.0,
+          186.47
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Basic Hydraulic Systems",
+            "page": 3,
+            "bbox": [
+              90.0,
+              174.18,
+              232.0,
+              186.47
+            ],
+            "lineIndex": 76
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          188.73,
+          267.06,
+          201.02
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Basic Electrical Troubleshooting",
+            "page": 3,
+            "bbox": [
+              90.0,
+              188.73,
+              267.06,
+              201.02
+            ],
+            "lineIndex": 77
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          203.28,
+          246.08,
+          215.57
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Sensors and Limit Switches",
+            "page": 3,
+            "bbox": [
+              90.0,
+              203.28,
+              246.08,
+              215.57
+            ],
+            "lineIndex": 78
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          217.82,
+          221.66,
+          230.11
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Hand and Power Tools",
+            "page": 3,
+            "bbox": [
+              90.0,
+              217.82,
+              221.66,
+              230.11
+            ],
+            "lineIndex": 79
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          232.37,
+          259.33,
+          244.66
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Basic Welding and Fabrication",
+            "page": 3,
+            "bbox": [
+              90.0,
+              232.37,
+              259.33,
+              244.66
+            ],
+            "lineIndex": 80
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          246.92,
+          219.21,
+          259.2
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Equipment Installation",
+            "page": 3,
+            "bbox": [
+              90.0,
+              246.92,
+              219.21,
+              259.2
+            ],
+            "lineIndex": 81
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          261.46,
+          250.99,
+          273.75
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Maintenance Documentation",
+            "page": 3,
+            "bbox": [
+              90.0,
+              261.46,
+              250.99,
+              273.75
+            ],
+            "lineIndex": 82
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          276.01,
+          222.26,
+          288.3
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Spare Parts Inspection",
+            "page": 3,
+            "bbox": [
+              90.0,
+              276.01,
+              222.26,
+              288.3
+            ],
+            "lineIndex": 83
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          290.55,
+          244.66,
+          302.84
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ 5S Workplace Organization",
+            "page": 3,
+            "bbox": [
+              90.0,
+              290.55,
+              244.66,
+              302.84
+            ],
+            "lineIndex": 84
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "subheading": null,
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Preventive Maintenance",
+            "page": 2,
+            "bbox": [
+              90.0,
+              755.28,
+              228.99,
+              767.57
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Corrective Maintenance",
+            "page": 3,
+            "bbox": [
+              90.0,
+              72.36,
+              227.14,
+              84.65
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Mechanical Troubleshooting",
+            "page": 3,
+            "bbox": [
+              90.0,
+              86.91,
+              248.13,
+              99.2
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Industrial Machinery Maintenance",
+            "page": 3,
+            "bbox": [
+              90.0,
+              101.45,
+              275.41,
+              113.74
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Conveyor Systems",
+            "page": 3,
+            "bbox": [
+              90.0,
+              116.0,
+              203.3,
+              128.29
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Pumps and Electric Motors",
+            "page": 3,
+            "bbox": [
+              90.0,
+              130.54,
+              242.4,
+              142.83
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Bearings, Belts and Chain Drives",
+            "page": 3,
+            "bbox": [
+              90.0,
+              145.09,
+              272.36,
+              157.38
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Pneumatic Systems",
+            "page": 3,
+            "bbox": [
+              90.0,
+              159.64,
+              208.19,
+              171.93
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Basic Hydraulic Systems",
+            "page": 3,
+            "bbox": [
+              90.0,
+              174.18,
+              232.0,
+              186.47
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Basic Electrical Troubleshooting",
+            "page": 3,
+            "bbox": [
+              90.0,
+              188.73,
+              267.06,
+              201.02
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Sensors and Limit Switches",
+            "page": 3,
+            "bbox": [
+              90.0,
+              203.28,
+              246.08,
+              215.57
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Hand and Power Tools",
+            "page": 3,
+            "bbox": [
+              90.0,
+              217.82,
+              221.66,
+              230.11
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Basic Welding and Fabrication",
+            "page": 3,
+            "bbox": [
+              90.0,
+              232.37,
+              259.33,
+              244.66
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Equipment Installation",
+            "page": 3,
+            "bbox": [
+              90.0,
+              246.92,
+              219.21,
+              259.2
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Maintenance Documentation",
+            "page": 3,
+            "bbox": [
+              90.0,
+              261.46,
+              250.99,
+              273.75
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Spare Parts Inspection",
+            "page": 3,
+            "bbox": [
+              90.0,
+              276.01,
+              222.26,
+              288.3
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "5S Workplace Organization",
+            "page": 3,
+            "bbox": [
+              90.0,
+              290.55,
+              244.66,
+              302.84
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ],
+        "urls": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "licenses",
+      "text": "SAFETY & TRAINING"
+    }
+  }
+}

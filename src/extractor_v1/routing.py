@@ -62,6 +62,11 @@ _EDUCATION_PARAGRAPH_RE = re.compile(
     re.IGNORECASE,
 )
 _PAGE_FOOTER_RE = re.compile(r"\bpage\s+\d+\s*$", re.IGNORECASE)
+_SKILL_INLINE_COLON_RE = re.compile(r"^(?P<label>[^:\t]{1,60}):\s*(?P<body>.+)$")
+_SKILL_INLINE_TAB_RE = re.compile(r"^(?P<label>[^\t]{1,60})\t+\s*(?P<body>.+)$")
+_SKILL_INLINE_DASH_RE = re.compile(
+    r"^(?P<label>.{1,60}?)\s+(?:-|\u2013|\u2014)\s+(?P<body>.+)$"
+)
 
 
 def first_header_boundary(
@@ -929,6 +934,359 @@ def build_education_debug(
     }
 
 
+def _skill_inline_parts(
+    text: str,
+    source_start: int = 0,
+    *,
+    allow_single_dash_body: bool = True,
+) -> tuple[str, int, int, str, int, int, str] | None:
+    """Return a short group label and untouched body from a delimiter row."""
+    for pattern, method in (
+        (_SKILL_INLINE_COLON_RE, "delimiter_colon"),
+        (_SKILL_INLINE_TAB_RE, "delimiter_tab"),
+        (_SKILL_INLINE_DASH_RE, "delimiter_dash"),
+    ):
+        match = pattern.match(text)
+        if match is None:
+            continue
+        label = match.group("label").strip()
+        body = match.group("body").strip()
+        if (
+            not label
+            or not body
+            or len(label.split()) > 7
+            or len(label) > 50
+            or label.casefold().startswith(("http", "www."))
+        ):
+            continue
+        if (
+            method == "delimiter_dash"
+            and not allow_single_dash_body
+            and "," not in body
+            and ";" not in body
+        ):
+            continue
+        label_offset = match.start("label") + len(match.group("label")) - len(match.group("label").lstrip())
+        body_offset = match.start("body") + len(match.group("body")) - len(match.group("body").lstrip())
+        label_start = source_start + label_offset
+        body_start = source_start + body_offset
+        return (
+            label,
+            label_start,
+            label_start + len(label),
+            body,
+            body_start,
+            body_start + len(body),
+            method,
+        )
+    return None
+
+
+def _skill_subheading_value(
+    document: pymupdf.Document,
+    line: ExtractedLine,
+    text: str,
+    start: int,
+    end: int,
+    detection_method: str,
+) -> dict[str, Any]:
+    return {
+        "text": text,
+        "page": line.page,
+        "bbox": _span_bbox(document, line, text, start, end),
+        "detectionMethod": detection_method,
+    }
+
+
+def _new_skill_group(
+    groups: list[dict[str, Any]],
+    subheading: dict[str, Any] | None,
+) -> dict[str, Any]:
+    group: dict[str, Any] = {
+        "subheading": subheading,
+        "paragraphs": [],
+        "bullets": [],
+        "urls": [],
+        "_lastType": None,
+        "_lastLineBbox": None,
+    }
+    groups.append(group)
+    return group
+
+
+def _append_skill_paragraph(
+    group: dict[str, Any],
+    *,
+    text: str,
+    page: int,
+    bbox: list[float],
+    entities: list[dict[str, Any]],
+) -> None:
+    current_box = pymupdf.Rect(bbox)
+    if group["paragraphs"] and group["paragraphs"][-1]["page"] == page:
+        previous = group["paragraphs"][-1]
+        previous_box = pymupdf.Rect(previous["bbox"])
+        gap = current_box.y0 - previous_box.y1
+        horizontal_overlap = max(
+            0.0,
+            min(previous_box.x1, current_box.x1) - max(previous_box.x0, current_box.x0),
+        )
+        if (
+            -2.0 <= gap
+            <= max(previous_box.height, current_box.height)
+            * SETTINGS.section_router.paragraph_gap_multiplier
+            and horizontal_overlap > 0
+        ):
+            previous["text"] += "\n" + text
+            previous["bbox"] = [round(value, 2) for value in (previous_box | current_box)]
+            if entities:
+                previous.setdefault("entities", []).extend(entities)
+            group["_lastType"] = "paragraph"
+            group["_lastLineBbox"] = bbox
+            return
+    value: dict[str, Any] = {
+        "text": text,
+        "page": page,
+        "bbox": bbox,
+        "detectionMethod": "geometry_default",
+    }
+    if entities:
+        value["entities"] = entities
+    group["paragraphs"].append(value)
+    group["_lastType"] = "paragraph"
+    group["_lastLineBbox"] = bbox
+
+
+def build_skills_debug(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    headings: list[DetectedHeading],
+    url_entities_by_line: dict[int, list[dict[str, Any]]],
+) -> dict[str, Any] | None:
+    """Preserve skill prose and attach vertical bullets to geometric groups."""
+    routed = sorted(
+        (
+            heading for heading in headings
+            if _is_reliable_section_heading(lines[heading.line_index], heading)
+        ),
+        key=lambda item: item.line_index,
+    )
+    position = next((i for i, item in enumerate(routed) if item.section_type == "skills"), None)
+    if position is None:
+        return None
+    heading = routed[position]
+    end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
+    heading_line = lines[heading.line_index]
+    line_range = range(heading.line_index + 1, end)
+    rows = _visual_rows(lines, line_range)
+    body_size, body_bold = _section_body_style([lines[index] for index in line_range])
+    groups: list[dict[str, Any]] = []
+    routed_rows: list[list[tuple[int, ExtractedLine]]] = []
+    current: dict[str, Any] | None = None
+
+    for row in rows:
+        if all(
+            _PAGE_FOOTER_RE.search(line.text) is not None
+            and line.bbox[1] >= document[line.page - 1].rect.height * 0.88
+            for _, line in row
+        ):
+            continue
+        routed_rows.append(row)
+
+        # A short left cell paired with right-side content is a table-like group row.
+        if len(row) >= 2:
+            left_index, left = row[0]
+            right_cells = row[1:]
+            left_is_label = (
+                len(left.text.split()) <= 7
+                and len(left.text) <= 50
+                and (
+                    left.bold
+                    or _looks_like_subheading(left, body_size=body_size, body_bold=body_bold)
+                    or pymupdf.Rect(right_cells[0][1].bbox).x0
+                    > pymupdf.Rect(left.bbox).x1 + left.size
+                )
+            )
+            if left_is_label:
+                stripped = left.text.strip().rstrip(":-–—").strip()
+                start = left.text.find(stripped)
+                current = _new_skill_group(
+                    groups,
+                    _skill_subheading_value(
+                        document,
+                        left,
+                        stripped,
+                        start,
+                        start + len(stripped),
+                        "geometry_table_cell",
+                    ),
+                )
+                current["urls"].extend(url_entities_by_line.get(left_index, []))
+                for line_index, line in right_cells:
+                    line_urls = url_entities_by_line.get(line_index, [])
+                    _append_skill_paragraph(
+                        current,
+                        text=line.text,
+                        page=line.page,
+                        bbox=[round(value, 2) for value in line.bbox],
+                        entities=line_urls,
+                    )
+                    current["urls"].extend(line_urls)
+                continue
+
+        handled_row = False
+        for line_index, line in row:
+            line_urls = url_entities_by_line.get(line_index, [])
+            bullet_match = _BULLET_RE.match(line.text)
+            content_start = bullet_match.end() if bullet_match else 0
+            content = line.text[content_start:].strip()
+            leading_space = len(line.text[content_start:]) - len(line.text[content_start:].lstrip())
+            content_start += leading_space
+            inline = _skill_inline_parts(
+                content,
+                content_start,
+                allow_single_dash_body=bullet_match is None,
+            )
+            if inline is not None:
+                label, label_start, label_end, body, body_start, body_end, method = inline
+                current = _new_skill_group(
+                    groups,
+                    _skill_subheading_value(
+                        document,
+                        line,
+                        label,
+                        label_start,
+                        label_end,
+                        method,
+                    ),
+                )
+                body_value: dict[str, Any] = {
+                    "text": body,
+                    "page": line.page,
+                    "bbox": _span_bbox(document, line, body, body_start, body_end),
+                    "detectionMethod": "bullet_marker" if bullet_match else "geometry_default",
+                }
+                if line_urls:
+                    body_value["entities"] = line_urls
+                target = "bullets" if bullet_match else "paragraphs"
+                current[target].append(body_value)
+                current["urls"].extend(line_urls)
+                current["_lastType"] = "bullet" if bullet_match else "paragraph"
+                current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
+                handled_row = True
+                continue
+
+            standalone_subheading = (
+                not bullet_match
+                and len(row) == 1
+                and (
+                    (
+                        line.text.strip().endswith((":", "-", "–", "—"))
+                        and len(line.text.split()) <= 7
+                    )
+                    or _looks_like_subheading(
+                        line,
+                        body_size=body_size,
+                        body_bold=body_bold,
+                    )
+                )
+            )
+            if standalone_subheading:
+                stripped = line.text.strip().rstrip(":-–—").strip()
+                start = line.text.find(stripped)
+                current = _new_skill_group(
+                    groups,
+                    _skill_subheading_value(
+                        document,
+                        line,
+                        stripped,
+                        start,
+                        start + len(stripped),
+                        "geometry_typography",
+                    ),
+                )
+                current["urls"].extend(line_urls)
+                handled_row = True
+                continue
+
+            current = current or _new_skill_group(groups, None)
+            rounded_bbox = [round(value, 2) for value in line.bbox]
+            if bullet_match:
+                value: dict[str, Any] = {
+                    "text": content,
+                    "page": line.page,
+                    "bbox": rounded_bbox,
+                    "detectionMethod": "bullet_marker",
+                }
+                if line_urls:
+                    value["entities"] = line_urls
+                current["bullets"].append(value)
+                current["urls"].extend(line_urls)
+                current["_lastType"] = "bullet"
+                current["_lastLineBbox"] = rounded_bbox
+            elif current["_lastType"] == "bullet" and current["_lastLineBbox"] is not None:
+                previous_box = pymupdf.Rect(current["_lastLineBbox"])
+                line_box = pymupdf.Rect(line.bbox)
+                gap = line_box.y0 - previous_box.y1
+                if (
+                    -2.0 <= gap
+                    <= max(previous_box.height, line_box.height)
+                    * SETTINGS.section_router.paragraph_gap_multiplier
+                ):
+                    previous = current["bullets"][-1]
+                    previous["text"] += "\n" + line.text
+                    previous["bbox"] = [
+                        round(value, 2)
+                        for value in (pymupdf.Rect(previous["bbox"]) | line_box)
+                    ]
+                    if line_urls:
+                        previous.setdefault("entities", []).extend(line_urls)
+                    current["urls"].extend(line_urls)
+                    current["_lastLineBbox"] = rounded_bbox
+                else:
+                    _append_skill_paragraph(
+                        current,
+                        text=line.text,
+                        page=line.page,
+                        bbox=rounded_bbox,
+                        entities=line_urls,
+                    )
+                    current["urls"].extend(line_urls)
+            else:
+                _append_skill_paragraph(
+                    current,
+                    text=line.text,
+                    page=line.page,
+                    bbox=rounded_bbox,
+                    entities=line_urls,
+                )
+                current["urls"].extend(line_urls)
+            handled_row = True
+        if not handled_row:
+            continue
+
+    for group in groups:
+        group.pop("_lastType", None)
+        group.pop("_lastLineBbox", None)
+    next_heading = routed[position + 1] if position + 1 < len(routed) else None
+    return {
+        "sectionType": "skills",
+        "heading": {
+            "text": heading_line.text,
+            "page": heading_line.page,
+            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "similarity": round(heading.similarity, 4),
+            "detectionMethod": "geometry_semantic",
+        },
+        "rows": [_row_value(row) for row in routed_rows],
+        "groups": groups,
+        "stoppedAtSection": (
+            {"sectionType": next_heading.section_type, "text": lines[next_heading.line_index].text}
+            if next_heading else None
+        ),
+    }
+
+
 def summary_debug_value(
     sections: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
@@ -1258,4 +1616,57 @@ def render_education_debug_images(
             "bullet": "route: bullet",
         },
         {"education_metadata"},
+    )
+
+
+def write_skills_debug(
+    pdf_path: Path,
+    skills: dict[str, Any] | None,
+    output_directory: Path,
+) -> None:
+    if skills is None:
+        return
+    output_directory.mkdir(parents=True, exist_ok=True)
+    (output_directory / "skills.json").write_text(
+        json.dumps({"source": pdf_path.name, "skills": skills}, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def render_skills_debug_images(
+    document: pymupdf.Document,
+    skills: dict[str, Any] | None,
+    output_directory: Path,
+) -> None:
+    if skills is None:
+        return
+    items: list[dict[str, Any]] = [{"type": "section_heading", **skills["heading"]}]
+    items.extend({"type": "skill_row", **item} for item in skills["rows"])
+    for group in skills["groups"]:
+        if group["subheading"] is not None:
+            items.append({"type": "skill_subheading", **group["subheading"]})
+        items.extend({"type": "paragraph", **item} for item in group["paragraphs"])
+        items.extend({"type": "bullet", **item} for item in group["bullets"])
+        items.extend({"type": "url", **item} for item in group["urls"])
+    _render_entry_debug_images(
+        document,
+        items,
+        output_directory,
+        {
+            "section_heading": SETTINGS.section_colors["skills"],
+            "skill_row": "#CFD8DC",
+            "skill_subheading": "#00897B",
+            "paragraph": "#90A4AE",
+            "bullet": "#5C6BC0",
+            "url": "#6D4C41",
+        },
+        {
+            "section_heading": "route: section_heading",
+            "skill_row": "route: geometry_row",
+            "skill_subheading": "route: skill_group",
+            "paragraph": "route: paragraph",
+            "bullet": "route: bullet",
+            "url": "annotation: url",
+        },
+        {"skill_row"},
     )

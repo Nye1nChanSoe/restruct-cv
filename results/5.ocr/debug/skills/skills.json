@@ -1,0 +1,271 @@
+{
+  "source": "5.ocr.pdf",
+  "skills": {
+    "sectionType": "skills",
+    "heading": {
+      "text": "CORE SKILLS",
+      "page": 1,
+      "bbox": [
+        52.32,
+        228.48,
+        122.16,
+        237.12
+      ],
+      "similarity": 0.8082,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          52.32,
+          246.24,
+          390.72,
+          255.12
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Construction site supervision - QA/QC documentation",
+            "page": 1,
+            "bbox": [
+              52.32,
+              246.24,
+              390.72,
+              255.12
+            ],
+            "lineIndex": 10
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.08,
+          257.28,
+          393.6,
+          267.36
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Reinforced concrete works - Concrete pour planning",
+            "page": 1,
+            "bbox": [
+              52.08,
+              257.28,
+              393.6,
+              267.36
+            ],
+            "lineIndex": 11
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.08,
+          268.32,
+          339.6,
+          277.44
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Structural drawings & shop drawings - AutoCAD",
+            "page": 1,
+            "bbox": [
+              52.08,
+              268.32,
+              339.6,
+              277.44
+            ],
+            "lineIndex": 12
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.08,
+          279.36,
+          362.16,
+          288.48
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Quantity take-off & BOQ checking - Microsoft Excel",
+            "page": 1,
+            "bbox": [
+              52.08,
+              279.36,
+              362.16,
+              288.48
+            ],
+            "lineIndex": 13
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          52.08,
+          289.92,
+          373.92,
+          299.76
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Method statements & inspection requests - MS Project - basic",
+            "page": 1,
+            "bbox": [
+              52.08,
+              289.92,
+              373.92,
+              299.76
+            ],
+            "lineIndex": 14
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          51.84,
+          300.96,
+          379.92,
+          310.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Daily/weekly progress reports - Survey coordination",
+            "page": 1,
+            "bbox": [
+              51.84,
+              300.96,
+              379.92,
+              310.8
+            ],
+            "lineIndex": 15
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          51.84,
+          312.0,
+          377.28,
+          321.84
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Subcontractor coordination - Safety coordination",
+            "page": 1,
+            "bbox": [
+              51.84,
+              312.0,
+              377.28,
+              321.84
+            ],
+            "lineIndex": 16
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "subheading": null,
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Construction site supervision - QA/QC documentation",
+            "page": 1,
+            "bbox": [
+              52.32,
+              246.24,
+              390.72,
+              255.12
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Reinforced concrete works - Concrete pour planning",
+            "page": 1,
+            "bbox": [
+              52.08,
+              257.28,
+              393.6,
+              267.36
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Structural drawings & shop drawings - AutoCAD",
+            "page": 1,
+            "bbox": [
+              52.08,
+              268.32,
+              339.6,
+              277.44
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Quantity take-off & BOQ checking - Microsoft Excel",
+            "page": 1,
+            "bbox": [
+              52.08,
+              279.36,
+              362.16,
+              288.48
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Method statements & inspection requests - MS Project - basic",
+            "page": 1,
+            "bbox": [
+              52.08,
+              289.92,
+              373.92,
+              299.76
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Daily/weekly progress reports - Survey coordination",
+            "page": 1,
+            "bbox": [
+              51.84,
+              300.96,
+              379.92,
+              310.8
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Subcontractor coordination - Safety coordination",
+            "page": 1,
+            "bbox": [
+              51.84,
+              312.0,
+              377.28,
+              321.84
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ],
+        "urls": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "experience",
+      "text": "PROFESSIONAL EXPERIENCE"
+    }
+  }
+}

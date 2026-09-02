@@ -1,0 +1,281 @@
+{
+  "source": "7.anomaly.pdf",
+  "skills": {
+    "sectionType": "skills",
+    "heading": {
+      "text": "CORE SKILLS",
+      "page": 1,
+      "bbox": [
+        46.9,
+        210.25,
+        117.41,
+        221.97
+      ],
+      "similarity": 0.8082,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          77.1,
+          230.85,
+          520.95,
+          240.9
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Welding",
+            "page": 1,
+            "bbox": [
+              77.1,
+              230.85,
+              112.01,
+              240.9
+            ],
+            "lineIndex": 12
+          },
+          {
+            "text": "MIG/MAG (GMAW), SMAW/arc welding, basic TIG (GTAW), tack welding, fillet and butt",
+            "page": 1,
+            "bbox": [
+              170.7,
+              230.85,
+              520.95,
+              240.9
+            ],
+            "lineIndex": 13
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          170.7,
+          242.76,
+          316.72,
+          252.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "joints, vertical and overhead practice",
+            "page": 1,
+            "bbox": [
+              170.7,
+              242.76,
+              316.72,
+              252.8
+            ],
+            "lineIndex": 14
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          77.1,
+          268.7,
+          531.73,
+          278.75
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Fabrication",
+            "page": 1,
+            "bbox": [
+              77.1,
+              268.7,
+              125.56,
+              278.75
+            ],
+            "lineIndex": 15
+          },
+          {
+            "text": "Steel and stainless fit-up, measuring, marking, cutting, drilling, grinding, bevel preparation,",
+            "page": 1,
+            "bbox": [
+              170.7,
+              268.7,
+              531.73,
+              278.75
+            ],
+            "lineIndex": 16
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          170.7,
+          280.61,
+          344.7,
+          290.65
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "jigs, brackets, frames, handrails and guards",
+            "page": 1,
+            "bbox": [
+              170.7,
+              280.61,
+              344.7,
+              290.65
+            ],
+            "lineIndex": 17
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          77.1,
+          306.56,
+          515.76,
+          316.6
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Maintenance",
+            "page": 1,
+            "bbox": [
+              77.1,
+              306.56,
+              131.56,
+              316.6
+            ],
+            "lineIndex": 18
+          },
+          {
+            "text": "Minor machine repair, bearing/guard replacement support, conveyors, pumps, motors,",
+            "page": 1,
+            "bbox": [
+              170.7,
+              306.56,
+              515.76,
+              316.6
+            ],
+            "lineIndex": 19
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          170.7,
+          318.46,
+          384.77,
+          328.5
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "workshop repairs, preventive maintenance assistance",
+            "page": 1,
+            "bbox": [
+              170.7,
+              318.46,
+              384.77,
+              328.5
+            ],
+            "lineIndex": 20
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "subheading": {
+          "text": "Welding",
+          "page": 1,
+          "bbox": [
+            77.1,
+            230.85,
+            112.01,
+            240.9
+          ],
+          "detectionMethod": "geometry_table_cell"
+        },
+        "paragraphs": [
+          {
+            "text": "MIG/MAG (GMAW), SMAW/arc welding, basic TIG (GTAW), tack welding, fillet and butt\njoints, vertical and overhead practice",
+            "page": 1,
+            "bbox": [
+              170.7,
+              230.85,
+              520.95,
+              252.8
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Fabrication",
+          "page": 1,
+          "bbox": [
+            77.1,
+            268.7,
+            125.56,
+            278.75
+          ],
+          "detectionMethod": "geometry_table_cell"
+        },
+        "paragraphs": [
+          {
+            "text": "Steel and stainless fit-up, measuring, marking, cutting, drilling, grinding, bevel preparation,\njigs, brackets, frames, handrails and guards",
+            "page": 1,
+            "bbox": [
+              170.7,
+              268.7,
+              531.73,
+              290.65
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Maintenance",
+          "page": 1,
+          "bbox": [
+            77.1,
+            306.56,
+            131.56,
+            316.6
+          ],
+          "detectionMethod": "geometry_table_cell"
+        },
+        "paragraphs": [
+          {
+            "text": "Minor machine repair, bearing/guard replacement support, conveyors, pumps, motors,\nworkshop repairs, preventive maintenance assistance",
+            "page": 1,
+            "bbox": [
+              170.7,
+              306.56,
+              515.76,
+              328.5
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "tools_equipment",
+      "text": "Tools"
+    }
+  }
+}

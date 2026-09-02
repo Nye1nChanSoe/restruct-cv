@@ -1,0 +1,361 @@
+{
+  "source": "6.pdf",
+  "skills": {
+    "sectionType": "skills",
+    "heading": {
+      "text": "TECHNICAL SKILLS",
+      "page": 1,
+      "bbox": [
+        46.9,
+        152.35,
+        147.72,
+        164.07
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          168.2,
+          300.09,
+          178.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Languages: TypeScript, JavaScript, Python, Go, SQL, Java",
+            "page": 1,
+            "bbox": [
+              46.9,
+              168.2,
+              300.09,
+              178.8
+            ],
+            "lineIndex": 8
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          181.2,
+          405.6,
+          191.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Backend: Node.js, Express, FastAPI, REST APIs, WebSockets, background workers",
+            "page": 1,
+            "bbox": [
+              46.9,
+              181.2,
+              405.6,
+              191.8
+            ],
+            "lineIndex": 9
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          194.2,
+          352.8,
+          204.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Data: PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines",
+            "page": 1,
+            "bbox": [
+              46.9,
+              194.2,
+              352.8,
+              204.8
+            ],
+            "lineIndex": 10
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          207.2,
+          336.49,
+          217.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Cloud & DevOps: AWS, GCP, Docker, GitHub Actions, Linux, Nginx",
+            "page": 1,
+            "bbox": [
+              46.9,
+              207.2,
+              336.49,
+              217.8
+            ],
+            "lineIndex": 11
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          220.2,
+          428.86,
+          230.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "AI/ML: scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction",
+            "page": 1,
+            "bbox": [
+              46.9,
+              220.2,
+              428.86,
+              230.8
+            ],
+            "lineIndex": 12
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          233.2,
+          258.91,
+          243.8
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Tools: Git, Playwright, Neovim, Postman, Grafana",
+            "page": 1,
+            "bbox": [
+              46.9,
+              233.2,
+              258.91,
+              243.8
+            ],
+            "lineIndex": 13
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "subheading": {
+          "text": "Languages",
+          "page": 1,
+          "bbox": [
+            46.9,
+            168.2,
+            96.99,
+            178.8
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "TypeScript, JavaScript, Python, Go, SQL, Java",
+            "page": 1,
+            "bbox": [
+              102.85,
+              168.2,
+              300.09,
+              178.8
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Backend",
+          "page": 1,
+          "bbox": [
+            46.9,
+            181.2,
+            86.43,
+            191.8
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "Node.js, Express, FastAPI, REST APIs, WebSockets, background workers",
+            "page": 1,
+            "bbox": [
+              92.3,
+              181.2,
+              405.6,
+              191.8
+            ],
+            "detectionMethod": "geometry_default",
+            "entities": [
+              {
+                "type": "url",
+                "text": "Node.js",
+                "url": "Node.js",
+                "page": 1,
+                "bbox": [
+                  92.3,
+                  181.2,
+                  124.48,
+                  191.8
+                ],
+                "detectionMethod": "regex"
+              }
+            ]
+          }
+        ],
+        "bullets": [],
+        "urls": [
+          {
+            "type": "url",
+            "text": "Node.js",
+            "url": "Node.js",
+            "page": 1,
+            "bbox": [
+              92.3,
+              181.2,
+              124.48,
+              191.8
+            ],
+            "detectionMethod": "regex"
+          }
+        ]
+      },
+      {
+        "subheading": {
+          "text": "Data",
+          "page": 1,
+          "bbox": [
+            46.9,
+            194.2,
+            67.48,
+            204.8
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "PostgreSQL, SQLite, Redis, BigQuery, pandas, ETL/ELT pipelines",
+            "page": 1,
+            "bbox": [
+              73.25,
+              194.2,
+              352.8,
+              204.8
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Cloud & DevOps",
+          "page": 1,
+          "bbox": [
+            46.9,
+            207.2,
+            121.77,
+            217.8
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "AWS, GCP, Docker, GitHub Actions, Linux, Nginx",
+            "page": 1,
+            "bbox": [
+              127.65,
+              207.2,
+              336.49,
+              217.8
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "AI/ML",
+          "page": 1,
+          "bbox": [
+            46.9,
+            220.2,
+            72.73,
+            230.8
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "scikit-learn, sentence-transformers, Ollama, embeddings, LLM structured extraction",
+            "page": 1,
+            "bbox": [
+              78.55,
+              220.2,
+              428.86,
+              230.8
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Tools",
+          "page": 1,
+          "bbox": [
+            46.9,
+            233.2,
+            72.17,
+            243.8
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "Git, Playwright, Neovim, Postman, Grafana",
+            "page": 1,
+            "bbox": [
+              78.0,
+              233.2,
+              258.91,
+              243.8
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "experience",
+      "text": "PROFESSIONAL EXPERIENCE"
+    }
+  }
+}

@@ -1,0 +1,860 @@
+{
+  "source": "2.pdf",
+  "skills": {
+    "sectionType": "skills",
+    "heading": {
+      "text": "TECHNICAL SKILLS",
+      "page": 3,
+      "bbox": [
+        72.0,
+        72.56,
+        240.04,
+        91.55
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          106.84,
+          164.83,
+          119.13
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Data & Reporting",
+            "page": 3,
+            "bbox": [
+              72.0,
+              106.84,
+              164.83,
+              119.13
+            ],
+            "lineIndex": 73
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          133.39,
+          185.58,
+          145.68
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Microsoft Excel",
+            "page": 3,
+            "bbox": [
+              90.0,
+              133.39,
+              185.58,
+              145.68
+            ],
+            "lineIndex": 74
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          147.93,
+          167.27,
+          160.22
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ PivotTables",
+            "page": 3,
+            "bbox": [
+              90.0,
+              147.93,
+              167.27,
+              160.22
+            ],
+            "lineIndex": 75
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          162.48,
+          164.2,
+          174.77
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ XLOOKUP",
+            "page": 3,
+            "bbox": [
+              90.0,
+              162.48,
+              164.2,
+              174.77
+            ],
+            "lineIndex": 76
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          177.03,
+          175.2,
+          189.31
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Power Query",
+            "page": 3,
+            "bbox": [
+              90.0,
+              177.03,
+              175.2,
+              189.31
+            ],
+            "lineIndex": 77
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          191.57,
+          155.65,
+          203.86
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Power BI",
+            "page": 3,
+            "bbox": [
+              90.0,
+              191.57,
+              155.65,
+              203.86
+            ],
+            "lineIndex": 78
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          206.12,
+          133.05,
+          218.41
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ SQL",
+            "page": 3,
+            "bbox": [
+              90.0,
+              206.12,
+              133.05,
+              218.41
+            ],
+            "lineIndex": 79
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          220.66,
+          180.72,
+          232.95
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Data Cleaning",
+            "page": 3,
+            "bbox": [
+              90.0,
+              220.66,
+              180.72,
+              232.95
+            ],
+            "lineIndex": 80
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          235.21,
+          232.65,
+          247.5
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Dashboard Development",
+            "page": 3,
+            "bbox": [
+              90.0,
+              235.21,
+              232.65,
+              247.5
+            ],
+            "lineIndex": 81
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          261.76,
+          145.29,
+          274.05
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Supply Chain",
+            "page": 3,
+            "bbox": [
+              72.0,
+              261.76,
+              145.29,
+              274.05
+            ],
+            "lineIndex": 82
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          288.3,
+          202.11,
+          300.59
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Inventory Planning",
+            "page": 3,
+            "bbox": [
+              90.0,
+              288.3,
+              202.11,
+              300.59
+            ],
+            "lineIndex": 83
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          302.85,
+          200.26,
+          315.14
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Inventory Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              302.85,
+              200.26,
+              315.14
+            ],
+            "lineIndex": 84
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          317.4,
+          240.0,
+          329.68
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Demand Planning Support",
+            "page": 3,
+            "bbox": [
+              90.0,
+              317.4,
+              240.0,
+              329.68
+            ],
+            "lineIndex": 85
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          331.94,
+          239.37,
+          344.23
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Procurement Coordination",
+            "page": 3,
+            "bbox": [
+              90.0,
+              331.94,
+              239.37,
+              344.23
+            ],
+            "lineIndex": 86
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          346.49,
+          261.35,
+          358.78
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Supplier Performance Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              346.49,
+              261.35,
+              358.78
+            ],
+            "lineIndex": 87
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          361.03,
+          243.02,
+          373.32
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Purchase Order Monitoring",
+            "page": 3,
+            "bbox": [
+              90.0,
+              361.03,
+              243.02,
+              373.32
+            ],
+            "lineIndex": 88
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          375.58,
+          214.93,
+          387.87
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Stock Replenishment",
+            "page": 3,
+            "bbox": [
+              90.0,
+              375.58,
+              214.93,
+              387.87
+            ],
+            "lineIndex": 89
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          390.13,
+          246.89,
+          402.42
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Inventory Turnover Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              390.13,
+              246.89,
+              402.42
+            ],
+            "lineIndex": 90
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          404.67,
+          213.7,
+          416.96
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Stock Aging Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              404.67,
+              213.7,
+              416.96
+            ],
+            "lineIndex": 91
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          419.22,
+          185.6,
+          431.51
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Cycle Counting",
+            "page": 3,
+            "bbox": [
+              90.0,
+              419.22,
+              185.6,
+              431.51
+            ],
+            "lineIndex": 92
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          445.77,
+          120.28,
+          458.05
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Systems",
+            "page": 3,
+            "bbox": [
+              72.0,
+              445.77,
+              120.28,
+              458.05
+            ],
+            "lineIndex": 93
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          472.31,
+          228.34,
+          484.6
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Microsoft Dynamics 365",
+            "page": 3,
+            "bbox": [
+              90.0,
+              472.31,
+              228.34,
+              484.6
+            ],
+            "lineIndex": 94
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          486.86,
+          187.21,
+          499.15
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Microsoft Office",
+            "page": 3,
+            "bbox": [
+              90.0,
+              486.86,
+              187.21,
+              499.15
+            ],
+            "lineIndex": 95
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          501.4,
+          204.34,
+          513.69
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Google Workspace",
+            "page": 3,
+            "bbox": [
+              90.0,
+              501.4,
+              204.34,
+              513.69
+            ],
+            "lineIndex": 96
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "subheading": {
+          "text": "Data & Reporting",
+          "page": 3,
+          "bbox": [
+            72.0,
+            106.84,
+            161.78,
+            119.13
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Microsoft Excel",
+            "page": 3,
+            "bbox": [
+              90.0,
+              133.39,
+              185.58,
+              145.68
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "PivotTables",
+            "page": 3,
+            "bbox": [
+              90.0,
+              147.93,
+              167.27,
+              160.22
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "XLOOKUP",
+            "page": 3,
+            "bbox": [
+              90.0,
+              162.48,
+              164.2,
+              174.77
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Power Query",
+            "page": 3,
+            "bbox": [
+              90.0,
+              177.03,
+              175.2,
+              189.31
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Power BI",
+            "page": 3,
+            "bbox": [
+              90.0,
+              191.57,
+              155.65,
+              203.86
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "SQL",
+            "page": 3,
+            "bbox": [
+              90.0,
+              206.12,
+              133.05,
+              218.41
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Data Cleaning",
+            "page": 3,
+            "bbox": [
+              90.0,
+              220.66,
+              180.72,
+              232.95
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Dashboard Development",
+            "page": 3,
+            "bbox": [
+              90.0,
+              235.21,
+              232.65,
+              247.5
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Supply Chain",
+          "page": 3,
+          "bbox": [
+            72.0,
+            261.76,
+            142.24,
+            274.05
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Inventory Planning",
+            "page": 3,
+            "bbox": [
+              90.0,
+              288.3,
+              202.11,
+              300.59
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Inventory Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              302.85,
+              200.26,
+              315.14
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Demand Planning Support",
+            "page": 3,
+            "bbox": [
+              90.0,
+              317.4,
+              240.0,
+              329.68
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Procurement Coordination",
+            "page": 3,
+            "bbox": [
+              90.0,
+              331.94,
+              239.37,
+              344.23
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Supplier Performance Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              346.49,
+              261.35,
+              358.78
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Purchase Order Monitoring",
+            "page": 3,
+            "bbox": [
+              90.0,
+              361.03,
+              243.02,
+              373.32
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Stock Replenishment",
+            "page": 3,
+            "bbox": [
+              90.0,
+              375.58,
+              214.93,
+              387.87
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Inventory Turnover Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              390.13,
+              246.89,
+              402.42
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Stock Aging Analysis",
+            "page": 3,
+            "bbox": [
+              90.0,
+              404.67,
+              213.7,
+              416.96
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Cycle Counting",
+            "page": 3,
+            "bbox": [
+              90.0,
+              419.22,
+              185.6,
+              431.51
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Systems",
+          "page": 3,
+          "bbox": [
+            72.0,
+            445.77,
+            117.22,
+            458.05
+          ],
+          "detectionMethod": "geometry_typography"
+        },
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Microsoft Dynamics 365",
+            "page": 3,
+            "bbox": [
+              90.0,
+              472.31,
+              228.34,
+              484.6
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Microsoft Office",
+            "page": 3,
+            "bbox": [
+              90.0,
+              486.86,
+              187.21,
+              499.15
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Google Workspace",
+            "page": 3,
+            "bbox": [
+              90.0,
+              501.4,
+              204.34,
+              513.69
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ],
+        "urls": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "projects",
+      "text": "PROJECT"
+    }
+  }
+}

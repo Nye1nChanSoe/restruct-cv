@@ -1,0 +1,179 @@
+{
+  "source": "9.ocr.pdf",
+  "skills": {
+    "sectionType": "skills",
+    "heading": {
+      "text": "SKILLS",
+      "page": 1,
+      "bbox": [
+        46.31,
+        515.98,
+        82.54,
+        523.42
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          46.31,
+          535.42,
+          386.29,
+          545.26
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Data & Reporting: Microsoft Excel, SQL, Power BI, KPI dashboards, basic Python",
+            "page": 1,
+            "bbox": [
+              46.31,
+              535.42,
+              386.29,
+              545.26
+            ],
+            "lineIndex": 33
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.31,
+          547.42,
+          428.04,
+          557.74
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Supply Chain: Inventory analysis, order fulfilment, supplier performance, 3PL coordination",
+            "page": 1,
+            "bbox": [
+              46.31,
+              547.42,
+              428.04,
+              557.74
+            ],
+            "lineIndex": 34
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.55,
+          559.9,
+          389.65,
+          569.74
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Languages: Bahasa Indonesia (native), English (professional working proficiency)",
+            "page": 1,
+            "bbox": [
+              46.55,
+              559.9,
+              389.65,
+              569.74
+            ],
+            "lineIndex": 35
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "subheading": {
+          "text": "Data & Reporting",
+          "page": 1,
+          "bbox": [
+            46.31,
+            535.42,
+            116.05,
+            545.26
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "Microsoft Excel, SQL, Power BI, KPI dashboards, basic Python",
+            "page": 1,
+            "bbox": [
+              124.77,
+              535.42,
+              386.29,
+              545.26
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Supply Chain",
+          "page": 1,
+          "bbox": [
+            46.31,
+            547.42,
+            97.21,
+            557.74
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "Inventory analysis, order fulfilment, supplier performance, 3PL coordination",
+            "page": 1,
+            "bbox": [
+              105.69,
+              547.42,
+              428.04,
+              557.74
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      },
+      {
+        "subheading": {
+          "text": "Languages",
+          "page": 1,
+          "bbox": [
+            46.55,
+            559.9,
+            85.15,
+            569.74
+          ],
+          "detectionMethod": "delimiter_colon"
+        },
+        "paragraphs": [
+          {
+            "text": "Bahasa Indonesia (native), English (professional working proficiency)",
+            "page": 1,
+            "bbox": [
+              93.72,
+              559.9,
+              389.65,
+              569.74
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "certifications",
+      "text": "CERTIFICATIONS & ACTIVITIES"
+    }
+  }
+}
