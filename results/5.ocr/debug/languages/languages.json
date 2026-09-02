@@ -1,0 +1,238 @@
+{
+  "source": "5.ocr.pdf",
+  "languages": {
+    "sectionType": "languages",
+    "heading": {
+      "text": "LANGUAGES & ADDITIONAL INFORMATION",
+      "page": 2,
+      "bbox": [
+        52.08,
+        560.64,
+        273.12,
+        569.28
+      ],
+      "similarity": 0.7636,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          578.4,
+          102.72,
+          585.12
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Thai: Native",
+            "page": 2,
+            "bbox": [
+              51.84,
+              578.4,
+              102.72,
+              585.12
+            ],
+            "lineIndex": 74
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          588.48,
+          451.68,
+          598.08
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- English: Working proficiency - comfortable reading drawings, specifications, RFls, and technical emails",
+            "page": 2,
+            "bbox": [
+              51.84,
+              588.48,
+              451.68,
+              598.08
+            ],
+            "lineIndex": 75
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          600.24,
+          207.36,
+          609.12
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Driving licence: Thai private car licence",
+            "page": 2,
+            "bbox": [
+              51.84,
+              600.24,
+              207.36,
+              609.12
+            ],
+            "lineIndex": 76
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          610.32,
+          441.6,
+          619.92
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Work preference: Site engineering, construction supervision, structural coordination, QA/QC support",
+            "page": 2,
+            "bbox": [
+              51.84,
+              610.32,
+              441.6,
+              619.92
+            ],
+            "lineIndex": 77
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          52.08,
+          622.32,
+          160.32,
+          630.96
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Availability: 30 days' notice",
+            "page": 2,
+            "bbox": [
+              52.08,
+              622.32,
+              160.32,
+              630.96
+            ],
+            "lineIndex": 78
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          170.4,
+          801.6,
+          425.28,
+          810.48
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Synthetic resume created for document extraction / OCR testing. Not a real person",
+            "page": 2,
+            "bbox": [
+              170.4,
+              801.6,
+              425.28,
+              810.48
+            ],
+            "lineIndex": 79
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [],
+        "metadataRows": [],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Synthetic resume created for document extraction / OCR testing. Not a real person",
+            "page": 2,
+            "bbox": [
+              170.4,
+              801.6,
+              425.28,
+              810.48
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [
+          {
+            "text": "Thai: Native",
+            "page": 2,
+            "bbox": [
+              51.84,
+              578.4,
+              102.72,
+              585.12
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "English: Working proficiency - comfortable reading drawings, specifications, RFls, and technical emails",
+            "page": 2,
+            "bbox": [
+              51.84,
+              588.48,
+              451.68,
+              598.08
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Driving licence: Thai private car licence",
+            "page": 2,
+            "bbox": [
+              51.84,
+              600.24,
+              207.36,
+              609.12
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Work preference: Site engineering, construction supervision, structural coordination, QA/QC support",
+            "page": 2,
+            "bbox": [
+              51.84,
+              610.32,
+              441.6,
+              619.92
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Availability: 30 days' notice",
+            "page": 2,
+            "bbox": [
+              52.08,
+              622.32,
+              160.32,
+              630.96
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": null
+  }
+}

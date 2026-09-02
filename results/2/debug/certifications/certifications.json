@@ -1,0 +1,302 @@
+{
+  "source": "2.pdf",
+  "certifications": {
+    "sectionType": "certifications",
+    "heading": {
+      "text": "CERTIFICATIONS & TRAINING",
+      "page": 3,
+      "bbox": [
+        72.0,
+        702.55,
+        321.84,
+        721.54
+      ],
+      "similarity": 0.9719,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          736.83,
+          296.17,
+          749.12
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Microsoft Power BI for Business Analytics​",
+            "page": 3,
+            "bbox": [
+              72.0,
+              736.83,
+              296.17,
+              749.12
+            ],
+            "lineIndex": 105
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          72.0,
+          751.38,
+          247.57,
+          763.67
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Internal Corporate Training — 2024",
+            "page": 3,
+            "bbox": [
+              72.0,
+              751.38,
+              247.57,
+              763.67
+            ],
+            "lineIndex": 106
+          }
+        ]
+      },
+      {
+        "page": 4,
+        "bbox": [
+          72.0,
+          72.36,
+          281.53,
+          84.65
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Advanced Microsoft Excel for Business​",
+            "page": 4,
+            "bbox": [
+              72.0,
+              72.36,
+              281.53,
+              84.65
+            ],
+            "lineIndex": 107
+          }
+        ]
+      },
+      {
+        "page": 4,
+        "bbox": [
+          72.0,
+          86.91,
+          257.95,
+          99.2
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Professional Training Course — 2023",
+            "page": 4,
+            "bbox": [
+              72.0,
+              86.91,
+              257.95,
+              99.2
+            ],
+            "lineIndex": 108
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Microsoft Power BI for Business Analytics​",
+            "page": 3,
+            "bbox": [
+              72.0,
+              736.83,
+              296.17,
+              749.12
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              736.83,
+              296.17,
+              749.12
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Microsoft Power BI for Business Analytics​",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  736.83,
+                  296.17,
+                  749.12
+                ],
+                "lineIndex": 105
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              72.0,
+              751.38,
+              247.57,
+              763.67
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Internal Corporate Training — 2024",
+                "page": 3,
+                "bbox": [
+                  72.0,
+                  751.38,
+                  247.57,
+                  763.67
+                ],
+                "lineIndex": 106
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2024",
+            "page": 3,
+            "bbox": [
+              220.06,
+              751.38,
+              244.51,
+              763.67
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Internal Corporate Training — 2024",
+            "page": 3,
+            "bbox": [
+              72.0,
+              751.38,
+              247.57,
+              763.67
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Advanced Microsoft Excel for Business​",
+            "page": 4,
+            "bbox": [
+              72.0,
+              72.36,
+              281.53,
+              84.65
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 4,
+            "bbox": [
+              72.0,
+              72.36,
+              281.53,
+              84.65
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Advanced Microsoft Excel for Business​",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  72.36,
+                  281.53,
+                  84.65
+                ],
+                "lineIndex": 107
+              }
+            ]
+          },
+          {
+            "page": 4,
+            "bbox": [
+              72.0,
+              86.91,
+              257.95,
+              99.2
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Professional Training Course — 2023",
+                "page": 4,
+                "bbox": [
+                  72.0,
+                  86.91,
+                  257.95,
+                  99.2
+                ],
+                "lineIndex": 108
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2023",
+            "page": 4,
+            "bbox": [
+              230.44,
+              86.91,
+              254.89,
+              99.2
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Professional Training Course — 2023",
+            "page": 4,
+            "bbox": [
+              72.0,
+              86.91,
+              257.95,
+              99.2
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "languages",
+      "text": "LANGUAGES"
+    }
+  }
+}

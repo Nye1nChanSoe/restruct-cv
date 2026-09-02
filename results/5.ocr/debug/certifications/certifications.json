@@ -1,0 +1,206 @@
+{
+  "source": "5.ocr.pdf",
+  "certifications": {
+    "sectionType": "certifications",
+    "heading": {
+      "text": "TRAINING & CERTIFICATIONS",
+      "page": 2,
+      "bbox": [
+        51.12,
+        486.24,
+        203.28,
+        494.88
+      ],
+      "similarity": 0.9845,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 2,
+        "bbox": [
+          51.6,
+          504.0,
+          293.04,
+          512.64
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Construction Safety for Supervisors - internal certified training",
+            "page": 2,
+            "bbox": [
+              51.6,
+              504.0,
+              293.04,
+              512.64
+            ],
+            "lineIndex": 68
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.6,
+          515.28,
+          170.88,
+          523.92
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Working at Height Awareness",
+            "page": 2,
+            "bbox": [
+              51.6,
+              515.28,
+              170.88,
+              523.92
+            ],
+            "lineIndex": 69
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          526.08,
+          216.96,
+          534.72
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Basic First Aid and Emergency Response",
+            "page": 2,
+            "bbox": [
+              51.84,
+              526.08,
+              216.96,
+              534.72
+            ],
+            "lineIndex": 70
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          537.36,
+          195.12,
+          545.76
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- AutoCAD for Construction Drawings",
+            "page": 2,
+            "bbox": [
+              51.84,
+              537.36,
+              195.12,
+              545.76
+            ],
+            "lineIndex": 71
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.84,
+          547.44,
+          299.52,
+          556.56
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "- Concrete Quality Control and Site Testing - company workshop",
+            "page": 2,
+            "bbox": [
+              51.84,
+              547.44,
+              299.52,
+              556.56
+            ],
+            "lineIndex": 72
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [],
+        "metadataRows": [],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Construction Safety for Supervisors - internal certified training",
+            "page": 2,
+            "bbox": [
+              51.6,
+              504.0,
+              293.04,
+              512.64
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Working at Height Awareness",
+            "page": 2,
+            "bbox": [
+              51.6,
+              515.28,
+              170.88,
+              523.92
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Basic First Aid and Emergency Response",
+            "page": 2,
+            "bbox": [
+              51.84,
+              526.08,
+              216.96,
+              534.72
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "AutoCAD for Construction Drawings",
+            "page": 2,
+            "bbox": [
+              51.84,
+              537.36,
+              195.12,
+              545.76
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Concrete Quality Control and Site Testing - company workshop",
+            "page": 2,
+            "bbox": [
+              51.84,
+              547.44,
+              299.52,
+              556.56
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "languages",
+      "text": "LANGUAGES & ADDITIONAL INFORMATION"
+    }
+  }
+}

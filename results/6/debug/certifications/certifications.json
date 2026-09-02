@@ -1,0 +1,149 @@
+{
+  "source": "6.pdf",
+  "certifications": {
+    "sectionType": "certifications",
+    "heading": {
+      "text": "CERTIFICATIONS & LANGUAGES",
+      "page": 1,
+      "bbox": [
+        46.9,
+        622.3,
+        215.32,
+        634.02
+      ],
+      "similarity": 0.7624,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          638.15,
+          435.7,
+          648.75
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Certifications: AWS Certified Cloud Practitioner (2024); Google Cloud Digital Leader (2023)",
+            "page": 1,
+            "bbox": [
+              46.9,
+              638.15,
+              435.7,
+              648.75
+            ],
+            "lineIndex": 54
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          46.9,
+          651.15,
+          370.29,
+          661.75
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Languages: English (Professional), Burmese (Native), Thai (Conversational)",
+            "page": 1,
+            "bbox": [
+              46.9,
+              651.15,
+              370.29,
+              661.75
+            ],
+            "lineIndex": 55
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Certifications: AWS Certified Cloud Practitioner (2024); Google Cloud Digital Leader (2023)",
+            "page": 1,
+            "bbox": [
+              46.9,
+              638.15,
+              435.7,
+              648.75
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              46.9,
+              638.15,
+              435.7,
+              648.75
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Certifications: AWS Certified Cloud Practitioner (2024); Google Cloud Digital Leader (2023)",
+                "page": 1,
+                "bbox": [
+                  46.9,
+                  638.15,
+                  435.7,
+                  648.75
+                ],
+                "lineIndex": 54
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2024",
+            "page": 1,
+            "bbox": [
+              256.85,
+              638.15,
+              277.97,
+              648.75
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2023",
+            "page": 1,
+            "bbox": [
+              411.41,
+              638.15,
+              432.52,
+              648.75
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Languages: English (Professional), Burmese (Native), Thai (Conversational)",
+            "page": 1,
+            "bbox": [
+              46.9,
+              651.15,
+              370.29,
+              661.75
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": null
+  }
+}

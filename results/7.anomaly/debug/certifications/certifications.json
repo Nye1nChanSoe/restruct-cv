@@ -1,0 +1,1131 @@
+{
+  "source": "7.anomaly.pdf",
+  "certifications": {
+    "sectionType": "certifications",
+    "heading": {
+      "text": "TRAINING & CERTIFICATIONS",
+      "page": 2,
+      "bbox": [
+        46.9,
+        557.2,
+        199.0,
+        568.92
+      ],
+      "similarity": 0.9845,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 2,
+        "bbox": [
+          52.3,
+          576.31,
+          416.3,
+          585.79
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Training / Certification",
+            "page": 2,
+            "bbox": [
+              52.3,
+              576.31,
+              142.37,
+              585.79
+            ],
+            "lineIndex": 102
+          },
+          {
+            "text": "Provider",
+            "page": 2,
+            "bbox": [
+              225.1,
+              576.31,
+              259.53,
+              585.79
+            ],
+            "lineIndex": 103
+          },
+          {
+            "text": "Year",
+            "page": 2,
+            "bbox": [
+              397.9,
+              576.31,
+              416.3,
+              585.79
+            ],
+            "lineIndex": 104
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          589.11,
+          416.37,
+          598.59
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Welding Skills Development - SMAW &",
+            "page": 2,
+            "bbox": [
+              51.9,
+              589.11,
+              201.48,
+              598.59
+            ],
+            "lineIndex": 106
+          },
+          {
+            "text": "Private vocational training center, Samut",
+            "page": 2,
+            "bbox": [
+              224.7,
+              589.11,
+              379.49,
+              598.59
+            ],
+            "lineIndex": 108
+          },
+          {
+            "text": "2022",
+            "page": 2,
+            "bbox": [
+              397.5,
+              589.11,
+              416.37,
+              598.59
+            ],
+            "lineIndex": 105
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          598.91,
+          251.61,
+          608.39
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "GMAW",
+            "page": 2,
+            "bbox": [
+              51.9,
+              598.91,
+              79.25,
+              608.39
+            ],
+            "lineIndex": 107
+          },
+          {
+            "text": "Prakan",
+            "page": 2,
+            "bbox": [
+              224.7,
+              598.91,
+              251.61,
+              608.39
+            ],
+            "lineIndex": 109
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          614.21,
+          416.37,
+          623.69
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Basic TIG Welding for Stainless Steel",
+            "page": 2,
+            "bbox": [
+              51.9,
+              614.21,
+              193.01,
+              623.69
+            ],
+            "lineIndex": 111
+          },
+          {
+            "text": "Employer internal workshop / supervised",
+            "page": 2,
+            "bbox": [
+              224.7,
+              614.21,
+              379.96,
+              623.69
+            ],
+            "lineIndex": 112
+          },
+          {
+            "text": "2023",
+            "page": 2,
+            "bbox": [
+              397.5,
+              614.21,
+              416.37,
+              623.69
+            ],
+            "lineIndex": 110
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          224.7,
+          624.01,
+          286.51,
+          633.49
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "practical training",
+            "page": 2,
+            "bbox": [
+              224.7,
+              624.01,
+              286.51,
+              633.49
+            ],
+            "lineIndex": 113
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          639.31,
+          478.2,
+          648.79
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Safety for Hot Work and Fire Watch",
+            "page": 2,
+            "bbox": [
+              51.9,
+              639.31,
+              185.89,
+              648.79
+            ],
+            "lineIndex": 114
+          },
+          {
+            "text": "Employer annual safety training",
+            "page": 2,
+            "bbox": [
+              224.7,
+              639.31,
+              343.61,
+              648.79
+            ],
+            "lineIndex": 115
+          },
+          {
+            "text": "2024, refreshed 2025",
+            "page": 2,
+            "bbox": [
+              397.5,
+              639.31,
+              478.2,
+              648.79
+            ],
+            "lineIndex": 116
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          654.61,
+          416.37,
+          664.09
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Basic Lockout / Tagout Awareness",
+            "page": 2,
+            "bbox": [
+              51.9,
+              654.61,
+              182.65,
+              664.09
+            ],
+            "lineIndex": 117
+          },
+          {
+            "text": "Siam Fresh Foods Manufacturing",
+            "page": 2,
+            "bbox": [
+              224.7,
+              654.61,
+              350.21,
+              664.09
+            ],
+            "lineIndex": 118
+          },
+          {
+            "text": "2021",
+            "page": 2,
+            "bbox": [
+              397.5,
+              654.61,
+              416.37,
+              664.09
+            ],
+            "lineIndex": 119
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          669.91,
+          416.37,
+          679.39
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Forklift Safety Awareness (non-licensed",
+            "page": 2,
+            "bbox": [
+              51.9,
+              669.91,
+              203.86,
+              679.39
+            ],
+            "lineIndex": 121
+          },
+          {
+            "text": "Employer toolbox and warehouse safety",
+            "page": 2,
+            "bbox": [
+              224.7,
+              669.91,
+              378.07,
+              679.39
+            ],
+            "lineIndex": 123
+          },
+          {
+            "text": "2020",
+            "page": 2,
+            "bbox": [
+              397.5,
+              669.91,
+              416.37,
+              679.39
+            ],
+            "lineIndex": 120
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          679.71,
+          256.3,
+          689.19
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "operator training)",
+            "page": 2,
+            "bbox": [
+              51.9,
+              679.71,
+              116.51,
+              689.19
+            ],
+            "lineIndex": 122
+          },
+          {
+            "text": "program",
+            "page": 2,
+            "bbox": [
+              224.7,
+              679.71,
+              256.3,
+              689.19
+            ],
+            "lineIndex": 124
+          }
+        ]
+      },
+      {
+        "page": 2,
+        "bbox": [
+          51.9,
+          695.01,
+          416.37,
+          704.49
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "First Aid Awareness",
+            "page": 2,
+            "bbox": [
+              51.9,
+              695.01,
+              127.39,
+              704.49
+            ],
+            "lineIndex": 125
+          },
+          {
+            "text": "Workplace safety day program",
+            "page": 2,
+            "bbox": [
+              224.7,
+              695.01,
+              339.83,
+              704.49
+            ],
+            "lineIndex": 126
+          },
+          {
+            "text": "2024",
+            "page": 2,
+            "bbox": [
+              397.5,
+              695.01,
+              416.37,
+              704.49
+            ],
+            "lineIndex": 127
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Training / Certification",
+            "page": 2,
+            "bbox": [
+              52.3,
+              576.31,
+              142.37,
+              585.79
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Provider",
+            "page": 2,
+            "bbox": [
+              225.1,
+              576.31,
+              259.53,
+              585.79
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Year",
+            "page": 2,
+            "bbox": [
+              397.9,
+              576.31,
+              416.3,
+              585.79
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Welding Skills Development - SMAW &",
+            "page": 2,
+            "bbox": [
+              51.9,
+              589.11,
+              201.48,
+              598.59
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Private vocational training center, Samut",
+            "page": 2,
+            "bbox": [
+              224.7,
+              589.11,
+              379.49,
+              598.59
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              52.3,
+              576.31,
+              416.3,
+              585.79
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Training / Certification",
+                "page": 2,
+                "bbox": [
+                  52.3,
+                  576.31,
+                  142.37,
+                  585.79
+                ],
+                "lineIndex": 102
+              },
+              {
+                "text": "Provider",
+                "page": 2,
+                "bbox": [
+                  225.1,
+                  576.31,
+                  259.53,
+                  585.79
+                ],
+                "lineIndex": 103
+              },
+              {
+                "text": "Year",
+                "page": 2,
+                "bbox": [
+                  397.9,
+                  576.31,
+                  416.3,
+                  585.79
+                ],
+                "lineIndex": 104
+              }
+            ]
+          },
+          {
+            "page": 2,
+            "bbox": [
+              51.9,
+              589.11,
+              416.37,
+              598.59
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Welding Skills Development - SMAW &",
+                "page": 2,
+                "bbox": [
+                  51.9,
+                  589.11,
+                  201.48,
+                  598.59
+                ],
+                "lineIndex": 106
+              },
+              {
+                "text": "Private vocational training center, Samut",
+                "page": 2,
+                "bbox": [
+                  224.7,
+                  589.11,
+                  379.49,
+                  598.59
+                ],
+                "lineIndex": 108
+              },
+              {
+                "text": "2022",
+                "page": 2,
+                "bbox": [
+                  397.5,
+                  589.11,
+                  416.37,
+                  598.59
+                ],
+                "lineIndex": 105
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2022",
+            "page": 2,
+            "bbox": [
+              397.5,
+              589.11,
+              416.37,
+              598.59
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "GMAW",
+            "page": 2,
+            "bbox": [
+              51.9,
+              598.91,
+              79.25,
+              608.39
+            ],
+            "detectionMethod": "geometry_default"
+          },
+          {
+            "text": "Prakan",
+            "page": 2,
+            "bbox": [
+              224.7,
+              598.91,
+              251.61,
+              608.39
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Basic TIG Welding for Stainless Steel",
+            "page": 2,
+            "bbox": [
+              51.9,
+              614.21,
+              193.01,
+              623.69
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Employer internal workshop / supervised",
+            "page": 2,
+            "bbox": [
+              224.7,
+              614.21,
+              379.96,
+              623.69
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.9,
+              614.21,
+              416.37,
+              623.69
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Basic TIG Welding for Stainless Steel",
+                "page": 2,
+                "bbox": [
+                  51.9,
+                  614.21,
+                  193.01,
+                  623.69
+                ],
+                "lineIndex": 111
+              },
+              {
+                "text": "Employer internal workshop / supervised",
+                "page": 2,
+                "bbox": [
+                  224.7,
+                  614.21,
+                  379.96,
+                  623.69
+                ],
+                "lineIndex": 112
+              },
+              {
+                "text": "2023",
+                "page": 2,
+                "bbox": [
+                  397.5,
+                  614.21,
+                  416.37,
+                  623.69
+                ],
+                "lineIndex": 110
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2023",
+            "page": 2,
+            "bbox": [
+              397.5,
+              614.21,
+              416.37,
+              623.69
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "practical training",
+            "page": 2,
+            "bbox": [
+              224.7,
+              624.01,
+              286.51,
+              633.49
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Safety for Hot Work and Fire Watch",
+            "page": 2,
+            "bbox": [
+              51.9,
+              639.31,
+              185.89,
+              648.79
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Employer annual safety training",
+            "page": 2,
+            "bbox": [
+              224.7,
+              639.31,
+              343.61,
+              648.79
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.9,
+              639.31,
+              478.2,
+              648.79
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Safety for Hot Work and Fire Watch",
+                "page": 2,
+                "bbox": [
+                  51.9,
+                  639.31,
+                  185.89,
+                  648.79
+                ],
+                "lineIndex": 114
+              },
+              {
+                "text": "Employer annual safety training",
+                "page": 2,
+                "bbox": [
+                  224.7,
+                  639.31,
+                  343.61,
+                  648.79
+                ],
+                "lineIndex": 115
+              },
+              {
+                "text": "2024, refreshed 2025",
+                "page": 2,
+                "bbox": [
+                  397.5,
+                  639.31,
+                  478.2,
+                  648.79
+                ],
+                "lineIndex": 116
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2024",
+            "page": 2,
+            "bbox": [
+              397.5,
+              639.31,
+              416.37,
+              648.79
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2025",
+            "page": 2,
+            "bbox": [
+              459.33,
+              639.31,
+              478.2,
+              648.79
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "2024, refreshed 2025",
+            "page": 2,
+            "bbox": [
+              397.5,
+              639.31,
+              478.2,
+              648.79
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Basic Lockout / Tagout Awareness",
+            "page": 2,
+            "bbox": [
+              51.9,
+              654.61,
+              182.65,
+              664.09
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Siam Fresh Foods Manufacturing",
+            "page": 2,
+            "bbox": [
+              224.7,
+              654.61,
+              350.21,
+              664.09
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.9,
+              654.61,
+              416.37,
+              664.09
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Basic Lockout / Tagout Awareness",
+                "page": 2,
+                "bbox": [
+                  51.9,
+                  654.61,
+                  182.65,
+                  664.09
+                ],
+                "lineIndex": 117
+              },
+              {
+                "text": "Siam Fresh Foods Manufacturing",
+                "page": 2,
+                "bbox": [
+                  224.7,
+                  654.61,
+                  350.21,
+                  664.09
+                ],
+                "lineIndex": 118
+              },
+              {
+                "text": "2021",
+                "page": 2,
+                "bbox": [
+                  397.5,
+                  654.61,
+                  416.37,
+                  664.09
+                ],
+                "lineIndex": 119
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2021",
+            "page": 2,
+            "bbox": [
+              397.5,
+              654.61,
+              416.37,
+              664.09
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Forklift Safety Awareness (non-licensed",
+            "page": 2,
+            "bbox": [
+              51.9,
+              669.91,
+              203.86,
+              679.39
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Employer toolbox and warehouse safety",
+            "page": 2,
+            "bbox": [
+              224.7,
+              669.91,
+              378.07,
+              679.39
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.9,
+              669.91,
+              416.37,
+              679.39
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Forklift Safety Awareness (non-licensed",
+                "page": 2,
+                "bbox": [
+                  51.9,
+                  669.91,
+                  203.86,
+                  679.39
+                ],
+                "lineIndex": 121
+              },
+              {
+                "text": "Employer toolbox and warehouse safety",
+                "page": 2,
+                "bbox": [
+                  224.7,
+                  669.91,
+                  378.07,
+                  679.39
+                ],
+                "lineIndex": 123
+              },
+              {
+                "text": "2020",
+                "page": 2,
+                "bbox": [
+                  397.5,
+                  669.91,
+                  416.37,
+                  679.39
+                ],
+                "lineIndex": 120
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2020",
+            "page": 2,
+            "bbox": [
+              397.5,
+              669.91,
+              416.37,
+              679.39
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "operator training)",
+            "page": 2,
+            "bbox": [
+              51.9,
+              679.71,
+              116.51,
+              689.19
+            ],
+            "detectionMethod": "geometry_default"
+          },
+          {
+            "text": "program",
+            "page": 2,
+            "bbox": [
+              224.7,
+              679.71,
+              256.3,
+              689.19
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "First Aid Awareness",
+            "page": 2,
+            "bbox": [
+              51.9,
+              695.01,
+              127.39,
+              704.49
+            ],
+            "detectionMethod": "geometry_typography"
+          },
+          {
+            "text": "Workplace safety day program",
+            "page": 2,
+            "bbox": [
+              224.7,
+              695.01,
+              339.83,
+              704.49
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 2,
+            "bbox": [
+              51.9,
+              695.01,
+              416.37,
+              704.49
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "First Aid Awareness",
+                "page": 2,
+                "bbox": [
+                  51.9,
+                  695.01,
+                  127.39,
+                  704.49
+                ],
+                "lineIndex": 125
+              },
+              {
+                "text": "Workplace safety day program",
+                "page": 2,
+                "bbox": [
+                  224.7,
+                  695.01,
+                  339.83,
+                  704.49
+                ],
+                "lineIndex": 126
+              },
+              {
+                "text": "2024",
+                "page": 2,
+                "bbox": [
+                  397.5,
+                  695.01,
+                  416.37,
+                  704.49
+                ],
+                "lineIndex": 127
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2024",
+            "page": 2,
+            "bbox": [
+              397.5,
+              695.01,
+              416.37,
+              704.49
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "education",
+      "text": "EDUCATION"
+    }
+  }
+}

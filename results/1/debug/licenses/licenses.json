@@ -1,0 +1,206 @@
+{
+  "source": "1.pdf",
+  "licenses": {
+    "sectionType": "licenses",
+    "heading": {
+      "text": "SAFETY & TRAINING",
+      "page": 3,
+      "bbox": [
+        72.0,
+        323.3,
+        247.59,
+        342.29
+      ],
+      "similarity": 0.7411,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          357.58,
+          281.73,
+          369.87
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Basic Occupational Safety Training",
+            "page": 3,
+            "bbox": [
+              90.0,
+              357.58,
+              281.73,
+              369.87
+            ],
+            "lineIndex": 86
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          372.13,
+          242.85,
+          384.42
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Lockout/Tagout Awareness",
+            "page": 3,
+            "bbox": [
+              90.0,
+              372.13,
+              242.85,
+              384.42
+            ],
+            "lineIndex": 87
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          386.67,
+          339.16,
+          398.96
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Fire Safety and Emergency Response Training",
+            "page": 3,
+            "bbox": [
+              90.0,
+              386.67,
+              339.16,
+              398.96
+            ],
+            "lineIndex": 88
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          401.22,
+          235.48,
+          413.51
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Forklift Safety Awareness",
+            "page": 3,
+            "bbox": [
+              90.0,
+              401.22,
+              235.48,
+              413.51
+            ],
+            "lineIndex": 89
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          90.0,
+          415.77,
+          206.58,
+          428.05
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "●​ Internal 5S Training",
+            "page": 3,
+            "bbox": [
+              90.0,
+              415.77,
+              206.58,
+              428.05
+            ],
+            "lineIndex": 90
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [],
+        "metadataRows": [],
+        "dates": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Basic Occupational Safety Training",
+            "page": 3,
+            "bbox": [
+              90.0,
+              357.58,
+              281.73,
+              369.87
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Lockout/Tagout Awareness",
+            "page": 3,
+            "bbox": [
+              90.0,
+              372.13,
+              242.85,
+              384.42
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Fire Safety and Emergency Response Training",
+            "page": 3,
+            "bbox": [
+              90.0,
+              386.67,
+              339.16,
+              398.96
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Forklift Safety Awareness",
+            "page": 3,
+            "bbox": [
+              90.0,
+              401.22,
+              235.48,
+              413.51
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Internal 5S Training",
+            "page": 3,
+            "bbox": [
+              90.0,
+              415.77,
+              206.58,
+              428.05
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "languages",
+      "text": "LANGUAGES"
+    }
+  }
+}
