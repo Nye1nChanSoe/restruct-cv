@@ -34,10 +34,13 @@ from extractor_v1.model import (
     semantic_job_title_matches,
 )
 from extractor_v1.routing import (
+    build_experience_debug,
     build_sections,
     first_header_boundary,
+    render_experience_debug_images,
     render_summary_debug_images,
     summary_debug_value,
+    write_experience_debug,
     write_summary_debug,
 )
 
@@ -1000,10 +1003,19 @@ def extract_resume(
             )
         sections = build_sections(lines, headings, url_entities_by_line)
         summary = summary_debug_value(sections)
+        experience = build_experience_debug(
+            document,
+            lines,
+            headings,
+            model,
+            ner_model,
+            url_entities_by_line,
+        )
 
         output_directory.mkdir(parents=True, exist_ok=True)
         header_debug_directory = output_directory / "debug" / "header"
         summary_debug_directory = output_directory / "debug" / "summary"
+        experience_debug_directory = output_directory / "debug" / "experience"
         header_debug_directory.mkdir(parents=True, exist_ok=True)
         (header_debug_directory / "header.json").write_text(
             json.dumps(
@@ -1050,6 +1062,16 @@ def extract_resume(
             document,
             summary,
             summary_debug_directory,
+        )
+        write_experience_debug(
+            pdf_path,
+            experience,
+            experience_debug_directory,
+        )
+        render_experience_debug_images(
+            document,
+            experience,
+            experience_debug_directory,
         )
 
 
