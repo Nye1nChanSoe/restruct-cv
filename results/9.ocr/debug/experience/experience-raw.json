@@ -141,16 +141,16 @@
         ],
         "companies": [
           {
-            "text": "Nusantara Retail Solutions, Bandung, Indonesia",
+            "text": "Nusantara Retail Solutions",
             "page": 1,
             "bbox": [
               45.11,
               344.63,
-              215.22,
+              141.26,
               351.83
             ],
-            "detectionMethod": "distilbert_ner_reconciled",
-            "confidence": 0.9864
+            "confidence": 0.9864,
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -166,7 +166,20 @@
             "detectionMethod": "date_regex"
           }
         ],
-        "locations": [],
+        "locations": [
+          {
+            "text": "Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              148.65,
+              344.63,
+              215.22,
+              351.83
+            ],
+            "confidence": 0.9849,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
         "urls": [],
         "paragraphs": [],
         "bullets": [
@@ -259,16 +272,16 @@
         ],
         "companies": [
           {
-            "text": "PT Citra Distribusi Mandiri, Bandung, Indonesia",
+            "text": "PT Citra Distribusi Mandiri",
             "page": 1,
             "bbox": [
               45.59,
               421.66,
-              214.02,
+              142.35,
               428.62
             ],
-            "detectionMethod": "distilbert_ner_reconciled",
-            "confidence": 0.9702
+            "confidence": 0.9702,
+            "detectionMethod": "distilbert_ner_reconciled"
           }
         ],
         "dates": [
@@ -284,7 +297,20 @@
             "detectionMethod": "date_regex"
           }
         ],
-        "locations": [],
+        "locations": [
+          {
+            "text": "Bandung, Indonesia",
+            "page": 1,
+            "bbox": [
+              149.51,
+              421.66,
+              214.02,
+              428.62
+            ],
+            "confidence": 0.8844,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
         "urls": [],
         "paragraphs": [
           {
