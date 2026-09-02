@@ -1,5 +1,0 @@
-Regex: email, phone, URL, nationality fallback.
-[GLiNER] or [Distilbert]: name, location, nationality.
-MiniLM:
-    1. Finds the first following resume section.
-    2. Decides whether unmatched header segments are job titles.

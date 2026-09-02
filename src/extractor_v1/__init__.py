@@ -10,120 +10,36 @@ import re
 import statistics
 import subprocess
 import tempfile
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import pymupdf
 from PIL import Image, ImageDraw
-from sentence_transformers import SentenceTransformer
-from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
 
 from extractor_v1.configs import SETTINGS
-
-
-@dataclass(frozen=True)
-class ExtractedLine:
-    page: int
-    text: str
-    bbox: tuple[float, float, float, float]
-    size: float
-    bold: bool
-    used_ocr: bool
-
-
-@dataclass(frozen=True)
-class DetectedHeading:
-    line_index: int
-    section_type: str
-    similarity: float
-    runner_up_similarity: float
-
-
-@dataclass(frozen=True)
-class HeaderEntityMatch:
-    kind: str
-    text: str
-    line_index: int
-    start: int
-    end: int
-    detection_method: str
-    confidence: float | None = None
-    url: str | None = None
-    bbox: tuple[float, float, float, float] | None = None
-
-
-class DistilBertNerPredictor:
-    """Adapt fixed CoNLL entities to the resume header entity interface."""
-
-    _LABEL_TO_TYPE = {
-        "LABEL_0": "O",
-        "LABEL_1": "PER",
-        "LABEL_2": "PER",
-        "LABEL_3": "ORG",
-        "LABEL_4": "ORG",
-        "LABEL_5": "LOC",
-        "LABEL_6": "LOC",
-        "LABEL_7": "MISC",
-        "LABEL_8": "MISC",
-    }
-    _TYPE_TO_LABEL = {
-        "PER": "person name",
-        "LOC": "location",
-        "MISC": "nationality",
-    }
-
-    def __init__(self, model_directory: Path) -> None:
-        tokenizer = AutoTokenizer.from_pretrained(
-            model_directory,
-            local_files_only=True,
-        )
-        model = AutoModelForTokenClassification.from_pretrained(
-            model_directory,
-            local_files_only=True,
-        )
-        self._pipeline = pipeline(
-            "token-classification",
-            model=model,
-            tokenizer=tokenizer,
-            aggregation_strategy="simple",
-            device=-1,
-        )
-
-    def predict_entities(
-        self,
-        text: str,
-        labels: list[str],
-        threshold: float,
-    ) -> list[dict[str, Any]]:
-        requested_labels = set(labels)
-        predictions: list[dict[str, Any]] = []
-        for prediction in self._pipeline(text):
-            raw_type = str(
-                prediction.get("entity_group", prediction.get("entity", ""))
-            ).upper()
-            entity_type = self._LABEL_TO_TYPE.get(
-                raw_type,
-                raw_type.removeprefix("B-").removeprefix("I-"),
-            )
-            label = self._TYPE_TO_LABEL.get(entity_type)
-            score = float(prediction.get("score", 0.0))
-            if label not in requested_labels or score < threshold:
-                continue
-            predictions.append(
-                {
-                    "label": label,
-                    "text": text[
-                        int(prediction.get("start", 0)) : int(
-                            prediction.get("end", 0)
-                        )
-                    ],
-                    "start": int(prediction.get("start", 0)),
-                    "end": int(prediction.get("end", 0)),
-                    "score": score,
-                }
-            )
-        return predictions
+from extractor_v1.model import (
+    DetectedHeading,
+    DistilBertNerPredictor,
+    EmbeddingModel,
+    ExtractedLine,
+    HEADER_SEGMENT_RE as _HEADER_SEGMENT_RE,
+    HeaderEntityMatch,
+    LOCATION_SEGMENT_RE as _LOCATION_SEGMENT_RE,
+    NATIONALITY_PHRASE_RE as _NATIONALITY_PHRASE_RE,
+    detect_headings,
+    load_embedding_model,
+    load_ner_model,
+    ner_matches_for_profile,
+    overlaps_existing as _overlaps_existing,
+    semantic_job_title_matches,
+)
+from extractor_v1.routing import (
+    build_sections,
+    first_header_boundary,
+    render_summary_debug_images,
+    summary_debug_value,
+    write_summary_debug,
+)
 
 
 _EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}")
@@ -139,26 +55,6 @@ _URL_RE = re.compile(
     r")",
     re.IGNORECASE,
 )
-_HEADER_SEGMENT_RE = re.compile(r"[^|•·]+")
-_JOB_TITLE_SEPARATOR_RE = re.compile(r"[|•·]|\s+/\s+")
-_LOCATION_SEGMENT_RE = re.compile(
-    r"^[^\d@]{2,48},\s*[^\d@]{2,48}$",
-    re.UNICODE,
-)
-_NATIONALITY_CONTEXT_RE = re.compile(
-    r"\b(?:citizen|citizenship|national|nationality)\b",
-    re.IGNORECASE,
-)
-_NATIONALITY_PHRASE_RE = re.compile(
-    r"(?:"
-    r"\b[A-Za-z][A-Za-z'-]*(?:\s+[A-Za-z][A-Za-z'-]*)?\s+"
-    r"(?:citizen|national)\b"
-    r"|\b(?:citizenship|nationality)\s*:\s*"
-    r"[A-Za-z][A-Za-z'-]*(?:\s+[A-Za-z][A-Za-z'-]*)?\b"
-    r")",
-    re.IGNORECASE,
-)
-
 def _meaningful_character_count(text: str) -> int:
     return sum(character.isalnum() for character in text)
 
@@ -431,115 +327,6 @@ def write_ocr_extraction(
     )
 
 
-def _looks_like_heading(line: ExtractedLine, page_median_size: float) -> bool:
-    text = line.text.strip()
-    words = text.split()
-    if not 1 <= len(words) <= SETTINGS.heading.maximum_words:
-        return False
-    if len(text) > SETTINGS.heading.maximum_characters:
-        return False
-    if "@" in text or text.startswith(("http://", "https://", "www.")):
-        return False
-    if text.endswith((".", ",", ";", ":")):
-        return False
-
-    letters = [character for character in text if character.isalpha()]
-    uppercase = (
-        bool(letters)
-        and sum(character.isupper() for character in letters) / len(letters)
-        >= SETTINGS.heading.uppercase_ratio
-    )
-    larger = (
-        page_median_size > 0
-        and line.size >= page_median_size * SETTINGS.heading.font_size_multiplier
-    )
-    return line.bold or uppercase or larger
-
-
-def detect_headings(
-    lines: list[ExtractedLine],
-    model: SentenceTransformer,
-) -> list[DetectedHeading]:
-    """Classify conservative visual candidates and abstain on weak/ambiguous matches."""
-    sizes_by_page: dict[int, list[float]] = {}
-    for line in lines:
-        if line.size > 0:
-            sizes_by_page.setdefault(line.page, []).append(line.size)
-    median_by_page = {
-        page: statistics.median(sizes) for page, sizes in sizes_by_page.items()
-    }
-
-    candidate_indexes = [
-        index
-        for index, line in enumerate(lines)
-        if _looks_like_heading(line, median_by_page.get(line.page, line.size))
-    ]
-    if not candidate_indexes:
-        return []
-
-    reference_texts: list[str] = []
-    reference_types: list[str] = []
-    for section_type, examples in SETTINGS.section_references.items():
-        for example in examples:
-            reference_texts.append(example)
-            reference_types.append(section_type)
-
-    reference_embeddings = model.encode(reference_texts, normalize_embeddings=True)
-    candidate_embeddings = model.encode(
-        [lines[index].text for index in candidate_indexes],
-        normalize_embeddings=True,
-    )
-
-    accepted: list[DetectedHeading] = []
-    for line_index, candidate_embedding in zip(candidate_indexes, candidate_embeddings, strict=True):
-        raw_scores = candidate_embedding @ reference_embeddings.T
-        best_by_type: dict[str, float] = {}
-        for section_type, score in zip(reference_types, raw_scores, strict=True):
-            best_by_type[section_type] = max(best_by_type.get(section_type, -1.0), float(score))
-
-        ranked = sorted(best_by_type.items(), key=lambda item: item[1], reverse=True)
-        (winner_type, winner_score), (_, runner_up_score) = ranked[:2]
-        if winner_score < SETTINGS.heading.similarity_threshold:
-            continue
-        if winner_score - runner_up_score < SETTINGS.heading.winner_margin:
-            continue
-        accepted.append(
-            DetectedHeading(
-                line_index=line_index,
-                section_type=winner_type,
-                similarity=winner_score,
-                runner_up_similarity=runner_up_score,
-            )
-        )
-    return accepted
-
-
-def _first_header_boundary(
-    lines: list[ExtractedLine],
-    headings: list[DetectedHeading],
-) -> DetectedHeading | None:
-    """Return the first high-confidence section heading on page one."""
-    exact_references = {
-        reference.casefold().strip()
-        for references in SETTINGS.section_references.values()
-        for reference in references
-    }
-    for heading in headings:
-        line = lines[heading.line_index]
-        if line.page != 1 or heading.line_index == 0:
-            continue
-        exact_match = line.text.casefold().strip() in exact_references
-        strong_semantic_match = (
-            heading.similarity
-            >= SETTINGS.header_profile.boundary_similarity_threshold
-            and heading.similarity - heading.runner_up_similarity
-            >= SETTINGS.header_profile.boundary_winner_margin
-        )
-        if exact_match or strong_semantic_match:
-            return heading
-    return None
-
-
 def _append_regex_matches(
     matches: list[HeaderEntityMatch],
     *,
@@ -571,21 +358,6 @@ def _append_regex_matches(
                 url=match.group(0) if kind == "url" else None,
             )
         )
-
-
-def _overlaps_existing(
-    matches: list[HeaderEntityMatch],
-    *,
-    line_index: int,
-    start: int,
-    end: int,
-) -> bool:
-    return any(
-        match.line_index == line_index
-        and match.start < end
-        and start < match.end
-        for match in matches
-    )
 
 
 def _entity_box(
@@ -805,291 +577,6 @@ def _url_entity_value(
     }
 
 
-def _expand_location_span(text: str, start: int, end: int) -> tuple[int, int]:
-    """Expand a LOC token to its short comma-separated header segment."""
-    for segment_match in _HEADER_SEGMENT_RE.finditer(text):
-        if not (segment_match.start() <= start and end <= segment_match.end()):
-            continue
-        segment = segment_match.group(0)
-        stripped = segment.strip(" \t,;:-\u200b")
-        if not stripped or not _LOCATION_SEGMENT_RE.fullmatch(stripped):
-            return start, end
-        relative_start = segment.find(stripped)
-        return (
-            segment_match.start() + relative_start,
-            segment_match.start() + relative_start + len(stripped),
-        )
-    return start, end
-
-
-def _expand_nationality_span(text: str, start: int, end: int) -> tuple[int, int]:
-    """Expand a nationality token to its contextual header segment."""
-    for segment_match in _HEADER_SEGMENT_RE.finditer(text):
-        if not (segment_match.start() <= start and end <= segment_match.end()):
-            continue
-        segment = segment_match.group(0)
-        if _NATIONALITY_CONTEXT_RE.search(segment) is None:
-            return start, end
-        stripped = segment.strip(" \t,;:-\u200b")
-        relative_start = segment.find(stripped)
-        return (
-            segment_match.start() + relative_start,
-            segment_match.start() + relative_start + len(stripped),
-        )
-    return start, end
-
-
-def _masked_line_for_ner(
-    text: str,
-    line_index: int,
-    existing_matches: list[HeaderEntityMatch],
-) -> str:
-    """Hide deterministic contacts while preserving character offsets."""
-    characters = list(text)
-    for match in existing_matches:
-        if match.line_index != line_index:
-            continue
-        if match.kind not in {"email", "phone", "url"}:
-            continue
-        for position in range(max(0, match.start), min(len(characters), match.end)):
-            characters[position] = " "
-    return "".join(characters)
-
-
-def _looks_like_complete_name_line(text: str) -> bool:
-    stripped = text.strip()
-    return (
-        1 <= len(stripped.split()) <= 6
-        and len(stripped) <= 80
-        and any(character.isalpha() for character in stripped)
-        and not any(character.isdigit() for character in stripped)
-        and not any(separator in stripped for separator in ("@", "|", "•", "·"))
-    )
-
-
-def _ner_matches_for_profile(
-    ner_model: DistilBertNerPredictor,
-    lines: list[ExtractedLine],
-    profile_indexes: list[int],
-    existing_matches: list[HeaderEntityMatch],
-) -> list[HeaderEntityMatch]:
-    """Run DistilBERT NER on each contact-masked header line."""
-    label_to_kind = {
-        "person name": "name",
-        "location": "location",
-        "nationality": "nationality",
-    }
-    accepted: list[HeaderEntityMatch] = []
-    for line_index in profile_indexes:
-        text = lines[line_index].text
-        masked_text = _masked_line_for_ner(text, line_index, existing_matches)
-        if not masked_text.strip():
-            continue
-        predictions = ner_model.predict_entities(
-            masked_text,
-            list(SETTINGS.ner.labels),
-            threshold=SETTINGS.ner.minimum_confidence,
-        )
-        for prediction in predictions:
-            kind = label_to_kind.get(str(prediction.get("label", "")).casefold())
-            if kind is None:
-                continue
-            start = max(0, int(prediction.get("start", 0)))
-            end = min(len(text), int(prediction.get("end", start)))
-            if start >= end or _overlaps_existing(
-                existing_matches,
-                line_index=line_index,
-                start=start,
-                end=end,
-            ):
-                continue
-            if kind == "location":
-                start, end = _expand_location_span(text, start, end)
-            elif kind == "nationality":
-                start, end = _expand_nationality_span(text, start, end)
-            elif kind == "name" and _looks_like_complete_name_line(text):
-                stripped_line = text.strip()
-                start = text.find(stripped_line)
-                end = start + len(stripped_line)
-            entity_text = text[start:end].strip()
-            if not entity_text:
-                continue
-            start += len(text[start:end]) - len(text[start:end].lstrip())
-            end = start + len(entity_text)
-            accepted.append(
-                HeaderEntityMatch(
-                    kind=kind,
-                    text=entity_text,
-                    line_index=line_index,
-                    start=start,
-                    end=end,
-                    detection_method="distilbert_ner",
-                    confidence=float(prediction.get("score", 0.0)),
-                )
-            )
-
-    locations = [match for match in accepted if match.kind == "location"]
-    return [
-        match
-        for match in accepted
-        if match.kind != "nationality"
-        or (
-            _NATIONALITY_CONTEXT_RE.search(lines[match.line_index].text) is not None
-            and not _overlaps_existing(
-                locations,
-                line_index=match.line_index,
-                start=match.start,
-                end=match.end,
-            )
-        )
-    ]
-
-
-def _job_title_segments(text: str) -> list[tuple[str, int, int]]:
-    """Return up to the first configured header segments with source offsets."""
-    spans: list[tuple[int, int]] = []
-    cursor = 0
-    for separator in _JOB_TITLE_SEPARATOR_RE.finditer(text):
-        spans.append((cursor, separator.start()))
-        cursor = separator.end()
-    spans.append((cursor, len(text)))
-
-    segments: list[tuple[str, int, int]] = []
-    for raw_start, raw_end in spans:
-        raw_segment = text[raw_start:raw_end]
-        stripped = raw_segment.strip(" \t,;:-\u200b")
-        if not stripped:
-            continue
-        start = raw_start + raw_segment.find(stripped)
-        segments.append((stripped, start, start + len(stripped)))
-        if len(segments) >= SETTINGS.job_title.maximum_segments_per_line:
-            break
-    return segments
-
-
-def _semantic_job_title_matches(
-    model: SentenceTransformer,
-    lines: list[ExtractedLine],
-    profile_indexes: list[int],
-    existing_matches: list[HeaderEntityMatch],
-) -> list[HeaderEntityMatch]:
-    """Classify unmatched header segments as titles while preserving source text."""
-    title_references = sorted(
-        {
-            reference
-            for references in SETTINGS.job_title_references.values()
-            for reference in references
-        },
-        key=len,
-        reverse=True,
-    )
-    phrase_matches: list[HeaderEntityMatch] = []
-    candidates: list[HeaderEntityMatch] = []
-    for line_index in profile_indexes:
-        text = lines[line_index].text
-        for segment, start, end in _job_title_segments(text):
-            if _overlaps_existing(
-                existing_matches,
-                line_index=line_index,
-                start=start,
-                end=end,
-            ):
-                continue
-            for reference in title_references:
-                for phrase in re.finditer(
-                    rf"(?<!\w){re.escape(reference)}(?!\w)",
-                    segment,
-                    re.IGNORECASE,
-                ):
-                    phrase_start = start + phrase.start()
-                    phrase_end = start + phrase.end()
-                    if _overlaps_existing(
-                        phrase_matches,
-                        line_index=line_index,
-                        start=phrase_start,
-                        end=phrase_end,
-                    ):
-                        continue
-                    phrase_matches.append(
-                        HeaderEntityMatch(
-                            kind="job_title",
-                            text=text[phrase_start:phrase_end],
-                            line_index=line_index,
-                            start=phrase_start,
-                            end=phrase_end,
-                            detection_method="job_title_phrase",
-                        )
-                    )
-            if not 1 <= len(segment.split()) <= SETTINGS.job_title.maximum_words:
-                continue
-            if not any(character.isalpha() for character in segment):
-                continue
-            if segment.endswith((".", ";")):
-                continue
-            candidates.append(
-                HeaderEntityMatch(
-                    kind="job_title",
-                    text=segment,
-                    line_index=line_index,
-                    start=start,
-                    end=end,
-                    detection_method="semantic_similarity",
-                )
-            )
-
-    if not candidates:
-        return phrase_matches
-
-    positive_references = title_references
-    negative_references = [
-        reference
-        for references in SETTINGS.job_title_negative_references.values()
-        for reference in references
-    ]
-    positive_embeddings = model.encode(
-        positive_references,
-        normalize_embeddings=True,
-    )
-    negative_embeddings = model.encode(
-        negative_references,
-        normalize_embeddings=True,
-    )
-    candidate_embeddings = model.encode(
-        [candidate.text for candidate in candidates],
-        normalize_embeddings=True,
-    )
-
-    accepted: list[HeaderEntityMatch] = []
-    for candidate, embedding in zip(candidates, candidate_embeddings, strict=True):
-        positive_score = float((embedding @ positive_embeddings.T).max())
-        negative_score = float((embedding @ negative_embeddings.T).max())
-        if positive_score < SETTINGS.job_title.similarity_threshold:
-            continue
-        if positive_score - negative_score < SETTINGS.job_title.winner_margin:
-            continue
-        accepted.append(
-            HeaderEntityMatch(
-                kind=candidate.kind,
-                text=candidate.text,
-                line_index=candidate.line_index,
-                start=candidate.start,
-                end=candidate.end,
-                detection_method=candidate.detection_method,
-                confidence=positive_score,
-            )
-        )
-    for phrase_match in phrase_matches:
-        if _overlaps_existing(
-            accepted,
-            line_index=phrase_match.line_index,
-            start=phrase_match.start,
-            end=phrase_match.end,
-        ):
-            continue
-        accepted.append(phrase_match)
-    return accepted
-
-
 def _other_header_matches(
     lines: list[ExtractedLine],
     profile_indexes: list[int],
@@ -1136,11 +623,11 @@ def build_header_profile(
     document: pymupdf.Document,
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
-    semantic_model: SentenceTransformer,
-    ner_model: Any,
+    semantic_model: EmbeddingModel,
+    ner_model: DistilBertNerPredictor,
 ) -> dict[str, Any] | None:
     """Detect the identity/contact region before the first likely section."""
-    boundary = _first_header_boundary(lines, headings)
+    boundary = first_header_boundary(lines, headings)
     page_one_indexes = [index for index, line in enumerate(lines) if line.page == 1]
     if boundary is not None:
         boundary_top = lines[boundary.line_index].bbox[1]
@@ -1186,8 +673,8 @@ def build_header_profile(
             continue
         matches.append(url_match)
 
-    # The selected NER backend receives contact-masked lines independently.
-    ner_matches = _ner_matches_for_profile(
+    # DistilBERT receives contact-masked lines independently.
+    ner_matches = ner_matches_for_profile(
         ner_model,
         lines,
         profile_indexes,
@@ -1240,7 +727,7 @@ def build_header_profile(
     # Resolve titles before geometry guesses a missing name. This prevents a
     # title-only OCR header from being mislabeled as a person.
     matches.extend(
-        _semantic_job_title_matches(
+        semantic_job_title_matches(
             semantic_model,
             lines,
             profile_indexes,
@@ -1402,180 +889,6 @@ def build_header_profile(
     }
 
 
-def _section_body_style(
-    content_lines: list[ExtractedLine],
-) -> tuple[float, bool]:
-    """Infer the ordinary prose style before testing possible subheadings."""
-    prose_lines = [
-        line
-        for line in content_lines
-        if len(line.text.split()) > SETTINGS.section_router.maximum_subheading_words
-        or line.text.rstrip().endswith((".", ",", ";", ":"))
-    ]
-    reference_lines = prose_lines or content_lines
-    sizes = [line.size for line in reference_lines if line.size > 0]
-    body_size = statistics.median(sizes) if sizes else 0.0
-    body_bold = bool(reference_lines) and sum(
-        line.bold for line in reference_lines
-    ) > len(reference_lines) / 2
-    return body_size, body_bold
-
-
-def _looks_like_subheading(
-    line: ExtractedLine,
-    *,
-    body_size: float,
-    body_bold: bool,
-) -> bool:
-    """Require a real typographic contrast; plain body text stays paragraph text."""
-    text = line.text.strip()
-    if not text or text.endswith((".", ",", ";", ":")):
-        return False
-    if len(text) > SETTINGS.section_router.maximum_subheading_characters:
-        return False
-    if len(text.split()) > SETTINGS.section_router.maximum_subheading_words:
-        return False
-
-    size_contrast = (
-        body_size > 0
-        and line.size
-        >= body_size * SETTINGS.section_router.subheading_font_size_multiplier
-    )
-    bold_contrast = line.bold and not body_bold
-    return size_contrast or bold_contrast
-
-
-def _content_blocks(
-    lines: list[ExtractedLine],
-    line_indexes: list[int],
-    url_entities_by_line: dict[int, list[dict[str, Any]]],
-) -> list[dict[str, Any]]:
-    """Route section lines into typographic subheadings or paragraph blocks."""
-    content_lines = [lines[index] for index in line_indexes]
-    body_size, body_bold = _section_body_style(content_lines)
-    blocks: list[dict[str, Any]] = []
-
-    for line_index in line_indexes:
-        line = lines[line_index]
-        line_url_entities = url_entities_by_line.get(line_index, [])
-        role = (
-            "subheading"
-            if _looks_like_subheading(
-                line,
-                body_size=body_size,
-                body_bold=body_bold,
-            )
-            else "paragraph"
-        )
-        rounded_bbox = [round(value, 2) for value in line.bbox]
-        if role == "paragraph" and blocks and blocks[-1]["type"] == "paragraph":
-            previous = blocks[-1]
-            previous_box = pymupdf.Rect(previous["_lastLineBbox"])
-            current_box = pymupdf.Rect(line.bbox)
-            vertical_gap = current_box.y0 - previous_box.y1
-            horizontal_overlap = max(
-                0.0,
-                min(previous_box.x1, current_box.x1)
-                - max(previous_box.x0, current_box.x0),
-            )
-            maximum_gap = max(
-                previous_box.height,
-                current_box.height,
-            ) * SETTINGS.section_router.paragraph_gap_multiplier
-            if (
-                previous["page"] == line.page
-                and -2.0 <= vertical_gap <= maximum_gap
-                and horizontal_overlap > 0
-            ):
-                previous["text"] += "\n" + line.text
-                previous["bbox"] = [
-                    round(value, 2)
-                    for value in (pymupdf.Rect(previous["bbox"]) | current_box)
-                ]
-                previous["_lastLineBbox"] = rounded_bbox
-                if line_url_entities:
-                    previous.setdefault("entities", []).extend(line_url_entities)
-                continue
-
-        block: dict[str, Any] = {
-            "type": role,
-            "text": line.text,
-            "page": line.page,
-            "bbox": rounded_bbox,
-            "detectionMethod": (
-                "geometry_typography"
-                if role == "subheading"
-                else "geometry_default"
-            ),
-            "_lastLineBbox": rounded_bbox,
-        }
-        if line_url_entities:
-            block["entities"] = line_url_entities
-        blocks.append(block)
-
-    for block in blocks:
-        block.pop("_lastLineBbox", None)
-    return blocks
-
-
-def build_sections(
-    document: pymupdf.Document,
-    lines: list[ExtractedLine],
-    headings: list[DetectedHeading],
-) -> list[dict[str, Any]]:
-    """Use MiniLM-confirmed headings as boundaries and geometry within sections."""
-    first_boundary = _first_header_boundary(lines, headings)
-    if first_boundary is None:
-        return []
-
-    routed_headings = sorted(
-        (
-            heading
-            for heading in headings
-            if heading.line_index >= first_boundary.line_index
-        ),
-        key=lambda heading: heading.line_index,
-    )
-    routed_line_indexes = list(range(first_boundary.line_index, len(lines)))
-    url_entities_by_line: dict[int, list[dict[str, Any]]] = {}
-    for match in _url_matches_for_lines(document, lines, routed_line_indexes):
-        url_entities_by_line.setdefault(match.line_index, []).append(
-            _url_entity_value(document, lines, match)
-        )
-
-    sections: list[dict[str, Any]] = []
-    for position, heading in enumerate(routed_headings):
-        next_heading_index = (
-            routed_headings[position + 1].line_index
-            if position + 1 < len(routed_headings)
-            else len(lines)
-        )
-        heading_line = lines[heading.line_index]
-        content_indexes = list(range(heading.line_index + 1, next_heading_index))
-        heading_value: dict[str, Any] = {
-            "text": heading_line.text,
-            "page": heading_line.page,
-            "bbox": [round(value, 2) for value in heading_line.bbox],
-            "similarity": round(heading.similarity, 4),
-            "detectionMethod": "geometry_semantic",
-        }
-        heading_url_entities = url_entities_by_line.get(heading.line_index, [])
-        if heading_url_entities:
-            heading_value["entities"] = heading_url_entities
-        sections.append(
-            {
-                "sectionType": heading.section_type,
-                "heading": heading_value,
-                "content": _content_blocks(
-                    lines,
-                    content_indexes,
-                    url_entities_by_line,
-                ),
-            }
-        )
-    return sections
-
-
 def _union_boxes(lines: list[ExtractedLine]) -> list[dict[str, Any]]:
     boxes_by_page: dict[int, pymupdf.Rect] = {}
     for line in lines:
@@ -1659,7 +972,7 @@ def extract_resume(
     output_directory: Path,
     raw_debug_path: Path,
     ocr_debug_path: Path,
-    model: SentenceTransformer,
+    model: EmbeddingModel,
     ner_model: DistilBertNerPredictor,
 ) -> None:
     with pymupdf.open(pdf_path) as document:
@@ -1674,10 +987,23 @@ def extract_resume(
             model,
             ner_model,
         )
-        sections = build_sections(document, lines, headings)
+        url_entities_by_line: dict[int, list[dict[str, Any]]] = {}
+        section_boundary = first_header_boundary(lines, headings)
+        section_line_indexes = (
+            list(range(section_boundary.line_index, len(lines)))
+            if section_boundary is not None
+            else []
+        )
+        for match in _url_matches_for_lines(document, lines, section_line_indexes):
+            url_entities_by_line.setdefault(match.line_index, []).append(
+                _url_entity_value(document, lines, match)
+            )
+        sections = build_sections(lines, headings, url_entities_by_line)
+        summary = summary_debug_value(sections)
 
         output_directory.mkdir(parents=True, exist_ok=True)
         header_debug_directory = output_directory / "debug" / "header"
+        summary_debug_directory = output_directory / "debug" / "summary"
         header_debug_directory.mkdir(parents=True, exist_ok=True)
         (header_debug_directory / "header.json").write_text(
             json.dumps(
@@ -1715,6 +1041,16 @@ def extract_resume(
             header_profile,
             header_debug_directory,
         )
+        write_summary_debug(
+            pdf_path,
+            summary,
+            summary_debug_directory,
+        )
+        render_summary_debug_images(
+            document,
+            summary,
+            summary_debug_directory,
+        )
 
 
 def _parse_arguments() -> argparse.Namespace:
@@ -1725,23 +1061,6 @@ def _parse_arguments() -> argparse.Namespace:
         help="Process only PDFs in resume-truths/ and write them under results/0-truths/.",
     )
     return parser.parse_args()
-
-
-def _require_local_model(project_root: Path, relative_directory: str) -> Path:
-    model_directory = project_root / relative_directory
-    if not model_directory.is_dir():
-        raise FileNotFoundError(
-            f"local model directory is missing: {model_directory}"
-        )
-    return model_directory
-
-
-def _load_ner_model(project_root: Path) -> DistilBertNerPredictor:
-    model_directory = _require_local_model(
-        project_root,
-        SETTINGS.ner.distilbert_local_directory,
-    )
-    return DistilBertNerPredictor(model_directory)
 
 
 def main() -> None:
@@ -1755,15 +1074,8 @@ def main() -> None:
         output_root = project_root / SETTINGS.paths.results_directory
     raw_debug_directory = project_root / SETTINGS.debug.raw_extraction_directory
     ocr_debug_directory = project_root / SETTINGS.debug.ocr_extraction_directory
-    model = SentenceTransformer(
-        str(
-            _require_local_model(
-                project_root,
-                SETTINGS.model.local_directory,
-            )
-        ),
-    )
-    ner_model = _load_ner_model(project_root)
+    model = load_embedding_model(project_root)
+    ner_model = load_ner_model(project_root)
 
     for pdf_path in sorted(input_directory.glob("*.pdf")):
         resume_output = output_root / pdf_path.stem

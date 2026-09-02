@@ -1,0 +1,49 @@
+{
+  "source": "7.anomaly.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "summary": {
+    "sectionType": "summary",
+    "heading": {
+      "text": "PROFESSIONAL SUMMARY",
+      "page": 1,
+      "bbox": [
+        46.9,
+        103.8,
+        186.8,
+        115.52
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Hands-on welder and metal fabricator with more than 9 years of experience supporting manufacturing, food-processing,\nwarehouse, and construction environments in Thailand. Experienced with MIG/MAG, SMAW (stick), basic TIG stainless-\nsteel work, cutting, grinding, fit-up, jig work, equipment repair, and preventive maintenance. Comfortable reading shop\ndrawings, taking measurements, preparing material, checking weld appearance and dimensions, and coordinating with\nThai and international supervisors. Strong record of shift attendance and safety compliance. Used to hot-work permits,\nconfined work areas, production deadlines, and physically demanding jobs. Seeking a stable welding, fabrication,\nmaintenance, or plant technician position in Thailand or elsewhere in Southeast Asia.",
+        "page": 1,
+        "bbox": [
+          46.9,
+          122.4,
+          551.26,
+          201.4
+        ],
+        "detectionMethod": "geometry_default"
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "skills",
+      "heading": {
+        "text": "CORE SKILLS",
+        "page": 1,
+        "bbox": [
+          46.9,
+          210.25,
+          117.41,
+          221.97
+        ],
+        "similarity": 0.8082,
+        "detectionMethod": "geometry_semantic"
+      }
+    }
+  }
+}

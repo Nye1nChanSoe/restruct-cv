@@ -1,0 +1,49 @@
+{
+  "source": "5.ocr.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "summary": {
+    "sectionType": "summary",
+    "heading": {
+      "text": "PROFESSIONAL SUMMARY",
+      "page": 1,
+      "bbox": [
+        52.8,
+        160.8,
+        192.0,
+        169.44
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Civil Engineer with over 7 years of experience in building construction, reinforced concrete works, structural coordination,\nquantity checking, subcontractor supervision, progress reporting, and site quality control. Experienced on commercial\nbuildings, residential towers, warehouse structures, drainage works, and renovation projects. Comfortable working directly\nwith consultants, foremen, subcontractors, suppliers, and project managers in fast-moving site environments.",
+        "page": 1,
+        "bbox": [
+          52.08,
+          177.84,
+          536.4,
+          224.4
+        ],
+        "detectionMethod": "geometry_default"
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "skills",
+      "heading": {
+        "text": "CORE SKILLS",
+        "page": 1,
+        "bbox": [
+          52.32,
+          228.48,
+          122.16,
+          237.12
+        ],
+        "similarity": 0.8082,
+        "detectionMethod": "geometry_semantic"
+      }
+    }
+  }
+}

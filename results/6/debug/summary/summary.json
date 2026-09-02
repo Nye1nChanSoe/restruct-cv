@@ -1,0 +1,49 @@
+{
+  "source": "6.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "summary": {
+    "sectionType": "summary",
+    "heading": {
+      "text": "PROFESSIONAL SUMMARY",
+      "page": 1,
+      "bbox": [
+        46.9,
+        94.95,
+        186.8,
+        106.67
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Software engineer with 4+ years of experience building backend services, data pipelines, and internal platforms. Strong in\nTypeScript, Python, Go, PostgreSQL, REST APIs, and cloud-native systems. Experienced with event-driven processing,\nweb scraping, observability, and practical machine-learning integration.",
+        "page": 1,
+        "bbox": [
+          46.9,
+          110.8,
+          559.94,
+          146.4
+        ],
+        "detectionMethod": "geometry_default"
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "skills",
+      "heading": {
+        "text": "TECHNICAL SKILLS",
+        "page": 1,
+        "bbox": [
+          46.9,
+          152.35,
+          147.72,
+          164.07
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "source": "2.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "summary": {
+    "sectionType": "summary",
+    "heading": {
+      "text": "PROFESSIONAL SUMMARY",
+      "page": 1,
+      "bbox": [
+        72.0,
+        227.16,
+        302.67,
+        246.15
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Supply Chain Analyst with 4 years of experience in inventory analysis, demand planning\nsupport, procurement coordination, and operational reporting within consumer goods and\ndistribution businesses. Experienced in using Excel, Power BI, SQL, and ERP data to\nmonitor inventory levels, identify stock risks, analyze supplier performance, and support\nmonthly planning activities. Comfortable working with procurement, warehouse, sales,\nfinance, and logistics teams.",
+        "page": 1,
+        "bbox": [
+          72.0,
+          261.44,
+          507.68,
+          346.46
+        ],
+        "detectionMethod": "geometry_default"
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "experience",
+      "heading": {
+        "text": "PROFESSIONAL EXPERIENCE",
+        "page": 1,
+        "bbox": [
+          72.0,
+          366.91,
+          325.05,
+          385.91
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      }
+    }
+  }
+}

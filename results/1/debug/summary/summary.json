@@ -1,0 +1,49 @@
+{
+  "source": "1.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "summary": {
+    "sectionType": "summary",
+    "heading": {
+      "text": "PROFESSIONAL SUMMARY",
+      "page": 1,
+      "bbox": [
+        72.0,
+        227.16,
+        302.67,
+        246.15
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Industrial Maintenance Technician with 7 years of hands-on experience maintaining\nproduction machinery, conveyor systems, pumps, motors, pneumatic equipment, and basic\nelectrical control systems in manufacturing environments. Experienced in preventive\nmaintenance, equipment troubleshooting, breakdown response, machine installation, and\nmaintenance documentation. Familiar with factory safety procedures, 5S, lockout/tagout\npractices, and working with production teams to reduce machine downtime.",
+        "page": 1,
+        "bbox": [
+          72.0,
+          261.44,
+          516.58,
+          346.46
+        ],
+        "detectionMethod": "geometry_default"
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "experience",
+      "heading": {
+        "text": "WORK EXPERIENCE",
+        "page": 1,
+        "bbox": [
+          72.0,
+          366.91,
+          244.78,
+          385.91
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      }
+    }
+  }
+}
