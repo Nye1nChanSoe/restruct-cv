@@ -5,7 +5,7 @@ SECTION_REFERENCES: dict[str, tuple[str, ...]] = {
         "Professional Summary", "Career Profile", "Career Objective", "About Me",
         "Summary", "Profile", "Executive Summary", "Personal Statement", "Objective",
         "Professional Profile", "Career Summary", "Overview", "Highlights",
-        "Key Qualifications",
+        "Key Qualifications", "Profile Summary", "Profile"
     ),
     "experience": (
         "Work Experience", "Professional Experience", "Employment History",

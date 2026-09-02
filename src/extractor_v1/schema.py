@@ -75,7 +75,11 @@ def _profile_value(header_profile: dict[str, Any] | None) -> dict[str, Any] | No
             [entity for entity in entities if entity.get("type") == "job_title"]
         ),
         "location": _first_entity_text(entities, "location"),
+        "date_of_birth": _first_entity_text(entities, "date_of_birth"),
+        "gender": _first_entity_text(entities, "gender"),
+        "marital_status": _first_entity_text(entities, "marital_status"),
         "nationality": _first_entity_text(entities, "nationality"),
+        "current_residence": _first_entity_text(entities, "current_residence"),
         "emails": _texts(
             [entity for entity in entities if entity.get("type") == "email"]
         ),
