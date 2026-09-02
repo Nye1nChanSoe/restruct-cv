@@ -41,6 +41,7 @@ from extractor_v1.routing import (
     build_skills_debug,
     build_supplementary_sections_debug,
     first_header_boundary,
+    render_combined_debug_images,
     render_education_debug_images,
     render_experience_debug_images,
     render_projects_debug_images,
@@ -1074,20 +1075,6 @@ def extract_resume(
             + "\n",
             encoding="utf-8",
         )
-        (output_directory / "sections-debug.json").write_text(
-            json.dumps(
-                {
-                    "source": pdf_path.name,
-                    "model": SETTINGS.model.name,
-                    "modelRevision": SETTINGS.model.revision,
-                    "sections": sections,
-                },
-                indent=2,
-                ensure_ascii=False,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
         render_debug_images(
             document,
             header_profile,
@@ -1150,6 +1137,17 @@ def extract_resume(
         )
         render_supplementary_sections_debug_images(
             document,
+            supplementary_sections,
+            output_directory / "debug",
+        )
+        render_combined_debug_images(
+            document,
+            header_profile,
+            summary,
+            experience,
+            education,
+            skills,
+            projects,
             supplementary_sections,
             output_directory / "debug",
         )

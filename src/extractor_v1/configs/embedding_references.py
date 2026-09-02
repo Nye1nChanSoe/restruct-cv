@@ -89,6 +89,7 @@ SECTION_COLORS: dict[str, str] = {
     "publications": "#6D4C41",
     "references": "#455A64",
     "interests": "#8D6E63",
+    "others": "#607D8B",
 }
 
 

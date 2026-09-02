@@ -78,6 +78,7 @@ _SUPPLEMENTARY_SECTION_TYPES = (
     "publications",
     "references",
     "interests",
+    "others",
 )
 
 
@@ -156,31 +157,11 @@ def _is_local_subheading_candidate(
     )
 
 
-def _referenced_section_type(text: str) -> str | None:
-    normalized = " ".join(
-        text.replace("\u200b", "").replace("\ufeff", "").casefold().split()
-    )
-    matches: list[tuple[int, int, str]] = []
-    for section_type, references in SETTINGS.section_references.items():
-        for reference in references:
-            normalized_reference = " ".join(reference.casefold().split())
-            position = normalized.find(normalized_reference)
-            if position < 0:
-                continue
-            left_boundary = position == 0 or not normalized[position - 1].isalnum()
-            end = position + len(normalized_reference)
-            right_boundary = end == len(normalized) or not normalized[end].isalnum()
-            if left_boundary and right_boundary:
-                matches.append((position, -len(normalized_reference), section_type))
-    if not matches:
-        return None
-    return min(matches)[2]
-
-
 def _peer_sized_section_heading(
     lines: list[ExtractedLine],
     line_index: int,
     parent_heading: DetectedHeading,
+    semantic_heading: DetectedHeading | None,
 ) -> DetectedHeading | None:
     line = lines[line_index]
     parent = lines[parent_heading.line_index]
@@ -199,14 +180,16 @@ def _peer_sized_section_heading(
     ) / len(letters) >= SETTINGS.heading.uppercase_ratio
     if not uppercase and not line.bold:
         return None
-    section_type = _referenced_section_type(text)
-    if section_type is None or section_type == parent_heading.section_type:
+    section_type = semantic_heading.section_type if semantic_heading else "others"
+    if section_type == parent_heading.section_type:
         return None
     return DetectedHeading(
         line_index=line_index,
         section_type=section_type,
-        similarity=1.0,
-        runner_up_similarity=0.0,
+        similarity=semantic_heading.similarity if semantic_heading else 0.0,
+        runner_up_similarity=(
+            semantic_heading.runner_up_similarity if semantic_heading else 0.0
+        ),
     )
 
 
@@ -223,11 +206,21 @@ def _routed_section_headings(
         if heading.line_index >= minimum_line_index
         and _is_reliable_section_heading(lines[heading.line_index], heading)
     }
+    semantic_by_index = {
+        heading.line_index: heading
+        for heading in headings
+        if heading.line_index >= minimum_line_index
+    }
     routed: list[DetectedHeading] = []
     for line_index in range(minimum_line_index, len(lines)):
         heading = reliable_by_index.get(line_index)
         if heading is None and routed:
-            heading = _peer_sized_section_heading(lines, line_index, routed[-1])
+            heading = _peer_sized_section_heading(
+                lines,
+                line_index,
+                routed[-1],
+                semantic_by_index.get(line_index),
+            )
         if heading is None:
             continue
         if routed and _is_local_subheading_candidate(lines, heading, routed[-1]):
@@ -363,6 +356,7 @@ def build_sections(
         headings,
         minimum_line_index=first_boundary.line_index,
     )
+    semantic_heading_indexes = {heading.line_index for heading in headings}
 
     sections: list[dict[str, Any]] = []
     for position, heading in enumerate(routed_headings):
@@ -378,7 +372,11 @@ def build_sections(
             "page": heading_line.page,
             "bbox": [round(value, 2) for value in heading_line.bbox],
             "similarity": round(heading.similarity, 4),
-            "detectionMethod": "geometry_semantic",
+            "detectionMethod": (
+                "geometry_semantic"
+                if heading.line_index in semantic_heading_indexes
+                else "geometry_unknown_boundary"
+            ),
         }
         heading_url_entities = url_entities_by_line.get(heading.line_index, [])
         if heading_url_entities:
@@ -1429,15 +1427,18 @@ def _build_grouped_section_debug(
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
     section_type: str,
+    occurrence: int = 0,
 ) -> dict[str, Any] | None:
     """Group titles, dates, paragraphs, bullets, and URLs for a minor section."""
     routed = _routed_section_headings(lines, headings)
-    position = next(
-        (i for i, item in enumerate(routed) if item.section_type == section_type),
-        None,
-    )
-    if position is None:
+    positions = [
+        index
+        for index, item in enumerate(routed)
+        if item.section_type == section_type
+    ]
+    if occurrence >= len(positions):
         return None
+    position = positions[occurrence]
     heading = routed[position]
     end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
     heading_line = lines[heading.line_index]
@@ -1465,6 +1466,133 @@ def _build_grouped_section_debug(
         ):
             continue
         visible_rows.append(row)
+
+        # Unknown sections frequently contain labelled groups such as
+        # ``Availability: ...`` or a short left label paired with a value on
+        # the right. Detect those groups before the generic paragraph fallback,
+        # using the same precedence as the skills parser.
+        if section_type == "others" and len(row) >= 2:
+            left_index, left = row[0]
+            right_cells = row[1:]
+            left_is_label = (
+                len(left.text.split()) <= 7
+                and len(left.text) <= 50
+                and (
+                    left.bold
+                    or _looks_like_subheading(
+                        left,
+                        body_size=body_size,
+                        body_bold=body_bold,
+                    )
+                    or pymupdf.Rect(right_cells[0][1].bbox).x0
+                    > pymupdf.Rect(left.bbox).x1 + left.size
+                )
+            )
+            if left_is_label:
+                stripped = left.text.strip().rstrip(":-–—").strip()
+                start = left.text.find(stripped)
+                current = _grouped_section_entry()
+                entries.append(current)
+                current["subheadingLines"].append(
+                    _skill_subheading_value(
+                        document,
+                        left,
+                        stripped,
+                        start,
+                        start + len(stripped),
+                        "geometry_table_cell",
+                    )
+                )
+                left_urls = url_entities_by_line.get(left_index, [])
+                current["urls"].extend(left_urls)
+                current["metadataRows"].append(_row_value(row))
+                for line_index, line in right_cells:
+                    line_urls = url_entities_by_line.get(line_index, [])
+                    _append_skill_paragraph(
+                        current,
+                        text=line.text,
+                        page=line.page,
+                        bbox=[round(number, 2) for number in line.bbox],
+                        entities=line_urls,
+                    )
+                    current["urls"].extend(line_urls)
+                continue
+
+        if section_type == "others":
+            inline_parts: list[
+                tuple[
+                    int,
+                    ExtractedLine,
+                    re.Match[str] | None,
+                    tuple[str, int, int, str, int, int, str],
+                ]
+            ] = []
+            for line_index, line in row:
+                bullet = _BULLET_RE.match(line.text)
+                content_start = bullet.end() if bullet else 0
+                leading_space = len(line.text[content_start:]) - len(
+                    line.text[content_start:].lstrip()
+                )
+                content_start += leading_space
+                content = line.text[content_start:].strip()
+                inline = _skill_inline_parts(
+                    content,
+                    content_start,
+                    allow_single_dash_body=bullet is None,
+                )
+                if inline is not None:
+                    inline_parts.append((line_index, line, bullet, inline))
+
+            if inline_parts:
+                for line_index, line, bullet, inline in inline_parts:
+                    (
+                        label,
+                        label_start,
+                        label_end,
+                        body,
+                        body_start,
+                        body_end,
+                        method,
+                    ) = inline
+                    current = _grouped_section_entry()
+                    entries.append(current)
+                    current["subheadingLines"].append(
+                        _skill_subheading_value(
+                            document,
+                            line,
+                            label,
+                            label_start,
+                            label_end,
+                            method,
+                        )
+                    )
+                    current["metadataRows"].append(_row_value(row))
+                    line_urls = url_entities_by_line.get(line_index, [])
+                    body_value: dict[str, Any] = {
+                        "text": body,
+                        "page": line.page,
+                        "bbox": _span_bbox(
+                            document,
+                            line,
+                            body,
+                            body_start,
+                            body_end,
+                        ),
+                        "detectionMethod": (
+                            "bullet_marker" if bullet else "geometry_default"
+                        ),
+                    }
+                    if line_urls:
+                        body_value["entities"] = line_urls
+                    target = "bullets" if bullet else "paragraphs"
+                    current[target].append(body_value)
+                    current["urls"].extend(line_urls)
+                    current["_lastType"] = "bullet" if bullet else "paragraph"
+                    current["_lastLineBbox"] = [
+                        round(number, 2) for number in line.bbox
+                    ]
+                continue
+
         dates_by_line = {
             line_index: _grouped_section_date_matches(line.text)
             for line_index, line in row
@@ -1623,7 +1751,7 @@ def _build_grouped_section_debug(
             "bbox": [round(value, 2) for value in heading_line.bbox],
             "similarity": round(heading.similarity, 4),
             "detectionMethod": (
-                "geometry_reference_boundary"
+                "geometry_unknown_boundary"
                 if heading.line_index not in {item.line_index for item in headings}
                 else "geometry_semantic"
             ),
@@ -1660,6 +1788,28 @@ def build_supplementary_sections_debug(
 ) -> dict[str, dict[str, Any]]:
     sections: dict[str, dict[str, Any]] = {}
     for section_type in _SUPPLEMENTARY_SECTION_TYPES:
+        if section_type == "others":
+            other_sections: list[dict[str, Any]] = []
+            occurrence = 0
+            while True:
+                section = _build_grouped_section_debug(
+                    document,
+                    lines,
+                    headings,
+                    url_entities_by_line,
+                    section_type,
+                    occurrence,
+                )
+                if section is None:
+                    break
+                other_sections.append(section)
+                occurrence += 1
+            if other_sections:
+                sections[section_type] = {
+                    "sectionType": "others",
+                    "sections": other_sections,
+                }
+            continue
         section = _build_grouped_section_debug(
             document,
             lines,
@@ -1811,11 +1961,12 @@ def _render_entry_debug_images(
         for item_index, item in enumerate(page_items):
             item_type = item["type"]
             box = _pixel_box(item["bbox"])
+            color = str(item.get("_debugColor", colors[item_type]))
             detection_method = str(item.get("detectionMethod", ""))
             model_entity = detection_method.startswith(("distilbert", "minilm"))
             draw.rectangle(
                 box,
-                outline=colors[item_type],
+                outline=color,
                 width=(
                     SETTINGS.debug.header_entity_stroke_width + 2
                     if model_entity
@@ -1826,7 +1977,7 @@ def _render_entry_debug_images(
                     )
                 ),
             )
-            label = labels[item_type]
+            label = str(item.get("_debugLabel", labels[item_type]))
             measured_label_box = draw.textbbox((0, 0), label)
             label_width = measured_label_box[2] - measured_label_box[0]
             label_height = measured_label_box[3] - measured_label_box[1]
@@ -1879,9 +2030,221 @@ def _render_entry_debug_images(
                 )
                 label_box = draw.textbbox(label_position, label)
             draw.rectangle(label_box, fill="#FFFFFF")
-            draw.text(label_position, label, fill=colors[item_type])
+            draw.text(label_position, label, fill=color)
             placed_label_boxes.append(label_box)
         image.save(output_directory / f"page-{page_number}.png")
+
+
+def render_combined_debug_images(
+    document: pymupdf.Document,
+    header_profile: dict[str, Any] | None,
+    summary: dict[str, Any] | None,
+    experience: dict[str, Any] | None,
+    education: dict[str, Any] | None,
+    skills: dict[str, Any] | None,
+    projects: dict[str, Any] | None,
+    supplementary_sections: dict[str, dict[str, Any]],
+    output_directory: Path,
+) -> None:
+    """Render all implemented section overlays together on each source page."""
+    items: list[dict[str, Any]] = []
+
+    def add(
+        item_type: str,
+        value: dict[str, Any],
+        color: str,
+        label: str,
+    ) -> None:
+        items.append(
+            {
+                "type": item_type,
+                **value,
+                "_debugColor": color,
+                "_debugLabel": label,
+            }
+        )
+
+    if header_profile is not None:
+        add(
+            "header_profile",
+            {
+                "page": header_profile["page"],
+                "bbox": header_profile["bbox"],
+                "detectionMethod": "geometry_header_region",
+            },
+            SETTINGS.debug.header_region_color,
+            "header_profile",
+        )
+        header_colors = dict(SETTINGS.debug.header_entity_colors)
+        for entity in header_profile["entities"]:
+            add(
+                str(entity["type"]),
+                entity,
+                header_colors[str(entity["type"])],
+                str(entity["type"]),
+            )
+
+    if summary is not None:
+        add(
+            "section_heading",
+            summary["heading"],
+            SETTINGS.section_colors["summary"],
+            "section_heading",
+        )
+        for value in summary["content"]:
+            item_type = str(value["type"])
+            add(
+                item_type,
+                value,
+                "#EF6C00" if item_type == "subheading" else "#546E7A",
+                f"{item_type}",
+            )
+
+    if experience is not None:
+        add(
+            "section_heading",
+            experience["heading"],
+            SETTINGS.section_colors["experience"],
+            "section_heading",
+        )
+        experience_specs = {
+            "experience_subheading": ("#B0BEC5", "metadata_line"),
+            "job_title": ("#00897B", "MiniLM: job_title"),
+            "company": ("#D81B60", "NER: company"),
+            "date": ("#F9A825", "regex: date"),
+            "location": ("#1E88E5", "NER: location"),
+            "url": ("#6D4C41", "annotation: url"),
+            "paragraph": ("#CFD8DC", "paragraph"),
+            "bullet": ("#B0BEC5", "bullet"),
+        }
+        for entry in experience["entries"]:
+            for value in entry["subheadingLines"]:
+                color, label = experience_specs["experience_subheading"]
+                add("experience_subheading", value, color, label)
+            for key, item_type in (
+                ("jobTitles", "job_title"),
+                ("companies", "company"),
+                ("dates", "date"),
+                ("locations", "location"),
+                ("urls", "url"),
+                ("paragraphs", "paragraph"),
+                ("bullets", "bullet"),
+            ):
+                color, label = experience_specs[item_type]
+                for value in entry[key]:
+                    add(item_type, value, color, label)
+
+    if education is not None:
+        add(
+            "section_heading",
+            education["heading"],
+            SETTINGS.section_colors["education"],
+            "section_heading",
+        )
+        education_specs = {
+            "education_metadata": ("#D1C4E9", "geometry_row"),
+            "education_title": ("#00897B", "pattern: education_title"),
+            "institution": ("#D81B60", "entity: institution"),
+            "date": ("#F9A825", "regex: date"),
+            "location": ("#1E88E5", "NER: location"),
+            "gpa": ("#8E24AA", "regex: GPA"),
+            "skill": ("#43A047", "skill"),
+            "url": ("#6D4C41", "annotation: url"),
+            "paragraph": ("#CFD8DC", "paragraph"),
+            "bullet": ("#B0BEC5", "bullet"),
+        }
+        for entry in education["entries"]:
+            for value in entry["metadataRows"]:
+                color, label = education_specs["education_metadata"]
+                add("education_metadata", value, color, label)
+            for key, item_type in (
+                ("titles", "education_title"),
+                ("institutions", "institution"),
+                ("dates", "date"),
+                ("locations", "location"),
+                ("gpa", "gpa"),
+                ("skills", "skill"),
+                ("urls", "url"),
+                ("paragraphs", "paragraph"),
+                ("bullets", "bullet"),
+            ):
+                color, label = education_specs[item_type]
+                for value in entry[key]:
+                    add(item_type, value, color, label)
+
+    if skills is not None:
+        add(
+            "section_heading",
+            skills["heading"],
+            SETTINGS.section_colors["skills"],
+            "section_heading",
+        )
+        for value in skills["rows"]:
+            add("skill_row", value, "#CFD8DC", "geometry_row")
+        for group in skills["groups"]:
+            if group["subheading"] is not None:
+                add(
+                    "skill_subheading",
+                    group["subheading"],
+                    "#00897B",
+                    "skill_group",
+                )
+            for key, item_type, color in (
+                ("paragraphs", "paragraph", "#90A4AE"),
+                ("bullets", "bullet", "#5C6BC0"),
+                ("urls", "url", "#6D4C41"),
+            ):
+                for value in group[key]:
+                    add(item_type, value, color, f"{item_type}" if item_type != "url" else "annotation: url")
+
+    grouped_sections: list[tuple[str, dict[str, Any]]] = []
+    if projects is not None:
+        grouped_sections.append(("projects", projects))
+    for section_type, section in supplementary_sections.items():
+        for section_part in (
+            section["sections"] if section_type == "others" else [section]
+        ):
+            grouped_sections.append((section_type, section_part))
+
+    for section_type, section in grouped_sections:
+        section_color = SETTINGS.section_colors[section_type]
+        add(
+            "section_heading",
+            section["heading"],
+            section_color,
+            "section_heading",
+        )
+        for value in section["rows"]:
+            add("grouped_row", value, "#ECEFF1", "geometry_row")
+        for entry in section["entries"]:
+            for value in entry["subheadingLines"]:
+                add("grouped_subheading", value, section_color, "subheading")
+            for key, item_type, color, label in (
+                ("dates", "date", "#F9A825", "regex: date"),
+                ("urls", "url", "#6D4C41", "annotation: url"),
+                ("paragraphs", "paragraph", "#90A4AE", "paragraph"),
+                ("bullets", "bullet", "#5C6BC0", "bullet"),
+            ):
+                for value in entry[key]:
+                    add(item_type, value, color, label)
+
+    if not items:
+        return
+    item_types = {str(item["type"]) for item in items}
+    _render_entry_debug_images(
+        document,
+        items,
+        output_directory,
+        {item_type: "#000000" for item_type in item_types},
+        {item_type: item_type for item_type in item_types},
+        {
+            "name",
+            "experience_subheading",
+            "education_metadata",
+            "skill_row",
+            "grouped_row",
+        },
+    )
 
 
 def render_experience_debug_images(
@@ -1920,15 +2283,15 @@ def render_experience_debug_images(
             "bullet": "#B0BEC5",
         },
         {
-            "section_heading": "route: section_heading",
-            "experience_subheading": "route: metadata_line",
+            "section_heading": "section_heading",
+            "experience_subheading": "metadata_line",
             "job_title": "MiniLM: job_title",
             "company": "NER: company",
             "date": "regex: date",
             "location": "NER: location",
             "url": "annotation: url",
-            "paragraph": "route: paragraph",
-            "bullet": "route: bullet",
+            "paragraph": "paragraph",
+            "bullet": "bullet",
         },
         {"experience_subheading"},
     )
@@ -1988,17 +2351,17 @@ def render_education_debug_images(
             "bullet": "#B0BEC5",
         },
         {
-            "section_heading": "route: section_heading",
-            "education_metadata": "route: geometry_row",
+            "section_heading": "section_heading",
+            "education_metadata": "geometry_row",
             "education_title": "pattern: education_title",
             "institution": "entity: institution",
             "date": "regex: date",
             "location": "NER: location",
             "gpa": "regex: GPA",
-            "skill": "route: skill",
+            "skill": "skill",
             "url": "annotation: url",
-            "paragraph": "route: paragraph",
-            "bullet": "route: bullet",
+            "paragraph": "paragraph",
+            "bullet": "bullet",
         },
         {"education_metadata"},
     )
@@ -2046,11 +2409,11 @@ def render_skills_debug_images(
             "url": "#6D4C41",
         },
         {
-            "section_heading": "route: section_heading",
-            "skill_row": "route: geometry_row",
-            "skill_subheading": "route: skill_group",
-            "paragraph": "route: paragraph",
-            "bullet": "route: bullet",
+            "section_heading": "section_heading",
+            "skill_row": "geometry_row",
+            "skill_subheading": "skill_group",
+            "paragraph": "paragraph",
+            "bullet": "bullet",
             "url": "annotation: url",
         },
         {"skill_row"},
@@ -2100,13 +2463,13 @@ def render_projects_debug_images(
             "bullet": "#5C6BC0",
         },
         {
-            "section_heading": "route: section_heading",
-            "project_row": "route: geometry_row",
-            "project_subheading": "route: project_subheading",
+            "section_heading": "section_heading",
+            "project_row": "geometry_row",
+            "project_subheading": "project_subheading",
             "date": "regex: date",
             "url": "annotation: url",
-            "paragraph": "route: paragraph",
-            "bullet": "route: bullet",
+            "paragraph": "paragraph",
+            "bullet": "bullet",
         },
         {"project_row"},
     )
@@ -2137,19 +2500,30 @@ def render_supplementary_sections_debug_images(
     debug_directory: Path,
 ) -> None:
     for section_type, section in sections.items():
-        items: list[dict[str, Any]] = [
-            {"type": "section_heading", **section["heading"]}
-        ]
-        items.extend({"type": "grouped_row", **item} for item in section["rows"])
-        for entry in section["entries"]:
+        section_parts = (
+            section["sections"]
+            if section_type == "others"
+            else [section]
+        )
+        items: list[dict[str, Any]] = []
+        for section_part in section_parts:
+            items.append({"type": "section_heading", **section_part["heading"]})
             items.extend(
-                {"type": "grouped_subheading", **item}
-                for item in entry["subheadingLines"]
+                {"type": "grouped_row", **item}
+                for item in section_part["rows"]
             )
-            items.extend({"type": "date", **item} for item in entry["dates"])
-            items.extend({"type": "url", **item} for item in entry["urls"])
-            items.extend({"type": "paragraph", **item} for item in entry["paragraphs"])
-            items.extend({"type": "bullet", **item} for item in entry["bullets"])
+            for entry in section_part["entries"]:
+                items.extend(
+                    {"type": "grouped_subheading", **item}
+                    for item in entry["subheadingLines"]
+                )
+                items.extend({"type": "date", **item} for item in entry["dates"])
+                items.extend({"type": "url", **item} for item in entry["urls"])
+                items.extend(
+                    {"type": "paragraph", **item}
+                    for item in entry["paragraphs"]
+                )
+                items.extend({"type": "bullet", **item} for item in entry["bullets"])
         section_color = SETTINGS.section_colors[section_type]
         _render_entry_debug_images(
             document,
@@ -2165,13 +2539,13 @@ def render_supplementary_sections_debug_images(
                 "bullet": "#5C6BC0",
             },
             {
-                "section_heading": "route: section_heading",
-                "grouped_row": "route: geometry_row",
-                "grouped_subheading": "route: subheading",
+                "section_heading": "section_heading",
+                "grouped_row": "geometry_row",
+                "grouped_subheading": "subheading",
                 "date": "regex: date",
                 "url": "annotation: url",
-                "paragraph": "route: paragraph",
-                "bullet": "route: bullet",
+                "paragraph": "paragraph",
+                "bullet": "bullet",
             },
             {"grouped_row"},
         )
