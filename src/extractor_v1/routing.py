@@ -268,43 +268,28 @@ def _experience_line_entities(
     result: dict[str, list[dict[str, Any]]] = {
         "jobTitles": [], "companies": [], "dates": [], "locations": [], "urls": urls,
     }
-    occupied: list[tuple[int, int]] = []
-    for match in _DATE_RANGE_RE.finditer(line.text):
+    date_spans = list(_DATE_RANGE_RE.finditer(line.text))
+    for match in date_spans:
         result["dates"].append({
             "text": match.group(0), "page": line.page,
             "bbox": _span_bbox(document, line, match.group(0), match.start(), match.end()),
             "detectionMethod": "date_regex",
         })
-        occupied.append((match.start(), match.end()))
 
-    for prediction in ner_model.predict_entities(
-        line.text, ["organization", "location"], SETTINGS.ner.minimum_confidence
-    ):
-        start, end = int(prediction["start"]), int(prediction["end"])
-        if any(left < end and start < right for left, right in occupied):
-            continue
-        value = {
-            "text": line.text[start:end].strip(), "page": line.page,
-            "bbox": _span_bbox(document, line, line.text[start:end].strip(), start, end),
-            "confidence": round(float(prediction["score"]), 4),
-            "detectionMethod": "distilbert_ner",
-        }
-        key = "companies" if prediction["label"] == "organization" else "locations"
-        if key == "companies" and urls:
-            value["urls"] = urls
-        result[key].append(value)
-        occupied.append((start, end))
-
-    candidates: list[tuple[str, int, int]] = []
-    base_ranges: list[tuple[int, int]] = []
+    segment_ranges: list[tuple[int, int]] = []
     cursor = 0
     for separator in _EXPERIENCE_SEPARATOR_RE.finditer(line.text):
-        base_ranges.append((cursor, separator.start()))
+        if any(match.start() < separator.end() and separator.start() < match.end() for match in date_spans):
+            continue
+        segment_ranges.append((cursor, separator.start()))
         cursor = separator.end()
-    base_ranges.append((cursor, len(line.text)))
-    for base_start, base_end in base_ranges:
+    segment_ranges.append((cursor, len(line.text)))
+
+    candidates: list[tuple[str, int, int]] = []
+    for base_start, base_end in segment_ranges:
         residual_ranges = [(base_start, base_end)]
-        for occupied_start, occupied_end in occupied:
+        for date_match in date_spans:
+            occupied_start, occupied_end = date_match.start(), date_match.end()
             next_ranges: list[tuple[int, int]] = []
             for start, end in residual_ranges:
                 if occupied_end <= start or end <= occupied_start:
@@ -323,14 +308,69 @@ def _experience_line_entities(
             start = raw_start + raw.find(text)
             candidates.append((text, start, start + len(text)))
     classifications = classify_job_title_candidates(model, [item[0] for item in candidates])
+    title_spans: list[tuple[int, int]] = []
     for (text, start, end), (accepted, confidence) in zip(candidates, classifications, strict=True):
         if accepted:
+            title_spans.append((start, end))
             result["jobTitles"].append({
                 "text": text, "page": line.page,
                 "bbox": _span_bbox(document, line, text, start, end),
                 "confidence": round(confidence, 4),
-                "detectionMethod": "semantic_similarity",
+                "detectionMethod": "minilm_reconciled",
             })
+
+    company_markers = re.compile(
+        r"\b(?:co\.?|company|ltd\.?|limited|inc\.?|corp\.?|corporation|llc|plc)\b",
+        re.IGNORECASE,
+    )
+    for segment, start, end in candidates:
+        if any(left < end and start < right for left, right in title_spans):
+            continue
+        predictions = ner_model.predict_entities(
+            segment,
+            ["organization", "location"],
+            SETTINGS.ner.minimum_confidence,
+        )
+        organizations = [item for item in predictions if item["label"] == "organization"]
+        locations = [item for item in predictions if item["label"] == "location"]
+        if organizations and company_markers.search(segment):
+            value: dict[str, Any] = {
+                "text": segment,
+                "page": line.page,
+                "bbox": _span_bbox(document, line, segment, start, end),
+                "confidence": round(max(float(item["score"]) for item in organizations), 4),
+                "detectionMethod": "distilbert_ner_reconciled",
+            }
+            if urls:
+                value["urls"] = urls
+            result["companies"].append(value)
+            continue
+        if locations and ("," in segment or (len(locations) > 1 and not organizations)):
+            result["locations"].append({
+                "text": segment,
+                "page": line.page,
+                "bbox": _span_bbox(document, line, segment, start, end),
+                "confidence": round(max(float(item["score"]) for item in locations), 4),
+                "detectionMethod": "distilbert_ner_reconciled",
+            })
+            continue
+        for prediction in predictions:
+            prediction_start = start + int(prediction["start"])
+            prediction_end = start + int(prediction["end"])
+            text = line.text[prediction_start:prediction_end].strip()
+            if not text:
+                continue
+            key = "companies" if prediction["label"] == "organization" else "locations"
+            value = {
+                "text": text,
+                "page": line.page,
+                "bbox": _span_bbox(document, line, text, prediction_start, prediction_end),
+                "confidence": round(float(prediction["score"]), 4),
+                "detectionMethod": "distilbert_ner",
+            }
+            if key == "companies" and urls:
+                value["urls"] = urls
+            result[key].append(value)
     return result
 
 
@@ -360,6 +400,7 @@ def build_experience_debug(
 
     def new_entry() -> dict[str, Any]:
         entry: dict[str, Any] = {
+            "detectionMethod": "ner_minilm_reconciliation",
             "subheadingLines": [], "jobTitles": [], "companies": [], "dates": [],
             "locations": [], "urls": [], "paragraphs": [], "bullets": [],
             "_bodyStarted": False, "_lastBodyType": None, "_lastLineBbox": None,
@@ -602,14 +643,25 @@ def render_experience_debug_images(
         items_by_page.setdefault(int(item["page"]), []).append(item)
     colors = {
         "section_heading": SETTINGS.section_colors["experience"],
-        "experience_subheading": "#EF6C00",
+        "experience_subheading": "#B0BEC5",
         "job_title": "#00897B",
-        "company": "#C2185B",
+        "company": "#D81B60",
         "date": "#F9A825",
-        "location": "#1565C0",
+        "location": "#1E88E5",
         "url": "#6D4C41",
-        "paragraph": "#546E7A",
-        "bullet": "#7B1FA2",
+        "paragraph": "#CFD8DC",
+        "bullet": "#B0BEC5",
+    }
+    labels = {
+        "section_heading": "route: section_heading",
+        "experience_subheading": "route: metadata_line",
+        "job_title": "MiniLM: job_title",
+        "company": "NER: company",
+        "date": "regex: date",
+        "location": "NER: location",
+        "url": "annotation: url",
+        "paragraph": "route: paragraph",
+        "bullet": "route: bullet",
     }
     output_directory.mkdir(parents=True, exist_ok=True)
     matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
@@ -621,21 +673,47 @@ def render_experience_debug_images(
         for item_index, item in enumerate(page_items):
             item_type = item["type"]
             box = _pixel_box(item["bbox"])
+            model_entity = item_type in {"job_title", "company", "location"}
             draw.rectangle(
                 box,
                 outline=colors[item_type],
-                width=SETTINGS.debug.content_stroke_width,
+                width=(
+                    SETTINGS.debug.header_entity_stroke_width + 2
+                    if model_entity
+                    else (
+                        SETTINGS.debug.heading_stroke_width
+                        if item_type == "section_heading"
+                        else 2
+                    )
+                ),
             )
             label_level = item_index % 3 + 1
-            draw.text(
-                (
+            label = labels[item_type]
+            measured_label_box = draw.textbbox((0, 0), label)
+            label_width = measured_label_box[2] - measured_label_box[0]
+            label_height = measured_label_box[3] - measured_label_box[1]
+            if item_type == "experience_subheading":
+                label_position = (
+                    min(
+                        image.width - label_width,
+                        box[2] + SETTINGS.debug.label_x_padding,
+                    ),
+                    max(0, (box[1] + box[3] - label_height) // 2),
+                )
+            elif item_type in {"date", "location"}:
+                label_position = (
+                    max(0, min(image.width - label_width, box[2] - label_width)),
+                    min(image.height - label_height, box[3] + 2),
+                )
+            else:
+                label_position = (
                     box[0] + SETTINGS.debug.label_x_padding,
                     max(
                         0,
                         box[1] - SETTINGS.debug.label_y_offset * label_level,
                     ),
-                ),
-                item_type,
-                fill=colors[item_type],
-            )
+                )
+            label_box = draw.textbbox(label_position, label)
+            draw.rectangle(label_box, fill="#FFFFFF")
+            draw.text(label_position, label, fill=colors[item_type])
         image.save(output_directory / f"page-{page_number}.png")
