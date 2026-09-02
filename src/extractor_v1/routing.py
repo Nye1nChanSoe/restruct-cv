@@ -22,7 +22,7 @@ from extractor_v1.model import (
 
 
 _BULLET_RE = re.compile(
-    r"^\s*(?:[-+*•●▪◦‣]|\d+[.)])"
+    r"^\s*(?:[-+*•●▪◦‣¢]|\d+[.)])"
     r"[\s\u200b\ufeff]*"
 )
 _EXPERIENCE_SEPARATOR_RE = re.compile(r"\s*(?:[|•·]|–|—|\s-\s)\s*")
@@ -274,7 +274,7 @@ def _content_blocks(
     line_indexes: list[int],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
 ) -> list[dict[str, Any]]:
-    """Route lines into typographic subheadings or combined paragraph blocks."""
+    """Route lines into subheadings, paragraphs, or reconstructed bullets."""
     content_lines = [lines[index] for index in line_indexes]
     body_size, body_bold = _section_body_style(content_lines)
     blocks: list[dict[str, Any]] = []
@@ -282,6 +282,24 @@ def _content_blocks(
     for line_index in line_indexes:
         line = lines[line_index]
         line_url_entities = url_entities_by_line.get(line_index, [])
+        bullet_match = _BULLET_RE.match(line.text)
+        if bullet_match is not None:
+            bullet_text = line.text[bullet_match.end():].strip()
+            if not bullet_text:
+                continue
+            block = {
+                "type": "bullet",
+                "text": bullet_text,
+                "page": line.page,
+                "bbox": [round(value, 2) for value in line.bbox],
+                "detectionMethod": "bullet_marker",
+                "_lastLineBbox": [round(value, 2) for value in line.bbox],
+            }
+            if line_url_entities:
+                block["entities"] = line_url_entities
+            blocks.append(block)
+            continue
+
         role = (
             "subheading"
             if _looks_like_subheading(
@@ -292,6 +310,35 @@ def _content_blocks(
             else "paragraph"
         )
         rounded_bbox = [round(value, 2) for value in line.bbox]
+        if role == "paragraph" and blocks and blocks[-1]["type"] == "bullet":
+            previous = blocks[-1]
+            previous_box = pymupdf.Rect(previous["_lastLineBbox"])
+            current_box = pymupdf.Rect(line.bbox)
+            vertical_gap = current_box.y0 - previous_box.y1
+            horizontal_overlap = max(
+                0.0,
+                min(previous_box.x1, current_box.x1)
+                - max(previous_box.x0, current_box.x0),
+            )
+            maximum_gap = max(
+                previous_box.height,
+                current_box.height,
+            ) * SETTINGS.section_router.paragraph_gap_multiplier
+            if (
+                previous["page"] == line.page
+                and -2.0 <= vertical_gap <= maximum_gap
+                and horizontal_overlap > 0
+            ):
+                previous["text"] += "\n" + line.text
+                previous["bbox"] = [
+                    round(value, 2)
+                    for value in (pymupdf.Rect(previous["bbox"]) | current_box)
+                ]
+                previous["_lastLineBbox"] = rounded_bbox
+                if line_url_entities:
+                    previous.setdefault("entities", []).extend(line_url_entities)
+                continue
+
         if role == "paragraph" and blocks and blocks[-1]["type"] == "paragraph":
             previous = blocks[-1]
             previous_box = pymupdf.Rect(previous["_lastLineBbox"])
@@ -2096,6 +2143,7 @@ def render_summary_debug_images(
         "section_heading": SETTINGS.section_colors["summary"],
         "subheading": "#EF6C00",
         "paragraph": "#546E7A",
+        "bullet": "#5C6BC0",
     }
     matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
     for page_number, page_items in sorted(items_by_page.items()):
@@ -2297,10 +2345,15 @@ def render_combined_debug_images(
         )
         for value in summary["content"]:
             item_type = str(value["type"])
+            content_color = {
+                "subheading": "#EF6C00",
+                "paragraph": "#546E7A",
+                "bullet": "#5C6BC0",
+            }[item_type]
             add(
                 item_type,
                 value,
-                "#EF6C00" if item_type == "subheading" else "#546E7A",
+                content_color,
                 f"{item_type}",
             )
 
