@@ -68,6 +68,9 @@ class DocumentStatistics:
     font_sizes: tuple[tuple[float, int], ...]
     bold_ratio: float
     median_character_width: float
+    # Measured from real space glyphs. 0.0 when the document positions words by
+    # advance alone and emits no spaces, which some exporters do.
+    median_space_width: float
     median_line_height: float
     median_line_gap: float
     left_margin: float
@@ -107,6 +110,18 @@ class DocumentStatistics:
         if self.median_line_gap <= 0:
             return gap <= self.median_line_height * 0.5
         return gap <= self.median_line_gap * 2.0
+
+    @property
+    def word_gap_threshold(self) -> float:
+        """The gap at which two glyphs stop being one word.
+
+        Derived from this document's own space glyphs where it has them, and
+        from character width otherwise. Never a fixed constant: the same
+        absolute gap means different things at 8pt and at 14pt.
+        """
+        if self.median_space_width > 0:
+            return self.median_space_width * 0.6
+        return self.median_character_width * 0.3
 
     # -- horizontal rhythm ------------------------------------------------
 
@@ -226,6 +241,13 @@ def measure(document: Document) -> DocumentStatistics:
                 character_widths.append(span.character_width)
 
     character_width = _median(character_widths)
+    space_widths = [
+        token.width
+        for line in measurable
+        for span in line.spans
+        for token in span.tokens
+        if token.text.isspace() and token.width > 0
+    ]
     page_statistics = tuple(
         _page_statistics(page.number, [l for l in page.lines if _line_is_measurable(l)])
         for page in document.pages
@@ -237,6 +259,7 @@ def measure(document: Document) -> DocumentStatistics:
         font_sizes=tuple(sorted(sizes.items(), key=lambda item: -item[1])),
         bold_ratio=bold_characters / total_characters if total_characters else 0.0,
         median_character_width=character_width,
+        median_space_width=_median(space_widths),
         median_line_height=_median([p.median_line_height for p in page_statistics]),
         median_line_gap=_median([p.median_line_gap for p in page_statistics if p.median_line_gap > 0]),
         left_margin=min((p.left_margin for p in page_statistics if p.left_margin > 0), default=0.0),

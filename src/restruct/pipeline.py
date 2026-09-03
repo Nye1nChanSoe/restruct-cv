@@ -33,7 +33,9 @@ from restruct.debug.render import (
     render_summary_debug_images,
     render_supplementary_sections_debug_images,
 )
-from restruct.ingestion.native import extract_lines
+from restruct.document.stats import measure
+from restruct.ingestion.native import extracted_lines, read_document
+from restruct.layout.words import reconstruct_words
 from restruct.model import DistilBertNerPredictor, EmbeddingModel, detect_headings
 from restruct.parsers.education import build_education_debug
 from restruct.parsers.experience import build_experience_debug
@@ -58,9 +60,18 @@ def extract_resume(
     ner_model: DistilBertNerPredictor,
 ) -> None:
     with pymupdf.open(pdf_path) as document:
-        lines, raw_pages, ocr_pages = extract_lines(document)
-        write_raw_extraction(pdf_path, raw_pages, raw_debug_path)
-        write_ocr_extraction(pdf_path, ocr_pages, ocr_debug_path)
+        # Pass 1: read the document once into the shared representation.
+        physical = read_document(document)
+        statistics = measure(physical)
+        # Pass 2: group characters into words using those measurements.
+        physical = reconstruct_words(physical, statistics)
+
+        write_raw_extraction(pdf_path, list(physical.raw_pages), raw_debug_path)
+        write_ocr_extraction(pdf_path, list(physical.ocr_pages), ocr_debug_path)
+
+        # Passes 3-5 still consume the flat line view; the bridge is removed as
+        # each of them moves onto the physical representation.
+        lines = extracted_lines(physical)
         headings = detect_headings(lines, model)
         header_profile = build_header_profile(
             document,

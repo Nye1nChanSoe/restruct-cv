@@ -244,11 +244,3 @@ def extracted_lines(document: Document) -> list[ExtractedLine]:
             )
         )
     return lines
-
-
-def extract_lines(
-    document: pymupdf.Document,
-) -> tuple[list[ExtractedLine], list[dict[str, Any]], list[dict[str, Any]]]:
-    """Backwards-compatible entry point for the current pipeline."""
-    read = read_document(document)
-    return extracted_lines(read), list(read.raw_pages), list(read.ocr_pages)

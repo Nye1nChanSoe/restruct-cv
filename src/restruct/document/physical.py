@@ -25,6 +25,17 @@ _FLAG_MONOSPACED = 1 << 3
 _FLAG_BOLD = 1 << 4
 
 
+def is_bold(font: str, flags: int) -> bool:
+    """Flagged bold, or named bold by a font that does not set the flag.
+
+    Both tests are needed: some exporters encode weight only in the font name
+    and some only in the flag. Shared so a span and a word reconstructed from
+    it can never disagree.
+    """
+    folded = font.casefold()
+    return bool(flags & _FLAG_BOLD) or "bold" in folded or "black" in folded
+
+
 @dataclass(frozen=True)
 class Token:
     """The smallest unit the source could report.
@@ -63,13 +74,7 @@ class Span:
 
     @property
     def bold(self) -> bool:
-        """Flagged bold, or named bold by a font that does not set the flag.
-
-        Both tests are needed: some exporters encode weight only in the font
-        name, and some only in the flag.
-        """
-        folded = self.font.casefold()
-        return bool(self.flags & _FLAG_BOLD) or "bold" in folded or "black" in folded
+        return is_bold(self.font, self.flags)
 
     @property
     def italic(self) -> bool:
@@ -96,6 +101,47 @@ class Span:
 
 
 @dataclass(frozen=True)
+class Word:
+    """One reconstructed word, with the evidence it was built from.
+
+    Keeping ``tokens`` means a later pass can always re-examine, or undo, how a
+    word was grouped -- the same principle as preserving character offsets on a
+    claimed span.
+    """
+
+    text: str
+    page: int
+    bbox: BBox
+    tokens: tuple[Token, ...] = ()
+    font: str = ""
+    size: float = 0.0
+    flags: int = 0
+    # "character" when grouped from glyphs, "word" when OCR already gave a word.
+    source: Literal["character", "word"] = "character"
+    used_ocr: bool = False
+    confidence: float | None = None
+    # The link annotation covering this word, when one does.
+    url: str | None = None
+
+    @property
+    def bold(self) -> bool:
+        return is_bold(self.font, self.flags)
+
+    @property
+    def italic(self) -> bool:
+        return bool(self.flags & _FLAG_ITALIC) or "italic" in self.font.casefold()
+
+    @property
+    def width(self) -> float:
+        return self.bbox[2] - self.bbox[0]
+
+    @property
+    def baseline(self) -> float:
+        """Bottom edge, used to test whether two words share a line."""
+        return self.bbox[3]
+
+
+@dataclass(frozen=True)
 class TextLine:
     """One physical line: the spans the source grouped onto a single baseline."""
 
@@ -105,6 +151,8 @@ class TextLine:
     # Writing direction as a unit vector; (1, 0) is ordinary left-to-right.
     direction: tuple[float, float] = (1.0, 0.0)
     used_ocr: bool = False
+    # Filled by pass 2; empty until word reconstruction has run.
+    words: tuple[Word, ...] = ()
 
     @property
     def text(self) -> str:
