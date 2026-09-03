@@ -1,8 +1,12 @@
 """Tesseract OCR for pages with no usable native text.
 
 PyMuPDF renders the page and Tesseract is invoked directly, without a shell.
-Its TSV output is rebuilt into the same line geometry the native path produces,
+The TSV output is rebuilt into the same physical types the native path produces,
 so nothing downstream needs OCR-specific handling.
+
+The one honest difference is granularity: Tesseract reports word boxes, not
+character boxes, so an OCR span carries ``granularity="word"``. Word
+reconstruction reads that flag instead of guessing.
 """
 
 from __future__ import annotations
@@ -17,6 +21,7 @@ from typing import Any
 import pymupdf
 
 from restruct.configs import SETTINGS
+from restruct.document.physical import Span, TextLine, Token
 from restruct.geometry import union
 
 
@@ -37,21 +42,25 @@ def _run_ocr_command(arguments: list[str], program_name: str) -> subprocess.Comp
         detail = error.stderr.strip() or error.stdout.strip() or "unknown error"
         raise RuntimeError(f"{program_name} failed: {detail}") from error
 
-def _tesseract_page_dict(
+
+def _tesseract_words(
     page: pymupdf.Page,
     page_index: int,
     temporary_directory: Path,
-) -> dict[str, Any]:
-    """Render one PDF page with PyMuPDF and rebuild line geometry from TSV."""
+) -> dict[tuple[int, int, int], list[dict[str, Any]]]:
+    """Render the page and return recognised words grouped by Tesseract line.
+
+    Word boxes are scaled from render pixels back into PDF space, so every
+    coordinate downstream is in the same units as the native path.
+    """
     page_number = page_index + 1
     image_path = temporary_directory / f"page-{page_number}.png"
     pixmap = page.get_pixmap(dpi=SETTINGS.ocr.dpi, alpha=False)
     pixmap.save(image_path)
-    pixel_width, pixel_height = pixmap.width, pixmap.height
-    x_scale = page.rect.width / pixel_width
-    y_scale = page.rect.height / pixel_height
+    x_scale = page.rect.width / pixmap.width
+    y_scale = page.rect.height / pixmap.height
 
-    tesseract_result = _run_ocr_command(
+    result = _run_ocr_command(
         [
             SETTINGS.ocr.tesseract_command,
             str(image_path),
@@ -69,78 +78,105 @@ def _tesseract_page_dict(
 
     words_by_line: dict[tuple[int, int, int], list[dict[str, Any]]] = {}
     reader = csv.DictReader(
-        io.StringIO(tesseract_result.stdout),
+        io.StringIO(result.stdout),
         delimiter="\t",
         quoting=csv.QUOTE_NONE,
     )
     for row in reader:
         text = str(row.get("text") or "").strip()
+        # Level 5 is a word; anything coarser would double-count.
         if row.get("level") != "5" or not text:
             continue
-        left = int(row["left"])
-        top = int(row["top"])
-        width = int(row["width"])
-        height = int(row["height"])
-        word = {
-            "text": text,
-            "bbox": (
-                left * x_scale,
-                top * y_scale,
-                (left + width) * x_scale,
-                (top + height) * y_scale,
-            ),
-            "confidence": float(row.get("conf") or -1.0),
-            "size": height * y_scale,
-        }
-        line_key = (
-            int(row["block_num"]),
-            int(row["par_num"]),
-            int(row["line_num"]),
+        left, top = int(row["left"]), int(row["top"])
+        width, height = int(row["width"]), int(row["height"])
+        line_key = (int(row["block_num"]), int(row["par_num"]), int(row["line_num"]))
+        words_by_line.setdefault(line_key, []).append(
+            {
+                "text": text,
+                "bbox": (
+                    left * x_scale,
+                    top * y_scale,
+                    (left + width) * x_scale,
+                    (top + height) * y_scale,
+                ),
+                "confidence": float(row.get("conf") or -1.0),
+                # Tesseract gives no font size; glyph height is the best proxy.
+                "size": height * y_scale,
+            }
         )
-        words_by_line.setdefault(line_key, []).append(word)
+    return words_by_line
 
-    lines_by_block: dict[int, list[dict[str, Any]]] = {}
+
+def ocr_page(
+    page: pymupdf.Page,
+    page_index: int,
+    temporary_directory: Path,
+) -> tuple[tuple[TextLine, ...], dict[str, Any]]:
+    """OCR one page into physical lines, plus the raw dump for debugging."""
+    page_number = page_index + 1
+    words_by_line = _tesseract_words(page, page_index, temporary_directory)
+
+    lines_by_block: dict[int, list[tuple[TextLine, dict[str, Any]]]] = {}
     for (block_number, _, _), words in words_by_line.items():
-        rectangle = union(word["bbox"] for word in words)
-        line_text = " ".join(str(word["text"]) for word in words)
-        confidence_values = [
-            float(word["confidence"])
-            for word in words
-            if float(word["confidence"]) >= 0
+        box = tuple(float(value) for value in union(word["bbox"] for word in words))
+        text = " ".join(str(word["text"]) for word in words)
+        confidences = [
+            float(word["confidence"]) for word in words if float(word["confidence"]) >= 0
         ]
+        line_confidence = sum(confidences) / len(confidences) if confidences else None
+
+        # One span per line, sized by the median word height: a single tall
+        # glyph must not make the whole line read as a heading.
+        span = Span(
+            text=text,
+            bbox=box,
+            font="TesseractOCR",
+            size=statistics.median(float(word["size"]) for word in words),
+            flags=0,
+            tokens=tuple(
+                Token(
+                    text=str(word["text"]),
+                    bbox=tuple(float(value) for value in word["bbox"]),
+                    confidence=float(word["confidence"]),
+                )
+                for word in words
+            ),
+            granularity="word",
+            confidence=line_confidence,
+        )
+        line = TextLine(page=page_number, bbox=box, spans=(span,), used_ocr=True)
         raw_line = {
-            "bbox": tuple(float(value) for value in rectangle),
+            "bbox": box,
             "spans": [
                 {
-                    "text": line_text,
-                    "bbox": tuple(float(value) for value in rectangle),
-                    "size": statistics.median(
-                        float(word["size"]) for word in words
-                    ),
-                    "font": "TesseractOCR",
-                    "flags": 0,
+                    "text": span.text,
+                    "bbox": box,
+                    "size": span.size,
+                    "font": span.font,
+                    "flags": span.flags,
                 }
             ],
-            "ocrConfidence": (
-                sum(confidence_values) / len(confidence_values)
-                if confidence_values
-                else None
-            ),
+            "ocrConfidence": line_confidence,
         }
-        lines_by_block.setdefault(block_number, []).append(raw_line)
+        lines_by_block.setdefault(block_number, []).append((line, raw_line))
 
+    lines: list[TextLine] = []
     blocks: list[dict[str, Any]] = []
-    for block_number, block_lines in lines_by_block.items():
-        block_rectangle = union(raw_line["bbox"] for raw_line in block_lines)
+    for block_number, entries in lines_by_block.items():
+        lines.extend(line for line, _ in entries)
+        raw_lines = [raw_line for _, raw_line in entries]
         blocks.append(
             {
                 "type": 0,
                 "number": block_number,
-                "bbox": tuple(float(value) for value in block_rectangle),
-                "lines": block_lines,
+                "bbox": tuple(
+                    float(value) for value in union(raw["bbox"] for raw in raw_lines)
+                ),
+                "lines": raw_lines,
             }
         )
-    return {
+
+    return tuple(lines), {
         "page": page_number,
         "width": page.rect.width,
         "height": page.rect.height,
