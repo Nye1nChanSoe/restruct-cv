@@ -142,6 +142,20 @@ class Word:
 
 
 @dataclass(frozen=True)
+class Cell:
+    """A run of words separated from its neighbours by a deliberate gap.
+
+    A cell records *that* a line is divided, not what the divisions mean. A
+    "Senior Analyst .... May 2023 - Present" row has two cells; deciding that
+    one is a title and the other a date range is semantic work for a later pass.
+    """
+
+    text: str
+    bbox: BBox
+    words: tuple[Word, ...] = ()
+
+
+@dataclass(frozen=True)
 class TextLine:
     """One physical line: the spans the source grouped onto a single baseline."""
 

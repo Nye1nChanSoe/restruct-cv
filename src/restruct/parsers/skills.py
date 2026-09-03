@@ -5,6 +5,7 @@ from typing import Any
 
 import pymupdf
 
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import resolve_span_box, rounded
 from restruct.layout.blocks import append_paragraph, continues_block, extend_block
@@ -39,6 +40,7 @@ def build_skills_debug(
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    statistics: DocumentStatistics,
 ) -> dict[str, Any] | None:
     """Preserve skill prose and attach vertical bullets to geometric groups."""
     routed = _routed_section_headings(lines, headings)
@@ -49,7 +51,7 @@ def build_skills_debug(
     end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
     heading_line = lines[heading.line_index]
     line_range = range(heading.line_index + 1, end)
-    rows = _visual_rows(lines, line_range)
+    rows = _visual_rows(lines, line_range, statistics)
     body_size, body_bold = _section_body_style([lines[index] for index in line_range])
     groups: list[dict[str, Any]] = []
     routed_rows: list[list[tuple[int, ExtractedLine]]] = []

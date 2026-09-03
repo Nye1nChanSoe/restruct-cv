@@ -123,6 +123,31 @@ class DocumentStatistics:
             return self.median_space_width * 0.6
         return self.median_character_width * 0.3
 
+    @property
+    def cell_gap_threshold(self) -> float:
+        """The gap at which a line is divided into cells rather than spaced.
+
+        Set well clear of both populations rather than fitted between them: on
+        the fixtures, ordinary word gaps reach 2.7x a space while real column
+        gaps run 54-86x, so anything in that range separates them and a
+        conservative multiple stays safe on justified text, where spaces
+        legitimately stretch.
+        """
+        reference = max(self.median_space_width, self.median_character_width)
+        return reference * 5.0 if reference > 0 else 0.0
+
+    @property
+    def baseline_tolerance(self) -> float:
+        """How far two baselines may differ and still be one row.
+
+        Half a line height: two genuinely separate lines sit a full line height
+        plus leading apart, so anything closer than half of one cannot be a
+        different line, whatever their font sizes.
+        """
+        if self.median_line_height > 0:
+            return self.median_line_height * 0.5
+        return self.body_font_size * 0.5
+
     # -- horizontal rhythm ------------------------------------------------
 
     def indentation_level(self, left: float) -> int:

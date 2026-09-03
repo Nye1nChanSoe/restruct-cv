@@ -6,6 +6,7 @@ from typing import Any
 import pymupdf
 
 from restruct.configs import SETTINGS
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import resolve_span_box, rounded
 from restruct.layout.blocks import continues_block, extend_block
@@ -147,6 +148,7 @@ def build_education_debug(
     headings: list[DetectedHeading],
     ner_model: DistilBertNerPredictor,
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    statistics: DocumentStatistics,
 ) -> dict[str, Any] | None:
     """Reconstruct education entries from visual rows and grounded entities."""
     routed = _routed_section_headings(lines, headings)
@@ -156,7 +158,7 @@ def build_education_debug(
     heading = routed[position]
     end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
     heading_line = lines[heading.line_index]
-    rows = _visual_rows(lines, range(heading.line_index + 1, end))
+    rows = _visual_rows(lines, range(heading.line_index + 1, end), statistics)
     entries: list[dict[str, Any]] = []
     current: dict[str, Any] | None = None
 

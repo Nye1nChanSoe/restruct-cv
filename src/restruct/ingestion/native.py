@@ -24,7 +24,9 @@ from restruct.document.physical import (
     TextLine,
     Token,
 )
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import ExtractedLine
+from restruct.layout.lines import cells_in_line, line_baseline
 from restruct.ingestion.ocr import ocr_page
 
 # A drawing this thin in one axis is a rule rather than a filled shape.
@@ -221,18 +223,22 @@ def read_document(document: pymupdf.Document) -> Document:
     )
 
 
-def extracted_lines(document: Document) -> list[ExtractedLine]:
-    """Derive the flat line view the section parsers still consume.
+def extracted_lines(
+    document: Document,
+    statistics: DocumentStatistics | None = None,
+) -> list[ExtractedLine]:
+    """Derive the flat line view the section parsers consume.
 
-    This is the bridge from Pass 1 to the existing parsers. It reproduces
-    exactly what the previous extractor produced, so introducing the physical
-    representation changes no output; passes 2 and 3 replace it.
+    The bridge from the physical representation to the parsers. Pass-3 data --
+    baseline, words and cells -- rides along on each line so the parsers can
+    adopt it one at a time rather than in a single rewrite.
     """
     lines: list[ExtractedLine] = []
     for line in document.lines:
         text = line.text.strip()
         if not text:
             continue
+        cells = cells_in_line(line, statistics) if statistics is not None else ()
         lines.append(
             ExtractedLine(
                 page=line.page,
@@ -241,6 +247,9 @@ def extracted_lines(document: Document) -> list[ExtractedLine]:
                 size=line.size,
                 bold=line.bold,
                 used_ocr=line.used_ocr,
+                baseline=line_baseline(line),
+                words=line.words,
+                cells=cells,
             )
         )
     return lines

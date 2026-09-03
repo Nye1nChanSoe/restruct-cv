@@ -10,10 +10,18 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from restruct.document.physical import Cell, Word
+
 
 @dataclass(frozen=True)
 class ExtractedLine:
-    """One physical line of text with the geometry and typography behind it."""
+    """One physical line of text with the geometry and typography behind it.
+
+    The trailing fields are pass-3 reconstruction, added with defaults so the
+    section parsers can adopt them one at a time: ``baseline`` is the true
+    typographic baseline, ``words`` the reconstructed words, and ``cells`` the
+    line's divisions when a gap is far too wide to be word spacing.
+    """
 
     page: int
     text: str
@@ -21,6 +29,14 @@ class ExtractedLine:
     size: float
     bold: bool
     used_ocr: bool
+    baseline: float = 0.0
+    words: tuple[Word, ...] = ()
+    cells: tuple[Cell, ...] = ()
+
+    @property
+    def row_like(self) -> bool:
+        """Whether this line holds separated cells rather than running text."""
+        return len(self.cells) > 1
 
 
 @dataclass(frozen=True)

@@ -71,7 +71,7 @@ def extract_resume(
 
         # Passes 3-5 still consume the flat line view; the bridge is removed as
         # each of them moves onto the physical representation.
-        lines = extracted_lines(physical)
+        lines = extracted_lines(physical, statistics)
         headings = detect_headings(lines, model)
         header_profile = build_header_profile(
             document,
@@ -107,18 +107,21 @@ def extract_resume(
             headings,
             ner_model,
             url_entities_by_line,
+            statistics,
         )
         skills = build_skills_debug(
             document,
             lines,
             headings,
             url_entities_by_line,
+            statistics,
         )
         projects = build_projects_debug(
             document,
             lines,
             headings,
             url_entities_by_line,
+            statistics,
         )
         supplementary_sections = build_supplementary_sections_debug(
             document,
@@ -126,6 +129,7 @@ def extract_resume(
             headings,
             url_entities_by_line,
             model,
+            statistics,
         )
 
         output_directory.mkdir(parents=True, exist_ok=True)

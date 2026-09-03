@@ -13,6 +13,7 @@ from typing import Any
 import pymupdf
 
 from restruct.configs import SETTINGS
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import resolve_span_box, rounded
 from restruct.layout.blocks import append_paragraph, continues_block, extend_block
@@ -75,6 +76,7 @@ def _build_grouped_section_debug(
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
     section_type: str,
+    statistics: DocumentStatistics,
     occurrence: int = 0,
     semantic_model: EmbeddingModel | None = None,
 ) -> dict[str, Any] | None:
@@ -92,7 +94,7 @@ def _build_grouped_section_debug(
     end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
     heading_line = lines[heading.line_index]
     line_range = range(heading.line_index + 1, end)
-    rows = _visual_rows(lines, line_range)
+    rows = _visual_rows(lines, line_range, statistics)
     body_size, body_bold = _section_body_style([lines[index] for index in line_range])
     titled_section = section_type in {
         "projects",
@@ -469,6 +471,7 @@ def build_projects_debug(
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    statistics: DocumentStatistics,
 ) -> dict[str, Any] | None:
     return _build_grouped_section_debug(
         document,
@@ -476,6 +479,7 @@ def build_projects_debug(
         headings,
         url_entities_by_line,
         "projects",
+        statistics,
     )
 
 def build_supplementary_sections_debug(
@@ -484,6 +488,7 @@ def build_supplementary_sections_debug(
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
     semantic_model: EmbeddingModel,
+    statistics: DocumentStatistics,
 ) -> dict[str, dict[str, Any]]:
     sections: dict[str, dict[str, Any]] = {}
     for section_type in _SUPPLEMENTARY_SECTION_TYPES:
@@ -497,6 +502,7 @@ def build_supplementary_sections_debug(
                     headings,
                     url_entities_by_line,
                     section_type,
+                    statistics,
                     occurrence,
                     semantic_model,
                 )
@@ -516,6 +522,7 @@ def build_supplementary_sections_debug(
             headings,
             url_entities_by_line,
             section_type,
+            statistics,
         )
         if section is not None:
             sections[section_type] = section

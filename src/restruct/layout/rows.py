@@ -4,34 +4,38 @@ A row preserves its left and right cells without deciding what they mean.
 """
 from __future__ import annotations
 
+import statistics as statistics_module
 from typing import Any
 
-import pymupdf
-
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import ExtractedLine
-from restruct.geometry import rounded, union, vertical_overlap
+from restruct.geometry import rounded, union
 
 
 def _visual_rows(
     lines: list[ExtractedLine],
     line_indexes: range,
+    statistics: DocumentStatistics,
 ) -> list[list[tuple[int, ExtractedLine]]]:
-    """Cluster separately extracted left/right cells into visual rows."""
+    """Cluster separately extracted left/right cells into visual rows.
+
+    Grouped on typographic baselines rather than on box overlap. Box tops and
+    bottoms move with descenders and with the tallest glyph present, so two
+    cells of one row can have visibly different boxes while sharing a baseline
+    exactly -- which is what makes them a row.
+    """
     ordered = sorted(
         ((index, lines[index]) for index in line_indexes),
         key=lambda item: (item[1].page, item[1].bbox[1], item[1].bbox[0]),
     )
+    tolerance = statistics.baseline_tolerance
     rows: list[list[tuple[int, ExtractedLine]]] = []
     for line_index, line in ordered:
-        line_box = pymupdf.Rect(line.bbox)
-        if rows and rows[-1][0][1].page == line.page:
-            row_box = union(item.bbox for _, item in rows[-1])
-            overlap = vertical_overlap(row_box, line_box)
-            minimum_height = min(row_box.height, line_box.height)
-            center_difference = abs(
-                (row_box.y0 + row_box.y1) / 2 - (line_box.y0 + line_box.y1) / 2
+        if rows and rows[-1][0][1].page == line.page and tolerance > 0:
+            row_baseline = statistics_module.median(
+                [item.baseline for _, item in rows[-1]]
             )
-            if overlap >= minimum_height * 0.45 or center_difference <= minimum_height * 0.35:
+            if abs(line.baseline - row_baseline) <= tolerance:
                 rows[-1].append((line_index, line))
                 rows[-1].sort(key=lambda item: item[1].bbox[0])
                 continue
