@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import Any
 
 import pymupdf
-from PIL import Image, ImageDraw
 
 from restruct.configs import SETTINGS
 from restruct.debug.artifacts import (
@@ -43,13 +42,7 @@ from restruct.document.types import (
     HeaderEntityMatch,
     overlaps_existing as _overlaps_existing,
 )
-from restruct.geometry import (
-    pixel_box,
-    resolve_span_box,
-    rounded,
-    union,
-    union_by_page,
-)
+from restruct.geometry import resolve_span_box, rounded, union, union_by_page
 from restruct.patterns.contacts import EMAIL_RE, PHONE_RE, URL_RE
 from restruct.patterns.personal import (
     GENERIC_ATTRIBUTE_RE,
@@ -68,16 +61,15 @@ from restruct.model import (
     ner_matches_for_profile,
     semantic_job_title_matches,
 )
-from restruct.routing import (
-    build_education_debug,
-    build_experience_debug,
+from restruct.parsers.education import build_education_debug
+from restruct.parsers.experience import build_experience_debug
+from restruct.parsers.grouped import (
     build_projects_debug,
-    build_sections,
-    build_skills_debug,
     build_supplementary_sections_debug,
-    first_header_boundary,
-    summary_debug_value,
 )
+from restruct.parsers.skills import build_skills_debug
+from restruct.structure.headings import first_header_boundary
+from restruct.structure.sections import build_sections, summary_debug_value
 from restruct.schema import build_v1_resume, write_v1_resume
 
 

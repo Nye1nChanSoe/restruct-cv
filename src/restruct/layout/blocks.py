@@ -74,3 +74,38 @@ def extend_block(
     entities = list(entities)
     if entities:
         block.setdefault("entities", []).extend(entities)
+
+
+def append_paragraph(
+    group: dict[str, Any],
+    *,
+    text: str,
+    page: int,
+    bbox: list[float],
+    entities: list[dict[str, Any]],
+) -> None:
+    """Append prose to a group, continuing the previous paragraph when it fits."""
+    current_box = pymupdf.Rect(bbox)
+    if group["paragraphs"] and group["paragraphs"][-1]["page"] == page:
+        previous = group["paragraphs"][-1]
+        if continues_block(
+            previous["bbox"],
+            current_box,
+            same_page=True,
+            require_horizontal_overlap=True,
+        ):
+            extend_block(previous, text=text, box=current_box, entities=entities)
+            group["_lastType"] = "paragraph"
+            group["_lastLineBbox"] = bbox
+            return
+    value: dict[str, Any] = {
+        "text": text,
+        "page": page,
+        "bbox": bbox,
+        "detectionMethod": "geometry_default",
+    }
+    if entities:
+        value["entities"] = entities
+    group["paragraphs"].append(value)
+    group["_lastType"] = "paragraph"
+    group["_lastLineBbox"] = bbox
