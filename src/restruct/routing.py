@@ -11,8 +11,8 @@ from typing import Any
 import pymupdf
 from PIL import Image, ImageDraw
 
-from extractor_v1.configs import SETTINGS
-from extractor_v1.model import (
+from restruct.configs import SETTINGS
+from restruct.model import (
     DetectedHeading,
     DistilBertNerPredictor,
     EmbeddingModel,

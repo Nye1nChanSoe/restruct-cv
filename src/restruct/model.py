@@ -12,7 +12,7 @@ from typing import Any, Protocol
 from sentence_transformers import SentenceTransformer
 from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
 
-from extractor_v1.configs import SETTINGS
+from restruct.configs import SETTINGS
 
 
 @dataclass(frozen=True)

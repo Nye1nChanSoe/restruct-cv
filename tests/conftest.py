@@ -34,7 +34,7 @@ class LoadedModels:
 def models() -> LoadedModels:
     if not models_available():
         pytest.skip("local models/ weights are absent; see README for setup")
-    from extractor_v1.model import load_embedding_model, load_ner_model
+    from restruct.model import load_embedding_model, load_ner_model
 
     return LoadedModels(
         embedding=load_embedding_model(PROJECT_ROOT),

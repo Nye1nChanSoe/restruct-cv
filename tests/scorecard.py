@@ -265,7 +265,7 @@ class _Models:
 
 
 def load_models() -> Any:
-    from extractor_v1.model import load_embedding_model, load_ner_model
+    from restruct.model import load_embedding_model, load_ner_model
 
     return _Models(
         embedding=load_embedding_model(PROJECT_ROOT),

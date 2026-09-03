@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-from extractor_v1.configs.embedding_references import (
+from restruct.configs.embedding_references import (
     JOB_TITLE_NEGATIVE_REFERENCES,
     JOB_TITLE_REFERENCES,
     PROFILE_ATTRIBUTE_REFERENCES,

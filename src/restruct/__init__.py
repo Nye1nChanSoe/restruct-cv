@@ -16,8 +16,8 @@ from typing import Any
 import pymupdf
 from PIL import Image, ImageDraw
 
-from extractor_v1.configs import SETTINGS
-from extractor_v1.model import (
+from restruct.configs import SETTINGS
+from restruct.model import (
     DetectedHeading,
     DistilBertNerPredictor,
     EmbeddingModel,
@@ -34,7 +34,7 @@ from extractor_v1.model import (
     overlaps_existing as _overlaps_existing,
     semantic_job_title_matches,
 )
-from extractor_v1.routing import (
+from restruct.routing import (
     build_education_debug,
     build_experience_debug,
     build_projects_debug,
@@ -57,7 +57,7 @@ from extractor_v1.routing import (
     write_supplementary_sections_debug,
     write_summary_debug,
 )
-from extractor_v1.schema import build_v1_resume, write_v1_resume
+from restruct.schema import build_v1_resume, write_v1_resume
 
 
 _EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}")
@@ -269,7 +269,7 @@ def extract_lines(
     lines: list[ExtractedLine] = []
     raw_pages: list[dict[str, Any]] = []
     ocr_pages: list[dict[str, Any]] = []
-    with tempfile.TemporaryDirectory(prefix="extractor-v1-ocr-") as temporary_name:
+    with tempfile.TemporaryDirectory(prefix="restruct-ocr-") as temporary_name:
         temporary_directory = Path(temporary_name)
         for page_index, page in enumerate(document):
             native_page_dict = page.get_text("dict", sort=True)

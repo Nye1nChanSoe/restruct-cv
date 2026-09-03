@@ -20,14 +20,16 @@ dev = [
 ]
 
 [project.scripts]
-extractor-v1 = "extractor_v1:main"
+restruct = "restruct:main"
+# Kept so existing invocations and the README keep working during the refactor.
+extractor-v1 = "restruct:main"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = "extractor_v1"
+module-name = "restruct"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

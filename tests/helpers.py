@@ -45,7 +45,7 @@ def run_pipeline(pdf_path: Path, workspace: Path, models: Any) -> dict[str, Any]
     Debug artifacts are redirected into the workspace so a test run never
     touches the repository's own ``debug/`` or ``results/`` directories.
     """
-    from extractor_v1 import extract_resume
+    from restruct import extract_resume
 
     output_directory = workspace / pdf_path.stem
     extract_resume(
