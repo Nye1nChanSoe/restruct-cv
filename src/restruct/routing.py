@@ -13,6 +13,23 @@ from PIL import Image, ImageDraw
 
 from restruct.configs import SETTINGS
 from restruct.document.types import DetectedHeading, ExtractedLine
+from restruct.patterns.bullets import BULLET_RE
+from restruct.patterns.dates import DATE_RANGE_RE, SINGLE_YEAR_RE
+from restruct.patterns.education import (
+    COURSEWORK_RE,
+    DEGREE_RE,
+    GPA_RE,
+    INSTITUTION_RE,
+)
+from restruct.patterns.layout import PAGE_FOOTER_RE
+from restruct.patterns.organizations import COMPANY_MARKER_RE
+from restruct.patterns.personal import ATTRIBUTE_INLINE_RE
+from restruct.patterns.separators import (
+    KEY_VALUE_COLON_RE,
+    KEY_VALUE_DASH_RE,
+    KEY_VALUE_TAB_RE,
+    METADATA_SEPARATOR_RE,
+)
 from restruct.model import (
     DistilBertNerPredictor,
     EmbeddingModel,
@@ -21,60 +38,6 @@ from restruct.model import (
 )
 
 
-_BULLET_RE = re.compile(
-    r"^\s*(?:[-+*•●▪◦‣¢]|\d+[.)])"
-    r"[\s\u200b\ufeff]*"
-)
-_EXPERIENCE_SEPARATOR_RE = re.compile(r"\s*(?:[|•·]|–|—|\s-\s)\s*")
-_EDUCATION_SEPARATOR_RE = re.compile(r"\s*(?:[|•·]|–|—|\s-\s)\s*")
-_MONTH_PATTERN = (
-    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|"
-    r"Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|"
-    r"Dec(?:ember)?)"
-)
-_DATED_YEAR_PATTERN = rf"(?:{_MONTH_PATTERN}(?:\s+|-))?(?:19|20)\d{{2}}"
-_DATE_RANGE_RE = re.compile(
-    rf"\b(?:"
-    rf"(?:From\s+)?(?:19|20)\d{{2}}\s*-\s*(?:(?:19|20)\d{{2}}|Present|Current|Now)"
-    rf"|(?:From\s+)?{_DATED_YEAR_PATTERN}"
-    rf"(?:\s+-\s+|\s*[\u2013\u2014]\s*|\s+to\s+)"
-    rf"(?:{_DATED_YEAR_PATTERN}|Present|Current|Now)"
-    rf")\b",
-    re.IGNORECASE,
-)
-_SINGLE_YEAR_RE = re.compile(r"\b(?:19|20)\d{2}\b")
-_EDUCATION_TITLE_RE = re.compile(
-    r"\b(?:associate(?:'s)?|bachelor(?:'s)?|master(?:'s)?|doctor(?:ate|al)?|"
-    r"ph\.?\s*d\.?|m\.?\s*(?:sc|s|a|eng|ba)\.?|b\.?\s*(?:sc|s|a|eng|ba)\.?|"
-    r"a\.?\s*(?:a|s)\.?|mba|degree|diploma|certificate|certification|"
-    r"undergraduate|graduate|postgraduate|vocational)\b",
-    re.IGNORECASE,
-)
-_EDUCATION_INSTITUTION_RE = re.compile(
-    r"\b(?:university|college|institute|institution|school|academy|polytechnic|"
-    r"conservatory|seminary|faculty)\b",
-    re.IGNORECASE,
-)
-_GPA_RE = re.compile(
-    r"\b(?P<label>c?gpa|grade(?:\s+point\s+average)?)\s*:?[\s-]*"
-    r"(?P<value>\d+(?:\.\d+)?)"
-    r"(?:\s*(?:/|out\s+of)\s*(?P<scale>\d+(?:\.\d+)?))?\b",
-    re.IGNORECASE,
-)
-_EDUCATION_PARAGRAPH_RE = re.compile(
-    r"^\s*(?:relevant\s+)?(?:coursework|courses?|subjects?|modules?)\b",
-    re.IGNORECASE,
-)
-_PAGE_FOOTER_RE = re.compile(r"\bpage\s+\d+\s*$", re.IGNORECASE)
-_SKILL_INLINE_COLON_RE = re.compile(r"^(?P<label>[^:\t]{1,60}):\s*(?P<body>.+)$")
-_SKILL_INLINE_TAB_RE = re.compile(r"^(?P<label>[^\t]{1,60})\t+\s*(?P<body>.+)$")
-_SKILL_INLINE_DASH_RE = re.compile(
-    r"^(?P<label>.{1,60}?)\s+(?:-|\u2013|\u2014)\s+(?P<body>.+)$"
-)
-_PROFILE_ATTRIBUTE_INLINE_RE = re.compile(
-    r"^(?P<label>[A-Za-z][A-Za-z .'/]{1,40}?)"
-    r"\s*(?::|[-\u2013\u2014])\s*(?P<body>.+)$"
-)
 _SUPPLEMENTARY_SECTION_TYPES = (
     "certifications",
     "licenses",
@@ -175,7 +138,7 @@ def _peer_sized_section_heading(
     text = line.text.replace("\u200b", "").replace("\ufeff", "").strip()
     if (
         not text
-        or _BULLET_RE.match(text)
+        or BULLET_RE.match(text)
         or len(text) > SETTINGS.heading.maximum_characters
         or len(text.split()) > SETTINGS.heading.maximum_words
         or line.size < parent.size * 0.98
@@ -289,7 +252,7 @@ def _content_blocks(
     for line_index in line_indexes:
         line = lines[line_index]
         line_url_entities = url_entities_by_line.get(line_index, [])
-        bullet_match = _BULLET_RE.match(line.text)
+        bullet_match = BULLET_RE.match(line.text)
         if bullet_match is not None:
             bullet_text = line.text[bullet_match.end():].strip()
             if not bullet_text:
@@ -490,8 +453,8 @@ def _metadata_candidates(
             left = text[cursor:separator.start()].strip()
             right = text[separator.end():].strip()
             should_split = bool(
-                (_EDUCATION_TITLE_RE.search(left) and _EDUCATION_INSTITUTION_RE.search(right))
-                or _EDUCATION_INSTITUTION_RE.search(left)
+                (DEGREE_RE.search(left) and INSTITUTION_RE.search(right))
+                or INSTITUTION_RE.search(left)
             )
             if not should_split:
                 continue
@@ -534,7 +497,7 @@ def _experience_line_entities(
     result: dict[str, list[dict[str, Any]]] = {
         "jobTitles": [], "companies": [], "dates": [], "locations": [], "urls": urls,
     }
-    date_spans = list(_DATE_RANGE_RE.finditer(line.text))
+    date_spans = list(DATE_RANGE_RE.finditer(line.text))
     for match in date_spans:
         result["dates"].append({
             "text": match.group(0), "page": line.page,
@@ -545,14 +508,9 @@ def _experience_line_entities(
     candidates = _metadata_candidates(
         line.text,
         date_spans,
-        _EXPERIENCE_SEPARATOR_RE,
+        METADATA_SEPARATOR_RE,
     )
     classifications = classify_job_title_candidates(model, [item[0] for item in candidates])
-    company_markers = re.compile(
-        r"\b(?:co\.?|company|ltd\.?|limited|inc\.?|corp\.?|corporation|llc|plc)\b",
-        re.IGNORECASE,
-    )
-
     def candidate_urls(
         segment: str,
         start: int,
@@ -628,7 +586,7 @@ def _experience_line_entities(
                 "locations": locations,
                 "matchingUrls": matching_urls,
                 "externalUrls": external_urls,
-                "companyMarker": company_markers.search(segment) is not None,
+                "companyMarker": COMPANY_MARKER_RE.search(segment) is not None,
             }
         )
 
@@ -846,7 +804,7 @@ def build_experience_debug(
 
     for line_index in range(heading.line_index + 1, end):
         line = lines[line_index]
-        bullet = _BULLET_RE.match(line.text)
+        bullet = BULLET_RE.match(line.text)
         if bullet:
             current = current or new_entry()
             current["_bodyStarted"] = True
@@ -863,7 +821,7 @@ def build_experience_debug(
             current is None
             or not current["_bodyStarted"]
             or line.bold
-            or _DATE_RANGE_RE.search(line.text) is not None
+            or DATE_RANGE_RE.search(line.text) is not None
         )
         entities = (
             _experience_line_entities(
@@ -999,9 +957,9 @@ def _education_row_entities(
     for line_index, line in row:
         line_urls = url_entities_by_line.get(line_index, [])
         result["urls"].extend(line_urls)
-        if _BULLET_RE.match(line.text):
+        if BULLET_RE.match(line.text):
             continue
-        date_spans = list(_DATE_RANGE_RE.finditer(line.text))
+        date_spans = list(DATE_RANGE_RE.finditer(line.text))
         for match in date_spans:
             result["dates"].append({
                 "text": match.group(0),
@@ -1010,7 +968,7 @@ def _education_row_entities(
                 "detectionMethod": "date_regex",
             })
 
-        gpa_matches = list(_GPA_RE.finditer(line.text))
+        gpa_matches = list(GPA_RE.finditer(line.text))
         for match in gpa_matches:
             result["gpa"].append({
                 "text": match.group(0),
@@ -1026,14 +984,14 @@ def _education_row_entities(
         candidates = _metadata_candidates(
             line.text,
             date_spans,
-            _EDUCATION_SEPARATOR_RE,
+            METADATA_SEPARATOR_RE,
             preserve_education_hyphens=True,
         )
         for segment, start, end in candidates:
             if any(match.start() < end and start < match.end() for match in gpa_matches):
                 continue
-            has_title = _EDUCATION_TITLE_RE.search(segment) is not None
-            has_institution = _EDUCATION_INSTITUTION_RE.search(segment) is not None
+            has_title = DEGREE_RE.search(segment) is not None
+            has_institution = INSTITUTION_RE.search(segment) is not None
             if has_title and not has_institution:
                 result["titles"].append({
                     "text": segment,
@@ -1140,26 +1098,26 @@ def build_education_debug(
 
     for row in rows:
         if all(
-            _PAGE_FOOTER_RE.search(line.text) is not None
+            PAGE_FOOTER_RE.search(line.text) is not None
             and line.bbox[1] >= document[line.page - 1].rect.height * 0.88
             for _, line in row
         ):
             continue
         explicit_metadata = any(
-            _DATE_RANGE_RE.search(line.text)
-            or _GPA_RE.search(line.text)
-            or _EDUCATION_TITLE_RE.search(line.text)
-            or _EDUCATION_INSTITUTION_RE.search(line.text)
+            DATE_RANGE_RE.search(line.text)
+            or GPA_RE.search(line.text)
+            or DEGREE_RE.search(line.text)
+            or INSTITUTION_RE.search(line.text)
             for _, line in row
         )
         metadata_shape = explicit_metadata and any(
             line.bold
-            or _EDUCATION_SEPARATOR_RE.search(line.text)
+            or METADATA_SEPARATOR_RE.search(line.text)
             or len(line.text.split()) <= SETTINGS.section_router.maximum_subheading_words
             for _, line in row
         )
         prose_row = any(
-            _EDUCATION_PARAGRAPH_RE.search(line.text)
+            COURSEWORK_RE.search(line.text)
             or (
                 not metadata_shape
                 and (
@@ -1233,7 +1191,7 @@ def build_education_debug(
         for line_index, line in row:
             if line_index in entities["handledLineIndexes"]:
                 continue
-            bullet = _BULLET_RE.match(line.text)
+            bullet = BULLET_RE.match(line.text)
             line_box = pymupdf.Rect(line.bbox)
             rounded_bbox = [round(value, 2) for value in line.bbox]
             if bullet:
@@ -1311,9 +1269,9 @@ def _skill_inline_parts(
 ) -> tuple[str, int, int, str, int, int, str] | None:
     """Return a short group label and untouched body from a delimiter row."""
     for pattern, method in (
-        (_SKILL_INLINE_COLON_RE, "delimiter_colon"),
-        (_SKILL_INLINE_TAB_RE, "delimiter_tab"),
-        (_SKILL_INLINE_DASH_RE, "delimiter_dash"),
+        (KEY_VALUE_COLON_RE, "delimiter_colon"),
+        (KEY_VALUE_TAB_RE, "delimiter_tab"),
+        (KEY_VALUE_DASH_RE, "delimiter_dash"),
     ):
         match = pattern.match(text)
         if match is None:
@@ -1449,7 +1407,7 @@ def build_skills_debug(
 
     for row in rows:
         if all(
-            _PAGE_FOOTER_RE.search(line.text) is not None
+            PAGE_FOOTER_RE.search(line.text) is not None
             and line.bbox[1] >= document[line.page - 1].rect.height * 0.88
             for _, line in row
         ):
@@ -1500,7 +1458,7 @@ def build_skills_debug(
         handled_row = False
         for line_index, line in row:
             line_urls = url_entities_by_line.get(line_index, [])
-            bullet_match = _BULLET_RE.match(line.text)
+            bullet_match = BULLET_RE.match(line.text)
             content_start = bullet_match.end() if bullet_match else 0
             content = line.text[content_start:].strip()
             leading_space = len(line.text[content_start:]) - len(line.text[content_start:].lstrip())
@@ -1651,10 +1609,10 @@ def build_skills_debug(
 
 
 def _grouped_section_date_matches(text: str) -> list[re.Match[str]]:
-    ranges = list(_DATE_RANGE_RE.finditer(text))
+    ranges = list(DATE_RANGE_RE.finditer(text))
     singles = [
         match
-        for match in _SINGLE_YEAR_RE.finditer(text)
+        for match in SINGLE_YEAR_RE.finditer(text)
         if not any(
             date_range.start() < match.end() and match.start() < date_range.end()
             for date_range in ranges
@@ -1718,7 +1676,7 @@ def _build_grouped_section_debug(
 
     for row in rows:
         if all(
-            _PAGE_FOOTER_RE.search(line.text) is not None
+            PAGE_FOOTER_RE.search(line.text) is not None
             and line.bbox[1] >= document[line.page - 1].rect.height * 0.88
             for _, line in row
         ):
@@ -1807,14 +1765,14 @@ def _build_grouped_section_debug(
                 ]
             ] = []
             for line_index, line in row:
-                bullet = _BULLET_RE.match(line.text)
+                bullet = BULLET_RE.match(line.text)
                 content_start = bullet.end() if bullet else 0
                 leading_space = len(line.text[content_start:]) - len(
                     line.text[content_start:].lstrip()
                 )
                 content_start += leading_space
                 content = line.text[content_start:].strip()
-                attribute_inline = _PROFILE_ATTRIBUTE_INLINE_RE.match(content)
+                attribute_inline = ATTRIBUTE_INLINE_RE.match(content)
                 inline = (
                     (
                         attribute_inline.group("label").strip(),
@@ -1913,7 +1871,7 @@ def _build_grouped_section_debug(
         row_has_date = any(dates_by_line.values())
         title_cells: list[tuple[int, ExtractedLine]] = []
         for line_index, line in row:
-            bullet = _BULLET_RE.match(line.text)
+            bullet = BULLET_RE.match(line.text)
             matches = dates_by_line[line_index]
             date_only = bool(matches) and all(
                 not character.strip(" ()[]{}|,;:-–—")
@@ -1986,7 +1944,7 @@ def _build_grouped_section_debug(
                             match.end(),
                         ),
                         "detectionMethod": (
-                            "date_regex" if _DATE_RANGE_RE.fullmatch(match.group(0)) else "year_regex"
+                            "date_regex" if DATE_RANGE_RE.fullmatch(match.group(0)) else "year_regex"
                         ),
                     })
             if not title_cells:
@@ -2008,7 +1966,7 @@ def _build_grouped_section_debug(
                 entries.append(current)
             line_urls = url_entities_by_line.get(line_index, [])
             rounded_bbox = [round(number, 2) for number in line.bbox]
-            bullet = _BULLET_RE.match(line.text)
+            bullet = BULLET_RE.match(line.text)
             if bullet:
                 value: dict[str, Any] = {
                     "text": line.text[bullet.end():].strip(),

@@ -23,12 +23,17 @@ from restruct.document.types import (
     HeaderEntityMatch,
     overlaps_existing as _overlaps_existing,
 )
+from restruct.patterns.contacts import EMAIL_RE, PHONE_RE, URL_RE
+from restruct.patterns.personal import (
+    GENERIC_ATTRIBUTE_RE,
+    LABELLED_ATTRIBUTE_RE,
+    LOCATION_SEGMENT_RE,
+    NATIONALITY_PHRASE_RE,
+)
+from restruct.patterns.separators import SEGMENT_RE
 from restruct.model import (
     DistilBertNerPredictor,
     EmbeddingModel,
-    HEADER_SEGMENT_RE as _HEADER_SEGMENT_RE,
-    LOCATION_SEGMENT_RE as _LOCATION_SEGMENT_RE,
-    NATIONALITY_PHRASE_RE as _NATIONALITY_PHRASE_RE,
     detect_headings,
     classify_profile_attribute_labels,
     load_embedding_model,
@@ -62,42 +67,6 @@ from restruct.routing import (
 from restruct.schema import build_v1_resume, write_v1_resume
 
 
-_EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}")
-_PHONE_RE = re.compile(r"(?<!\w)\+?\d[\d ()\-.]{6,}\d(?!\w)")
-_HEADER_ATTRIBUTE_LABEL_PATTERN = (
-    r"date\s+of\s+birth|birth\s+date|d\.?\s*o\.?\s*b\.?|dob|"
-    r"current\s+age|age|"
-    r"gender|sex|marital\s+status|martial\s+status|civil\s+status|marital|"
-    r"visa\s+status|visa\s+type|work\s+visa|immigration\s+status|residency\s+visa|"
-    r"work\s+authorization|right\s+to\s+work|visa|"
-    r"nationality|citizenship|"
-    r"current\s+residen(?:ce|t)|current\s+location|place\s+of\s+residence|"
-    r"residen(?:ce|t)"
-)
-_GENERIC_HEADER_ATTRIBUTE_RE = re.compile(
-    r"(?P<label>[A-Za-z][A-Za-z .'/]{1,40}?)"
-    r"\s*(?::|[-\u2013\u2014])\s*"
-    r"(?P<value>.+?)(?=\s*[|\u2022\u00b7]|$)",
-    re.IGNORECASE,
-)
-_HEADER_ATTRIBUTE_RE = re.compile(
-    rf"(?P<label>\b(?:{_HEADER_ATTRIBUTE_LABEL_PATTERN})\b)"
-    rf"(?:\s*(?::|[-\u2013\u2014])\s*|\t+|\s+)"
-    rf"(?P<value>.+?)"
-    rf"(?=\s*(?:[|\u2022\u00b7]|\b(?:{_HEADER_ATTRIBUTE_LABEL_PATTERN})\b)|$)",
-    re.IGNORECASE,
-)
-_URL_RE = re.compile(
-    r"(?:"
-    r"https?://[^\s|,;)]+"
-    r"|www\.[^\s|,;)]+"
-    r"|(?<![@\w.-])(?:linkedin|github)\.com/[^\s|,;)]+"
-    r"|(?<![@\w.-])[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])"
-    r"(?:\.[a-z]{2,})+(?:/[^\s|,;)]*)?"
-    r"(?![@\w-]|\.[a-z0-9])"
-    r")",
-    re.IGNORECASE,
-)
 def _meaningful_character_count(text: str) -> int:
     return sum(character.isalnum() for character in text)
 
@@ -433,7 +402,7 @@ def _labelled_header_attribute_matches(
     matches: list[HeaderEntityMatch] = []
     for line_index in profile_indexes:
         line = lines[line_index]
-        for match in _HEADER_ATTRIBUTE_RE.finditer(line.text):
+        for match in LABELLED_ATTRIBUTE_RE.finditer(line.text):
             # The label establishes the field. Preserve its same-line value
             # verbatim instead of requiring a particular DOB/date format.
             raw_value = match.group("value")
@@ -475,7 +444,7 @@ def _semantic_header_attribute_matches(
     candidates: list[tuple[int, re.Match[str], str, str, int, int]] = []
     for line_index in profile_indexes:
         line = lines[line_index]
-        for match in _GENERIC_HEADER_ATTRIBUTE_RE.finditer(line.text):
+        for match in GENERIC_ATTRIBUTE_RE.finditer(line.text):
             if _overlaps_existing(
                 existing_matches,
                 line_index=line_index,
@@ -721,7 +690,7 @@ def _url_matches_for_lines(
             line_index=line_index,
             text=lines[line_index].text,
             kind="url",
-            pattern=_URL_RE,
+            pattern=URL_RE,
         )
     return matches
 
@@ -843,14 +812,14 @@ def build_header_profile(
             line_index=line_index,
             text=text,
             kind="email",
-            pattern=_EMAIL_RE,
+            pattern=EMAIL_RE,
         )
         _append_regex_matches(
             matches,
             line_index=line_index,
             text=text,
             kind="phone",
-            pattern=_PHONE_RE,
+            pattern=PHONE_RE,
         )
 
     for url_match in _url_matches_for_lines(document, lines, profile_indexes):
@@ -907,7 +876,7 @@ def build_header_profile(
             max(
                 ner_location_matches,
                 key=lambda match: (
-                    bool(_LOCATION_SEGMENT_RE.fullmatch(match.text)),
+                    bool(LOCATION_SEGMENT_RE.fullmatch(match.text)),
                     -match.line_index,
                     match.confidence or 0.0,
                 ),
@@ -964,8 +933,8 @@ def build_header_profile(
             location_match = next(
                 (
                     segment_match
-                    for segment_match in _HEADER_SEGMENT_RE.finditer(text)
-                    if _LOCATION_SEGMENT_RE.fullmatch(
+                    for segment_match in SEGMENT_RE.finditer(text)
+                    if LOCATION_SEGMENT_RE.fullmatch(
                         segment_match.group(0).strip(" \t,;:-\u200b")
                     )
                 ),
@@ -999,7 +968,7 @@ def build_header_profile(
     if not any(match.kind == "nationality" for match in matches):
         for line_index in profile_indexes:
             text = lines[line_index].text
-            nationality_match = next(_NATIONALITY_PHRASE_RE.finditer(text), None)
+            nationality_match = next(NATIONALITY_PHRASE_RE.finditer(text), None)
             if nationality_match is None or _overlaps_existing(
                 matches,
                 line_index=line_index,

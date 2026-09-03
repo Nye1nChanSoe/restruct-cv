@@ -18,6 +18,11 @@ from restruct.document.types import (
     HeaderEntityMatch,
     overlaps_existing,
 )
+from restruct.patterns.personal import (
+    LOCATION_SEGMENT_RE,
+    NATIONALITY_CONTEXT_RE,
+)
+from restruct.patterns.separators import JOB_TITLE_SEPARATOR_RE, SEGMENT_RE
 
 
 class EmbeddingModel(Protocol):
@@ -228,29 +233,10 @@ def detect_headings(
     return accepted
 
 
-_JOB_TITLE_SEPARATOR_RE = re.compile(r"[|•·]|\s+/\s+")
-HEADER_SEGMENT_RE = re.compile(r"[^|•·]+")
-LOCATION_SEGMENT_RE = re.compile(
-    r"^[^\d@]{2,48},\s*[^\d@]{2,48}$",
-    re.UNICODE,
-)
-NATIONALITY_CONTEXT_RE = re.compile(
-    r"\b(?:citizen|citizenship|national|nationality)\b",
-    re.IGNORECASE,
-)
-NATIONALITY_PHRASE_RE = re.compile(
-    r"(?:"
-    r"\b[A-Za-z][A-Za-z'-]*(?:\s+[A-Za-z][A-Za-z'-]*)?\s+"
-    r"(?:citizen|national)\b"
-    r"|\b(?:citizenship|nationality)\s*:\s*"
-    r"[A-Za-z][A-Za-z'-]*(?:\s+[A-Za-z][A-Za-z'-]*)?\b"
-    r")",
-    re.IGNORECASE,
-)
 
 
 def _expand_location_span(text: str, start: int, end: int) -> tuple[int, int]:
-    for segment_match in HEADER_SEGMENT_RE.finditer(text):
+    for segment_match in SEGMENT_RE.finditer(text):
         if not (segment_match.start() <= start and end <= segment_match.end()):
             continue
         segment = segment_match.group(0)
@@ -266,7 +252,7 @@ def _expand_location_span(text: str, start: int, end: int) -> tuple[int, int]:
 
 
 def _expand_nationality_span(text: str, start: int, end: int) -> tuple[int, int]:
-    for segment_match in HEADER_SEGMENT_RE.finditer(text):
+    for segment_match in SEGMENT_RE.finditer(text):
         if not (segment_match.start() <= start and end <= segment_match.end()):
             continue
         segment = segment_match.group(0)
@@ -389,7 +375,7 @@ def ner_matches_for_profile(
 def _job_title_segments(text: str) -> list[tuple[str, int, int]]:
     spans: list[tuple[int, int]] = []
     cursor = 0
-    for separator in _JOB_TITLE_SEPARATOR_RE.finditer(text):
+    for separator in JOB_TITLE_SEPARATOR_RE.finditer(text):
         spans.append((cursor, separator.start()))
         cursor = separator.end()
     spans.append((cursor, len(text)))
