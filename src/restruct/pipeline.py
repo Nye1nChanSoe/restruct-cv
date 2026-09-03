@@ -36,15 +36,9 @@ from restruct.parsers.header import build_header_profile
 from restruct.parsers.skills import build_skills_debug
 from restruct.parsers.urls import _url_entity_value, _url_matches_for_lines
 from restruct.schema import build_v1_resume, write_v1_resume
+from restruct.stages import ALL_STAGES, DEFAULT_DEBUG_STAGES  # noqa: F401  (re-export)
 from restruct.structure.headings import first_header_boundary
 from restruct.structure.sections import build_sections, summary_debug_value
-
-
-# Which debug artifacts each stage owns. Selecting stages never decides
-# whether a pass runs -- the whole pipeline always executes, because every pass
-# feeds the next and the result would otherwise be a different result.
-ALL_STAGES: frozenset[int] = frozenset({1, 2, 3, 4, 5})
-DEFAULT_DEBUG_STAGES: frozenset[int] = frozenset({4, 5})
 
 
 def extract_resume(

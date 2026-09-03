@@ -17,8 +17,6 @@ import re
 import sys
 from pathlib import Path
 
-import pymupdf
-
 from restruct.configs import SETTINGS
 from restruct.errors import (
     ExtractionFailed,
@@ -31,7 +29,7 @@ from restruct.errors import (
     TesseractMissing,
     UnsupportedFormat,
 )
-from restruct.pipeline import ALL_STAGES, DEFAULT_DEBUG_STAGES, extract_resume
+from restruct.stages import ALL_STAGES, DEFAULT_DEBUG_STAGES
 
 SUPPORTED_SUFFIXES = (".pdf",)
 
@@ -198,6 +196,8 @@ def _validate(path: Path) -> None:
         raise InputNotFound(path)
     if path.suffix.casefold() not in SUPPORTED_SUFFIXES:
         raise UnsupportedFormat(path, SUPPORTED_SUFFIXES)
+    import pymupdf
+
     try:
         with pymupdf.open(path) as document:
             if document.needs_pass:
@@ -231,14 +231,21 @@ def _silence_model_progress() -> None:
 
 
 def _load_models(project_root: Path):
-    from restruct.model import load_embedding_model, load_ner_model
+    """Check the weights are present, then hand back loaders, not models.
+
+    The presence check stays eager so a missing-weights run still exits with
+    its own code straight away rather than part way through a document. The
+    reading of several hundred megabytes is what waits until something needs
+    it.
+    """
+    from restruct.model import LazyEmbeddingModel, LazyNerPredictor
 
     _silence_model_progress()
     for name in ("all-MiniLM-L6-v2", "distilbert-NER"):
         directory = project_root / "models" / name
         if not directory.is_dir() or not any(directory.iterdir()):
             raise ModelAssetsMissing(directory)
-    return load_embedding_model(project_root), load_ner_model(project_root)
+    return LazyEmbeddingModel(project_root), LazyNerPredictor(project_root)
 
 
 def _extract_one(
@@ -248,6 +255,8 @@ def _extract_one(
     models,
 ) -> None:
     """Extract one resume to an explicit output file."""
+    from restruct.pipeline import extract_resume
+
     artifact_directory = _artifact_directory(output_path)
     try:
         extract_resume(
@@ -279,6 +288,8 @@ def _extract_one(
 
 def _batch(input_directory: Path, output_root: Path, models, stages) -> None:
     """Regenerate a whole corpus. Writes every stage, which is its purpose."""
+    from restruct.pipeline import extract_resume
+
     project_root = Path(__file__).resolve().parents[2]
     raw_debug_directory = project_root / SETTINGS.debug.raw_extraction_directory
     ocr_debug_directory = project_root / SETTINGS.debug.ocr_extraction_directory

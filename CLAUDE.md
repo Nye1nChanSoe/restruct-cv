@@ -141,6 +141,7 @@ layout/      row clustering, paragraph/bullet accumulation, unsupported-layout d
 structure/   heading detection, routing, compound headings, precedence resolver, separators
 parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
 models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
+stages.py    which debug artifacts each stage owns; importable without the models
 patterns/    deterministic regex evidence, grouped by what it describes
 debug/       artifacts (JSON) and render (Pillow overlays), one canvas, one colour registry
 schema.py    the lean, versioned clean output (contract: resume.schema.json)
@@ -257,6 +258,21 @@ so nothing downstream needs OCR-specific handling. Preserve this when touching i
 - New modules open with `from __future__ import annotations` and carry full type hints.
   The `configs/` modules and the re-export `__init__.py` files predate this and do not.
 - Commit subjects: `feat:` `refactor:` `test:` `chore:` `perf:` `update:`.
+
+### Performance properties that are easy to lose
+
+Three things carry the run cost, and all three regress silently:
+
+- **A fixed reference set is embedded once per model**, through
+  `model.encode_references()`. Encoding them per call was 48% of a run — roughly two hundred
+  configuration phrases re-embedded once per experience metadata line. Never route *candidate*
+  text through that cache: candidates are per-document and unbounded, so caching them is a leak.
+- **Models load on first use**, via `LazyEmbeddingModel` / `LazyNerPredictor`. The presence
+  check stays eager so missing weights still exit with their own code immediately.
+- **`restruct/__init__.py` must not import the pipeline eagerly.** It re-exports `main` and
+  `extract_resume` through PEP 562 `__getattr__` because a plain import cost four seconds of
+  torch and transformers that `--help` never needs. `tests/test_performance.py` asserts that
+  importing `restruct.cli` leaves `sys.modules` free of them.
 
 ### Gotchas that have already caused bugs
 

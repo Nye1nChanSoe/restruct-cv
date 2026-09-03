@@ -6,7 +6,8 @@ import re
 import statistics
 import unicodedata
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any, Protocol, Sequence
+from weakref import WeakKeyDictionary
 
 from sentence_transformers import SentenceTransformer
 from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
@@ -27,6 +28,28 @@ from restruct.patterns.separators import JOB_TITLE_SEPARATOR_RE, SEGMENT_RE
 
 class EmbeddingModel(Protocol):
     def encode(self, sentences: Any, **kwargs: Any) -> Any: ...
+
+
+# Reference sets are fixed configuration, identical on every call, and there
+# are four of them. Encoding them per call meant re-embedding roughly two
+# hundred phrases once per experience metadata line -- 48% of a run's time
+# spent computing the same vectors over and over.
+#
+# Keyed weakly by the model so the cache dies with it, and never used for
+# candidate text: candidates are per-document and unbounded, and caching them
+# would be a leak rather than a saving.
+_REFERENCE_EMBEDDINGS: WeakKeyDictionary = WeakKeyDictionary()
+
+
+def encode_references(model: EmbeddingModel, references: Sequence[str]) -> Any:
+    """Embed a fixed reference set, once per model per process."""
+    by_references = _REFERENCE_EMBEDDINGS.setdefault(model, {})
+    key = tuple(references)
+    cached = by_references.get(key)
+    if cached is None:
+        cached = model.encode(list(references), normalize_embeddings=True)
+        by_references[key] = cached
+    return cached
 
 
 class DistilBertNerPredictor:
@@ -146,6 +169,49 @@ def load_ner_model(project_root: Path) -> DistilBertNerPredictor:
     return DistilBertNerPredictor(model_directory)
 
 
+class LazyEmbeddingModel:
+    """A MiniLM that loads the first time something asks it to encode.
+
+    Weights cost seconds to read and a run may never need them -- a document
+    that fails validation, a `--help`. Loading in main() charged every
+    invocation for the worst case.
+
+    Identity is stable from the first call, which matters: ``encode_references``
+    keys its cache on the model object, and a wrapper that replaced itself
+    would silently start a second cache.
+    """
+
+    def __init__(self, project_root: Path) -> None:
+        self._project_root = project_root
+        self._model: SentenceTransformer | None = None
+
+    @property
+    def loaded(self) -> bool:
+        return self._model is not None
+
+    def encode(self, sentences: Any, **kwargs: Any) -> Any:
+        if self._model is None:
+            self._model = load_embedding_model(self._project_root)
+        return self._model.encode(sentences, **kwargs)
+
+
+class LazyNerPredictor:
+    """A DistilBERT that loads the first time something asks it to predict."""
+
+    def __init__(self, project_root: Path) -> None:
+        self._project_root = project_root
+        self._model: DistilBertNerPredictor | None = None
+
+    @property
+    def loaded(self) -> bool:
+        return self._model is not None
+
+    def predict_entities(self, *arguments: Any, **keywords: Any) -> Any:
+        if self._model is None:
+            self._model = load_ner_model(self._project_root)
+        return self._model.predict_entities(*arguments, **keywords)
+
+
 def _looks_like_heading(line: ExtractedLine, page_median_size: float) -> bool:
     text = line.text.strip()
     words = text.split()
@@ -198,7 +264,7 @@ def detect_headings(
             reference_texts.append(example)
             reference_types.append(section_type)
 
-    reference_embeddings = model.encode(reference_texts, normalize_embeddings=True)
+    reference_embeddings = encode_references(model, reference_texts)
     candidate_embeddings = model.encode(
         [lines[index].text for index in candidate_indexes],
         normalize_embeddings=True,
@@ -466,19 +532,13 @@ def semantic_job_title_matches(
     if not candidates:
         return phrase_matches
 
-    positive_embeddings = model.encode(
-        title_references,
-        normalize_embeddings=True,
-    )
+    positive_embeddings = encode_references(model, title_references)
     negative_references = [
         reference
         for references in SETTINGS.job_title_negative_references.values()
         for reference in references
     ]
-    negative_embeddings = model.encode(
-        negative_references,
-        normalize_embeddings=True,
-    )
+    negative_embeddings = encode_references(model, negative_references)
     candidate_embeddings = model.encode(
         [candidate.text for candidate in candidates],
         normalize_embeddings=True,
@@ -532,14 +592,8 @@ def classify_job_title_candidates(
         for references in SETTINGS.job_title_negative_references.values()
         for reference in references
     ]
-    positive_embeddings = model.encode(
-        positive_references,
-        normalize_embeddings=True,
-    )
-    negative_embeddings = model.encode(
-        negative_references,
-        normalize_embeddings=True,
-    )
+    positive_embeddings = encode_references(model, positive_references)
+    negative_embeddings = encode_references(model, negative_references)
     candidate_embeddings = model.encode(candidates, normalize_embeddings=True)
     classified: list[tuple[bool, float]] = []
     for embedding in candidate_embeddings:
@@ -586,7 +640,7 @@ def classify_profile_attribute_labels(
     if not unresolved_indexes:
         return classified
 
-    reference_embeddings = model.encode(reference_texts, normalize_embeddings=True)
+    reference_embeddings = encode_references(model, reference_texts)
     label_embeddings = model.encode(
         [labels[index] for index in unresolved_indexes],
         normalize_embeddings=True,

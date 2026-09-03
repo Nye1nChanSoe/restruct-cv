@@ -14,14 +14,36 @@ and the shared document types; everything else lives in the stage packages:
     schema/      the versioned clean output
 """
 
-from restruct.cli import main
 from restruct.document.types import (
     DetectedHeading,
     ExtractedLine,
     HeaderEntityMatch,
 )
-from restruct.pipeline import extract_resume
 from restruct.schema import build_v1_resume, write_v1_resume
+
+# ``main`` and ``extract_resume`` reach the model libraries, which cost about
+# four seconds to import. Re-exporting them eagerly made every entry into this
+# package pay that -- including `restruct --help` and a run that fails
+# validation before a model is ever consulted. PEP 562 keeps the public names
+# where they were and defers the cost to the first use.
+_LAZY_EXPORTS = {
+    "main": ("restruct.cli", "main"),
+    "extract_resume": ("restruct.pipeline", "extract_resume"),
+}
+
+
+def __getattr__(name: str):
+    target = _LAZY_EXPORTS.get(name)
+    if target is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    import importlib
+
+    module_name, attribute = target
+    return getattr(importlib.import_module(module_name), attribute)
+
+
+def __dir__() -> list[str]:
+    return sorted(__all__)
 
 __all__ = [
     "DetectedHeading",
