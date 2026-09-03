@@ -12,15 +12,20 @@ anyone having to read this file.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import pymupdf
 
+from restruct.configs import SETTINGS
 from restruct.debug import canvas
+from restruct.geometry import pixel_box
 from restruct.debug.colors import (
     LINE_STYLES,
     PHYSICAL_STYLES,
+    SECTION_STYLES,
     UNSUPPORTED_STYLES,
     WORD_STYLES,
+    section_heading_style,
 )
 from restruct.document.physical import Document, Page
 from restruct.document.stats import DocumentStatistics
@@ -204,3 +209,86 @@ def render_stage_overlays(
         render_words(pdf_document, document, debug_directory / "pass-2-words")
     if 3 in stages:
         render_lines(pdf_document, document, statistics, debug_directory / "pass-3-lines")
+
+
+def render_sections(
+    pdf_document: pymupdf.Document,
+    sections: list[dict[str, Any]],
+    output_directory: Path,
+) -> None:
+    """Pass 4: which destination each heading became, and what it owns.
+
+    A compound heading yields several sections from one line, so the heading
+    box is drawn once per destination and labelled with the destination rather
+    than with the text. Where a section came from a split, the label carries
+    the heading as written, which is the only way to see on the page that
+    "others" here is half of a real heading rather than an unrecognised one.
+    """
+    blocks_by_page: dict[int, list[tuple[str, Any, str]]] = {}
+    for section in sections:
+        section_type = section["sectionType"]
+        heading = section["heading"]
+        compound = heading.get("compoundHeadingText")
+        label = f"{section_type} <- {compound}" if compound else section_type
+        blocks_by_page.setdefault(heading["page"], []).append(
+            ("heading", heading["bbox"], label)
+        )
+        for block in section.get("content", []):
+            blocks_by_page.setdefault(block["page"], []).append(
+                (block["type"], block["bbox"], "")
+            )
+
+    for page_index in range(pdf_document.page_count):
+        page_number = page_index + 1
+        image, draw = canvas.page_canvas(pdf_document, page_number)
+        counts: dict[str, int] = {}
+        styles: dict[str, Any] = {}
+
+        # One heading line can become several sections. Drawing them at the
+        # same coordinates would hide every label but the last, so each repeat
+        # is inset and its label raised a row.
+        seen_headings: dict[tuple[float, ...], int] = {}
+
+        for role, box, label in blocks_by_page.get(page_number, []):
+            if role == "heading":
+                split = " <- " in label
+                style = (
+                    SECTION_STYLES["compound_split"]
+                    if split
+                    else section_heading_style(label)
+                )
+                key = tuple(box)
+                repeat = seen_headings.get(key, 0)
+                seen_headings[key] = repeat + 1
+                inset = repeat * 2.0
+                canvas.outline(
+                    draw,
+                    (box[0] - inset, box[1] - inset, box[2] + inset, box[3] + inset),
+                    style,
+                    width=4,
+                )
+                pixels = pixel_box(box)
+                canvas.text_at(
+                    draw,
+                    (
+                        pixels[0] + SETTINGS.debug.label_x_padding,
+                        max(0, pixels[1] - SETTINGS.debug.label_y_offset * (repeat + 1)),
+                    ),
+                    label,
+                    style.color,
+                )
+                name = "compound split" if split else "section heading"
+                styles[name] = style
+            else:
+                style = SECTION_STYLES.get(role, SECTION_STYLES["paragraph"])
+                canvas.outline(draw, box, style, width=1)
+                name = style.label
+                styles[name] = style
+            counts[name] = counts.get(name, 0) + 1
+
+        canvas.legend(
+            draw,
+            [(styles[name], count) for name, count in counts.items()],
+            title=f"pass 4 - sections  |  page {page_number}",
+        )
+        canvas.save(image, output_directory, page_number)

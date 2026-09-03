@@ -65,11 +65,24 @@ section parsing:
 uv run restruct && git status --short results/    # clean == byte-identical
 ```
 
-**Passes 1-3 render images and no JSON**, because their output is geometry: a count can be
+**Passes 1-4 render images and no JSON**, because their output is geometry: a count can be
 right while every box sits ten points too low. They are written to
-`results/<name>/debug/pass-{1-physical,2-words,3-lines}/` and are gitignored — large,
-regenerated every run, and opt-in by design. **Look at them when changing anything
+`results/<name>/debug/pass-{1-physical,2-words,3-lines,4-sections}/` and are gitignored —
+large, regenerated every run, and opt-in by design. **Look at them when changing anything
 geometric.** Each carries a legend naming its layers and their counts.
+
+- **pass 1** also draws unsupported-layout warnings, so a detected column gutter is visible
+  as a box in the corridor it claims to have found.
+- **pass 4** draws which destination each heading became. A compound heading splits into
+  several sections from one line, so each is drawn inset and labelled
+  `languages <- CERTIFICATIONS & LANGUAGES` — the split is right or wrong at a glance.
+
+The unsupported fixtures are not in the batch run, since their parse is untrustworthy by
+definition. Render their overlays with:
+
+```bash
+uv run restruct --unsupported      # resumes-unsupported/ -> results/1-unsupported/ (gitignored)
+```
 
 This is not optional diligence. Rendering the pass-1 overlay is what found that five Year
 cells in `7.anomaly`'s certification table were being classified as running footers; every

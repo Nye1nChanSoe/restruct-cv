@@ -126,6 +126,8 @@ class PathSettings:
     truths_input_directory: str = "resumes-truths"
     results_directory: str = "results"
     truths_results_directory: str = "results/0-truths"
+    unsupported_input_directory: str = "resumes-unsupported"
+    unsupported_results_directory: str = "results/1-unsupported"
 
 
 @dataclass(frozen=True)

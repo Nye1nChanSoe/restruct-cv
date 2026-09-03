@@ -120,6 +120,16 @@ LINE_STYLES: dict[str, ItemStyle] = {
     "row": ItemStyle("#43A047", "row"),
 }
 
+# Pass 4 draws routed sections: which destination each heading became, and the
+# blocks beneath it. Headings take their own section colour from the registry,
+# so only the block roles need styles here.
+SECTION_STYLES: dict[str, ItemStyle] = {
+    "subheading": ItemStyle("#00897B", "subheading"),
+    "paragraph": ItemStyle("#546E7A", "paragraph"),
+    "bullet": ItemStyle("#5C6BC0", "bullet"),
+    "compound_split": ItemStyle("#D81B60", "split from a compound heading"),
+}
+
 # Unsupported layouts are drawn on the pass-1 overlay, because the geometry
 # that produced the warning is what pass 1 shows. They share one hot colour on
 # purpose: the point is that something is wrong, and the label says what.

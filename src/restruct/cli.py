@@ -21,6 +21,15 @@ def _parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Process only PDFs in resume-truths/ and write them under results/0-truths/.",
     )
+    parser.add_argument(
+        "--unsupported",
+        action="store_true",
+        help=(
+            "Process only resumes-unsupported/ into results/1-unsupported/. "
+            "The parse is not trustworthy by definition -- this is for reading "
+            "the overlays that show why."
+        ),
+    )
     return parser.parse_args()
 
 def main() -> None:
@@ -29,6 +38,9 @@ def main() -> None:
     if arguments.truths:
         input_directory = project_root / SETTINGS.paths.truths_input_directory
         output_root = project_root / SETTINGS.paths.truths_results_directory
+    elif arguments.unsupported:
+        input_directory = project_root / SETTINGS.paths.unsupported_input_directory
+        output_root = project_root / SETTINGS.paths.unsupported_results_directory
     else:
         input_directory = project_root / SETTINGS.paths.input_directory
         output_root = project_root / SETTINGS.paths.results_directory

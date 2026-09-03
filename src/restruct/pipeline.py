@@ -24,7 +24,7 @@ from restruct.debug.artifacts import (
     write_summary_debug,
     write_supplementary_sections_debug,
 )
-from restruct.debug.stages import render_stage_overlays
+from restruct.debug.stages import render_sections, render_stage_overlays
 from restruct.debug.render import (
     render_combined_debug_images,
     render_debug_images,
@@ -108,6 +108,15 @@ def extract_resume(
                 _url_entity_value(document, lines, match)
             )
         sections = build_sections(lines, headings, url_entities_by_line, statistics)
+        if SETTINGS.debug.stage_overlays_enabled:
+            # Pass 4 is geometry too: a compound heading can split into the
+            # right destinations while the blocks land under the wrong one,
+            # and only the overlay shows which.
+            render_sections(
+                document,
+                sections,
+                output_directory / "debug" / "pass-4-sections",
+            )
         summary = summary_debug_value(sections)
         experience = build_experience_debug(
             document,
