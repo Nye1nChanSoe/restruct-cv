@@ -220,15 +220,23 @@
         "2023"
       ],
       "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
       "paragraphs": [
         "Languages: English (Professional), Burmese (Native), Thai (Conversational)"
       ],
       "bullets": []
     }
   ],
-  "licenses": null,
-  "tools_equipment": null,
-  "languages": null,
   "volunteering": null,
   "awards": null,
   "publications": null,

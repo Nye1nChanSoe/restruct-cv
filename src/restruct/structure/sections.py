@@ -9,9 +9,9 @@ from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import rounded
 from restruct.layout.blocks import continues_block, extend_block
 from restruct.patterns.bullets import BULLET_RE
+from restruct.structure.compound import routed_logical_sections
 from restruct.structure.headings import (
     _looks_like_subheading,
-    _routed_section_headings,
     _section_body_style,
     first_header_boundary,
 )
@@ -125,7 +125,7 @@ def build_sections(
     first_boundary = first_header_boundary(lines, headings)
     if first_boundary is None:
         return []
-    routed_headings = _routed_section_headings(
+    logical = routed_logical_sections(
         lines,
         headings,
         minimum_line_index=first_boundary.line_index,
@@ -133,14 +133,10 @@ def build_sections(
     semantic_heading_indexes = {heading.line_index for heading in headings}
 
     sections: list[dict[str, Any]] = []
-    for position, heading in enumerate(routed_headings):
-        next_heading_index = (
-            routed_headings[position + 1].line_index
-            if position + 1 < len(routed_headings)
-            else len(lines)
-        )
+    for logical_section in logical:
+        heading = logical_section.heading
         heading_line = lines[heading.line_index]
-        content_indexes = list(range(heading.line_index + 1, next_heading_index))
+        content_indexes = list(logical_section.line_indexes)
         heading_value: dict[str, Any] = {
             "text": heading_line.text,
             "page": heading_line.page,
@@ -152,12 +148,17 @@ def build_sections(
                 else "geometry_unknown_boundary"
             ),
         }
+        if logical_section.compound_heading_text is not None:
+            # The heading was split. Recording what it said as written is what
+            # lets a reader see that "others" here is half of a real heading
+            # rather than an unrecognised one.
+            heading_value["compoundHeadingText"] = logical_section.compound_heading_text
         heading_url_entities = url_entities_by_line.get(heading.line_index, [])
         if heading_url_entities:
             heading_value["entities"] = heading_url_entities
         sections.append(
             {
-                "sectionType": heading.section_type,
+                "sectionType": logical_section.section_type,
                 "heading": heading_value,
                 "content": _content_blocks(
                     lines,

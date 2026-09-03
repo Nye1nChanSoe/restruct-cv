@@ -175,21 +175,7 @@
   ],
   "projects": null,
   "certifications": null,
-  "licenses": [
-    {
-      "subheadings": [],
-      "dates": [],
-      "urls": [],
-      "paragraphs": [],
-      "bullets": [
-        "Basic Occupational Safety Training",
-        "Lockout/Tagout Awareness",
-        "Fire Safety and Emergency Response Training",
-        "Forklift Safety Awareness",
-        "Internal 5S Training"
-      ]
-    }
-  ],
+  "licenses": null,
   "tools_equipment": null,
   "languages": [
     {
@@ -208,6 +194,25 @@
   "references": null,
   "interests": null,
   "others": [
+    {
+      "heading": "SAFETY & TRAINING",
+      "entries": [
+        {
+          "subheadings": [],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [],
+          "bullets": [
+            "Basic Occupational Safety Training",
+            "Lockout/Tagout Awareness",
+            "Fire Safety and Emergency Response Training",
+            "Forklift Safety Awareness",
+            "Internal 5S Training"
+          ]
+        }
+      ]
+    },
     {
       "heading": "ADDITIONAL INFORMATION",
       "entries": [

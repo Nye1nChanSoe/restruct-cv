@@ -1,0 +1,83 @@
+{
+  "source": "8.compound.pdf",
+  "notes": [
+    "Written for the compound-heading milestone. A native single-column resume whose two compound headings resolve in different ways, so the split is exercised end to end rather than only in unit tests.",
+    "'CERTIFICATIONS & LANGUAGES' has both components named outright by an explicit label on the line beneath, so each destination owns exactly one line.",
+    "'AWARDS & PUBLICATIONS' is compound, but its two local labels are bold enough to be promoted to section headings in their own right. The compound heading is then left owning nothing and must produce no section at all -- otherwise it registers an empty 'awards' that hides the real one.",
+    "Fictional person; every name, employer, and contact detail is invented."
+  ],
+  "header_profile": {
+    "name": "PRIYA NAIR",
+    "job_titles": [
+      "Data Engineer"
+    ],
+    "location": "Singapore",
+    "emails": [
+      "priya.nair@example.com"
+    ],
+    "phones": [
+      "+65 8100 2233"
+    ],
+    "urls": [],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary",
+    "experience",
+    "education",
+    "skills",
+    "certifications",
+    "languages",
+    "awards",
+    "publications"
+  ],
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Data Engineer"
+      ],
+      "companies": [
+        "Harbourfront Analytics"
+      ],
+      "dates": [
+        "2022 - Present"
+      ],
+      "locations": [
+        "Singapore"
+      ]
+    },
+    {
+      "job_titles": [
+        "Data Engineer"
+      ],
+      "companies": [
+        "Kallang Data Works"
+      ],
+      "dates": [
+        "2019 - 2022"
+      ],
+      "locations": [
+        "Singapore"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "B.Eng. Computer Engineering"
+      ],
+      "institutions": [
+        "National University of Singapore"
+      ],
+      "dates": [
+        "2015 - 2019"
+      ]
+    }
+  ]
+}

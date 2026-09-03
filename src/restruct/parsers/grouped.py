@@ -23,9 +23,9 @@ from restruct.patterns.bullets import BULLET_RE
 from restruct.patterns.dates import DATE_RANGE_RE, SINGLE_YEAR_RE
 from restruct.patterns.layout import PAGE_FOOTER_RE
 from restruct.patterns.personal import ATTRIBUTE_INLINE_RE
+from restruct.structure.compound import routed_logical_sections
 from restruct.structure.headings import (
     _looks_like_subheading,
-    _routed_section_headings,
     _section_body_style,
 )
 from restruct.structure.keyvalue import _skill_inline_parts, _skill_subheading_value
@@ -81,7 +81,7 @@ def _build_grouped_section_debug(
     semantic_model: EmbeddingModel | None = None,
 ) -> dict[str, Any] | None:
     """Group titles, dates, paragraphs, bullets, and URLs for a minor section."""
-    routed = _routed_section_headings(lines, headings)
+    routed = routed_logical_sections(lines, headings)
     positions = [
         index
         for index, item in enumerate(routed)
@@ -90,10 +90,12 @@ def _build_grouped_section_debug(
     if occurrence >= len(positions):
         return None
     position = positions[occurrence]
-    heading = routed[position]
-    end = routed[position + 1].line_index if position + 1 < len(routed) else len(lines)
+    logical = routed[position]
+    heading = logical.heading
     heading_line = lines[heading.line_index]
-    line_range = range(heading.line_index + 1, end)
+    # Explicit indexes rather than a range: a split compound heading gives its
+    # destinations interleaved lines, not two contiguous halves.
+    line_range = logical.line_indexes
     rows = _visual_rows(lines, line_range, statistics)
     body_size, body_bold = _section_body_style([lines[index] for index in line_range])
     titled_section = section_type in {
@@ -447,7 +449,7 @@ def _build_grouped_section_debug(
     for entry in entries:
         entry.pop("_lastType", None)
         entry.pop("_lastLineBbox", None)
-    next_heading = routed[position + 1] if position + 1 < len(routed) else None
+    next_section = routed[position + 1] if position + 1 < len(routed) else None
     return {
         "sectionType": section_type,
         "heading": {
@@ -464,8 +466,11 @@ def _build_grouped_section_debug(
         "rows": [_row_value(row) for row in visible_rows],
         "entries": entries,
         "stoppedAtSection": (
-            {"sectionType": next_heading.section_type, "text": lines[next_heading.line_index].text}
-            if next_heading else None
+            {
+                "sectionType": next_section.section_type,
+                "text": lines[next_section.heading.line_index].text,
+            }
+            if next_section else None
         ),
     }
 

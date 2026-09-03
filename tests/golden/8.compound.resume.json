@@ -1,0 +1,168 @@
+{
+  "header_profile": {
+    "name": "PRIYA NAIR",
+    "job_titles": [
+      "Data Engineer"
+    ],
+    "location": "Singapore",
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null,
+    "emails": [
+      "priya.nair@example.com"
+    ],
+    "phones": [
+      "+65 8100 2233"
+    ],
+    "urls": []
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Data engineer with six years building batch and streaming pipelines for retail\nanalytics teams. Comfortable owning ingestion, transformation, and scheduling."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Data Engineer"
+      ],
+      "companies": [
+        "Harbourfront Analytics"
+      ],
+      "dates": [
+        "2022 - Present"
+      ],
+      "locations": [
+        "Singapore"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Built and operated Airflow pipelines feeding a retail reporting warehouse.",
+        "Reduced nightly batch runtime by 40% by partitioning the largest fact tables."
+      ]
+    },
+    {
+      "job_titles": [
+        "Data Engineer"
+      ],
+      "companies": [
+        "Kallang Data Works"
+      ],
+      "dates": [
+        "2019 - 2022"
+      ],
+      "locations": [
+        "Singapore"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Developed ingestion services for point-of-sale and inventory feeds."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "B.Eng. Computer Engineering"
+      ],
+      "institutions": [
+        "National University of Singapore"
+      ],
+      "dates": [
+        "2015 - 2019"
+      ],
+      "locations": [
+        "Singapore"
+      ],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": "Languages",
+      "paragraphs": [
+        "Python, SQL, Scala"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Platforms",
+      "paragraphs": [
+        "Airflow, Spark, dbt, Snowflake"
+      ],
+      "bullets": [],
+      "urls": []
+    }
+  ],
+  "projects": null,
+  "certifications": [
+    {
+      "subheadings": [
+        "Certifications: AWS Certified Data Engineer Associate (2023)"
+      ],
+      "dates": [
+        "2023"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Languages: English (Native), Tamil (Native), Mandarin (Conversational)"
+      ],
+      "bullets": []
+    }
+  ],
+  "volunteering": null,
+  "awards": [
+    {
+      "subheadings": [],
+      "dates": [
+        "2023"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Team Excellence Award, Harbourfront Analytics, 2023"
+      ]
+    }
+  ],
+  "publications": [
+    {
+      "subheadings": [],
+      "dates": [
+        "2022"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Partitioning Strategies for Retail Fact Tables, internal journal, 2022"
+      ]
+    }
+  ],
+  "references": null,
+  "interests": null,
+  "others": null
+}

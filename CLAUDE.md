@@ -84,7 +84,7 @@ fully; passes 1-3 are being built (see *Refactor in flight*).
 ingestion/   physical extraction — native PDF text, per-page OCR fallback
 document/    shared types (ExtractedLine, DetectedHeading, HeaderEntityMatch)
 layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
-structure/   heading detection, section routing, key-value pairs, metadata splitting
+structure/   heading detection, section routing, compound headings, key-value pairs
 parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
 models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
 patterns/    deterministic regex evidence, grouped by what it describes
@@ -129,8 +129,27 @@ readers to ignore it.
 ### Fixed destinations
 
 Sixteen, in `schema.V1_SECTION_ORDER`, always present in the same order. `others` is the
-conservative fallback and preserves the original heading text. Compound headings
-(`CERTIFICATIONS & LANGUAGES`) are **not yet split** — that is Milestone 3.
+conservative fallback and preserves the original heading text.
+
+### Compound headings are split on evidence, never on shape
+
+`structure/compound.py` turns one physical section into the logical sections it contains.
+Components are classified by **exact** match against the reference lists and nothing else — a
+near match is not evidence, which is why `SAFETY & TRAINING` stays in `others` rather than
+being guessed into certifications. A heading that is itself a reference name
+(`Education and Training`) is never split.
+
+A component that names a destination does not yet own anything. Content is claimed by an
+explicit label (`Certifications: …`), by a local subheading, or by deterministic evidence for
+one destination; a key-value label claims only its own line, while a subheading owns the run
+beneath it. Then:
+
+- nothing claimed anything → the first component naming a destination takes the whole section
+- something claimed and something did not → the remainder is genuinely unowned, so it goes to
+  `others` under the heading as written
+- a component that ends up owning no lines produces **no section at all** — an empty one
+  registers a destination that owns nothing, and the real section of that type is then the
+  second occurrence and goes unread
 
 ### OCR converges on the native types
 
@@ -164,9 +183,9 @@ so nothing downstream needs OCR-specific handling. Preserve this when touching i
 
 An approved 21-commit plan lives at
 `~/.claude/plans/read-prompt-txt-first-before-robust-forest.md`; the design brief it implements
-is `prompt.txt`. Milestones 0-2 are complete — passes 1-3 now run on document-relative
-statistics, and C13 added unsupported-layout detection. Milestone 3 (compound headings, ordered
-extraction precedence) is next.
+is `prompt.txt`. Milestones 0-2 are complete, as is C13 (unsupported layouts) and C14
+(compound headings). C15 — one shared resolver applying the extraction precedence explicitly —
+is next.
 
 `README.md`'s architecture section is stale: it describes the `model.py` / `routing.py` /
 `__init__.py` split that no longer exists. Scheduled for the final packaging commit.

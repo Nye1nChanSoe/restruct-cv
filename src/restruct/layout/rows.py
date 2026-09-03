@@ -5,7 +5,7 @@ A row preserves its left and right cells without deciding what they mean.
 from __future__ import annotations
 
 import statistics as statistics_module
-from typing import Any
+from typing import Any, Iterable
 
 from restruct.document.stats import DocumentStatistics
 from restruct.document.types import ExtractedLine
@@ -14,7 +14,7 @@ from restruct.geometry import rounded, union
 
 def _visual_rows(
     lines: list[ExtractedLine],
-    line_indexes: range,
+    line_indexes: Iterable[int],
     statistics: DocumentStatistics,
 ) -> list[list[tuple[int, ExtractedLine]]]:
     """Cluster separately extracted left/right cells into visual rows.

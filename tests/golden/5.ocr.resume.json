@@ -187,15 +187,10 @@
       "subheadings": [],
       "dates": [],
       "urls": [],
-      "paragraphs": [
-        "Synthetic resume created for document extraction / OCR testing. Not a real person"
-      ],
+      "paragraphs": [],
       "bullets": [
         "Thai: Native",
-        "English: Working proficiency - comfortable reading drawings, specifications, RFls, and technical emails",
-        "Driving licence: Thai private car licence",
-        "Work preference: Site engineering, construction supervision, structural coordination, QA/QC support",
-        "Availability: 30 days' notice"
+        "English: Working proficiency - comfortable reading drawings, specifications, RFls, and technical emails"
       ]
     }
   ],
@@ -204,5 +199,49 @@
   "publications": null,
   "references": null,
   "interests": null,
-  "others": null
+  "others": [
+    {
+      "heading": "LANGUAGES & ADDITIONAL INFORMATION",
+      "entries": [
+        {
+          "subheadings": [
+            "Driving licence"
+          ],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [],
+          "bullets": [
+            "Thai private car licence"
+          ]
+        },
+        {
+          "subheadings": [
+            "Work preference"
+          ],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [],
+          "bullets": [
+            "Site engineering, construction supervision, structural coordination, QA/QC support"
+          ]
+        },
+        {
+          "subheadings": [
+            "Availability"
+          ],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [
+            "Synthetic resume created for document extraction / OCR testing. Not a real person"
+          ],
+          "bullets": [
+            "30 days' notice"
+          ]
+        }
+      ]
+    }
+  ]
 }
