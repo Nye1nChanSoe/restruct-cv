@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pymupdf
-from PIL import Image, ImageDraw
 
 from restruct.configs import SETTINGS
 from restruct.debug.colors import (
@@ -19,7 +18,7 @@ from restruct.debug.colors import (
     EDUCATION_STYLES,
     EXPERIENCE_STYLES,
     GROUPED_STYLES,
-    LABEL_BACKGROUND,
+    ItemStyle,
     PROJECTS_STYLES,
     SKILLS_STYLES,
     SUMMARY_STYLES,
@@ -28,6 +27,9 @@ from restruct.debug.colors import (
     profile_attribute_color,
 )
 from restruct.geometry import pixel_box
+from restruct.debug import canvas
+from restruct.debug.canvas import stroke_width
+from restruct.structure.resolver import is_model_backed
 
 
 def render_debug_images(
@@ -38,13 +40,8 @@ def render_debug_images(
     """Draw only the top profile region and its detected entities."""
     if header_profile is None:
         return
-    output_directory.mkdir(parents=True, exist_ok=True)
-    matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
     page_number = header_profile["page"]
-    page = document[page_number - 1]
-    pixmap = page.get_pixmap(matrix=matrix, alpha=False)
-    image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
-    draw = ImageDraw.Draw(image)
+    image, draw = canvas.page_canvas(document, page_number)
 
     profile_box = pixel_box(header_profile["bbox"])
     draw.rectangle(
@@ -52,43 +49,69 @@ def render_debug_images(
         outline=SETTINGS.debug.header_region_color,
         width=SETTINGS.debug.header_region_stroke_width,
     )
-    draw.text(
-        (
-            profile_box[0] + SETTINGS.debug.label_x_padding,
-            max(0, profile_box[1] - SETTINGS.debug.label_y_offset),
-        ),
-        "header_profile",
-        fill=SETTINGS.debug.header_region_color,
-    )
+    placed: list[tuple[int, int, int, int]] = [
+        canvas.place_label(
+            draw,
+            position=(
+                profile_box[0] + SETTINGS.debug.label_x_padding,
+                max(0, profile_box[1] - SETTINGS.debug.label_y_offset),
+            ),
+            text="header_profile",
+            color=SETTINGS.debug.header_region_color,
+            avoid=[],
+        )
+    ]
 
     entity_colors = dict(SETTINGS.debug.header_entity_colors)
-    for entity in header_profile["entities"]:
-        color = entity_colors[entity["type"]]
-        entity_box = pixel_box(entity["bbox"])
+    entity_boxes = [pixel_box(entity["bbox"]) for entity in header_profile["entities"]]
+    counts: dict[str, int] = {}
+    for index, entity in enumerate(header_profile["entities"]):
+        entity_type = str(entity["type"])
+        color = entity_colors[entity_type]
+        entity_box = entity_boxes[index]
+        # The header used to draw every entity at one weight, so a name NER
+        # guessed looked exactly like an email a regex read off the page.
         draw.rectangle(
             entity_box,
             outline=color,
-            width=SETTINGS.debug.header_entity_stroke_width,
+            width=stroke_width(entity_type, str(entity.get("detectionMethod", ""))),
         )
-        if entity["type"] == "name":
-            label_position = (
-                entity_box[2] + SETTINGS.debug.label_x_padding,
-                entity_box[1],
-            )
-            label = "name"
-        else:
-            label_position = (
+        counts[entity_type] = counts.get(entity_type, 0) + 1
+        preferred = (
+            (entity_box[2] + SETTINGS.debug.label_x_padding, entity_box[1])
+            if entity_type == "name"
+            else (
                 entity_box[0] + SETTINGS.debug.label_x_padding,
                 max(0, entity_box[1] - SETTINGS.debug.label_y_offset),
             )
-            label = entity["type"]
-        draw.text(
-            label_position,
-            label,
-            fill=color,
+        )
+        placed.append(
+            canvas.place_label(
+                draw,
+                position=preferred,
+                text=entity_type,
+                color=color,
+                avoid=[box for other, box in enumerate(entity_boxes) if other != index]
+                + placed,
+                # Below the box rather than beside it: header entities sit
+                # shoulder to shoulder on one line, so the space to the right
+                # is the next entity's.
+                fallback=(
+                    entity_box[0] + SETTINGS.debug.label_x_padding,
+                    min(image.height - 12, entity_box[3] + 2),
+                ),
+            )
         )
 
-    image.save(output_directory / f"page-{page_number}.png")
+    canvas.legend(
+        draw,
+        [
+            (ItemStyle(entity_colors[name], name), count)
+            for name, count in counts.items()
+        ],
+        title=f"pass 5 - header profile  |  page {page_number}",
+    )
+    canvas.save(image, output_directory, page_number)
 
 
 def render_summary_debug_images(
@@ -112,34 +135,53 @@ def render_summary_debug_images(
         items_by_page.setdefault(int(item["page"]), []).append(item)
 
     colors = colors_of(SUMMARY_STYLES, "summary")
-    matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
     for page_number, page_items in sorted(items_by_page.items()):
-        page = document[page_number - 1]
-        pixmap = page.get_pixmap(matrix=matrix, alpha=False)
-        image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
-        draw = ImageDraw.Draw(image)
-        for item in page_items:
+        image, draw = canvas.page_canvas(document, page_number)
+        counts: dict[str, int] = {}
+        styles: dict[str, ItemStyle] = {}
+        placed: list[tuple[int, int, int, int]] = []
+        item_boxes = [pixel_box(item["bbox"]) for item in page_items]
+        for index, item in enumerate(page_items):
             item_type = str(item["type"])
             color = colors[item_type]
-            item_box = pixel_box(item["bbox"])
+            item_box = item_boxes[index]
             draw.rectangle(
                 item_box,
                 outline=color,
                 width=(
-                    SETTINGS.debug.heading_stroke_width
-                    if item_type == "section_heading"
-                    else SETTINGS.debug.content_stroke_width
+                    SETTINGS.debug.content_stroke_width
+                    if item_type != "section_heading"
+                    and not is_model_backed(str(item.get("detectionMethod", "")))
+                    else stroke_width(item_type, str(item.get("detectionMethod", "")))
                 ),
             )
-            draw.text(
-                (
-                    item_box[0] + SETTINGS.debug.label_x_padding,
-                    max(0, item_box[1] - SETTINGS.debug.label_y_offset),
-                ),
-                item_type,
-                fill=color,
+            counts[item_type] = counts.get(item_type, 0) + 1
+            styles[item_type] = ItemStyle(color, item_type)
+            placed.append(
+                canvas.place_label(
+                    draw,
+                    position=(
+                        item_box[0] + SETTINGS.debug.label_x_padding,
+                        max(0, item_box[1] - SETTINGS.debug.label_y_offset),
+                    ),
+                    text=item_type,
+                    color=color,
+                    avoid=[
+                        box for other, box in enumerate(item_boxes) if other != index
+                    ]
+                    + placed,
+                    fallback=(
+                        item_box[0] + SETTINGS.debug.label_x_padding,
+                        min(image.height - 12, item_box[3] + 2),
+                    ),
+                )
             )
-        image.save(output_directory / f"page-{page_number}.png")
+        canvas.legend(
+            draw,
+            [(styles[name], count) for name, count in counts.items()],
+            title=f"pass 5 - summary  |  page {page_number}",
+        )
+        canvas.save(image, output_directory, page_number)
 
 
 def _render_entry_debug_images(
@@ -153,35 +195,27 @@ def _render_entry_debug_images(
     items_by_page: dict[int, list[dict[str, Any]]] = {}
     for item in items:
         items_by_page.setdefault(int(item["page"]), []).append(item)
-    output_directory.mkdir(parents=True, exist_ok=True)
-    matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
     for page_number, page_items in sorted(items_by_page.items()):
-        page = document[page_number - 1]
-        pixmap = page.get_pixmap(matrix=matrix, alpha=False)
-        image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
-        draw = ImageDraw.Draw(image)
+        image, draw = canvas.page_canvas(document, page_number)
         page_item_boxes = [pixel_box(item["bbox"]) for item in page_items]
+        counts: dict[str, int] = {}
+        styles: dict[str, ItemStyle] = {}
         placed_label_boxes: list[tuple[int, int, int, int]] = []
         for item_index, item in enumerate(page_items):
             item_type = item["type"]
             box = pixel_box(item["bbox"])
             color = str(item.get("_debugColor") or colors[item_type])
-            detection_method = str(item.get("detectionMethod", ""))
-            model_entity = detection_method.startswith(("distilbert", "minilm"))
             draw.rectangle(
                 box,
                 outline=color,
-                width=(
-                    SETTINGS.debug.header_entity_stroke_width + 2
-                    if model_entity
-                    else (
-                        SETTINGS.debug.heading_stroke_width
-                        if item_type == "section_heading"
-                        else 2
-                    )
+                width=stroke_width(
+                    item_type,
+                    str(item.get("detectionMethod", "")),
                 ),
             )
             label = str(item.get("_debugLabel") or labels[item_type])
+            counts[label] = counts.get(label, 0) + 1
+            styles[label] = ItemStyle(color, label)
             measured_label_box = draw.textbbox((0, 0), label)
             label_width = measured_label_box[2] - measured_label_box[0]
             label_height = measured_label_box[3] - measured_label_box[1]
@@ -203,40 +237,36 @@ def _render_entry_debug_images(
                     box[0] + SETTINGS.debug.label_x_padding,
                     max(0, box[1] - SETTINGS.debug.label_y_offset),
                 )
-            label_box = draw.textbbox(label_position, label)
-            collides = any(
-                label_box[0] < other_box[2]
-                and other_box[0] < label_box[2]
-                and label_box[1] < other_box[3]
-                and other_box[1] < label_box[3]
-                for other_index, other_box in enumerate(page_item_boxes)
-                if other_index != item_index
-            ) or any(
-                label_box[0] < other_box[2]
-                and other_box[0] < label_box[2]
-                and label_box[1] < other_box[3]
-                and other_box[1] < label_box[3]
-                for other_box in placed_label_boxes
-            )
-            if collides:
-                label_position = (
-                    max(
-                        0,
-                        box[0] - label_width - SETTINGS.debug.label_x_padding,
-                    ),
-                    max(
-                        0,
-                        min(
-                            image.height - label_height,
-                            (box[1] + box[3] - label_height) // 2,
+            placed_label_boxes.append(
+                canvas.place_label(
+                    draw,
+                    position=label_position,
+                    text=label,
+                    color=color,
+                    avoid=[
+                        other_box
+                        for other_index, other_box in enumerate(page_item_boxes)
+                        if other_index != item_index
+                    ]
+                    + placed_label_boxes,
+                    fallback=(
+                        max(0, box[0] - label_width - SETTINGS.debug.label_x_padding),
+                        max(
+                            0,
+                            min(
+                                image.height - label_height,
+                                (box[1] + box[3] - label_height) // 2,
+                            ),
                         ),
                     ),
                 )
-                label_box = draw.textbbox(label_position, label)
-            draw.rectangle(label_box, fill=LABEL_BACKGROUND)
-            draw.text(label_position, label, fill=color)
-            placed_label_boxes.append(label_box)
-        image.save(output_directory / f"page-{page_number}.png")
+            )
+        canvas.legend(
+            draw,
+            [(styles[name], count) for name, count in counts.items()],
+            title=f"pass 5 - {output_directory.name}  |  page {page_number}",
+        )
+        canvas.save(image, output_directory, page_number)
 
 
 def render_combined_debug_images(

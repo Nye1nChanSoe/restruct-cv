@@ -154,3 +154,60 @@ def test_both_halves_of_a_split_heading_stay_visible(tmp_path: Path) -> None:
     with Image.open(tmp_path / "single" / "page-1.png") as single_image:
         single_pixels = list(single_image.convert("RGB").getdata())
     assert split_pixels != single_pixels, "second half of the split drew nothing new"
+
+
+# -- one renderer -----------------------------------------------------------
+
+
+def test_a_model_backed_box_is_drawn_more_heavily_than_a_deterministic_one() -> None:
+    """A reader has to be able to tell at a glance whether a box is something
+    the document said or something a model concluded."""
+    from restruct.debug.canvas import stroke_width
+
+    assert stroke_width("job_title", "semantic_similarity") > stroke_width(
+        "date", "date_regex"
+    )
+    assert stroke_width("company", "distilbert_ner") > stroke_width(
+        "bullet", "bullet_marker"
+    )
+
+
+def test_a_section_heading_keeps_its_own_weight() -> None:
+    """Headings are already distinguished by colour and by being headings, and
+    the model that confirmed one says nothing about how thick to draw it."""
+    from restruct.debug.canvas import stroke_width
+
+    assert stroke_width("section_heading", "geometry_semantic") == stroke_width(
+        "section_heading", "geometry_typography"
+    )
+
+
+def test_a_label_moves_aside_rather_than_covering_what_it_annotates(
+    tmp_path: Path,
+) -> None:
+    pdf = pymupdf.open(SYNTHETIC_DIRECTORY / "6.pdf")
+    _, draw = canvas.page_canvas(pdf, 1)
+    blocked = draw.textbbox((100, 100), "location")
+    placed = canvas.place_label(
+        draw,
+        position=(100, 100),
+        text="location",
+        color="#EF6C00",
+        avoid=[blocked],
+        fallback=(100, 400),
+    )
+    assert placed[1] >= 400
+
+
+def test_a_label_stays_put_when_nothing_is_in_the_way(tmp_path: Path) -> None:
+    pdf = pymupdf.open(SYNTHETIC_DIRECTORY / "6.pdf")
+    _, draw = canvas.page_canvas(pdf, 1)
+    placed = canvas.place_label(
+        draw,
+        position=(100, 100),
+        text="location",
+        color="#EF6C00",
+        avoid=[(900, 900, 1000, 1000)],
+        fallback=(100, 400),
+    )
+    assert placed[1] < 400

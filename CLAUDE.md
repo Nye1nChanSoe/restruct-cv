@@ -76,6 +76,14 @@ geometric.** Each carries a legend naming its layers and their counts.
 - **pass 4** draws which destination each heading became. A compound heading splits into
   several sections from one line, so each is drawn inset and labelled
   `languages <- CERTIFICATIONS & LANGUAGES` — the split is right or wrong at a glance.
+- **pass 5** overlays are committed (see above) and carry legends like the rest.
+
+Every overlay goes through `debug/canvas.py`: one page canvas, one label placer, one legend.
+**A model-backed box is drawn more heavily than a deterministic one**, so a reader can tell
+whether a box is something the document said or something a model concluded. That question is
+asked of `resolver.is_model_backed()`, not of how the method name is spelled — the old prefix
+test for `distilbert`/`minilm` silently missed `semantic_similarity`,
+`ner_minilm_reconciliation` and `geometry_ner_reconstruction`.
 
 The unsupported fixtures are not in the batch run, since their parse is untrustworthy by
 definition. Render their overlays with:
@@ -101,7 +109,7 @@ structure/   heading detection, routing, compound headings, precedence resolver,
 parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
 models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
 patterns/    deterministic regex evidence, grouped by what it describes
-debug/       artifacts (JSON) and render (Pillow overlays), one colour registry
+debug/       artifacts (JSON) and render (Pillow overlays), one canvas, one colour registry
 schema.py    the lean, versioned clean output
 pipeline.py  orchestration only — the only module that knows the stage order
 cli.py       argparse and filesystem layout only
@@ -222,9 +230,9 @@ so nothing downstream needs OCR-specific handling. Preserve this when touching i
 
 An approved 21-commit plan lives at
 `~/.claude/plans/read-prompt-txt-first-before-robust-forest.md`; the design brief it implements
-is `prompt.txt`. Milestones 0-2 are complete, as are C13 (unsupported layouts), C14 (compound
-headings) and C15 (ordered precedence, context-sensitive separators, `current_income` /
-`current_package`). C16 — one unified Pillow renderer across all five passes — is next.
+is `prompt.txt`. **Milestone 3 is complete** (C14 compound headings, C15 ordered precedence,
+C16 unified renderer), as is C13. Milestone 4 — the product surface, starting with C17's real
+`restruct <path> -o <out>` CLI — is next.
 
 C15 left one item of its plan undone on purpose: `_experience_line_entities` still reconciles
 titles and companies across segments with its own logic rather than through `SpanResolver`. The

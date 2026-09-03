@@ -15,6 +15,7 @@ from PIL import Image, ImageDraw
 from restruct.configs import SETTINGS
 from restruct.debug.colors import LABEL_BACKGROUND, ItemStyle
 from restruct.geometry import pixel_box
+from restruct.structure.resolver import is_model_backed
 
 Box = tuple[float, float, float, float] | list[float]
 
@@ -64,6 +65,36 @@ def text_at(
     draw.text(position, text, fill=color)
 
 
+def place_label(
+    draw: ImageDraw.ImageDraw,
+    *,
+    position: tuple[int, int],
+    text: str,
+    color: str,
+    avoid: list[tuple[int, int, int, int]],
+    fallback: tuple[int, int] | None = None,
+) -> tuple[int, int, int, int]:
+    """Draw one label, moving it aside when it would land on something.
+
+    ``avoid`` is every box the label must not cover -- the other items on the
+    page and the labels already placed. Callers choose where a label prefers to
+    sit, because that is their own policy; collision handling is shared, so an
+    overlay never silently hides the thing it is annotating.
+
+    Returns where the label ended up, to be added to the caller's ``avoid``.
+    """
+    box = draw.textbbox(position, text)
+    if fallback is not None and any(
+        box[0] < other[2] and other[0] < box[2] and box[1] < other[3] and other[1] < box[3]
+        for other in avoid
+    ):
+        position = fallback
+        box = draw.textbbox(position, text)
+    draw.rectangle((box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1), fill=LABEL_BACKGROUND)
+    draw.text(position, text, fill=color)
+    return box
+
+
 def legend(
     draw: ImageDraw.ImageDraw,
     styles: list[tuple[ItemStyle, int]],
@@ -87,3 +118,24 @@ def legend(
 def save(image: Image.Image, output_directory: Path, page_number: int) -> None:
     output_directory.mkdir(parents=True, exist_ok=True)
     image.save(output_directory / f"page-{page_number}.png")
+
+
+def stroke_width(item_type: str, detection_method: str) -> int:
+    """How heavily to draw one item.
+
+    Model-backed boxes must stay visually distinct from deterministic ones --
+    a reader has to be able to tell at a glance whether a box is something the
+    document said or something a model concluded. That question is asked of
+    ``is_model_backed`` rather than of the method name's spelling, which is how
+    ``ner_minilm_reconciliation`` and ``semantic_similarity`` were being drawn
+    as though they were deterministic.
+
+    Section headings keep their own weight: they are already distinguished by
+    colour and by being headings, and the model that confirmed one says
+    nothing useful about how thick its box should be.
+    """
+    if item_type == "section_heading":
+        return SETTINGS.debug.heading_stroke_width
+    if is_model_backed(detection_method):
+        return SETTINGS.debug.header_entity_stroke_width + 2
+    return 2

@@ -106,3 +106,91 @@ def test_the_tier_that_claimed_a_match_is_recorded() -> None:
     resolver.claim(guessed)
     assert resolver.tier_of(deterministic) is Tier.DETERMINISTIC
     assert resolver.tier_of(guessed) is Tier.GEOMETRY
+
+
+# -- reading a recorded detection back ---------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("method", "expected"),
+    [
+        ("date_regex", Tier.DETERMINISTIC),
+        ("bullet_marker", Tier.DETERMINISTIC),
+        ("delimiter_colon", Tier.DETERMINISTIC),
+        ("institution_pattern", Tier.DETERMINISTIC),
+        ("regex_context_fallback", Tier.CONTEXT),
+        ("distilbert_ner", Tier.NER),
+        ("minilm_reconciled", Tier.SEMANTIC),
+        ("semantic_similarity", Tier.SEMANTIC),
+        ("geometry_row", Tier.GEOMETRY),
+        ("experience_metadata", Tier.GEOMETRY),
+        ("unclassified", Tier.UNRESOLVED),
+    ],
+)
+def test_a_detection_method_reports_its_tier(method: str, expected: Tier) -> None:
+    from restruct.structure.resolver import tier_for_detection_method
+
+    assert tier_for_detection_method(method) is expected
+
+
+@pytest.mark.parametrize(
+    ("method", "expected"),
+    [
+        ("geometry_ner_reconstruction", Tier.GEOMETRY),
+        ("geometry_semantic", Tier.GEOMETRY),
+        ("ner_minilm_reconciliation", Tier.SEMANTIC),
+    ],
+)
+def test_a_composite_method_takes_its_weakest_input(method: str, expected: Tier) -> None:
+    """A conclusion is only as strong as the softest evidence under it, so
+    "geometry that consulted NER" is geometry."""
+    from restruct.structure.resolver import tier_for_detection_method
+
+    assert tier_for_detection_method(method) is expected
+
+
+def test_an_unknown_method_is_treated_as_unresolved() -> None:
+    """Assuming an unrecognised method is trustworthy is the failure that
+    costs something; assuming it is not costs a thicker box."""
+    from restruct.structure.resolver import is_model_backed, tier_for_detection_method
+
+    assert tier_for_detection_method("something_new") is Tier.UNRESOLVED
+    assert not is_model_backed("something_new")
+
+
+@pytest.mark.parametrize(
+    "method",
+    [
+        "distilbert_ner",
+        "minilm_label",
+        # The three the old prefix test silently missed. Model output was being
+        # drawn as though the document had said it outright.
+        "ner_minilm_reconciliation",
+        "semantic_similarity",
+        "geometry_ner_reconstruction",
+    ],
+)
+def test_every_method_a_model_touched_is_model_backed(method: str) -> None:
+    from restruct.structure.resolver import is_model_backed
+
+    assert is_model_backed(method)
+
+
+@pytest.mark.parametrize(
+    "method",
+    ["date_regex", "bullet_marker", "geometry_row", "delimiter_colon", "unclassified"],
+)
+def test_deterministic_and_geometric_methods_are_not_model_backed(method: str) -> None:
+    from restruct.structure.resolver import is_model_backed
+
+    assert not is_model_backed(method)
+
+
+def test_trust_and_model_involvement_are_different_questions() -> None:
+    """"geometry_semantic" is a heading placed by geometry and confirmed by
+    MiniLM: geometry-tier for how far to trust it, model-backed for how to
+    draw it. One function answering both would have to get one of them wrong."""
+    from restruct.structure.resolver import is_model_backed, tier_for_detection_method
+
+    assert tier_for_detection_method("geometry_semantic") is Tier.GEOMETRY
+    assert is_model_backed("geometry_semantic")

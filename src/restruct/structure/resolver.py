@@ -160,3 +160,59 @@ class SpanResolver:
         the geometry name guess, the nationality fallback -- asks this one.
         """
         return any(match.kind == kind for match in self._matches)
+
+
+# Which tier a recorded ``detectionMethod`` belongs to. Markers rather than an
+# exhaustive list of method names, because the names compose -- a method is
+# free to say it used geometry *and* NER, and a new one should classify itself
+# without this table having to be updated in step.
+_TIER_MARKERS: dict[Tier, tuple[str, ...]] = {
+    Tier.DETERMINISTIC: ("regex", "pattern", "delimiter", "marker", "annotation"),
+    Tier.CONTEXT: ("context",),
+    Tier.NER: ("ner", "distilbert"),
+    Tier.SEMANTIC: ("minilm", "semantic"),
+    # "metadata" is here because a line is identified as metadata by where
+    # it sits and how it is set, not by anything it says.
+    Tier.GEOMETRY: ("geometry", "metadata"),
+    Tier.UNRESOLVED: ("unclassified",),
+}
+
+
+def tier_for_detection_method(detection_method: str) -> Tier:
+    """How much a recorded detection is worth.
+
+    A method naming several tiers takes the weakest of them: a conclusion is
+    only as strong as the softest evidence it rests on, so
+    ``geometry_ner_reconstruction`` is geometry that consulted NER, not NER.
+    An unrecognised method is treated as unresolved rather than assumed good.
+    """
+    folded = detection_method.casefold()
+    found = [
+        tier
+        for tier, markers in _TIER_MARKERS.items()
+        if any(marker in folded for marker in markers)
+    ]
+    return max(found) if found else Tier.UNRESOLVED
+
+
+def is_model_backed(detection_method: str) -> bool:
+    """Whether a model was involved at all.
+
+    Deliberately a different question from ``tier_for_detection_method``. That
+    one asks how far to trust a span and takes the weakest input; this asks
+    whether a model touched it and takes any. ``geometry_semantic`` is a
+    heading placed by geometry and confirmed by MiniLM: geometry-tier for
+    trust, model-backed for drawing.
+
+    The debug overlays turn on this. Before it was a prefix test for
+    "distilbert" or "minilm", which silently missed
+    ``ner_minilm_reconciliation``, ``semantic_similarity`` and
+    ``geometry_ner_reconstruction`` -- model output drawn as though the
+    document had said it outright.
+    """
+    folded = detection_method.casefold()
+    return any(
+        marker in folded
+        for tier in (Tier.NER, Tier.SEMANTIC)
+        for marker in _TIER_MARKERS[tier]
+    )
