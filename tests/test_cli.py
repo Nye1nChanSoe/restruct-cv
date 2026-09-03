@@ -226,3 +226,56 @@ def test_stage_five_writes_the_evidence_track_and_the_overlay(
     # Evidence lives here, never in the result.
     assert "bbox" in (raw / "experience.json").read_text(encoding="utf-8")
     assert "bbox" not in output.read_text(encoding="utf-8")
+
+
+# -- -o naming a directory ---------------------------------------------------
+
+
+@pytest.mark.parametrize("spec", [".", "./", "out/", "nested/deep/"])
+def test_a_directory_output_takes_its_name_from_the_input(spec: str) -> None:
+    """A trailing separator is how a caller says "directory" about one that
+    does not exist yet, so the raw argument is what gets tested -- Path()
+    normalises that separator away."""
+    resolved = cli.resolve_output_path(spec, Path("resumes/priya-nair.pdf"))
+    assert resolved.name == "priya-nair.json"
+    assert resolved.parent == Path(spec)
+
+
+def test_an_existing_directory_is_recognised_without_a_separator(
+    tmp_path: Path,
+) -> None:
+    resolved = cli.resolve_output_path(str(tmp_path), Path("1.pdf"))
+    assert resolved == tmp_path / "1.json"
+
+
+@pytest.mark.parametrize("spec", ["out.json", "report", "a/b/result.json"])
+def test_anything_else_is_taken_as_the_file_name(spec: str) -> None:
+    """Guessing that a suffix-less path is a directory would make '-o report'
+    create one nobody asked for."""
+    assert cli.resolve_output_path(spec, Path("1.pdf")) == Path(spec)
+
+
+def test_the_default_name_does_not_collide_between_resumes() -> None:
+    """A fixed 'output.json' would have each extraction silently overwrite the
+    last when several land in one directory."""
+    names = {
+        cli.resolve_output_path(".", Path(f"{stem}.pdf")).name
+        for stem in ("1", "2", "priya-nair")
+    }
+    assert len(names) == 3
+
+
+def test_a_suffixless_output_does_not_collide_with_its_artifact_directory() -> None:
+    """'-o report' would otherwise put the result and the artifacts at the
+    same path, and the write would fail on a directory."""
+    assert cli._artifact_directory(Path("report")) == Path("report-artifacts")
+    assert cli._artifact_directory(Path("report.json")) == Path("report")
+
+
+@needs_models
+def test_extracting_into_the_current_directory(tmp_path: Path) -> None:
+    import shutil
+
+    shutil.copy(NATIVE_FIXTURE, tmp_path / "priya.pdf")
+    assert cli.main([str(tmp_path / "priya.pdf"), "-o", str(tmp_path)]) == cli.EXIT_OK
+    assert (tmp_path / "priya.json").exists()

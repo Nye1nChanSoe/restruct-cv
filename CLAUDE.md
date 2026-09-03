@@ -14,6 +14,7 @@ uv run python -m tests.scorecard               # per-field precision/recall/F1
 uv run python -m tests.scorecard --update-baseline   # re-freeze the accuracy floor
 
 uv run restruct <path> -o <out.json>           # one resume; quiet, writes nothing else
+uv run restruct <path> -o .                    # a directory: writes <resume>.json into it
 uv run restruct <path> -o <out.json> --debug   # + stage 4-5 artifacts in <out>/
 uv run restruct <path> -o <out.json> --stages 1-3   # + those stages (implies --debug)
 
@@ -21,6 +22,12 @@ uv run restruct                                # batch: every PDF in resumes-syn
 uv run restruct --truths                       # batch: only resumes-truths/ (local, gitignored)
 uv run restruct --unsupported                  # batch: resumes-unsupported/ (see below)
 ```
+
+`-o` takes a file or a directory. A directory — `.`, `out/`, an existing path — writes
+`<resume>.json` inside it, named from the input rather than a fixed `output.json` so several
+extractions into one directory do not overwrite each other. Detection uses the raw argument,
+because `Path("out/")` normalises away the trailing separator that says "directory" about one
+that does not exist yet.
 
 `--stages` selects **debug artifacts, never whether a pass runs** — every pass feeds the next,
 so a flag that skipped one would quietly produce a different resume. `--stages` implies

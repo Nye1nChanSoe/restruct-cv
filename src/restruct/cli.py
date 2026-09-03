@@ -12,6 +12,7 @@ in a pipe.
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -103,12 +104,12 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "-o",
         "--output",
-        type=Path,
         metavar="FILE",
         help=(
-            "Where to write the resume JSON. Debug artifacts, if any, go in a "
-            "directory beside it named after the file: '-o out.json' writes "
-            "out/raw/ and out/debug/."
+            "Where to write the resume JSON. A directory ('-o .', '-o out/') "
+            "writes <resume>.json inside it. Debug artifacts, if any, go in a "
+            "directory beside the result: '-o out.json' writes out/raw/ and "
+            "out/debug/."
         ),
     )
     parser.add_argument(
@@ -151,6 +152,44 @@ def _selected_stages(arguments: argparse.Namespace) -> frozenset[int]:
     if arguments.stages is not None:
         return arguments.stages
     return DEFAULT_DEBUG_STAGES if arguments.debug else frozenset()
+
+
+def resolve_output_path(output: str, source: Path) -> Path:
+    """Let ``-o`` name a directory and fill in the file name from the input.
+
+    ``-o .`` and ``-o out/`` write ``<resume>.json`` into that directory. The
+    name comes from the input rather than being a fixed "output.json", so that
+    extracting several resumes into one directory does not have each silently
+    overwrite the last.
+
+    Takes the raw argument rather than a Path: ``Path("out/")`` normalises the
+    trailing separator away, and that separator is exactly how a caller says
+    "this is a directory" about one that does not exist yet.
+
+    Without a trailing separator the path is a file, even with no suffix,
+    because guessing otherwise would make ``-o report`` create a directory
+    nobody asked for.
+    """
+    path = Path(output)
+    names_a_directory = (
+        path.is_dir()
+        or output in {".", ".."}
+        or output.endswith(("/", os.sep))
+    )
+    return path / f"{source.stem}.json" if names_a_directory else path
+
+
+def _artifact_directory(output_path: Path) -> Path:
+    """Where debug artifacts go: a directory beside the result, named for it.
+
+    ``-o out.json`` gives ``out/``. A suffix-less ``-o out`` would give the
+    same path as the result itself, so that one case is disambiguated rather
+    than left to fail as a write to a directory.
+    """
+    candidate = output_path.with_suffix("")
+    if candidate == output_path:
+        return output_path.parent / f"{output_path.name}-artifacts"
+    return candidate
 
 
 def _validate(path: Path) -> None:
@@ -209,7 +248,7 @@ def _extract_one(
     models,
 ) -> None:
     """Extract one resume to an explicit output file."""
-    artifact_directory = output_path.with_suffix("")
+    artifact_directory = _artifact_directory(output_path)
     try:
         extract_resume(
             pdf_path,
@@ -275,8 +314,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if arguments.path is not None:
             _validate(arguments.path)
+            output_path = resolve_output_path(arguments.output, arguments.path)
             models = _load_models(project_root)
-            _extract_one(arguments.path, arguments.output, stages, models)
+            _extract_one(arguments.path, output_path, stages, models)
             return EXIT_OK
 
         if arguments.truths:
