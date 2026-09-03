@@ -17,6 +17,26 @@ import pymupdf
 from PIL import Image, ImageDraw
 
 from restruct.configs import SETTINGS
+from restruct.debug.artifacts import (
+    write_education_debug,
+    write_experience_debug,
+    write_ocr_extraction,
+    write_projects_debug,
+    write_raw_extraction,
+    write_skills_debug,
+    write_summary_debug,
+    write_supplementary_sections_debug,
+)
+from restruct.debug.render import (
+    render_combined_debug_images,
+    render_debug_images,
+    render_education_debug_images,
+    render_experience_debug_images,
+    render_projects_debug_images,
+    render_skills_debug_images,
+    render_summary_debug_images,
+    render_supplementary_sections_debug_images,
+)
 from restruct.document.types import (
     DetectedHeading,
     ExtractedLine,
@@ -56,20 +76,7 @@ from restruct.routing import (
     build_skills_debug,
     build_supplementary_sections_debug,
     first_header_boundary,
-    render_combined_debug_images,
-    render_education_debug_images,
-    render_experience_debug_images,
-    render_projects_debug_images,
-    render_skills_debug_images,
-    render_supplementary_sections_debug_images,
-    render_summary_debug_images,
     summary_debug_value,
-    write_education_debug,
-    write_experience_debug,
-    write_projects_debug,
-    write_skills_debug,
-    write_supplementary_sections_debug,
-    write_summary_debug,
 )
 from restruct.schema import build_v1_resume, write_v1_resume
 
@@ -294,52 +301,6 @@ def extract_lines(
                     if line is not None:
                         lines.append(line)
     return lines, raw_pages, ocr_pages
-
-
-def write_raw_extraction(
-    pdf_path: Path,
-    raw_pages: list[dict[str, Any]],
-    output_path: Path,
-) -> None:
-    """Persist the untouched native text blocks captured before OCR or MiniLM."""
-    if not SETTINGS.debug.raw_extraction_enabled:
-        return
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(
-            {
-                "source": pdf_path.name,
-                "pages": raw_pages,
-            },
-            indent=2,
-            ensure_ascii=False,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
-
-
-def write_ocr_extraction(
-    pdf_path: Path,
-    ocr_pages: list[dict[str, Any]],
-    output_path: Path,
-) -> None:
-    """Persist reconstructed blocks produced from Tesseract TSV output."""
-    if not SETTINGS.debug.ocr_extraction_enabled or not ocr_pages:
-        return
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(
-            {
-                "source": pdf_path.name,
-                "pages": ocr_pages,
-            },
-            indent=2,
-            ensure_ascii=False,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
 
 
 def _append_regex_matches(
@@ -1012,67 +973,6 @@ def build_header_profile(
         "stoppedAtSection": boundary_value,
         "entities": entities,
     }
-
-
-def render_debug_images(
-    document: pymupdf.Document,
-    header_profile: dict[str, Any] | None,
-    output_directory: Path,
-) -> None:
-    """Draw only the top profile region and its detected entities."""
-    if header_profile is None:
-        return
-    output_directory.mkdir(parents=True, exist_ok=True)
-    matrix = pymupdf.Matrix(SETTINGS.debug.scale, SETTINGS.debug.scale)
-    page_number = header_profile["page"]
-    page = document[page_number - 1]
-    pixmap = page.get_pixmap(matrix=matrix, alpha=False)
-    image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
-    draw = ImageDraw.Draw(image)
-
-    profile_box = pixel_box(header_profile["bbox"])
-    draw.rectangle(
-        profile_box,
-        outline=SETTINGS.debug.header_region_color,
-        width=SETTINGS.debug.header_region_stroke_width,
-    )
-    draw.text(
-        (
-            profile_box[0] + SETTINGS.debug.label_x_padding,
-            max(0, profile_box[1] - SETTINGS.debug.label_y_offset),
-        ),
-        "header_profile",
-        fill=SETTINGS.debug.header_region_color,
-    )
-
-    entity_colors = dict(SETTINGS.debug.header_entity_colors)
-    for entity in header_profile["entities"]:
-        color = entity_colors[entity["type"]]
-        entity_box = pixel_box(entity["bbox"])
-        draw.rectangle(
-            entity_box,
-            outline=color,
-            width=SETTINGS.debug.header_entity_stroke_width,
-        )
-        if entity["type"] == "name":
-            label_position = (
-                entity_box[2] + SETTINGS.debug.label_x_padding,
-                entity_box[1],
-            )
-            label = "name"
-        else:
-            label_position = (
-                entity_box[0] + SETTINGS.debug.label_x_padding,
-                max(0, entity_box[1] - SETTINGS.debug.label_y_offset),
-            )
-            label = entity["type"]
-        draw.text(
-            label_position,
-            label,
-            fill=color,
-        )
-
-    image.save(output_directory / f"page-{page_number}.png")
 
 
 def extract_resume(
