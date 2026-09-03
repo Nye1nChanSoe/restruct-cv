@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import rounded
 from restruct.layout.blocks import continues_block, extend_block
@@ -20,6 +21,7 @@ def _content_blocks(
     lines: list[ExtractedLine],
     line_indexes: list[int],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    statistics: DocumentStatistics,
 ) -> list[dict[str, Any]]:
     """Route lines into subheadings, paragraphs, or reconstructed bullets."""
     content_lines = [lines[index] for index in line_indexes]
@@ -64,6 +66,7 @@ def _content_blocks(
                 line.bbox,
                 same_page=previous["page"] == line.page,
                 require_horizontal_overlap=True,
+                statistics=statistics,
             ):
                 extend_block(
                     previous,
@@ -81,6 +84,7 @@ def _content_blocks(
                 line.bbox,
                 same_page=previous["page"] == line.page,
                 require_horizontal_overlap=True,
+                statistics=statistics,
             ):
                 extend_block(
                     previous,
@@ -115,6 +119,7 @@ def build_sections(
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    statistics: DocumentStatistics,
 ) -> list[dict[str, Any]]:
     """Use MiniLM-confirmed headings as boundaries and geometry within sections."""
     first_boundary = first_header_boundary(lines, headings)
@@ -158,6 +163,7 @@ def build_sections(
                     lines,
                     content_indexes,
                     url_entities_by_line,
+                    statistics,
                 ),
             }
         )

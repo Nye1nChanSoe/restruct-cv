@@ -17,7 +17,7 @@ from typing import Any, Iterable, Sequence
 
 import pymupdf
 
-from restruct.configs import SETTINGS
+from restruct.document.stats import DocumentStatistics
 from restruct.geometry import horizontal_overlap, rounded, union
 
 # Consecutive lines may overlap slightly when glyph boxes include leading, so a
@@ -31,6 +31,7 @@ def continues_block(
     *,
     same_page: bool,
     require_horizontal_overlap: bool,
+    statistics: DocumentStatistics,
 ) -> bool:
     """Whether ``current_box`` continues the block ending at ``previous_box``.
 
@@ -46,11 +47,7 @@ def continues_block(
         return False
     previous, current = pymupdf.Rect(previous_box), pymupdf.Rect(current_box)
     gap = current.y0 - previous.y1
-    maximum_gap = (
-        max(previous.height, current.height)
-        * SETTINGS.section_router.paragraph_gap_multiplier
-    )
-    if not MINIMUM_GAP <= gap <= maximum_gap:
+    if gap < MINIMUM_GAP or not statistics.is_paragraph_gap(gap):
         return False
     if require_horizontal_overlap:
         return horizontal_overlap(previous, current) > 0
@@ -83,6 +80,7 @@ def append_paragraph(
     page: int,
     bbox: list[float],
     entities: list[dict[str, Any]],
+    statistics: DocumentStatistics,
 ) -> None:
     """Append prose to a group, continuing the previous paragraph when it fits."""
     current_box = pymupdf.Rect(bbox)
@@ -93,6 +91,7 @@ def append_paragraph(
             current_box,
             same_page=True,
             require_horizontal_overlap=True,
+            statistics=statistics,
         ):
             extend_block(previous, text=text, box=current_box, entities=entities)
             group["_lastType"] = "paragraph"

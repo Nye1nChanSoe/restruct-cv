@@ -91,7 +91,7 @@ def extract_resume(
             url_entities_by_line.setdefault(match.line_index, []).append(
                 _url_entity_value(document, lines, match)
             )
-        sections = build_sections(lines, headings, url_entities_by_line)
+        sections = build_sections(lines, headings, url_entities_by_line, statistics)
         summary = summary_debug_value(sections)
         experience = build_experience_debug(
             document,
@@ -100,6 +100,7 @@ def extract_resume(
             model,
             ner_model,
             url_entities_by_line,
+            statistics,
         )
         education = build_education_debug(
             document,

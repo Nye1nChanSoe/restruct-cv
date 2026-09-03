@@ -7,6 +7,7 @@ from typing import Any
 import pymupdf
 
 from restruct.configs import SETTINGS
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import resolve_span_box, rounded
 from restruct.layout.blocks import continues_block, extend_block
@@ -312,6 +313,7 @@ def build_experience_debug(
     model: EmbeddingModel,
     ner_model: DistilBertNerPredictor,
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    statistics: DocumentStatistics,
 ) -> dict[str, Any] | None:
     routed = _routed_section_headings(lines, headings)
     position = next((i for i, item in enumerate(routed) if item.section_type == "experience"), None)
@@ -386,6 +388,7 @@ def build_experience_debug(
                 line.bbox,
                 same_page=True,
                 require_horizontal_overlap=False,
+                statistics=statistics,
             ):
                 extend_block(current["bullets"][-1], text=line.text, box=line.bbox)
                 current["_lastLineBbox"] = rounded(line.bbox)
@@ -405,6 +408,7 @@ def build_experience_debug(
                 line.bbox,
                 same_page=True,
                 require_horizontal_overlap=False,
+                statistics=statistics,
             ):
                 extend_block(previous, text=line.text, box=line.bbox)
                 current["_lastBodyType"] = "paragraph"

@@ -103,6 +103,7 @@ def build_skills_debug(
                         page=line.page,
                         bbox=rounded(line.bbox),
                         entities=line_urls,
+                        statistics=statistics,
                     )
                     current["urls"].extend(line_urls)
                 continue
@@ -203,6 +204,7 @@ def build_skills_debug(
                     line.bbox,
                     same_page=True,
                     require_horizontal_overlap=False,
+                    statistics=statistics,
                 ):
                     extend_block(
                         current["bullets"][-1],
@@ -219,6 +221,7 @@ def build_skills_debug(
                         page=line.page,
                         bbox=rounded_bbox,
                         entities=line_urls,
+                        statistics=statistics,
                     )
                     current["urls"].extend(line_urls)
             else:
@@ -228,6 +231,7 @@ def build_skills_debug(
                     page=line.page,
                     bbox=rounded_bbox,
                     entities=line_urls,
+                    statistics=statistics,
                 )
                 current["urls"].extend(line_urls)
             handled_row = True

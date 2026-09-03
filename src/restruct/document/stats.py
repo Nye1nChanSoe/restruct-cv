@@ -103,13 +103,17 @@ class DocumentStatistics:
     def is_paragraph_gap(self, gap: float) -> bool:
         """Whether a vertical gap is small enough to continue a block.
 
-        Measured against this document's own leading instead of a multiplier on
-        the two boxes involved, so an oversized line does not license an
+        Measured against this document's own leading rather than as a multiple
+        of the two boxes involved, so an oversized line no longer licenses an
         oversized gap.
+
+        Line gaps are strongly bimodal -- on these fixtures around 2.3pt within
+        a paragraph against 14-16pt between blocks -- and this threshold sits
+        between the two modes. Both terms are needed: twice the typical leading
+        tracks tightly set documents, while half a line height keeps the rule
+        sane where leading is near zero.
         """
-        if self.median_line_gap <= 0:
-            return gap <= self.median_line_height * 0.5
-        return gap <= self.median_line_gap * 2.0
+        return gap <= max(self.median_line_gap * 2.0, self.median_line_height * 0.5)
 
     @property
     def word_gap_threshold(self) -> float:

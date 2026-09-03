@@ -287,6 +287,7 @@ def build_education_debug(
                     line_box,
                     same_page=True,
                     require_horizontal_overlap=False,
+                    statistics=statistics,
                 ):
                     extend_block(current["bullets"][-1], text=line.text, box=line_box)
                     current["_lastLineBbox"] = rounded_bbox
@@ -298,6 +299,7 @@ def build_education_debug(
                     line_box,
                     same_page=True,
                     require_horizontal_overlap=True,
+                    statistics=statistics,
                 ):
                     extend_block(previous, text=line.text, box=line_box)
                     current["_lastBodyType"] = "paragraph"

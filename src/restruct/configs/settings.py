@@ -57,7 +57,6 @@ class SectionRouterSettings:
     subheading_font_size_multiplier: float = 1.08
     maximum_subheading_words: int = 12
     maximum_subheading_characters: int = 100
-    paragraph_gap_multiplier: float = 1.25
 
 
 @dataclass(frozen=True)
