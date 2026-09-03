@@ -17,11 +17,9 @@ debug/ocr/*
 !debug/ocr/.gitkeep
 
 # Pass 1-4 overlays are large, regenerate on every run, and are opt-in by
-# design; they stay local rather than in the repository.
-results/*/debug/pass-1-physical/
-results/*/debug/pass-2-words/
-results/*/debug/pass-3-lines/
-results/*/debug/pass-4-sections/
+# design; they stay local rather than in the repository. Only the combined
+# pass-5 overlay is committed.
+results/*/debug/pass-*/
 
 # Overlays for the unsupported-layout fixtures; inputs are committed, the
 # rendered evidence is not.

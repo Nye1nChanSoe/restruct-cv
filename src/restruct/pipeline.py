@@ -6,7 +6,6 @@ of its own, so the same engine can be driven from Python without the CLI.
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
@@ -14,27 +13,14 @@ import pymupdf
 
 from restruct.configs import SETTINGS
 from restruct.debug.artifacts import (
-    write_education_debug,
-    write_experience_debug,
     write_layout_warnings,
     write_ocr_extraction,
-    write_projects_debug,
+    write_raw_evidence,
     write_raw_extraction,
-    write_skills_debug,
-    write_summary_debug,
-    write_supplementary_sections_debug,
+    write_supplementary_raw_evidence,
 )
 from restruct.debug.stages import render_sections, render_stage_overlays
-from restruct.debug.render import (
-    render_combined_debug_images,
-    render_debug_images,
-    render_education_debug_images,
-    render_experience_debug_images,
-    render_projects_debug_images,
-    render_skills_debug_images,
-    render_summary_debug_images,
-    render_supplementary_sections_debug_images,
-)
+from restruct.debug.render import render_combined_debug_images
 from restruct.document.stats import measure
 from restruct.ingestion.native import extracted_lines, read_document
 from restruct.layout.unsupported import detect_unsupported_layouts
@@ -159,96 +145,39 @@ def extract_resume(
         )
 
         output_directory.mkdir(parents=True, exist_ok=True)
-        write_layout_warnings(pdf_path, layout_warnings, output_directory / "debug")
-        header_debug_directory = output_directory / "debug" / "header"
-        summary_debug_directory = output_directory / "debug" / "summary"
-        experience_debug_directory = output_directory / "debug" / "experience"
-        education_debug_directory = output_directory / "debug" / "education"
-        skills_debug_directory = output_directory / "debug" / "skills"
-        projects_debug_directory = output_directory / "debug" / "projects"
-        header_debug_directory.mkdir(parents=True, exist_ok=True)
-        (header_debug_directory / "header.json").unlink(missing_ok=True)
-        (header_debug_directory / "header-raw.json").write_text(
-            json.dumps(
-                {
-                    "source": pdf_path.name,
-                    "model": SETTINGS.model.name,
-                    "modelRevision": SETTINGS.model.revision,
-                    "nerBackend": "distilbert",
-                    "nerModel": SETTINGS.ner.distilbert_name,
-                    "nerModelRevision": SETTINGS.ner.distilbert_revision,
-                    "headerProfile": header_profile,
-                },
-                indent=2,
-                ensure_ascii=False,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
-        render_debug_images(
-            document,
+
+        # Two tracks, kept apart on disk as well as in shape. raw/ holds the
+        # evidence -- boxes, fonts, confidences, detection methods -- and
+        # debug/ holds only images. resume.json, alongside both, stays lean.
+        raw_directory = output_directory / "raw"
+        write_layout_warnings(pdf_path, layout_warnings, raw_directory)
+        write_raw_evidence(
+            pdf_path,
+            raw_directory,
+            "headerProfile",
             header_profile,
-            header_debug_directory,
+            model=SETTINGS.model.name,
+            modelRevision=SETTINGS.model.revision,
+            nerBackend="distilbert",
+            nerModel=SETTINGS.ner.distilbert_name,
+            nerModelRevision=SETTINGS.ner.distilbert_revision,
         )
-        write_summary_debug(
+        write_raw_evidence(
             pdf_path,
+            raw_directory,
+            "summary",
             summary,
-            summary_debug_directory,
+            model=SETTINGS.model.name,
+            modelRevision=SETTINGS.model.revision,
         )
-        render_summary_debug_images(
-            document,
-            summary,
-            summary_debug_directory,
-        )
-        write_experience_debug(
+        write_raw_evidence(pdf_path, raw_directory, "experience", experience)
+        write_raw_evidence(pdf_path, raw_directory, "education", education)
+        write_raw_evidence(pdf_path, raw_directory, "skills", skills)
+        write_raw_evidence(pdf_path, raw_directory, "projects", projects)
+        write_supplementary_raw_evidence(
             pdf_path,
-            experience,
-            experience_debug_directory,
-        )
-        render_experience_debug_images(
-            document,
-            experience,
-            experience_debug_directory,
-        )
-        write_education_debug(
-            pdf_path,
-            education,
-            education_debug_directory,
-        )
-        render_education_debug_images(
-            document,
-            education,
-            education_debug_directory,
-        )
-        write_skills_debug(
-            pdf_path,
-            skills,
-            skills_debug_directory,
-        )
-        render_skills_debug_images(
-            document,
-            skills,
-            skills_debug_directory,
-        )
-        write_projects_debug(
-            pdf_path,
-            projects,
-            projects_debug_directory,
-        )
-        render_projects_debug_images(
-            document,
-            projects,
-            projects_debug_directory,
-        )
-        write_supplementary_sections_debug(
-            pdf_path,
+            raw_directory,
             supplementary_sections,
-            output_directory / "debug",
-        )
-        render_supplementary_sections_debug_images(
-            document,
-            supplementary_sections,
-            output_directory / "debug",
         )
         render_combined_debug_images(
             document,

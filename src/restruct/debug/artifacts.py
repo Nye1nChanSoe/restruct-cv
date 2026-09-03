@@ -61,23 +61,26 @@ def write_ocr_extraction(
     )
 
 
-def write_summary_debug(
+def write_raw_evidence(
     pdf_path: Path,
-    summary: dict[str, Any] | None,
-    output_directory: Path,
+    raw_directory: Path,
+    name: str,
+    payload: Any,
+    **extra: Any,
 ) -> None:
-    if summary is None:
+    """Write one section's raw evidence to ``results/<resume>/raw/<name>.json``.
+
+    Seven near-identical copies of this stood here before, one per section,
+    differing only in the key they wrote under. The evidence track is deliberate
+    -- ``resume.json`` stays lean and metadata-free, and every bbox, font,
+    confidence and detection method lives here instead.
+    """
+    if payload is None:
         return
-    output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "summary.json").unlink(missing_ok=True)
-    (output_directory / "summary-raw.json").write_text(
+    raw_directory.mkdir(parents=True, exist_ok=True)
+    (raw_directory / f"{name}.json").write_text(
         json.dumps(
-            {
-                "source": pdf_path.name,
-                "model": SETTINGS.model.name,
-                "modelRevision": SETTINGS.model.revision,
-                "summary": summary,
-            },
+            {"source": pdf_path.name, **extra, name: payload},
             indent=2,
             ensure_ascii=False,
         )
@@ -86,92 +89,20 @@ def write_summary_debug(
     )
 
 
-def write_experience_debug(
+def write_supplementary_raw_evidence(
     pdf_path: Path,
-    experience: dict[str, Any] | None,
-    output_directory: Path,
-) -> None:
-    if experience is None:
-        return
-    output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "experience.json").unlink(missing_ok=True)
-    (output_directory / "experience-raw.json").write_text(
-        json.dumps({"source": pdf_path.name, "experience": experience}, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-
-
-def write_education_debug(
-    pdf_path: Path,
-    education: dict[str, Any] | None,
-    output_directory: Path,
-) -> None:
-    if education is None:
-        return
-    output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "education.json").unlink(missing_ok=True)
-    (output_directory / "education-raw.json").write_text(
-        json.dumps({"source": pdf_path.name, "education": education}, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-
-
-def write_skills_debug(
-    pdf_path: Path,
-    skills: dict[str, Any] | None,
-    output_directory: Path,
-) -> None:
-    if skills is None:
-        return
-    output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "skills.json").unlink(missing_ok=True)
-    (output_directory / "skills-raw.json").write_text(
-        json.dumps({"source": pdf_path.name, "skills": skills}, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-
-
-def write_projects_debug(
-    pdf_path: Path,
-    projects: dict[str, Any] | None,
-    output_directory: Path,
-) -> None:
-    if projects is None:
-        return
-    output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "projects.json").unlink(missing_ok=True)
-    (output_directory / "projects-raw.json").write_text(
-        json.dumps({"source": pdf_path.name, "projects": projects}, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-
-
-def write_supplementary_sections_debug(
-    pdf_path: Path,
+    raw_directory: Path,
     sections: dict[str, dict[str, Any]],
-    debug_directory: Path,
 ) -> None:
+    """One file per minor section that produced anything."""
     for section_type, section in sections.items():
-        output_directory = debug_directory / section_type
-        output_directory.mkdir(parents=True, exist_ok=True)
-        (output_directory / f"{section_type}.json").unlink(missing_ok=True)
-        (output_directory / f"{section_type}-raw.json").write_text(
-            json.dumps(
-                {"source": pdf_path.name, section_type: section},
-                indent=2,
-                ensure_ascii=False,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
-
-
+        write_raw_evidence(pdf_path, raw_directory, section_type, section)
 
 
 def write_layout_warnings(
     pdf_path: Path,
     warnings: tuple[Any, ...],
-    output_directory: Path,
+    raw_directory: Path,
 ) -> None:
     """Record the unsupported layouts found, and that the check ran at all.
 
@@ -179,8 +110,8 @@ def write_layout_warnings(
     statement that the layout was examined rather than an absent file that
     could equally mean the detector never ran.
     """
-    output_directory.mkdir(parents=True, exist_ok=True)
-    (output_directory / "layout-warnings.json").write_text(
+    raw_directory.mkdir(parents=True, exist_ok=True)
+    (raw_directory / "layout-warnings.json").write_text(
         json.dumps(
             {
                 "source": pdf_path.name,

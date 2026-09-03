@@ -57,9 +57,23 @@ refactor changed behavior — fix the code.
 
 ### Verifying work the snapshots do not cover
 
-Debug images are not in the golden set. `results/` has **121 committed debug artifacts**
-(68 PNGs, 53 JSON) covering passes 4-5. To verify a change that touches rendering or
-section parsing:
+Debug output is not in the golden set. Each resume writes three things, and the split is on
+disk as well as in shape:
+
+```
+results/<name>/resume.json           the lean, metadata-free output
+results/<name>/raw/*.json            the evidence: boxes, fonts, confidences, methods
+results/<name>/debug/page-N.png      the combined overlay, one per source page
+results/<name>/debug/pass-*/         passes 1-4, gitignored
+```
+
+`results/` holds **86 committed artifacts** (64 raw JSON, 15 overlays, 7 `resume.json`). There
+are no per-section overlays: the combined image draws every one of their boxes with the same
+colours and labels, and shows the boundaries between sections as well, so 65 PNGs were dropped
+for 25MB and no information. The per-section renderers went with them — `git log` has them if a
+`--stages` flag ever wants one back.
+
+To verify a change that touches rendering or section parsing:
 
 ```bash
 uv run restruct && git status --short results/    # clean == byte-identical
@@ -76,7 +90,7 @@ geometric.** Each carries a legend naming its layers and their counts.
 - **pass 4** draws which destination each heading became. A compound heading splits into
   several sections from one line, so each is drawn inset and labelled
   `languages <- CERTIFICATIONS & LANGUAGES` — the split is right or wrong at a glance.
-- **pass 5** overlays are committed (see above) and carry legends like the rest.
+- **pass 5** is the one committed overlay, `debug/page-N.png`, carrying every section at once.
 
 Every overlay goes through `debug/canvas.py`: one page canvas, one label placer, one legend.
 **A model-backed box is drawn more heavily than a deterministic one**, so a reader can tell
@@ -121,7 +135,7 @@ box arithmetic → `geometry.py`; anything drawn or dumped → `debug/`.
 ### Two output tracks, deliberately separate
 
 `resume.json` is **lean and metadata-free**: no bboxes, fonts, geometry, model names,
-confidences, or detection methods. All of that evidence lives only in the debug artifacts.
+confidences, or detection methods. All of that evidence lives only under `raw/`.
 `test_output_carries_no_debug_metadata` enforces the separation — if you add a field to the
 clean schema, it must be plain data.
 
