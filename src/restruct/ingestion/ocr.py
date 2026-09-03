@@ -21,6 +21,7 @@ from typing import Any
 import pymupdf
 
 from restruct.configs import SETTINGS
+from restruct.errors import OcrFailed, TesseractMissing
 from restruct.document.physical import Span, TextLine, Token
 from restruct.geometry import union
 
@@ -35,12 +36,10 @@ def _run_ocr_command(arguments: list[str], program_name: str) -> subprocess.Comp
             text=True,
         )
     except FileNotFoundError as error:
-        raise RuntimeError(
-            f"required OCR program is not installed: {program_name}"
-        ) from error
+        raise TesseractMissing(program_name) from error
     except subprocess.CalledProcessError as error:
         detail = error.stderr.strip() or error.stdout.strip() or "unknown error"
-        raise RuntimeError(f"{program_name} failed: {detail}") from error
+        raise OcrFailed(f"{program_name}: {detail}") from error
 
 
 def _tesseract_words(

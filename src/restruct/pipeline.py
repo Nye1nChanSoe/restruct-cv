@@ -40,6 +40,13 @@ from restruct.structure.headings import first_header_boundary
 from restruct.structure.sections import build_sections, summary_debug_value
 
 
+# Which debug artifacts each stage owns. Selecting stages never decides
+# whether a pass runs -- the whole pipeline always executes, because every pass
+# feeds the next and the result would otherwise be a different result.
+ALL_STAGES: frozenset[int] = frozenset({1, 2, 3, 4, 5})
+DEFAULT_DEBUG_STAGES: frozenset[int] = frozenset({4, 5})
+
+
 def extract_resume(
     pdf_path: Path,
     output_directory: Path,
@@ -47,7 +54,14 @@ def extract_resume(
     ocr_debug_path: Path,
     model: EmbeddingModel,
     ner_model: DistilBertNerPredictor,
+    *,
+    stages: frozenset[int] = ALL_STAGES,
 ) -> None:
+    """Extract one resume, writing ``resume.json`` and the requested artifacts.
+
+    ``stages`` selects debug output only. An empty set writes nothing but the
+    result, which is what the single-file CLI does unless asked otherwise.
+    """
     with pymupdf.open(pdf_path) as document:
         # Pass 1: read the document once into the shared representation.
         physical = read_document(document)
@@ -58,9 +72,13 @@ def extract_resume(
         # later pass assumes that order is the author's.
         layout_warnings = detect_unsupported_layouts(physical, statistics)
 
-        write_raw_extraction(pdf_path, list(physical.raw_pages), raw_debug_path)
-        write_ocr_extraction(pdf_path, list(physical.ocr_pages), ocr_debug_path)
-        if SETTINGS.debug.stage_overlays_enabled:
+        if stages:
+            # The untouched PyMuPDF and Tesseract dumps are debug output like
+            # everything else: asking for no artifacts must leave no artifacts.
+            write_raw_extraction(pdf_path, list(physical.raw_pages), raw_debug_path)
+            write_ocr_extraction(pdf_path, list(physical.ocr_pages), ocr_debug_path)
+        physical_stages = tuple(sorted(stages & {1, 2, 3}))
+        if physical_stages:
             # Passes 1-3 render images and no JSON: their output is geometry,
             # which a dump cannot usefully convey.
             render_stage_overlays(
@@ -68,6 +86,7 @@ def extract_resume(
                 physical,
                 statistics,
                 output_directory / "debug",
+                stages=physical_stages,
                 warnings=layout_warnings,
             )
 
@@ -94,7 +113,7 @@ def extract_resume(
                 _url_entity_value(document, lines, match)
             )
         sections = build_sections(lines, headings, url_entities_by_line, statistics)
-        if SETTINGS.debug.stage_overlays_enabled:
+        if 4 in stages:
             # Pass 4 is geometry too: a compound heading can split into the
             # right destinations while the blocks land under the wrong one,
             # and only the overlay shows which.
@@ -150,46 +169,52 @@ def extract_resume(
         # evidence -- boxes, fonts, confidences, detection methods -- and
         # debug/ holds only images. resume.json, alongside both, stays lean.
         raw_directory = output_directory / "raw"
-        write_layout_warnings(pdf_path, layout_warnings, raw_directory)
-        write_raw_evidence(
-            pdf_path,
-            raw_directory,
-            "headerProfile",
-            header_profile,
-            model=SETTINGS.model.name,
-            modelRevision=SETTINGS.model.revision,
-            nerBackend="distilbert",
-            nerModel=SETTINGS.ner.distilbert_name,
-            nerModelRevision=SETTINGS.ner.distilbert_revision,
-        )
-        write_raw_evidence(
-            pdf_path,
-            raw_directory,
-            "summary",
-            summary,
-            model=SETTINGS.model.name,
-            modelRevision=SETTINGS.model.revision,
-        )
-        write_raw_evidence(pdf_path, raw_directory, "experience", experience)
-        write_raw_evidence(pdf_path, raw_directory, "education", education)
-        write_raw_evidence(pdf_path, raw_directory, "skills", skills)
-        write_raw_evidence(pdf_path, raw_directory, "projects", projects)
-        write_supplementary_raw_evidence(
-            pdf_path,
-            raw_directory,
-            supplementary_sections,
-        )
-        render_combined_debug_images(
-            document,
-            header_profile,
-            summary,
-            experience,
-            education,
-            skills,
-            projects,
-            supplementary_sections,
-            output_directory / "debug",
-        )
+        # Written whenever anything is: a warning is about the document, not
+        # about a pass, and a reader inspecting any stage wants to know the
+        # reading order may not be recoverable.
+        if stages:
+            write_layout_warnings(pdf_path, layout_warnings, raw_directory)
+        if 5 in stages:
+            write_raw_evidence(
+                pdf_path,
+                raw_directory,
+                "headerProfile",
+                header_profile,
+                model=SETTINGS.model.name,
+                modelRevision=SETTINGS.model.revision,
+                nerBackend="distilbert",
+                nerModel=SETTINGS.ner.distilbert_name,
+                nerModelRevision=SETTINGS.ner.distilbert_revision,
+            )
+            write_raw_evidence(
+                pdf_path,
+                raw_directory,
+                "summary",
+                summary,
+                model=SETTINGS.model.name,
+                modelRevision=SETTINGS.model.revision,
+            )
+            write_raw_evidence(pdf_path, raw_directory, "experience", experience)
+            write_raw_evidence(pdf_path, raw_directory, "education", education)
+            write_raw_evidence(pdf_path, raw_directory, "skills", skills)
+            write_raw_evidence(pdf_path, raw_directory, "projects", projects)
+            write_supplementary_raw_evidence(
+                pdf_path,
+                raw_directory,
+                supplementary_sections,
+            )
+            render_combined_debug_images(
+                document,
+                header_profile,
+                summary,
+                experience,
+                education,
+                skills,
+                projects,
+                supplementary_sections,
+                output_directory / "debug",
+            )
+
         write_v1_resume(
             output_directory,
             build_v1_resume(

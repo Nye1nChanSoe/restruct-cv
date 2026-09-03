@@ -13,12 +13,24 @@ uv run pytest --update-golden                  # re-baseline snapshots (see Chan
 uv run python -m tests.scorecard               # per-field precision/recall/F1
 uv run python -m tests.scorecard --update-baseline   # re-freeze the accuracy floor
 
-uv run restruct                                # batch: parse every PDF in resumes-synthetic/
+uv run restruct <path> -o <out.json>           # one resume; quiet, writes nothing else
+uv run restruct <path> -o <out.json> --debug   # + stage 4-5 artifacts in <out>/
+uv run restruct <path> -o <out.json> --stages 1-3   # + those stages (implies --debug)
+
+uv run restruct                                # batch: every PDF in resumes-synthetic/
 uv run restruct --truths                       # batch: only resumes-truths/ (local, gitignored)
+uv run restruct --unsupported                  # batch: resumes-unsupported/ (see below)
 ```
 
-`restruct <path> -o <out>` does not exist yet; the CLI is still batch-over-directory and is
-rebuilt in Milestone 4.
+`--stages` selects **debug artifacts, never whether a pass runs** — every pass feeds the next,
+so a flag that skipped one would quietly produce a different resume. `--stages` implies
+`--debug`. The batch form writes every stage: its purpose is to regenerate the committed corpus,
+and anything less would let a stale artifact survive a run and make `git status results/` read
+as clean.
+
+`errors.py` names every failure; `cli.py` is the only place that maps one to an exit code, so
+the Python API raises and a caller embedding restruct keeps its process. Codes are grouped by
+decade — 1x input, 2x environment, 3x extraction, 4x output — and `2` is left to argparse.
 
 ### Setup expectations
 
@@ -124,7 +136,8 @@ parsers/     one module per section shape (header, experience, education, skills
 models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
 patterns/    deterministic regex evidence, grouped by what it describes
 debug/       artifacts (JSON) and render (Pillow overlays), one canvas, one colour registry
-schema.py    the lean, versioned clean output
+schema.py    the lean, versioned clean output (contract: resume.schema.json)
+errors.py    the failure taxonomy; only cli.py turns one into an exit code
 pipeline.py  orchestration only — the only module that knows the stage order
 cli.py       argparse and filesystem layout only
 ```
@@ -138,6 +151,11 @@ box arithmetic → `geometry.py`; anything drawn or dumped → `debug/`.
 confidences, or detection methods. All of that evidence lives only under `raw/`.
 `test_output_carries_no_debug_metadata` enforces the separation — if you add a field to the
 clean schema, it must be plain data.
+
+`resume.schema.json` in the repository root is the published contract, hand-written rather than
+generated. `test_output_matches_the_published_schema` validates every fixture against it, so it
+cannot drift into a stale description of output it no longer describes. A new field means
+editing it in the same commit.
 
 ### Extraction precedence
 

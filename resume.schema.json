@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/restruct/extractor-v1/resume.schema.json",
+  "title": "Restruct v1 resume",
+  "description": "The lean, metadata-free output written to resume.json. Sixteen keys, always present, always in this order. No bounding boxes, fonts, geometry, model names, confidences, detection methods, or routing state ever appear here — that evidence lives under results/<name>/raw/ instead. A section is null when the resume has none; an empty array means the section exists but yielded no entries. A key is never absent. NOTE: schema_version is not yet emitted; it is added as the first key in commit C21.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "header_profile",
+    "summary",
+    "experience",
+    "education",
+    "skills",
+    "projects",
+    "certifications",
+    "licenses",
+    "tools_equipment",
+    "languages",
+    "volunteering",
+    "awards",
+    "publications",
+    "references",
+    "interests",
+    "others"
+  ],
+  "properties": {
+    "header_profile": {
+      "description": "Identity and contact detail from the region above the first section heading.",
+      "oneOf": [{ "$ref": "#/$defs/headerProfile" }, { "type": "null" }]
+    },
+    "summary": {
+      "description": "The opening profile or objective section.",
+      "oneOf": [{ "$ref": "#/$defs/summary" }, { "type": "null" }]
+    },
+    "experience": {
+      "description": "One entry per employment record.",
+      "oneOf": [
+        { "type": "array", "items": { "$ref": "#/$defs/experienceEntry" } },
+        { "type": "null" }
+      ]
+    },
+    "education": {
+      "description": "One entry per qualification.",
+      "oneOf": [
+        { "type": "array", "items": { "$ref": "#/$defs/educationEntry" } },
+        { "type": "null" }
+      ]
+    },
+    "skills": {
+      "description": "One entry per labelled skill group; an unlabelled group has a null subheading.",
+      "oneOf": [
+        { "type": "array", "items": { "$ref": "#/$defs/skillGroup" } },
+        { "type": "null" }
+      ]
+    },
+    "projects": { "$ref": "#/$defs/groupedSection" },
+    "certifications": { "$ref": "#/$defs/groupedSection" },
+    "licenses": { "$ref": "#/$defs/groupedSection" },
+    "tools_equipment": { "$ref": "#/$defs/groupedSection" },
+    "languages": { "$ref": "#/$defs/groupedSection" },
+    "volunteering": { "$ref": "#/$defs/groupedSection" },
+    "awards": { "$ref": "#/$defs/groupedSection" },
+    "publications": { "$ref": "#/$defs/groupedSection" },
+    "references": { "$ref": "#/$defs/groupedSection" },
+    "interests": { "$ref": "#/$defs/groupedSection" },
+    "others": {
+      "description": "The conservative fallback. A section lands here when its heading names no destination, or when a compound heading was split and part of its content could not be assigned to either half. The heading is preserved as written, which is the whole point of the destination.",
+      "oneOf": [
+        { "type": "array", "items": { "$ref": "#/$defs/otherSection" } },
+        { "type": "null" }
+      ]
+    }
+  },
+
+  "$defs": {
+    "text": {
+      "description": "Visible text with zero-width characters removed and whitespace trimmed. A newline marks where a physical line broke inside one logical block.",
+      "type": "string"
+    },
+
+    "textList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/text" }
+    },
+
+    "link": {
+      "description": "A link and the text that carried it. The two routinely disagree: visible text abbreviates while the annotation holds the real target, so both are kept.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "url"],
+      "properties": {
+        "text": { "$ref": "#/$defs/text" },
+        "url": { "type": "string" }
+      }
+    },
+
+    "linkList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/link" }
+    },
+
+    "headerProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "job_titles",
+        "location",
+        "date_of_birth",
+        "age",
+        "gender",
+        "marital_status",
+        "visa_status",
+        "nationality",
+        "current_residence",
+        "current_income",
+        "current_package",
+        "emails",
+        "phones",
+        "urls"
+      ],
+      "properties": {
+        "name": {
+          "description": "Null rather than guessed when nothing in the header resolves to a person.",
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "job_titles": {
+          "description": "A tagline may carry several; only segments that classify as titles are listed, and a specialism beside a title is not one.",
+          "$ref": "#/$defs/textList"
+        },
+        "location": {
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "date_of_birth": {
+          "description": "Preserved verbatim rather than normalised, so an unfamiliar date format is never forced into one this parser prefers.",
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "age": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] },
+        "gender": { "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] },
+        "marital_status": {
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "visa_status": {
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "nationality": {
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "current_residence": {
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "current_income": {
+          "description": "Salary as stated, currency and period included. Distinct from current_package: a resume stating both states different numbers. An expected figure is never reported here.",
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "current_package": {
+          "description": "Total compensation or CTC as stated — salary plus everything around it.",
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "emails": { "$ref": "#/$defs/textList" },
+        "phones": { "$ref": "#/$defs/textList" },
+        "urls": { "$ref": "#/$defs/linkList" }
+      }
+    },
+
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content"],
+      "properties": {
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "text"],
+            "properties": {
+              "type": {
+                "description": "The block's shape, not its meaning.",
+                "enum": ["paragraph", "bullet", "subheading"]
+              },
+              "text": { "$ref": "#/$defs/text" }
+            }
+          }
+        }
+      }
+    },
+
+    "experienceEntry": {
+      "description": "One record. Repeating fields are arrays because a metadata line can legitimately carry more than one of a kind, and dropping the extras would be a silent choice.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_titles",
+        "companies",
+        "dates",
+        "locations",
+        "urls",
+        "paragraphs",
+        "bullets"
+      ],
+      "properties": {
+        "job_titles": { "$ref": "#/$defs/textList" },
+        "companies": { "$ref": "#/$defs/textList" },
+        "dates": {
+          "description": "As written — \"May 2023 - Present\", \"2019 - 2022\". Never parsed into a start and end, because a range that cannot be parsed would then have to be discarded.",
+          "$ref": "#/$defs/textList"
+        },
+        "locations": { "$ref": "#/$defs/textList" },
+        "urls": { "$ref": "#/$defs/linkList" },
+        "paragraphs": { "$ref": "#/$defs/textList" },
+        "bullets": { "$ref": "#/$defs/textList" }
+      }
+    },
+
+    "educationEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "titles",
+        "institutions",
+        "dates",
+        "locations",
+        "gpa",
+        "skills",
+        "urls",
+        "paragraphs",
+        "bullets"
+      ],
+      "properties": {
+        "titles": { "$ref": "#/$defs/textList" },
+        "institutions": { "$ref": "#/$defs/textList" },
+        "dates": { "$ref": "#/$defs/textList" },
+        "locations": { "$ref": "#/$defs/textList" },
+        "gpa": { "$ref": "#/$defs/textList" },
+        "skills": { "$ref": "#/$defs/textList" },
+        "urls": { "$ref": "#/$defs/linkList" },
+        "paragraphs": { "$ref": "#/$defs/textList" },
+        "bullets": { "$ref": "#/$defs/textList" }
+      }
+    },
+
+    "skillGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subheading", "paragraphs", "bullets", "urls"],
+      "properties": {
+        "subheading": {
+          "description": "The group's label — \"Languages\", \"Cloud & DevOps\". Null when the skills are listed without one.",
+          "oneOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }]
+        },
+        "paragraphs": { "$ref": "#/$defs/textList" },
+        "bullets": { "$ref": "#/$defs/textList" },
+        "urls": { "$ref": "#/$defs/linkList" }
+      }
+    },
+
+    "groupedEntry": {
+      "description": "The shape every minor section shares: a record with optional local headings, dates, links and prose.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subheadings", "dates", "urls", "paragraphs", "bullets"],
+      "properties": {
+        "subheadings": { "$ref": "#/$defs/textList" },
+        "dates": { "$ref": "#/$defs/textList" },
+        "urls": { "$ref": "#/$defs/linkList" },
+        "paragraphs": { "$ref": "#/$defs/textList" },
+        "bullets": { "$ref": "#/$defs/textList" }
+      }
+    },
+
+    "groupedSection": {
+      "oneOf": [
+        { "type": "array", "items": { "$ref": "#/$defs/groupedEntry" } },
+        { "type": "null" }
+      ]
+    },
+
+    "otherSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heading", "entries"],
+      "properties": {
+        "heading": {
+          "description": "The heading exactly as the document wrote it, including a compound heading that was split — this is how a reader sees that \"others\" here is half of a real heading rather than an unrecognised one.",
+          "$ref": "#/$defs/text"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "subheadings",
+              "attributes",
+              "dates",
+              "urls",
+              "paragraphs",
+              "bullets"
+            ],
+            "properties": {
+              "subheadings": { "$ref": "#/$defs/textList" },
+              "attributes": {
+                "description": "Labelled key-value rows an unclassified section commonly carries — \"Availability: 30 days' notice\".",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["type", "value"],
+                  "properties": {
+                    "type": {
+                      "description": "The personal-attribute field the label resolved to. Matches the header_profile attribute names.",
+                      "type": "string"
+                    },
+                    "value": { "$ref": "#/$defs/text" }
+                  }
+                }
+              },
+              "dates": { "$ref": "#/$defs/textList" },
+              "urls": { "$ref": "#/$defs/linkList" },
+              "paragraphs": { "$ref": "#/$defs/textList" },
+              "bullets": { "$ref": "#/$defs/textList" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

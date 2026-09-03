@@ -16,12 +16,20 @@ import pytest
 
 from tests.conftest import require_tesseract_for
 from tests.helpers import (
+    PROJECT_ROOT,
     SYNTHETIC_DIRECTORY,
     dump_json,
     golden_path,
     run_pipeline,
     synthetic_stems,
 )
+
+
+def _resume_schema() -> dict[str, Any]:
+    """The published contract, read from the repository root."""
+    return json.loads(
+        (PROJECT_ROOT / "resume.schema.json").read_text(encoding="utf-8")
+    )
 
 STEMS = synthetic_stems()
 
@@ -159,3 +167,43 @@ def test_output_carries_no_debug_metadata(
 
     walk(result)
     assert not found, f"{stem}.pdf leaked debug metadata into clean output: {sorted(found)}"
+
+
+# -- the published schema ---------------------------------------------------
+
+
+def test_the_schema_itself_is_valid() -> None:
+    """A schema that does not compile validates everything by validating
+    nothing, so this runs before any fixture is checked against it."""
+    from jsonschema import Draft202012Validator
+
+    Draft202012Validator.check_schema(_resume_schema())
+
+
+@pytest.mark.parametrize("stem", synthetic_stems())
+def test_output_matches_the_published_schema(stem: str, models, workspace) -> None:
+    """resume.schema.json is the contract this project hands to a consumer.
+    Checking it here is what stops it drifting into a stale description of
+    output it no longer describes."""
+    from jsonschema import Draft202012Validator
+
+    require_tesseract_for(stem)
+    resume = run_pipeline(SYNTHETIC_DIRECTORY / f"{stem}.pdf", workspace, models)
+    errors = sorted(
+        Draft202012Validator(_resume_schema()).iter_errors(resume),
+        key=lambda error: list(error.path),
+    )
+    assert not errors, "\n".join(
+        f"{list(error.path)}: {error.message}" for error in errors[:5]
+    )
+
+
+def test_the_schema_rejects_a_missing_section() -> None:
+    """Every one of the sixteen keys is always present -- null for an absent
+    section, never an absent key. A schema that shrugged at a missing key
+    would not be enforcing the discipline it documents."""
+    from jsonschema import Draft202012Validator
+
+    resume = json.loads(golden_path("1").read_text(encoding="utf-8"))
+    del resume["licenses"]
+    assert list(Draft202012Validator(_resume_schema()).iter_errors(resume))

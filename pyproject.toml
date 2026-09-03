@@ -17,6 +17,9 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    # Only the test suite needs this: the schema is a published contract,
+    # and a contract nothing checks is a comment.
+    "jsonschema>=4.20",
 ]
 
 [project.scripts]
