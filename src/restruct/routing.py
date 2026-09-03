@@ -14,13 +14,13 @@ from PIL import Image, ImageDraw
 from restruct.configs import SETTINGS
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import (
-    horizontal_overlap,
     pixel_box,
     resolve_span_box,
     rounded,
     union,
     vertical_overlap,
 )
+from restruct.layout.blocks import continues_block, extend_block
 from restruct.patterns.bullets import BULLET_RE
 from restruct.patterns.dates import DATE_RANGE_RE, SINGLE_YEAR_RE
 from restruct.patterns.education import (
@@ -288,52 +288,36 @@ def _content_blocks(
         rounded_bbox = rounded(line.bbox)
         if role == "paragraph" and blocks and blocks[-1]["type"] == "bullet":
             previous = blocks[-1]
-            previous_box = pymupdf.Rect(previous["_lastLineBbox"])
-            current_box = pymupdf.Rect(line.bbox)
-            vertical_gap = current_box.y0 - previous_box.y1
-            overlap = horizontal_overlap(previous_box, current_box)
-            maximum_gap = max(
-                previous_box.height,
-                current_box.height,
-            ) * SETTINGS.section_router.paragraph_gap_multiplier
-            if (
-                previous["page"] == line.page
-                and -2.0 <= vertical_gap <= maximum_gap
-                and overlap > 0
+            if continues_block(
+                previous["_lastLineBbox"],
+                line.bbox,
+                same_page=previous["page"] == line.page,
+                require_horizontal_overlap=True,
             ):
-                previous["text"] += "\n" + line.text
-                previous["bbox"] = [
-                    round(value, 2)
-                    for value in (pymupdf.Rect(previous["bbox"]) | current_box)
-                ]
+                extend_block(
+                    previous,
+                    text=line.text,
+                    box=line.bbox,
+                    entities=line_url_entities,
+                )
                 previous["_lastLineBbox"] = rounded_bbox
-                if line_url_entities:
-                    previous.setdefault("entities", []).extend(line_url_entities)
                 continue
 
         if role == "paragraph" and blocks and blocks[-1]["type"] == "paragraph":
             previous = blocks[-1]
-            previous_box = pymupdf.Rect(previous["_lastLineBbox"])
-            current_box = pymupdf.Rect(line.bbox)
-            vertical_gap = current_box.y0 - previous_box.y1
-            overlap = horizontal_overlap(previous_box, current_box)
-            maximum_gap = max(
-                previous_box.height,
-                current_box.height,
-            ) * SETTINGS.section_router.paragraph_gap_multiplier
-            if (
-                previous["page"] == line.page
-                and -2.0 <= vertical_gap <= maximum_gap
-                and overlap > 0
+            if continues_block(
+                previous["_lastLineBbox"],
+                line.bbox,
+                same_page=previous["page"] == line.page,
+                require_horizontal_overlap=True,
             ):
-                previous["text"] += "\n" + line.text
-                previous["bbox"] = [
-                    round(value, 2)
-                    for value in (pymupdf.Rect(previous["bbox"]) | current_box)
-                ]
+                extend_block(
+                    previous,
+                    text=line.text,
+                    box=line.bbox,
+                    entities=line_url_entities,
+                )
                 previous["_lastLineBbox"] = rounded_bbox
-                if line_url_entities:
-                    previous.setdefault("entities", []).extend(line_url_entities)
                 continue
 
         block: dict[str, Any] = {
@@ -826,12 +810,15 @@ def build_experience_debug(
         current["_bodyStarted"] = True
         current_box = pymupdf.Rect(line.bbox)
         if current["_lastBodyType"] == "bullet" and current["bullets"]:
-            previous_box = pymupdf.Rect(current["_lastLineBbox"])
-            gap = current_box.y0 - previous_box.y1
-            if -2.0 <= gap <= max(previous_box.height, current_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
-                previous = current["bullets"][-1]
-                previous["text"] += "\n" + line.text
-                previous["bbox"] = rounded((pymupdf.Rect(previous["bbox"]) | current_box))
+            # Deliberately unconditional: a bullet may continue across a page
+            # break, unlike the paragraph rules below.
+            if continues_block(
+                current["_lastLineBbox"],
+                line.bbox,
+                same_page=True,
+                require_horizontal_overlap=False,
+            ):
+                extend_block(current["bullets"][-1], text=line.text, box=line.bbox)
                 current["_lastLineBbox"] = rounded(line.bbox)
                 continue
         paragraph = {
@@ -841,11 +828,16 @@ def build_experience_debug(
         }
         if current["paragraphs"] and current["paragraphs"][-1]["page"] == line.page:
             previous = current["paragraphs"][-1]
-            previous_box, current_box = pymupdf.Rect(previous["bbox"]), pymupdf.Rect(line.bbox)
-            gap = current_box.y0 - previous_box.y1
-            if -2.0 <= gap <= max(previous_box.height, current_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
-                previous["text"] += "\n" + line.text
-                previous["bbox"] = rounded((previous_box | current_box))
+            # Anchored on the accumulated block box rather than the last line,
+            # and with no horizontal-overlap requirement, unlike every other
+            # paragraph continuation.
+            if continues_block(
+                previous["bbox"],
+                line.bbox,
+                same_page=True,
+                require_horizontal_overlap=False,
+            ):
+                extend_block(previous, text=line.text, box=line.bbox)
                 current["_lastBodyType"] = "paragraph"
                 current["_lastLineBbox"] = rounded(line.bbox)
                 continue
@@ -1180,25 +1172,24 @@ def build_education_debug(
                 current["_lastLineBbox"] = rounded_bbox
                 continue
             if current["_lastBodyType"] == "bullet" and current["bullets"]:
-                previous_box = pymupdf.Rect(current["_lastLineBbox"])
-                gap = line_box.y0 - previous_box.y1
-                if -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
-                    previous = current["bullets"][-1]
-                    previous["text"] += "\n" + line.text
-                    previous["bbox"] = rounded((pymupdf.Rect(previous["bbox"]) | line_box))
+                if continues_block(
+                    current["_lastLineBbox"],
+                    line_box,
+                    same_page=True,
+                    require_horizontal_overlap=False,
+                ):
+                    extend_block(current["bullets"][-1], text=line.text, box=line_box)
                     current["_lastLineBbox"] = rounded_bbox
                     continue
             if current["paragraphs"] and current["paragraphs"][-1]["page"] == line.page:
                 previous = current["paragraphs"][-1]
-                previous_box = pymupdf.Rect(previous["bbox"])
-                gap = line_box.y0 - previous_box.y1
-                overlap = horizontal_overlap(previous_box, line_box)
-                if (
-                    -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier
-                    and overlap > 0
+                if continues_block(
+                    previous["bbox"],
+                    line_box,
+                    same_page=True,
+                    require_horizontal_overlap=True,
                 ):
-                    previous["text"] += "\n" + line.text
-                    previous["bbox"] = rounded((previous_box | line_box))
+                    extend_block(previous, text=line.text, box=line_box)
                     current["_lastBodyType"] = "paragraph"
                     current["_lastLineBbox"] = rounded_bbox
                     continue
@@ -1324,19 +1315,13 @@ def _append_skill_paragraph(
     current_box = pymupdf.Rect(bbox)
     if group["paragraphs"] and group["paragraphs"][-1]["page"] == page:
         previous = group["paragraphs"][-1]
-        previous_box = pymupdf.Rect(previous["bbox"])
-        gap = current_box.y0 - previous_box.y1
-        overlap = horizontal_overlap(previous_box, current_box)
-        if (
-            -2.0 <= gap
-            <= max(previous_box.height, current_box.height)
-            * SETTINGS.section_router.paragraph_gap_multiplier
-            and overlap > 0
+        if continues_block(
+            previous["bbox"],
+            current_box,
+            same_page=True,
+            require_horizontal_overlap=True,
         ):
-            previous["text"] += "\n" + text
-            previous["bbox"] = rounded((previous_box | current_box))
-            if entities:
-                previous.setdefault("entities", []).extend(entities)
+            extend_block(previous, text=text, box=current_box, entities=entities)
             group["_lastType"] = "paragraph"
             group["_lastLineBbox"] = bbox
             return
@@ -1515,22 +1500,18 @@ def build_skills_debug(
                 current["_lastType"] = "bullet"
                 current["_lastLineBbox"] = rounded_bbox
             elif current["_lastType"] == "bullet" and current["_lastLineBbox"] is not None:
-                previous_box = pymupdf.Rect(current["_lastLineBbox"])
-                line_box = pymupdf.Rect(line.bbox)
-                gap = line_box.y0 - previous_box.y1
-                if (
-                    -2.0 <= gap
-                    <= max(previous_box.height, line_box.height)
-                    * SETTINGS.section_router.paragraph_gap_multiplier
+                if continues_block(
+                    current["_lastLineBbox"],
+                    line.bbox,
+                    same_page=True,
+                    require_horizontal_overlap=False,
                 ):
-                    previous = current["bullets"][-1]
-                    previous["text"] += "\n" + line.text
-                    previous["bbox"] = [
-                        round(value, 2)
-                        for value in (pymupdf.Rect(previous["bbox"]) | line_box)
-                    ]
-                    if line_urls:
-                        previous.setdefault("entities", []).extend(line_urls)
+                    extend_block(
+                        current["bullets"][-1],
+                        text=line.text,
+                        box=line.bbox,
+                        entities=line_urls,
+                    )
                     current["urls"].extend(line_urls)
                     current["_lastLineBbox"] = rounded_bbox
                 else:
@@ -1951,22 +1932,18 @@ def _build_grouped_section_debug(
                 current["_lastLineBbox"] = rounded_bbox
                 continue
             if current["_lastType"] == "bullet" and current["_lastLineBbox"] is not None:
-                previous_box = pymupdf.Rect(current["_lastLineBbox"])
-                line_box = pymupdf.Rect(line.bbox)
-                gap = line_box.y0 - previous_box.y1
-                if (
-                    -2.0 <= gap
-                    <= max(previous_box.height, line_box.height)
-                    * SETTINGS.section_router.paragraph_gap_multiplier
+                if continues_block(
+                    current["_lastLineBbox"],
+                    line.bbox,
+                    same_page=True,
+                    require_horizontal_overlap=False,
                 ):
-                    previous = current["bullets"][-1]
-                    previous["text"] += "\n" + line.text
-                    previous["bbox"] = [
-                        round(number, 2)
-                        for number in (pymupdf.Rect(previous["bbox"]) | line_box)
-                    ]
-                    if line_urls:
-                        previous.setdefault("entities", []).extend(line_urls)
+                    extend_block(
+                        current["bullets"][-1],
+                        text=line.text,
+                        box=line.bbox,
+                        entities=line_urls,
+                    )
                     current["urls"].extend(line_urls)
                     current["_lastLineBbox"] = rounded_bbox
                     continue

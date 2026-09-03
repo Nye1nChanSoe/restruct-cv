@@ -1,0 +1,76 @@
+"""The continuation rule that joins a line to the block above it.
+
+Every section parser needs to answer the same question -- does this line
+continue the paragraph or bullet before it, or start a new one -- and before
+this module each answered it with its own copy of the arithmetic. Nine copies
+had drifted into three different rules, which was invisible while they were
+spread across the file.
+
+The rule itself stays here; each caller still states which variant it wants, so
+the remaining differences are declared rather than accidental. Unifying them is
+a behavior change and belongs to the pass-3 rewrite, not to a refactor.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Iterable, Sequence
+
+import pymupdf
+
+from restruct.configs import SETTINGS
+from restruct.geometry import horizontal_overlap, rounded, union
+
+# Consecutive lines may overlap slightly when glyph boxes include leading, so a
+# small negative gap still reads as "directly below".
+MINIMUM_GAP = -2.0
+
+
+def continues_block(
+    previous_box: Sequence[float] | pymupdf.Rect,
+    current_box: Sequence[float] | pymupdf.Rect,
+    *,
+    same_page: bool,
+    require_horizontal_overlap: bool,
+) -> bool:
+    """Whether ``current_box`` continues the block ending at ``previous_box``.
+
+    ``same_page`` is passed in rather than derived because the callers hold the
+    page number in different shapes, and two of them deliberately do not check
+    it at all.
+
+    ``require_horizontal_overlap`` distinguishes prose continuation, where the
+    next line must sit under the previous one, from bullet continuation, where
+    a hanging indent may leave no overlap.
+    """
+    if not same_page:
+        return False
+    previous, current = pymupdf.Rect(previous_box), pymupdf.Rect(current_box)
+    gap = current.y0 - previous.y1
+    maximum_gap = (
+        max(previous.height, current.height)
+        * SETTINGS.section_router.paragraph_gap_multiplier
+    )
+    if not MINIMUM_GAP <= gap <= maximum_gap:
+        return False
+    if require_horizontal_overlap:
+        return horizontal_overlap(previous, current) > 0
+    return True
+
+
+def extend_block(
+    block: dict[str, Any],
+    *,
+    text: str,
+    box: Sequence[float] | pymupdf.Rect,
+    entities: Iterable[dict[str, Any]] = (),
+) -> None:
+    """Append a continuation line to a block, growing its box and evidence.
+
+    The newline is preserved rather than collapsed to a space so a later stage
+    can still see where the physical line broke.
+    """
+    block["text"] += "\n" + text
+    block["bbox"] = rounded(union([block["bbox"], box]))
+    entities = list(entities)
+    if entities:
+        block.setdefault("entities", []).extend(entities)
