@@ -17,7 +17,6 @@ from restruct.document.types import (
     DetectedHeading,
     ExtractedLine,
     HeaderEntityMatch,
-    append_regex_matches,
     overlaps_existing as _overlaps_existing,
 )
 from restruct.geometry import resolve_span_box, rounded, union_by_page
@@ -38,6 +37,7 @@ from restruct.patterns.personal import (
 )
 from restruct.patterns.separators import SEGMENT_RE
 from restruct.structure.headings import first_header_boundary
+from restruct.structure.resolver import SpanResolver, Tier
 
 
 def _header_attribute_kind(label: str) -> str:
@@ -63,6 +63,32 @@ def _header_attribute_kind(label: str) -> str:
         return "visa_status"
     if normalized in {"nationality", "citizenship"}:
         return "nationality"
+    # A package is salary plus everything around it, so the two are separate
+    # fields rather than one; a resume that states both states different
+    # numbers, and collapsing them would silently keep only the first.
+    if normalized in {
+        "current package",
+        "annual package",
+        "total package",
+        "compensation package",
+        "total compensation",
+        "current ctc",
+        "ctc",
+        "package",
+    }:
+        return "current_package"
+    if normalized in {
+        "current salary",
+        "present salary",
+        "current income",
+        "current pay",
+        "monthly salary",
+        "monthly income",
+        "last drawn salary",
+        "salary",
+        "income",
+    }:
+        return "current_income"
     return "current_residence"
 
 def _labelled_header_attribute_matches(
@@ -239,51 +265,25 @@ def build_header_profile(
     if not profile_indexes:
         return None
 
-    # Claim labelled personal attributes before broad contact regexes so a
-    # numeric DOB cannot be consumed as a phone number. Then claim contacts so
-    # semantic models never see usernames, domains, or phone fragments.
-    matches = _labelled_header_attribute_matches(
-        document,
-        lines,
-        profile_indexes,
-    )
-    matches.extend(
-        _semantic_header_attribute_matches(
-            document,
-            lines,
-            profile_indexes,
-            semantic_model,
-            matches,
-        )
+    resolver = SpanResolver()
+    matches = resolver.matches
+
+    # Tier 1. An explicit label is the document naming the field itself, so it
+    # is claimed before the broad contact shapes -- otherwise a numeric date of
+    # birth is consumed as a phone number. Contacts then go before any model,
+    # so no model ever sees a username, a domain, or a phone fragment.
+    resolver.open(Tier.DETERMINISTIC)
+    resolver.claim_all(
+        _labelled_header_attribute_matches(document, lines, profile_indexes)
     )
     for line_index in profile_indexes:
         text = lines[line_index].text
-        append_regex_matches(
-            matches,
-            line_index=line_index,
-            text=text,
-            kind="email",
-            pattern=EMAIL_RE,
-        )
-        append_regex_matches(
-            matches,
-            line_index=line_index,
-            text=text,
-            kind="phone",
-            pattern=PHONE_RE,
-        )
+        resolver.claim_pattern(EMAIL_RE, line_index=line_index, text=text, kind="email")
+        resolver.claim_pattern(PHONE_RE, line_index=line_index, text=text, kind="phone")
+    resolver.claim_all(_url_matches_for_lines(document, lines, profile_indexes))
 
-    for url_match in _url_matches_for_lines(document, lines, profile_indexes):
-        if _overlaps_existing(
-            matches,
-            line_index=url_match.line_index,
-            start=url_match.start,
-            end=url_match.end,
-        ):
-            continue
-        matches.append(url_match)
-
-    # DistilBERT receives contact-masked lines independently.
+    # Tier 3. DistilBERT receives contact-masked lines independently.
+    resolver.open(Tier.NER)
     ner_matches = ner_matches_for_profile(
         ner_model,
         lines,
@@ -304,7 +304,7 @@ def build_header_profile(
             end=match.end,
         )
     ]
-    matches.extend(
+    resolver.claim_all(
         match
         for match in ner_matches
         if match.kind not in {"name", "location"}
@@ -312,7 +312,7 @@ def build_header_profile(
     if ner_name_matches:
         # NER can see place-name fragments as people.  Keep the strongest visual
         # header name among model-backed candidates rather than emitting several.
-        matches.append(
+        resolver.claim(
             max(
                 ner_name_matches,
                 key=lambda match: (
@@ -323,7 +323,7 @@ def build_header_profile(
             )
         )
     if ner_location_matches:
-        matches.append(
+        resolver.claim(
             max(
                 ner_location_matches,
                 key=lambda match: (
@@ -334,9 +334,19 @@ def build_header_profile(
             )
         )
 
-    # Resolve titles before geometry guesses a missing name. This prevents a
-    # title-only OCR header from being mislabeled as a person.
-    matches.extend(
+    # Tier 4. Resolve titles before geometry guesses a missing name: a
+    # title-only OCR header would otherwise be mislabeled as a person.
+    resolver.open(Tier.SEMANTIC)
+    resolver.claim_all(
+        _semantic_header_attribute_matches(
+            document,
+            lines,
+            profile_indexes,
+            semantic_model,
+            matches,
+        )
+    )
+    resolver.claim_all(
         semantic_job_title_matches(
             semantic_model,
             lines,
@@ -345,14 +355,18 @@ def build_header_profile(
         )
     )
 
-    if not any(match.kind == "name" for match in matches):
+    # Tier 5. Nothing in the text resolved these fields, so fall back to where
+    # the span sits and how it is set. Each runs only while its field is still
+    # missing, which is a question about fields rather than characters.
+    resolver.open(Tier.GEOMETRY)
+
+    if not resolver.has_kind("name"):
         name_candidates = [
             index
             for index in profile_indexes[:5]
             if 1 <= len(lines[index].text.split()) <= 6
             and any(character.isalpha() for character in lines[index].text)
-            and not _overlaps_existing(
-                matches,
+            and not resolver.is_claimed(
                 line_index=index,
                 start=0,
                 end=len(lines[index].text),
@@ -367,7 +381,7 @@ def build_header_profile(
                     -index,
                 ),
             )
-            matches.append(
+            resolver.claim(
                 HeaderEntityMatch(
                     kind="name",
                     text=lines[name_index].text,
@@ -378,7 +392,7 @@ def build_header_profile(
                 )
             )
 
-    if not any(match.kind == "location" for match in matches):
+    if not resolver.has_kind("location"):
         for line_index in profile_indexes:
             text = lines[line_index].text
             location_match = next(
@@ -397,14 +411,13 @@ def build_header_profile(
             relative_start = location_match.group(0).find(stripped)
             start = location_match.start() + relative_start
             end = start + len(stripped)
-            if _overlaps_existing(
-                matches,
+            if resolver.is_claimed(
                 line_index=line_index,
                 start=start,
                 end=end,
             ):
                 continue
-            matches.append(
+            resolver.claim(
                 HeaderEntityMatch(
                     kind="location",
                     text=stripped,
@@ -416,18 +429,17 @@ def build_header_profile(
             )
             break
 
-    if not any(match.kind == "nationality" for match in matches):
+    if not resolver.has_kind("nationality"):
         for line_index in profile_indexes:
             text = lines[line_index].text
             nationality_match = next(NATIONALITY_PHRASE_RE.finditer(text), None)
-            if nationality_match is None or _overlaps_existing(
-                matches,
+            if nationality_match is None or resolver.is_claimed(
                 line_index=line_index,
                 start=nationality_match.start(),
                 end=nationality_match.end(),
             ):
                 continue
-            matches.append(
+            resolver.claim(
                 HeaderEntityMatch(
                     kind="nationality",
                     text=nationality_match.group(0),
@@ -439,7 +451,9 @@ def build_header_profile(
             )
             break
 
-    matches.extend(_other_header_matches(lines, profile_indexes, matches))
+    # Tier 6. Whatever is left is preserved as written rather than guessed at.
+    resolver.open(Tier.UNRESOLVED)
+    resolver.claim_all(_other_header_matches(lines, profile_indexes, matches))
 
     unique_matches: list[HeaderEntityMatch] = []
     seen: set[tuple[str, int, int, int]] = set()

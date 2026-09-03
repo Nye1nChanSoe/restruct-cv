@@ -97,7 +97,7 @@ fully; passes 1-3 are being built (see *Refactor in flight*).
 ingestion/   physical extraction — native PDF text, per-page OCR fallback
 document/    shared types (ExtractedLine, DetectedHeading, HeaderEntityMatch)
 layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
-structure/   heading detection, section routing, compound headings, key-value pairs
+structure/   heading detection, routing, compound headings, precedence resolver, separators
 parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
 models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
 patterns/    deterministic regex evidence, grouped by what it describes
@@ -119,10 +119,36 @@ clean schema, it must be plain data.
 
 ### Extraction precedence
 
-Deterministic regex → context-sensitive deterministic → NER → MiniLM → geometry →
-`other`/unresolved. The mechanism is `overlaps_existing()`: each stage skips character spans an
-earlier, stronger stage already claimed. This is why `HeaderEntityMatch` carries `start`/`end`
-offsets into the source line — a later parser must always be able to see, and reverse, a split.
+Deterministic → context-sensitive deterministic → NER → MiniLM → geometry → `other`/unresolved.
+
+`structure/resolver.py` is the one place this is written down, and it is **enforced, not
+documented**: `SpanResolver.open(tier)` raises `PrecedenceError` if a stage runs after a weaker
+one has already opened. That check exists because the order had silently drifted — the header's
+MiniLM attribute stage was running before both the contact regexes and NER, and no test could
+see it.
+
+Two different questions, deliberately separate:
+
+- `is_claimed()` asks about **characters** — a weaker stage cannot take spans a stronger one
+  already read. This is why `HeaderEntityMatch` carries `start`/`end` offsets into the source
+  line: a later parser must always be able to see, and reverse, a split.
+- `has_kind()` asks about **fields** — the geometry name guess and the nationality fallback run
+  only while their field is still missing. A stage that mixes the two will look right and behave
+  wrongly.
+
+Within the deterministic tier, order still matters and is not arbitrary: an explicit label is
+the document naming the field itself, so `Date of Birth: 12/05/1995` is claimed before the broad
+contact shapes — otherwise the digits are consumed as a phone number.
+
+### A separator is evidence, not an instruction
+
+`structure/separators.py` answers what a separator means *given its surroundings*, because the
+same character does several jobs: a colon labels a field (`Languages:`) or sits inside a time
+(`09:30`); a dash joins two dates into a range (`2019 - 2022`) or separates two fields
+(`Senior Analyst - Logistics`); an `@` separates a role from an employer. A colon is a label
+when the left side is short, **or** when the rows around it are labelled the same way — a
+labelled block is a layout the document is committing to. Every split keeps the original text
+and the offsets of both parts.
 
 **Never classify content merely because it follows a heading.** Ambiguous content stays `other`.
 
@@ -196,9 +222,15 @@ so nothing downstream needs OCR-specific handling. Preserve this when touching i
 
 An approved 21-commit plan lives at
 `~/.claude/plans/read-prompt-txt-first-before-robust-forest.md`; the design brief it implements
-is `prompt.txt`. Milestones 0-2 are complete, as is C13 (unsupported layouts) and C14
-(compound headings). C15 — one shared resolver applying the extraction precedence explicitly —
-is next.
+is `prompt.txt`. Milestones 0-2 are complete, as are C13 (unsupported layouts), C14 (compound
+headings) and C15 (ordered precedence, context-sensitive separators, `current_income` /
+`current_package`). C16 — one unified Pillow renderer across all five passes — is next.
+
+C15 left one item of its plan undone on purpose: `_experience_line_entities` still reconciles
+titles and companies across segments with its own logic rather than through `SpanResolver`. The
+reconciliation is a comparison *between* segments, not a first-come claim, so it does not fit
+the resolver's shape without a redesign that would move output. The `@` split and the date
+spans in that function do run deterministically ahead of the model.
 
 `README.md`'s architecture section is stale: it describes the `model.py` / `routing.py` /
 `__init__.py` split that no longer exists. Scheduled for the final packaging commit.

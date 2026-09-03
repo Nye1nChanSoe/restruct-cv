@@ -25,3 +25,11 @@ DATE_RANGE_RE = re.compile(
 )
 
 SINGLE_YEAR_RE = re.compile(r"\b(?:19|20)\d{2}\b")
+
+# One endpoint of a range rather than a whole range: "2019", "Jan 2020",
+# "Present". Used to ask whether a dash joins two dates or separates two
+# fields, which needs each side tested on its own.
+SINGLE_DATE_RE = re.compile(
+    rf"(?:{DATED_YEAR_PATTERN}|Present|Current|Now)",
+    re.IGNORECASE,
+)

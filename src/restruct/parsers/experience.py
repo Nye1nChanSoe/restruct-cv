@@ -17,7 +17,23 @@ from restruct.patterns.dates import DATE_RANGE_RE
 from restruct.patterns.organizations import COMPANY_MARKER_RE
 from restruct.patterns.separators import METADATA_SEPARATOR_RE
 from restruct.structure.headings import _routed_section_headings
+from restruct.structure.separators import at_sign_split
 from restruct.structure.metadata import _metadata_candidates
+
+
+def _text_outside(text: str, date_spans: list[re.Match[str]]) -> str:
+    """The line with its date spans blanked out.
+
+    Dates are claimed deterministically first, and a separator inside one --
+    "Jan 2020 @ 09:00" -- is not a field boundary. Blanking rather than
+    deleting keeps every remaining character at its original offset, so a split
+    found here still points into the source line.
+    """
+    characters = list(text)
+    for match in date_spans:
+        for position in range(match.start(), match.end()):
+            characters[position] = " "
+    return "".join(characters)
 
 
 def _experience_line_entities(
@@ -37,6 +53,23 @@ def _experience_line_entities(
             "bbox": resolve_span_box(document, line, match.group(0), match.start(), match.end()),
             "detectionMethod": "date_regex",
         })
+
+    # "Senior Engineer @ Acme Corp" states the two roles outright, and the
+    # construction is only ever written that way round. Claiming it here keeps
+    # a deterministic reading ahead of MiniLM's guess at the same two spans;
+    # the unsplit text stays reachable through the offsets either side.
+    at_split = at_sign_split(_text_outside(line.text, date_spans))
+    if at_split is not None:
+        for role, text, start, end in (
+            ("jobTitles", at_split.left, at_split.left_start, at_split.left_end),
+            ("companies", at_split.right, at_split.right_start, at_split.right_end),
+        ):
+            result[role].append({
+                "text": text, "page": line.page,
+                "bbox": resolve_span_box(document, line, text, start, end),
+                "detectionMethod": "delimiter_at",
+            })
+        return result
 
     candidates = _metadata_candidates(
         line.text,

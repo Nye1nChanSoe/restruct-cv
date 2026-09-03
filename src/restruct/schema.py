@@ -83,6 +83,8 @@ def _profile_value(header_profile: dict[str, Any] | None) -> dict[str, Any] | No
         "visa_status": _first_entity_text(entities, "visa_status"),
         "nationality": _first_entity_text(entities, "nationality"),
         "current_residence": _first_entity_text(entities, "current_residence"),
+        "current_income": _first_entity_text(entities, "current_income"),
+        "current_package": _first_entity_text(entities, "current_package"),
         "emails": _texts(
             [entity for entity in entities if entity.get("type") == "email"]
         ),

@@ -17,7 +17,13 @@ ATTRIBUTE_LABEL_PATTERN = (
     r"work\s+authorization|right\s+to\s+work|visa|"
     r"nationality|citizenship|"
     r"current\s+residen(?:ce|t)|current\s+location|place\s+of\s+residence|"
-    r"residen(?:ce|t)"
+    r"residen(?:ce|t)|"
+    # Compensation. Longest alternatives first, or "current ctc" is consumed by
+    # a bare "ctc" and the label recorded is the wrong half of the phrase.
+    r"current\s+package|annual\s+package|total\s+package|"
+    r"compensation\s+package|total\s+compensation|current\s+ctc|ctc|package|"
+    r"current\s+salary|present\s+salary|current\s+income|current\s+pay|"
+    r"monthly\s+salary|monthly\s+income|last\s+drawn\s+salary|salary|income"
 )
 
 # A known label followed by its value, stopping at the next delimiter or label.

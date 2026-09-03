@@ -108,6 +108,8 @@ class DebugSettings:
         ("location", "#EF6C00"),
         ("nationality", "#F9A825"),
         ("current_residence", "#FB8C00"),
+        ("current_income", "#2E7D32"),
+        ("current_package", "#558B2F"),
         ("date_of_birth", "#8E24AA"),
         ("age", "#AB47BC"),
         ("gender", "#00838F"),

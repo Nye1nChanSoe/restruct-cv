@@ -16,6 +16,11 @@ from restruct.patterns.separators import (
     KEY_VALUE_DASH_RE,
     KEY_VALUE_TAB_RE,
 )
+from restruct.structure.separators import (
+    colon_is_key_value,
+    dash_is_range,
+    repeated_label_rows,
+)
 
 
 def _skill_inline_parts(
@@ -23,8 +28,15 @@ def _skill_inline_parts(
     source_start: int = 0,
     *,
     allow_single_dash_body: bool = True,
+    neighbouring_labels: list[str] | None = None,
 ) -> tuple[str, int, int, str, int, int, str] | None:
-    """Return a short group label and untouched body from a delimiter row."""
+    """Return a short group label and untouched body from a delimiter row.
+
+    ``neighbouring_labels`` are the labels of the rows around this one. A short
+    label stands on its own; a longer one is accepted only when its neighbours
+    are labelled the same way, because that is the document committing to a
+    labelled layout rather than a sentence containing a colon.
+    """
     for pattern, method in (
         (KEY_VALUE_COLON_RE, "delimiter_colon"),
         (KEY_VALUE_TAB_RE, "delimiter_tab"),
@@ -35,13 +47,16 @@ def _skill_inline_parts(
             continue
         label = match.group("label").strip()
         body = match.group("body").strip()
-        if (
-            not label
-            or not body
-            or len(label.split()) > 7
-            or len(label) > 50
-            or label.casefold().startswith(("http", "www."))
+        if not label or not body:
+            continue
+        if not colon_is_key_value(
+            label,
+            repeated_label_rows=repeated_label_rows(neighbouring_labels or [], label),
         ):
+            continue
+        # A dash between two dates joins them into one range. Splitting there
+        # yields two half-dates and loses the only thing the row was saying.
+        if method == "delimiter_dash" and dash_is_range(label, body):
             continue
         if (
             method == "delimiter_dash"

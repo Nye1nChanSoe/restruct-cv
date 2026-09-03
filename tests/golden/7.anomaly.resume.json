@@ -14,6 +14,8 @@
     "visa_status": null,
     "nationality": "Thai citizen",
     "current_residence": null,
+    "current_income": null,
+    "current_package": null,
     "emails": [
       "somchai.rattanakul@example.com"
     ],

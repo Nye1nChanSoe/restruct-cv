@@ -14,6 +14,8 @@
     "visa_status": null,
     "nationality": null,
     "current_residence": null,
+    "current_income": null,
+    "current_package": null,
     "emails": [
       "nattaya.wongsakul.test@example.com"
     ],

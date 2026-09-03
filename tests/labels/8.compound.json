@@ -2,6 +2,7 @@
   "source": "8.compound.pdf",
   "notes": [
     "Written for the compound-heading milestone. A native single-column resume whose two compound headings resolve in different ways, so the split is exercised end to end rather than only in unit tests.",
+    "The header states both a current salary and a current package. They are different numbers and different fields: a package is salary plus everything around it, so collapsing them would silently keep only the first.",
     "'CERTIFICATIONS & LANGUAGES' has both components named outright by an explicit label on the line beneath, so each destination owns exactly one line.",
     "'AWARDS & PUBLICATIONS' is compound, but its two local labels are bold enough to be promoted to section headings in their own right. The compound heading is then left owning nothing and must produce no section at all -- otherwise it registers an empty 'awards' that hides the real one.",
     "Fictional person; every name, employer, and contact detail is invented."
@@ -25,7 +26,9 @@
     "marital_status": null,
     "visa_status": null,
     "nationality": null,
-    "current_residence": null
+    "current_residence": null,
+    "current_income": "SGD 7,500 per month",
+    "current_package": "SGD 102,000 per annum"
   },
   "sections_present": [
     "summary",
