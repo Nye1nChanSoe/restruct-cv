@@ -20,9 +20,9 @@ dev = [
 ]
 
 [project.scripts]
-restruct = "restruct:main"
+restruct = "restruct.cli:main"
 # Kept so existing invocations and the README keep working during the refactor.
-extractor-v1 = "restruct:main"
+extractor-v1 = "restruct.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13.0"]

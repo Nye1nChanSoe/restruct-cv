@@ -7,6 +7,7 @@ representation without importing DistilBERT or MiniLM.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 
@@ -69,3 +70,33 @@ def overlaps_existing(
         and start < match.end
         for match in matches
     )
+
+
+def append_regex_matches(
+    matches: list[HeaderEntityMatch],
+    *,
+    line_index: int,
+    text: str,
+    kind: str,
+    pattern: re.Pattern[str],
+) -> None:
+    """Claim every match of ``pattern`` that no earlier stage already claimed."""
+    for match in pattern.finditer(text):
+        if overlaps_existing(
+            matches,
+            line_index=line_index,
+            start=match.start(),
+            end=match.end(),
+        ):
+            continue
+        matches.append(
+            HeaderEntityMatch(
+                kind=kind,
+                text=match.group(0),
+                line_index=line_index,
+                start=match.start(),
+                end=match.end(),
+                detection_method="regex",
+                url=match.group(0) if kind == "url" else None,
+            )
+        )
