@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 import statistics
 import unicodedata
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -13,37 +12,12 @@ from sentence_transformers import SentenceTransformer
 from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
 
 from restruct.configs import SETTINGS
-
-
-@dataclass(frozen=True)
-class ExtractedLine:
-    page: int
-    text: str
-    bbox: tuple[float, float, float, float]
-    size: float
-    bold: bool
-    used_ocr: bool
-
-
-@dataclass(frozen=True)
-class DetectedHeading:
-    line_index: int
-    section_type: str
-    similarity: float
-    runner_up_similarity: float
-
-
-@dataclass(frozen=True)
-class HeaderEntityMatch:
-    kind: str
-    text: str
-    line_index: int
-    start: int
-    end: int
-    detection_method: str
-    confidence: float | None = None
-    url: str | None = None
-    bbox: tuple[float, float, float, float] | None = None
+from restruct.document.types import (
+    DetectedHeading,
+    ExtractedLine,
+    HeaderEntityMatch,
+    overlaps_existing,
+)
 
 
 class EmbeddingModel(Protocol):
@@ -273,21 +247,6 @@ NATIONALITY_PHRASE_RE = re.compile(
     r")",
     re.IGNORECASE,
 )
-
-
-def overlaps_existing(
-    matches: list[HeaderEntityMatch],
-    *,
-    line_index: int,
-    start: int,
-    end: int,
-) -> bool:
-    return any(
-        match.line_index == line_index
-        and match.start < end
-        and start < match.end
-        for match in matches
-    )
 
 
 def _expand_location_span(text: str, start: int, end: int) -> tuple[int, int]:

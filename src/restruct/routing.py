@@ -12,11 +12,10 @@ import pymupdf
 from PIL import Image, ImageDraw
 
 from restruct.configs import SETTINGS
+from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.model import (
-    DetectedHeading,
     DistilBertNerPredictor,
     EmbeddingModel,
-    ExtractedLine,
     classify_job_title_candidates,
     classify_profile_attribute_labels,
 )

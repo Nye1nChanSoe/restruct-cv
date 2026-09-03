@@ -17,13 +17,16 @@ import pymupdf
 from PIL import Image, ImageDraw
 
 from restruct.configs import SETTINGS
-from restruct.model import (
+from restruct.document.types import (
     DetectedHeading,
+    ExtractedLine,
+    HeaderEntityMatch,
+    overlaps_existing as _overlaps_existing,
+)
+from restruct.model import (
     DistilBertNerPredictor,
     EmbeddingModel,
-    ExtractedLine,
     HEADER_SEGMENT_RE as _HEADER_SEGMENT_RE,
-    HeaderEntityMatch,
     LOCATION_SEGMENT_RE as _LOCATION_SEGMENT_RE,
     NATIONALITY_PHRASE_RE as _NATIONALITY_PHRASE_RE,
     detect_headings,
@@ -31,7 +34,6 @@ from restruct.model import (
     load_embedding_model,
     load_ner_model,
     ner_matches_for_profile,
-    overlaps_existing as _overlaps_existing,
     semantic_job_title_matches,
 )
 from restruct.routing import (
