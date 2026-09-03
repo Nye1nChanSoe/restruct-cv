@@ -143,3 +143,45 @@ def test_blanking_a_date_span_preserves_every_other_offset() -> None:
     split = at_sign_split(blanked)
     assert split is not None
     assert text[split.right_start : split.right_end] == "Acme Corp"
+
+
+# -- unclosed brackets -------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("text", "depth"),
+    [
+        ("Forklift Safety Awareness (non-licensed", 1),
+        ("operator training)", 0),
+        ("Awareness (non-licensed operator training)", 0),
+        ("nested (a (b) c", 1),
+        ("Skills [advanced", 1),
+        # A fragment can close a bracket it never opened; that says nothing
+        # about what follows, so depth floors at zero rather than going negative.
+        ("continued) and then some", 0),
+    ],
+)
+def test_bracket_depth_counts_what_is_still_open(text: str, depth: int) -> None:
+    from restruct.structure.separators import parenthesis_depth
+
+    assert parenthesis_depth(text) == depth
+
+
+def test_a_separator_inside_brackets_is_part_of_the_phrase() -> None:
+    """"(non-licensed - operator training)" is one field whatever the dash
+    suggests, so the split has to be taken at depth zero."""
+    split = dash_field_boundary("Forklift Awareness (non-licensed - operator) - Level 2")
+    assert split is not None
+    assert split.left == "Forklift Awareness (non-licensed - operator)"
+    assert split.right == "Level 2"
+
+
+def test_an_at_sign_inside_brackets_does_not_split() -> None:
+    assert at_sign_split("Analyst (reporting @ group level)") is None
+
+
+def test_a_label_that_has_not_closed_its_bracket_is_not_a_label() -> None:
+    """It has not finished naming what it names, so the colon after it cannot
+    be labelling anything yet."""
+    assert not colon_is_key_value("Forklift Safety Awareness (non-licensed")
+    assert colon_is_key_value("Forklift Safety Awareness (non-licensed operator)")

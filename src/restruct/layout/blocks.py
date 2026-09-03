@@ -24,6 +24,17 @@ from restruct.geometry import horizontal_overlap, rounded, union
 # small negative gap still reads as "directly below".
 MINIMUM_GAP = -2.0
 
+# How far an unclosed bracket may reach for its closing one, in line heights.
+# A resume wraps a parenthetical onto the next line, not across a section: the
+# bound is what stops an unmatched "(" joining everything after it.
+_UNCLOSED_BRACKET_LINES = 3.0
+
+
+def _has_unclosed_bracket(text: str) -> bool:
+    from restruct.structure.separators import is_parenthetically_complete
+
+    return bool(text) and not is_parenthetically_complete(text)
+
 
 def continues_block(
     previous_box: Sequence[float] | pymupdf.Rect,
@@ -32,6 +43,7 @@ def continues_block(
     same_page: bool,
     require_horizontal_overlap: bool,
     statistics: DocumentStatistics,
+    previous_text: str = "",
 ) -> bool:
     """Whether ``current_box`` continues the block ending at ``previous_box``.
 
@@ -42,13 +54,25 @@ def continues_block(
     ``require_horizontal_overlap`` distinguishes prose continuation, where the
     next line must sit under the previous one, from bullet continuation, where
     a hanging indent may leave no overlap.
+
+    ``previous_text`` lets the block say it is not finished. A line ending with
+    a bracket still open -- "Forklift Safety Awareness (non-licensed" -- is
+    half a phrase, and the geometry gap is the wrong question to ask about it:
+    the author's own punctuation says the thought continues. That evidence
+    overrides the gap, but nothing else: still the same page, still below, and
+    still within a few lines, so one stray bracket cannot swallow a section.
     """
     if not same_page:
         return False
     previous, current = pymupdf.Rect(previous_box), pymupdf.Rect(current_box)
     gap = current.y0 - previous.y1
-    if gap < MINIMUM_GAP or not statistics.is_paragraph_gap(gap):
+    if gap < MINIMUM_GAP:
         return False
+    if not statistics.is_paragraph_gap(gap):
+        if not _has_unclosed_bracket(previous_text):
+            return False
+        if gap > max(statistics.median_line_height, 1.0) * _UNCLOSED_BRACKET_LINES:
+            return False
     if require_horizontal_overlap:
         return horizontal_overlap(previous, current) > 0
     return True
@@ -108,3 +132,23 @@ def append_paragraph(
     group["paragraphs"].append(value)
     group["_lastType"] = "paragraph"
     group["_lastLineBbox"] = bbox
+
+
+def last_block_text(entry: dict[str, Any]) -> str:
+    """The text of the block an entry is currently accumulating into.
+
+    Callers pass this to ``continues_block`` so a block whose brackets are
+    still open can say the thought is unfinished. ``_lastType`` records which
+    list the entry appended to most recently; when it is unset, either list
+    will do, because only an entry that has accumulated nothing has neither.
+    """
+    kinds = ("bullets", "paragraphs") if entry.get("_lastType") == "bullet" else (
+        "paragraphs",
+        "bullets",
+    )
+    for kind in kinds:
+        items = entry.get(kind) or []
+        if items:
+            last = items[-1]
+            return str(last.get("text", "")) if isinstance(last, dict) else str(last)
+    return ""

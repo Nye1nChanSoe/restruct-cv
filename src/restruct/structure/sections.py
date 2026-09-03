@@ -67,6 +67,7 @@ def _content_blocks(
                 same_page=previous["page"] == line.page,
                 require_horizontal_overlap=True,
                 statistics=statistics,
+                previous_text=previous.get("text", ""),
             ):
                 extend_block(
                     previous,
@@ -85,6 +86,7 @@ def _content_blocks(
                 same_page=previous["page"] == line.page,
                 require_horizontal_overlap=True,
                 statistics=statistics,
+                previous_text=previous.get("text", ""),
             ):
                 extend_block(
                     previous,

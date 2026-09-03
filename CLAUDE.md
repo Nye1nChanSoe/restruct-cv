@@ -158,6 +158,13 @@ when the left side is short, **or** when the rows around it are labelled the sam
 labelled block is a layout the document is committing to. Every split keeps the original text
 and the offsets of both parts.
 
+**An unclosed bracket outranks the geometry.** A line ending `... (non-licensed` has not
+finished saying what it names, so it is not separator-parsed as it stands and the line under it
+completes it — `continues_block(previous_text=...)` overrides the paragraph-gap test. The
+override is bounded to the same page, downward, and three line heights, so one stray `(` cannot
+join a whole section. A separator found *inside* brackets is part of the phrase, never a field
+boundary, so splits are taken at depth zero.
+
 **Never classify content merely because it follows a heading.** Ambiguous content stays `other`.
 
 ### Unsupported layouts are recorded, never repaired

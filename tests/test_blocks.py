@@ -164,3 +164,99 @@ def test_extend_block_appends_to_existing_evidence() -> None:
         entities=[{"type": "url", "text": "b.com"}],
     )
     assert [entity["text"] for entity in block["entities"]] == ["a.com", "b.com"]
+
+
+# -- an unclosed bracket continues a block ----------------------------------
+
+
+def _statistics_with(line_height: float, line_gap: float):
+    from restruct.document.stats import DocumentStatistics
+
+    return DocumentStatistics(
+        body_font_size=10.0,
+        font_sizes=(),
+        bold_ratio=0.0,
+        median_character_width=5.0,
+        median_space_width=2.5,
+        median_line_height=line_height,
+        median_line_gap=line_gap,
+        left_margin=50.0,
+        right_margin=500.0,
+        indentation_levels=(),
+    )
+
+
+def test_an_open_bracket_continues_a_block_across_a_gap_that_would_end_it() -> None:
+    """The author's own punctuation says the thought is unfinished, which is
+    better evidence than a gap measurement that only sees two lines."""
+    from restruct.layout.blocks import continues_block
+
+    statistics = _statistics_with(line_height=12.0, line_gap=1.0)
+    previous, current = (50.0, 100.0, 300.0, 112.0), (50.0, 126.0, 300.0, 138.0)
+    common = dict(
+        same_page=True,
+        require_horizontal_overlap=False,
+        statistics=statistics,
+    )
+    assert not continues_block(previous, current, **common)
+    assert continues_block(
+        previous,
+        current,
+        **common,
+        previous_text="Forklift Safety Awareness (non-licensed",
+    )
+
+
+def test_a_closed_bracket_changes_nothing() -> None:
+    from restruct.layout.blocks import continues_block
+
+    statistics = _statistics_with(line_height=12.0, line_gap=1.0)
+    assert not continues_block(
+        (50.0, 100.0, 300.0, 112.0),
+        (50.0, 126.0, 300.0, 138.0),
+        same_page=True,
+        require_horizontal_overlap=False,
+        statistics=statistics,
+        previous_text="Forklift Safety Awareness (non-licensed operator)",
+    )
+
+
+def test_an_unmatched_bracket_cannot_swallow_a_section() -> None:
+    """The bound is the whole safety of the rule: one stray "(" must not join
+    everything after it."""
+    from restruct.layout.blocks import continues_block
+
+    statistics = _statistics_with(line_height=12.0, line_gap=1.0)
+    assert not continues_block(
+        (50.0, 100.0, 300.0, 112.0),
+        (50.0, 400.0, 300.0, 412.0),
+        same_page=True,
+        require_horizontal_overlap=False,
+        statistics=statistics,
+        previous_text="Forklift Safety Awareness (non-licensed",
+    )
+
+
+def test_an_open_bracket_never_joins_across_a_page() -> None:
+    from restruct.layout.blocks import continues_block
+
+    statistics = _statistics_with(line_height=12.0, line_gap=1.0)
+    assert not continues_block(
+        (50.0, 700.0, 300.0, 712.0),
+        (50.0, 60.0, 300.0, 72.0),
+        same_page=False,
+        require_horizontal_overlap=False,
+        statistics=statistics,
+        previous_text="Forklift Safety Awareness (non-licensed",
+    )
+
+
+def test_last_block_text_reads_the_block_being_accumulated() -> None:
+    from restruct.layout.blocks import last_block_text
+
+    entry = {"paragraphs": [{"text": "first"}], "bullets": [], "_lastType": "paragraph"}
+    assert last_block_text(entry) == "first"
+    entry["bullets"].append({"text": "a bullet"})
+    entry["_lastType"] = "bullet"
+    assert last_block_text(entry) == "a bullet"
+    assert last_block_text({"paragraphs": [], "bullets": [], "_lastType": None}) == ""

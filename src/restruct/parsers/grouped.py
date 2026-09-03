@@ -16,7 +16,12 @@ from restruct.configs import SETTINGS
 from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import resolve_span_box, rounded
-from restruct.layout.blocks import append_paragraph, continues_block, extend_block
+from restruct.layout.blocks import (
+    append_paragraph,
+    continues_block,
+    extend_block,
+    last_block_text,
+)
 from restruct.layout.rows import _row_value, _visual_rows
 from restruct.model import EmbeddingModel, classify_profile_attribute_labels
 from restruct.patterns.bullets import BULLET_RE
@@ -24,6 +29,7 @@ from restruct.patterns.dates import DATE_RANGE_RE, SINGLE_YEAR_RE
 from restruct.patterns.layout import PAGE_FOOTER_RE
 from restruct.patterns.personal import ATTRIBUTE_INLINE_RE
 from restruct.structure.compound import routed_logical_sections
+from restruct.structure.separators import is_parenthetically_complete
 from restruct.structure.headings import (
     _looks_like_subheading,
     _section_body_style,
@@ -426,6 +432,7 @@ def _build_grouped_section_debug(
                     same_page=True,
                     require_horizontal_overlap=False,
                     statistics=statistics,
+                    previous_text=last_block_text(current),
                 ):
                     extend_block(
                         current["bullets"][-1],
@@ -436,6 +443,42 @@ def _build_grouped_section_debug(
                     current["urls"].extend(line_urls)
                     current["_lastLineBbox"] = rounded_bbox
                     continue
+            # A heading that has opened a bracket and not closed it has not
+            # finished naming what it names. The line under it completes that
+            # phrase rather than starting a paragraph of its own -- the
+            # author's punctuation is better evidence than the typography,
+            # which only sees a line that is not set like a heading.
+            #
+            # The open bracket is not always on the most recent heading: in a
+            # multi-column table the cells of one row all arrive first, so the
+            # heading left hanging can be several back. Take the last one that
+            # is still open, which is the phrase this line can be completing.
+            unfinished = next(
+                (
+                    value
+                    for value in reversed(current["subheadingLines"])
+                    if not is_parenthetically_complete(value["text"])
+                ),
+                None,
+            )
+            if unfinished is not None and continues_block(
+                unfinished["bbox"],
+                line.bbox,
+                same_page=unfinished["page"] == line.page,
+                require_horizontal_overlap=False,
+                statistics=statistics,
+                previous_text=unfinished["text"],
+            ):
+                extend_block(
+                    unfinished,
+                    text=line.text,
+                    box=line.bbox,
+                    entities=line_urls,
+                )
+                current["urls"].extend(line_urls)
+                current["_lastLineBbox"] = rounded_bbox
+                continue
+
             append_paragraph(
                 current,
                 text=line.text,

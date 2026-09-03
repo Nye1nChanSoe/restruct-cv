@@ -8,7 +8,12 @@ import pymupdf
 from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import resolve_span_box, rounded
-from restruct.layout.blocks import append_paragraph, continues_block, extend_block
+from restruct.layout.blocks import (
+    append_paragraph,
+    continues_block,
+    extend_block,
+    last_block_text,
+)
 from restruct.layout.rows import _row_value, _visual_rows
 from restruct.patterns.bullets import BULLET_RE
 from restruct.patterns.layout import PAGE_FOOTER_RE
@@ -205,6 +210,7 @@ def build_skills_debug(
                     same_page=True,
                     require_horizontal_overlap=False,
                     statistics=statistics,
+                    previous_text=last_block_text(current),
                 ):
                     extend_block(
                         current["bullets"][-1],

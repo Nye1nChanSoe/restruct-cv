@@ -9,7 +9,7 @@ from restruct.configs import SETTINGS
 from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import resolve_span_box, rounded
-from restruct.layout.blocks import continues_block, extend_block
+from restruct.layout.blocks import continues_block, extend_block, last_block_text
 from restruct.layout.rows import _row_value, _visual_rows
 from restruct.model import DistilBertNerPredictor
 from restruct.patterns.bullets import BULLET_RE
@@ -288,6 +288,7 @@ def build_education_debug(
                     same_page=True,
                     require_horizontal_overlap=False,
                     statistics=statistics,
+                    previous_text=last_block_text(current),
                 ):
                     extend_block(current["bullets"][-1], text=line.text, box=line_box)
                     current["_lastLineBbox"] = rounded_bbox
@@ -300,6 +301,7 @@ def build_education_debug(
                     same_page=True,
                     require_horizontal_overlap=True,
                     statistics=statistics,
+                    previous_text=previous.get("text", ""),
                 ):
                     extend_block(previous, text=line.text, box=line_box)
                     current["_lastBodyType"] = "paragraph"

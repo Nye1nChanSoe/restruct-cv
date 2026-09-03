@@ -62,6 +62,31 @@ class Split:
     method: str
 
 
+def parenthesis_depth(text: str) -> int:
+    """How many brackets are still open at the end of ``text``.
+
+    Never negative: a fragment can begin part-way through a bracketed phrase
+    and close a bracket it never opened, which says nothing about what follows.
+    """
+    depth = 0
+    for character in text:
+        if character in "([":
+            depth += 1
+        elif character in ")]":
+            depth = max(0, depth - 1)
+    return depth
+
+
+def is_parenthetically_complete(text: str) -> bool:
+    """Whether ``text`` closes every bracket it opens.
+
+    A line that does not is not a whole thought yet, and a separator found
+    inside the unclosed part is punctuation within a phrase rather than a
+    boundary between fields.
+    """
+    return parenthesis_depth(text) == 0
+
+
 def _is_date_like(text: str) -> bool:
     """Whether a fragment reads as a date on its own.
 
@@ -83,6 +108,10 @@ def colon_is_key_value(label: str, *, repeated_label_rows: int = 0) -> bool:
     """
     stripped = label.strip()
     if not stripped or _NUMERIC_COLON_RE.match(stripped):
+        return False
+    # "Forklift Safety Awareness (non-licensed" has not finished saying what it
+    # is naming, so the colon after it cannot be labelling anything.
+    if not is_parenthetically_complete(stripped):
         return False
     if stripped.casefold().startswith(("http", "www.")):
         return False
@@ -108,7 +137,17 @@ def dash_is_range(left: str, right: str) -> bool:
 
 
 def _split_on(text: str, pattern: re.Pattern[str], method: str) -> Split | None:
-    match = pattern.search(text)
+    # A separator inside brackets belongs to the phrase, not to the line:
+    # "Forklift Safety Awareness (non-licensed - operator training)" is one
+    # field whatever the dash suggests. Take the first separator at depth zero.
+    match = next(
+        (
+            found
+            for found in pattern.finditer(text)
+            if parenthesis_depth(text[: found.start()]) == 0
+        ),
+        None,
+    )
     if match is None:
         return None
     raw_left, raw_right = text[: match.start()], text[match.end() :]
