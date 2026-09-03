@@ -13,6 +13,14 @@ from PIL import Image, ImageDraw
 
 from restruct.configs import SETTINGS
 from restruct.document.types import DetectedHeading, ExtractedLine
+from restruct.geometry import (
+    horizontal_overlap,
+    pixel_box,
+    resolve_span_box,
+    rounded,
+    union,
+    vertical_overlap,
+)
 from restruct.patterns.bullets import BULLET_RE
 from restruct.patterns.dates import DATE_RANGE_RE, SINGLE_YEAR_RE
 from restruct.patterns.education import (
@@ -100,11 +108,9 @@ def _shares_visual_row_with_right_content(
         other_box = pymupdf.Rect(other.bbox)
         if other_box.x0 <= candidate_box.x1 + max(2.0, candidate.size * 0.5):
             continue
-        vertical_overlap = min(candidate_box.y1, other_box.y1) - max(
-            candidate_box.y0,
-            other_box.y0,
-        )
-        if vertical_overlap >= min(candidate_box.height, other_box.height) * 0.45:
+        if vertical_overlap(candidate_box, other_box) >= min(
+            candidate_box.height, other_box.height
+        ) * 0.45:
             return True
     return False
 
@@ -261,9 +267,9 @@ def _content_blocks(
                 "type": "bullet",
                 "text": bullet_text,
                 "page": line.page,
-                "bbox": [round(value, 2) for value in line.bbox],
+                "bbox": rounded(line.bbox),
                 "detectionMethod": "bullet_marker",
-                "_lastLineBbox": [round(value, 2) for value in line.bbox],
+                "_lastLineBbox": rounded(line.bbox),
             }
             if line_url_entities:
                 block["entities"] = line_url_entities
@@ -279,17 +285,13 @@ def _content_blocks(
             )
             else "paragraph"
         )
-        rounded_bbox = [round(value, 2) for value in line.bbox]
+        rounded_bbox = rounded(line.bbox)
         if role == "paragraph" and blocks and blocks[-1]["type"] == "bullet":
             previous = blocks[-1]
             previous_box = pymupdf.Rect(previous["_lastLineBbox"])
             current_box = pymupdf.Rect(line.bbox)
             vertical_gap = current_box.y0 - previous_box.y1
-            horizontal_overlap = max(
-                0.0,
-                min(previous_box.x1, current_box.x1)
-                - max(previous_box.x0, current_box.x0),
-            )
+            overlap = horizontal_overlap(previous_box, current_box)
             maximum_gap = max(
                 previous_box.height,
                 current_box.height,
@@ -297,7 +299,7 @@ def _content_blocks(
             if (
                 previous["page"] == line.page
                 and -2.0 <= vertical_gap <= maximum_gap
-                and horizontal_overlap > 0
+                and overlap > 0
             ):
                 previous["text"] += "\n" + line.text
                 previous["bbox"] = [
@@ -314,11 +316,7 @@ def _content_blocks(
             previous_box = pymupdf.Rect(previous["_lastLineBbox"])
             current_box = pymupdf.Rect(line.bbox)
             vertical_gap = current_box.y0 - previous_box.y1
-            horizontal_overlap = max(
-                0.0,
-                min(previous_box.x1, current_box.x1)
-                - max(previous_box.x0, current_box.x0),
-            )
+            overlap = horizontal_overlap(previous_box, current_box)
             maximum_gap = max(
                 previous_box.height,
                 current_box.height,
@@ -326,7 +324,7 @@ def _content_blocks(
             if (
                 previous["page"] == line.page
                 and -2.0 <= vertical_gap <= maximum_gap
-                and horizontal_overlap > 0
+                and overlap > 0
             ):
                 previous["text"] += "\n" + line.text
                 previous["bbox"] = [
@@ -387,7 +385,7 @@ def build_sections(
         heading_value: dict[str, Any] = {
             "text": heading_line.text,
             "page": heading_line.page,
-            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "bbox": rounded(heading_line.bbox),
             "similarity": round(heading.similarity, 4),
             "detectionMethod": (
                 "geometry_semantic"
@@ -410,26 +408,6 @@ def build_sections(
             }
         )
     return sections
-
-
-def _span_bbox(
-    document: pymupdf.Document,
-    line: ExtractedLine,
-    text: str,
-    start: int,
-    end: int,
-) -> list[float]:
-    found = document[line.page - 1].search_for(text, clip=pymupdf.Rect(line.bbox))
-    if found:
-        return [round(value, 2) for value in found[0]]
-    line_box = pymupdf.Rect(line.bbox)
-    character_width = line_box.width / max(1, len(line.text))
-    return [
-        round(line_box.x0 + character_width * start, 2),
-        round(line_box.y0, 2),
-        round(line_box.x0 + character_width * end, 2),
-        round(line_box.y1, 2),
-    ]
 
 
 def _metadata_candidates(
@@ -501,7 +479,7 @@ def _experience_line_entities(
     for match in date_spans:
         result["dates"].append({
             "text": match.group(0), "page": line.page,
-            "bbox": _span_bbox(document, line, match.group(0), match.start(), match.end()),
+            "bbox": resolve_span_box(document, line, match.group(0), match.start(), match.end()),
             "detectionMethod": "date_regex",
         })
 
@@ -519,7 +497,7 @@ def _experience_line_entities(
         normalized_segment = " ".join(
             segment.replace("\u200b", "").replace("\ufeff", "").casefold().split()
         ).strip(" |•·-–—")
-        segment_box = pymupdf.Rect(_span_bbox(document, line, segment, start, end))
+        segment_box = pymupdf.Rect(resolve_span_box(document, line, segment, start, end))
         matches: list[dict[str, Any]] = []
         for url in urls:
             normalized_text = " ".join(
@@ -627,7 +605,7 @@ def _experience_line_entities(
             result["jobTitles"].append({
                 "text": segment,
                 "page": line.page,
-                "bbox": _span_bbox(document, line, segment, start, end),
+                "bbox": resolve_span_box(document, line, segment, start, end),
                 "confidence": round(float(item["titleConfidence"]), 4),
                 "detectionMethod": "minilm_reconciled",
             })
@@ -663,7 +641,7 @@ def _experience_line_entities(
                     company_value: dict[str, Any] = {
                         "text": company_text,
                         "page": line.page,
-                        "bbox": _span_bbox(
+                        "bbox": resolve_span_box(
                             document,
                             line,
                             company_text,
@@ -685,7 +663,7 @@ def _experience_line_entities(
                     result["locations"].append({
                         "text": location_text,
                         "page": line.page,
-                        "bbox": _span_bbox(
+                        "bbox": resolve_span_box(
                             document,
                             line,
                             location_text,
@@ -717,7 +695,7 @@ def _experience_line_entities(
             value: dict[str, Any] = {
                 "text": segment,
                 "page": line.page,
-                "bbox": _span_bbox(document, line, segment, start, end),
+                "bbox": resolve_span_box(document, line, segment, start, end),
                 "detectionMethod": (
                     "url_company_reconciled"
                     if item["externalUrls"]
@@ -738,7 +716,7 @@ def _experience_line_entities(
             result["locations"].append({
                 "text": segment,
                 "page": line.page,
-                "bbox": _span_bbox(document, line, segment, start, end),
+                "bbox": resolve_span_box(document, line, segment, start, end),
                 "confidence": round(max(float(item["score"]) for item in locations), 4),
                 "detectionMethod": "distilbert_ner_reconciled",
             })
@@ -748,7 +726,7 @@ def _experience_line_entities(
             result["jobTitles"].append({
                 "text": segment,
                 "page": line.page,
-                "bbox": _span_bbox(document, line, segment, start, end),
+                "bbox": resolve_span_box(document, line, segment, start, end),
                 "confidence": round(float(item["titleConfidence"]), 4),
                 "detectionMethod": "minilm_reconciled",
             })
@@ -764,7 +742,7 @@ def _experience_line_entities(
             value = {
                 "text": text,
                 "page": line.page,
-                "bbox": _span_bbox(document, line, text, prediction_start, prediction_end),
+                "bbox": resolve_span_box(document, line, text, prediction_start, prediction_end),
                 "confidence": round(float(prediction["score"]), 4),
                 "detectionMethod": "distilbert_ner",
             }
@@ -810,11 +788,11 @@ def build_experience_debug(
             current["_bodyStarted"] = True
             current["bullets"].append({
                 "text": line.text[bullet.end():].strip(), "page": line.page,
-                "bbox": [round(value, 2) for value in line.bbox],
+                "bbox": rounded(line.bbox),
                 "detectionMethod": "bullet_marker",
             })
             current["_lastBodyType"] = "bullet"
-            current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
+            current["_lastLineBbox"] = rounded(line.bbox)
             continue
 
         can_be_metadata = (
@@ -837,7 +815,7 @@ def build_experience_debug(
                 current = new_entry()
             current["subheadingLines"].append({
                 "text": line.text, "page": line.page,
-                "bbox": [round(value, 2) for value in line.bbox],
+                "bbox": rounded(line.bbox),
                 "detectionMethod": "experience_metadata",
             })
             for key in ("jobTitles", "companies", "dates", "locations", "urls"):
@@ -853,12 +831,12 @@ def build_experience_debug(
             if -2.0 <= gap <= max(previous_box.height, current_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
                 previous = current["bullets"][-1]
                 previous["text"] += "\n" + line.text
-                previous["bbox"] = [round(value, 2) for value in (pymupdf.Rect(previous["bbox"]) | current_box)]
-                current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
+                previous["bbox"] = rounded((pymupdf.Rect(previous["bbox"]) | current_box))
+                current["_lastLineBbox"] = rounded(line.bbox)
                 continue
         paragraph = {
             "text": line.text, "page": line.page,
-            "bbox": [round(value, 2) for value in line.bbox],
+            "bbox": rounded(line.bbox),
             "detectionMethod": "geometry_default",
         }
         if current["paragraphs"] and current["paragraphs"][-1]["page"] == line.page:
@@ -867,13 +845,13 @@ def build_experience_debug(
             gap = current_box.y0 - previous_box.y1
             if -2.0 <= gap <= max(previous_box.height, current_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
                 previous["text"] += "\n" + line.text
-                previous["bbox"] = [round(value, 2) for value in (previous_box | current_box)]
+                previous["bbox"] = rounded((previous_box | current_box))
                 current["_lastBodyType"] = "paragraph"
-                current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
+                current["_lastLineBbox"] = rounded(line.bbox)
                 continue
         current["paragraphs"].append(paragraph)
         current["_lastBodyType"] = "paragraph"
-        current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
+        current["_lastLineBbox"] = rounded(line.bbox)
 
     for entry in entries:
         entry.pop("_bodyStarted", None)
@@ -884,7 +862,7 @@ def build_experience_debug(
         "sectionType": "experience",
         "heading": {
             "text": heading_line.text, "page": heading_line.page,
-            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "bbox": rounded(heading_line.bbox),
             "similarity": round(heading.similarity, 4),
             "detectionMethod": "geometry_semantic",
         },
@@ -909,12 +887,12 @@ def _visual_rows(
     for line_index, line in ordered:
         line_box = pymupdf.Rect(line.bbox)
         if rows and rows[-1][0][1].page == line.page:
-            row_boxes = [pymupdf.Rect(item.bbox) for _, item in rows[-1]]
-            row_y0 = min(box.y0 for box in row_boxes)
-            row_y1 = max(box.y1 for box in row_boxes)
-            overlap = min(row_y1, line_box.y1) - max(row_y0, line_box.y0)
-            minimum_height = min(row_y1 - row_y0, line_box.height)
-            center_difference = abs((row_y0 + row_y1) / 2 - (line_box.y0 + line_box.y1) / 2)
+            row_box = union(item.bbox for _, item in rows[-1])
+            overlap = vertical_overlap(row_box, line_box)
+            minimum_height = min(row_box.height, line_box.height)
+            center_difference = abs(
+                (row_box.y0 + row_box.y1) / 2 - (line_box.y0 + line_box.y1) / 2
+            )
             if overlap >= minimum_height * 0.45 or center_difference <= minimum_height * 0.35:
                 rows[-1].append((line_index, line))
                 rows[-1].sort(key=lambda item: item[1].bbox[0])
@@ -924,19 +902,16 @@ def _visual_rows(
 
 
 def _row_value(row: list[tuple[int, ExtractedLine]]) -> dict[str, Any]:
-    boxes = [pymupdf.Rect(line.bbox) for _, line in row]
-    row_box = boxes[0]
-    for box in boxes[1:]:
-        row_box |= box
+    row_box = union(line.bbox for _, line in row)
     return {
         "page": row[0][1].page,
-        "bbox": [round(value, 2) for value in row_box],
+        "bbox": rounded(row_box),
         "detectionMethod": "geometry_row",
         "cells": [
             {
                 "text": line.text,
                 "page": line.page,
-                "bbox": [round(value, 2) for value in line.bbox],
+                "bbox": rounded(line.bbox),
                 "lineIndex": line_index,
             }
             for line_index, line in row
@@ -964,7 +939,7 @@ def _education_row_entities(
             result["dates"].append({
                 "text": match.group(0),
                 "page": line.page,
-                "bbox": _span_bbox(document, line, match.group(0), match.start(), match.end()),
+                "bbox": resolve_span_box(document, line, match.group(0), match.start(), match.end()),
                 "detectionMethod": "date_regex",
             })
 
@@ -975,7 +950,7 @@ def _education_row_entities(
                 "value": float(match.group("value")),
                 "scale": float(match.group("scale")) if match.group("scale") else None,
                 "page": line.page,
-                "bbox": _span_bbox(document, line, match.group(0), match.start(), match.end()),
+                "bbox": resolve_span_box(document, line, match.group(0), match.start(), match.end()),
                 "detectionMethod": "gpa_regex",
             })
         if gpa_matches:
@@ -996,7 +971,7 @@ def _education_row_entities(
                 result["titles"].append({
                     "text": segment,
                     "page": line.page,
-                    "bbox": _span_bbox(document, line, segment, start, end),
+                    "bbox": resolve_span_box(document, line, segment, start, end),
                     "detectionMethod": "education_title_pattern",
                 })
                 continue
@@ -1004,7 +979,7 @@ def _education_row_entities(
                 value: dict[str, Any] = {
                     "text": segment,
                     "page": line.page,
-                    "bbox": _span_bbox(document, line, segment, start, end),
+                    "bbox": resolve_span_box(document, line, segment, start, end),
                     "detectionMethod": "institution_pattern",
                 }
                 if line_urls:
@@ -1014,7 +989,7 @@ def _education_row_entities(
                     result["titles"].append({
                         "text": segment,
                         "page": line.page,
-                        "bbox": _span_bbox(document, line, segment, start, end),
+                        "bbox": resolve_span_box(document, line, segment, start, end),
                         "detectionMethod": "education_title_pattern",
                     })
                 continue
@@ -1038,7 +1013,7 @@ def _education_row_entities(
                 result["locations"].append({
                     "text": segment,
                     "page": line.page,
-                    "bbox": _span_bbox(document, line, segment, start, end),
+                    "bbox": resolve_span_box(document, line, segment, start, end),
                     "confidence": round(
                         max(float(prediction["score"]) for prediction in locations),
                         4,
@@ -1056,7 +1031,7 @@ def _education_row_entities(
                 value = {
                     "text": text,
                     "page": line.page,
-                    "bbox": _span_bbox(document, line, text, prediction_start, prediction_end),
+                    "bbox": resolve_span_box(document, line, text, prediction_start, prediction_end),
                     "confidence": round(float(prediction["score"]), 4),
                     "detectionMethod": "distilbert_ner",
                 }
@@ -1193,7 +1168,7 @@ def build_education_debug(
                 continue
             bullet = BULLET_RE.match(line.text)
             line_box = pymupdf.Rect(line.bbox)
-            rounded_bbox = [round(value, 2) for value in line.bbox]
+            rounded_bbox = rounded(line.bbox)
             if bullet:
                 current["bullets"].append({
                     "text": line.text[bullet.end():].strip(),
@@ -1210,23 +1185,20 @@ def build_education_debug(
                 if -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier:
                     previous = current["bullets"][-1]
                     previous["text"] += "\n" + line.text
-                    previous["bbox"] = [round(value, 2) for value in (pymupdf.Rect(previous["bbox"]) | line_box)]
+                    previous["bbox"] = rounded((pymupdf.Rect(previous["bbox"]) | line_box))
                     current["_lastLineBbox"] = rounded_bbox
                     continue
             if current["paragraphs"] and current["paragraphs"][-1]["page"] == line.page:
                 previous = current["paragraphs"][-1]
                 previous_box = pymupdf.Rect(previous["bbox"])
                 gap = line_box.y0 - previous_box.y1
-                horizontal_overlap = max(
-                    0.0,
-                    min(previous_box.x1, line_box.x1) - max(previous_box.x0, line_box.x0),
-                )
+                overlap = horizontal_overlap(previous_box, line_box)
                 if (
                     -2.0 <= gap <= max(previous_box.height, line_box.height) * SETTINGS.section_router.paragraph_gap_multiplier
-                    and horizontal_overlap > 0
+                    and overlap > 0
                 ):
                     previous["text"] += "\n" + line.text
-                    previous["bbox"] = [round(value, 2) for value in (previous_box | line_box)]
+                    previous["bbox"] = rounded((previous_box | line_box))
                     current["_lastBodyType"] = "paragraph"
                     current["_lastLineBbox"] = rounded_bbox
                     continue
@@ -1249,7 +1221,7 @@ def build_education_debug(
         "heading": {
             "text": heading_line.text,
             "page": heading_line.page,
-            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "bbox": rounded(heading_line.bbox),
             "similarity": round(heading.similarity, 4),
             "detectionMethod": "geometry_semantic",
         },
@@ -1320,7 +1292,7 @@ def _skill_subheading_value(
     return {
         "text": text,
         "page": line.page,
-        "bbox": _span_bbox(document, line, text, start, end),
+        "bbox": resolve_span_box(document, line, text, start, end),
         "detectionMethod": detection_method,
     }
 
@@ -1354,18 +1326,15 @@ def _append_skill_paragraph(
         previous = group["paragraphs"][-1]
         previous_box = pymupdf.Rect(previous["bbox"])
         gap = current_box.y0 - previous_box.y1
-        horizontal_overlap = max(
-            0.0,
-            min(previous_box.x1, current_box.x1) - max(previous_box.x0, current_box.x0),
-        )
+        overlap = horizontal_overlap(previous_box, current_box)
         if (
             -2.0 <= gap
             <= max(previous_box.height, current_box.height)
             * SETTINGS.section_router.paragraph_gap_multiplier
-            and horizontal_overlap > 0
+            and overlap > 0
         ):
             previous["text"] += "\n" + text
-            previous["bbox"] = [round(value, 2) for value in (previous_box | current_box)]
+            previous["bbox"] = rounded((previous_box | current_box))
             if entities:
                 previous.setdefault("entities", []).extend(entities)
             group["_lastType"] = "paragraph"
@@ -1449,7 +1418,7 @@ def build_skills_debug(
                         current,
                         text=line.text,
                         page=line.page,
-                        bbox=[round(value, 2) for value in line.bbox],
+                        bbox=rounded(line.bbox),
                         entities=line_urls,
                     )
                     current["urls"].extend(line_urls)
@@ -1484,7 +1453,7 @@ def build_skills_debug(
                 body_value: dict[str, Any] = {
                     "text": body,
                     "page": line.page,
-                    "bbox": _span_bbox(document, line, body, body_start, body_end),
+                    "bbox": resolve_span_box(document, line, body, body_start, body_end),
                     "detectionMethod": "bullet_marker" if bullet_match else "geometry_default",
                 }
                 if line_urls:
@@ -1493,7 +1462,7 @@ def build_skills_debug(
                 current[target].append(body_value)
                 current["urls"].extend(line_urls)
                 current["_lastType"] = "bullet" if bullet_match else "paragraph"
-                current["_lastLineBbox"] = [round(value, 2) for value in line.bbox]
+                current["_lastLineBbox"] = rounded(line.bbox)
                 handled_row = True
                 continue
 
@@ -1531,7 +1500,7 @@ def build_skills_debug(
                 continue
 
             current = current or _new_skill_group(groups, None)
-            rounded_bbox = [round(value, 2) for value in line.bbox]
+            rounded_bbox = rounded(line.bbox)
             if bullet_match:
                 value: dict[str, Any] = {
                     "text": content,
@@ -1595,7 +1564,7 @@ def build_skills_debug(
         "heading": {
             "text": heading_line.text,
             "page": heading_line.page,
-            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "bbox": rounded(heading_line.bbox),
             "similarity": round(heading.similarity, 4),
             "detectionMethod": "geometry_semantic",
         },
@@ -1737,7 +1706,7 @@ def _build_grouped_section_debug(
                             "type": attribute_type,
                             "text": line.text,
                             "page": line.page,
-                            "bbox": [round(number, 2) for number in line.bbox],
+                            "bbox": rounded(line.bbox),
                             "confidence": round(confidence, 4),
                             "detectionMethod": (
                                 "label_pattern"
@@ -1750,7 +1719,7 @@ def _build_grouped_section_debug(
                             current,
                             text=line.text,
                             page=line.page,
-                            bbox=[round(number, 2) for number in line.bbox],
+                            bbox=rounded(line.bbox),
                             entities=line_urls,
                         )
                 continue
@@ -1821,7 +1790,7 @@ def _build_grouped_section_debug(
                     body_value: dict[str, Any] = {
                         "text": body,
                         "page": line.page,
-                        "bbox": _span_bbox(
+                        "bbox": resolve_span_box(
                             document,
                             line,
                             body,
@@ -1917,7 +1886,7 @@ def _build_grouped_section_debug(
                 value: dict[str, Any] = {
                     "text": line.text,
                     "page": line.page,
-                    "bbox": [round(number, 2) for number in line.bbox],
+                    "bbox": rounded(line.bbox),
                     "detectionMethod": "geometry_typography",
                 }
                 line_urls = url_entities_by_line.get(line_index, [])
@@ -1936,7 +1905,7 @@ def _build_grouped_section_debug(
                     current["dates"].append({
                         "text": match.group(0),
                         "page": line.page,
-                        "bbox": _span_bbox(
+                        "bbox": resolve_span_box(
                             document,
                             line,
                             match.group(0),
@@ -1965,7 +1934,7 @@ def _build_grouped_section_debug(
                 current = _grouped_section_entry()
                 entries.append(current)
             line_urls = url_entities_by_line.get(line_index, [])
-            rounded_bbox = [round(number, 2) for number in line.bbox]
+            rounded_bbox = rounded(line.bbox)
             bullet = BULLET_RE.match(line.text)
             if bullet:
                 value: dict[str, Any] = {
@@ -2019,7 +1988,7 @@ def _build_grouped_section_debug(
         "heading": {
             "text": heading_line.text,
             "page": heading_line.page,
-            "bbox": [round(value, 2) for value in heading_line.bbox],
+            "bbox": rounded(heading_line.bbox),
             "similarity": round(heading.similarity, 4),
             "detectionMethod": (
                 "geometry_unknown_boundary"
@@ -2137,12 +2106,6 @@ def write_summary_debug(
     )
 
 
-def _pixel_box(bbox: list[float] | tuple[float, ...]) -> tuple[int, int, int, int]:
-    return tuple(
-        round(value * SETTINGS.debug.scale) for value in bbox
-    )  # type: ignore[return-value]
-
-
 def render_summary_debug_images(
     document: pymupdf.Document,
     summary: dict[str, Any] | None,
@@ -2178,7 +2141,7 @@ def render_summary_debug_images(
         for item in page_items:
             item_type = str(item["type"])
             color = colors[item_type]
-            item_box = _pixel_box(item["bbox"])
+            item_box = pixel_box(item["bbox"])
             draw.rectangle(
                 item_box,
                 outline=color,
@@ -2232,11 +2195,11 @@ def _render_entry_debug_images(
         pixmap = page.get_pixmap(matrix=matrix, alpha=False)
         image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
         draw = ImageDraw.Draw(image)
-        page_item_boxes = [_pixel_box(item["bbox"]) for item in page_items]
+        page_item_boxes = [pixel_box(item["bbox"]) for item in page_items]
         placed_label_boxes: list[tuple[int, int, int, int]] = []
         for item_index, item in enumerate(page_items):
             item_type = item["type"]
-            box = _pixel_box(item["bbox"])
+            box = pixel_box(item["bbox"])
             color = str(item.get("_debugColor") or colors[item_type])
             detection_method = str(item.get("detectionMethod", ""))
             model_entity = detection_method.startswith(("distilbert", "minilm"))

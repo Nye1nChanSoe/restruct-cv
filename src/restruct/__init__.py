@@ -23,6 +23,13 @@ from restruct.document.types import (
     HeaderEntityMatch,
     overlaps_existing as _overlaps_existing,
 )
+from restruct.geometry import (
+    pixel_box,
+    resolve_span_box,
+    rounded,
+    union,
+    union_by_page,
+)
 from restruct.patterns.contacts import EMAIL_RE, PHONE_RE, URL_RE
 from restruct.patterns.personal import (
     GENERIC_ATTRIBUTE_RE,
@@ -178,9 +185,7 @@ def _tesseract_page_dict(
 
     lines_by_block: dict[int, list[dict[str, Any]]] = {}
     for (block_number, _, _), words in words_by_line.items():
-        rectangle = pymupdf.Rect(words[0]["bbox"])
-        for word in words[1:]:
-            rectangle |= pymupdf.Rect(word["bbox"])
+        rectangle = union(word["bbox"] for word in words)
         line_text = " ".join(str(word["text"]) for word in words)
         confidence_values = [
             float(word["confidence"])
@@ -210,9 +215,7 @@ def _tesseract_page_dict(
 
     blocks: list[dict[str, Any]] = []
     for block_number, block_lines in lines_by_block.items():
-        block_rectangle = pymupdf.Rect(block_lines[0]["bbox"])
-        for raw_line in block_lines[1:]:
-            block_rectangle |= pymupdf.Rect(raw_line["bbox"])
+        block_rectangle = union(raw_line["bbox"] for raw_line in block_lines)
         blocks.append(
             {
                 "type": 0,
@@ -421,7 +424,7 @@ def _labelled_header_attribute_matches(
                     detection_method="label_pattern",
                     confidence=1.0,
                     bbox=tuple(
-                        _entity_box(
+                        resolve_span_box(
                             document,
                             line,
                             value,
@@ -492,7 +495,7 @@ def _semantic_header_attribute_matches(
                 detection_method="minilm_label",
                 confidence=confidence,
                 bbox=tuple(
-                    _entity_box(
+                    resolve_span_box(
                         document,
                         lines[line_index],
                         value,
@@ -503,43 +506,6 @@ def _semantic_header_attribute_matches(
             )
         )
     return matches
-
-
-def _entity_box(
-    document: pymupdf.Document,
-    line: ExtractedLine,
-    entity_text: str,
-    start: int,
-    end: int,
-) -> list[float]:
-    """Resolve a substring box, using character offsets when OCR search fails."""
-    page = document[line.page - 1]
-    found = page.search_for(entity_text, clip=pymupdf.Rect(line.bbox))
-    estimated_rectangle = None
-    if line.text and 0 <= start < end <= len(line.text):
-        line_rectangle = pymupdf.Rect(line.bbox)
-        character_width = line_rectangle.width / len(line.text)
-        estimated_rectangle = pymupdf.Rect(
-            line_rectangle.x0 + character_width * start,
-            line_rectangle.y0,
-            line_rectangle.x0 + character_width * end,
-            line_rectangle.y1,
-        )
-    if found and estimated_rectangle is not None:
-        rectangle = min(
-            found,
-            key=lambda candidate: abs(
-                (candidate.x0 + candidate.x1)
-                - (estimated_rectangle.x0 + estimated_rectangle.x1)
-            ),
-        )
-    elif found:
-        rectangle = found[0]
-    elif estimated_rectangle is not None:
-        rectangle = estimated_rectangle
-    else:
-        rectangle = pymupdf.Rect(line.bbox)
-    return [round(value, 2) for value in rectangle]
 
 
 def _annotation_text_span(
@@ -708,9 +674,9 @@ def _url_entity_value(
         "url": match.url or match.text,
         "page": line.page,
         "bbox": (
-            [round(value, 2) for value in match.bbox]
+            rounded(match.bbox)
             if match.bbox is not None
-            else _entity_box(
+            else resolve_span_box(
                 document,
                 line,
                 match.text,
@@ -999,7 +965,7 @@ def build_header_profile(
             unique_matches.append(match)
 
     profile_lines = [lines[index] for index in profile_indexes]
-    region_box = _union_boxes(profile_lines)[0]["bbox"]
+    region_box = union_by_page(profile_lines)[0]["bbox"]
     entities = []
     for match in unique_matches:
         line = lines[match.line_index]
@@ -1008,9 +974,9 @@ def build_header_profile(
             "text": match.text,
             "page": line.page,
             "bbox": (
-                [round(value, 2) for value in match.bbox]
+                rounded(match.bbox)
                 if match.bbox is not None
-                else _entity_box(
+                else resolve_span_box(
                     document,
                     line,
                     match.text,
@@ -1035,7 +1001,7 @@ def build_header_profile(
             "text": boundary_line.text,
             "sectionType": boundary.section_type,
             "page": boundary_line.page,
-            "bbox": [round(value, 2) for value in boundary_line.bbox],
+            "bbox": rounded(boundary_line.bbox),
             "similarity": round(boundary.similarity, 4),
         }
 
@@ -1046,23 +1012,6 @@ def build_header_profile(
         "stoppedAtSection": boundary_value,
         "entities": entities,
     }
-
-
-def _union_boxes(lines: list[ExtractedLine]) -> list[dict[str, Any]]:
-    boxes_by_page: dict[int, pymupdf.Rect] = {}
-    for line in lines:
-        rectangle = pymupdf.Rect(line.bbox)
-        boxes_by_page[line.page] = boxes_by_page.get(line.page, rectangle) | rectangle
-    return [
-        {"page": page, "bbox": [round(value, 2) for value in rectangle]}
-        for page, rectangle in sorted(boxes_by_page.items())
-    ]
-
-
-def _pixel_box(bbox: list[float] | tuple[float, ...]) -> tuple[int, int, int, int]:
-    return tuple(
-        round(value * SETTINGS.debug.scale) for value in bbox
-    )  # type: ignore[return-value]
 
 
 def render_debug_images(
@@ -1081,7 +1030,7 @@ def render_debug_images(
     image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
     draw = ImageDraw.Draw(image)
 
-    profile_box = _pixel_box(header_profile["bbox"])
+    profile_box = pixel_box(header_profile["bbox"])
     draw.rectangle(
         profile_box,
         outline=SETTINGS.debug.header_region_color,
@@ -1099,7 +1048,7 @@ def render_debug_images(
     entity_colors = dict(SETTINGS.debug.header_entity_colors)
     for entity in header_profile["entities"]:
         color = entity_colors[entity["type"]]
-        entity_box = _pixel_box(entity["bbox"])
+        entity_box = pixel_box(entity["bbox"])
         draw.rectangle(
             entity_box,
             outline=color,
