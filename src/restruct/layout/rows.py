@@ -23,6 +23,11 @@ def _visual_rows(
     bottoms move with descenders and with the tallest glyph present, so two
     cells of one row can have visibly different boxes while sharing a baseline
     exactly -- which is what makes them a row.
+
+    On a page with independent columns, a shared baseline proves nothing: two
+    unrelated sections set side by side will align by accident. Cells either
+    side of a detected gutter are therefore left in separate rows rather than
+    joined into a row that never existed.
     """
     ordered = sorted(
         ((index, lines[index]) for index in line_indexes),
@@ -35,7 +40,12 @@ def _visual_rows(
             row_baseline = statistics_module.median(
                 [item.baseline for _, item in rows[-1]]
             )
-            if abs(line.baseline - row_baseline) <= tolerance:
+            crosses_a_gutter = statistics.separated_by_a_gutter(
+                line.page,
+                tuple(union(item.bbox for _, item in rows[-1])),
+                line.bbox,
+            )
+            if abs(line.baseline - row_baseline) <= tolerance and not crosses_a_gutter:
                 rows[-1].append((line_index, line))
                 rows[-1].sort(key=lambda item: item[1].bbox[0])
                 continue

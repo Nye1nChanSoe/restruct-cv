@@ -111,3 +111,41 @@ def resolve_span_box(
     else:
         rectangle = pymupdf.Rect(line.bbox)
     return rounded(rectangle)
+
+
+def free_vertical_bands(
+    blockers: Iterable[tuple[float, float]],
+    top: float,
+    bottom: float,
+) -> list[tuple[float, float]]:
+    """The spans of ``top``..``bottom`` no blocker interval covers.
+
+    Used to ask how tall a stretch of page a candidate column gutter runs for
+    without anything crossing it. Blockers may overlap and need not be sorted.
+    """
+    bands: list[tuple[float, float]] = []
+    cursor = top
+    for start, end in sorted(blockers):
+        if start > cursor:
+            bands.append((cursor, min(start, bottom)))
+        cursor = max(cursor, end)
+        if cursor >= bottom:
+            break
+    if cursor < bottom:
+        bands.append((cursor, bottom))
+    return [band for band in bands if band[1] > band[0]]
+
+
+def overlap_ratio(first: Box | pymupdf.Rect, second: Box | pymupdf.Rect) -> float:
+    """Shared area as a fraction of the smaller box.
+
+    Measured against the smaller box rather than the union so that a small box
+    sitting entirely inside a large one reads as full overlap, which is what
+    both the overlapping-text and text-in-graphics checks are asking about.
+    """
+    a, b = pymupdf.Rect(first), pymupdf.Rect(second)
+    smaller = min(abs(a.get_area()), abs(b.get_area()))
+    if smaller <= 0:
+        return 0.0
+    shared = horizontal_overlap(a, b) * max(0.0, vertical_overlap(a, b))
+    return shared / smaller

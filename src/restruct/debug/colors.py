@@ -120,6 +120,17 @@ LINE_STYLES: dict[str, ItemStyle] = {
     "row": ItemStyle("#43A047", "row"),
 }
 
+# Unsupported layouts are drawn on the pass-1 overlay, because the geometry
+# that produced the warning is what pass 1 shows. They share one hot colour on
+# purpose: the point is that something is wrong, and the label says what.
+UNSUPPORTED_STYLES: dict[str, ItemStyle] = {
+    "multiple_columns": ItemStyle("#FF3D00", "unsupported: column gutter"),
+    "vertical_text": ItemStyle("#FF3D00", "unsupported: vertical text"),
+    "overlapping_text": ItemStyle("#FF3D00", "unsupported: overlapping text"),
+    "text_in_graphics": ItemStyle("#FF3D00", "unsupported: text in a graphic"),
+    "nested_table": ItemStyle("#FF3D00", "unsupported: nested table"),
+}
+
 # Drawn on top of every other overlay, so it needs no fill of its own.
 LABEL_BACKGROUND = "#FFFFFF"
 COMBINED_OUTLINE = "#000000"

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from restruct.configs import SETTINGS
+from restruct.geometry import rounded
 
 
 def write_raw_extraction(
@@ -165,3 +166,38 @@ def write_supplementary_sections_debug(
         )
 
 
+
+
+def write_layout_warnings(
+    pdf_path: Path,
+    warnings: tuple[Any, ...],
+    output_directory: Path,
+) -> None:
+    """Record the unsupported layouts found, and that the check ran at all.
+
+    Written even when nothing was found, so an empty list is a positive
+    statement that the layout was examined rather than an absent file that
+    could equally mean the detector never ran.
+    """
+    output_directory.mkdir(parents=True, exist_ok=True)
+    (output_directory / "layout-warnings.json").write_text(
+        json.dumps(
+            {
+                "source": pdf_path.name,
+                "supported": not warnings,
+                "warnings": [
+                    {
+                        "kind": warning.kind,
+                        "page": warning.page,
+                        "detail": warning.detail,
+                        "bbox": rounded(warning.bbox) if warning.bbox else None,
+                    }
+                    for warning in warnings
+                ],
+            },
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )

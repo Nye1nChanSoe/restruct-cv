@@ -16,6 +16,7 @@ from restruct.configs import SETTINGS
 from restruct.debug.artifacts import (
     write_education_debug,
     write_experience_debug,
+    write_layout_warnings,
     write_ocr_extraction,
     write_projects_debug,
     write_raw_extraction,
@@ -36,6 +37,7 @@ from restruct.debug.render import (
 )
 from restruct.document.stats import measure
 from restruct.ingestion.native import extracted_lines, read_document
+from restruct.layout.unsupported import detect_unsupported_layouts
 from restruct.layout.words import reconstruct_words
 from restruct.model import DistilBertNerPredictor, EmbeddingModel, detect_headings
 from restruct.parsers.education import build_education_debug
@@ -66,6 +68,9 @@ def extract_resume(
         statistics = measure(physical)
         # Pass 2: group characters into words using those measurements.
         physical = reconstruct_words(physical, statistics)
+        # Recorded before anything reads the lines in order, because every
+        # later pass assumes that order is the author's.
+        layout_warnings = detect_unsupported_layouts(physical, statistics)
 
         write_raw_extraction(pdf_path, list(physical.raw_pages), raw_debug_path)
         write_ocr_extraction(pdf_path, list(physical.ocr_pages), ocr_debug_path)
@@ -77,6 +82,7 @@ def extract_resume(
                 physical,
                 statistics,
                 output_directory / "debug",
+                warnings=layout_warnings,
             )
 
         # Passes 3-5 still consume the flat line view; the bridge is removed as
@@ -144,6 +150,7 @@ def extract_resume(
         )
 
         output_directory.mkdir(parents=True, exist_ok=True)
+        write_layout_warnings(pdf_path, layout_warnings, output_directory / "debug")
         header_debug_directory = output_directory / "debug" / "header"
         summary_debug_directory = output_directory / "debug" / "summary"
         experience_debug_directory = output_directory / "debug" / "experience"

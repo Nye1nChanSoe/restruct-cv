@@ -83,7 +83,7 @@ fully; passes 1-3 are being built (see *Refactor in flight*).
 ```
 ingestion/   physical extraction — native PDF text, per-page OCR fallback
 document/    shared types (ExtractedLine, DetectedHeading, HeaderEntityMatch)
-layout/      row clustering, paragraph/bullet block accumulation
+layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
 structure/   heading detection, section routing, key-value pairs, metadata splitting
 parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
 models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
@@ -112,6 +112,19 @@ earlier, stronger stage already claimed. This is why `HeaderEntityMatch` carries
 offsets into the source line — a later parser must always be able to see, and reverse, a split.
 
 **Never classify content merely because it follows a heading.** Ambiguous content stays `other`.
+
+### Unsupported layouts are recorded, never repaired
+
+v1 targets single-column resumes. `layout/unsupported.py` detects the shapes whose reading order
+cannot be recovered — column gutters, vertical text, overlapping text boxes, text inside a
+graphic, a table nested in a table — and writes them to `debug/layout-warnings.json`, which is
+written even when empty so an absent finding is distinguishable from an absent check. The only
+behavioral consequence is that row grouping refuses to join cells across a gutter. Nothing here
+reconstructs a multi-column reading order; that is a later version.
+
+The fixtures are `resumes-unsupported/3.cols.pdf` and `4.cols.pdf`. **The six synthetic resumes
+must keep producing no warning at all** — a detector that fires on supported input teaches
+readers to ignore it.
 
 ### Fixed destinations
 
@@ -151,8 +164,9 @@ so nothing downstream needs OCR-specific handling. Preserve this when touching i
 
 An approved 21-commit plan lives at
 `~/.claude/plans/read-prompt-txt-first-before-robust-forest.md`; the design brief it implements
-is `prompt.txt`. Milestones 0-1 (safety net, module extraction) are complete — 9 commits, all
-byte-identical. Milestone 2 (passes 1-3) is next and is where output starts changing.
+is `prompt.txt`. Milestones 0-2 are complete — passes 1-3 now run on document-relative
+statistics, and C13 added unsupported-layout detection. Milestone 3 (compound headings, ordered
+extraction precedence) is next.
 
 `README.md`'s architecture section is stale: it describes the `model.py` / `routing.py` /
 `__init__.py` split that no longer exists. Scheduled for the final packaging commit.

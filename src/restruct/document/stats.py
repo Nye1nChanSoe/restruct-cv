@@ -15,12 +15,14 @@ measure, rather than raising or returning a misleading zero.
 
 from __future__ import annotations
 
+import math
 import re
 import statistics
 from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
-from restruct.document.physical import Document, Rule, TextLine
+from restruct.document.physical import BBox, Document, Page, Rule, TextLine
+from restruct.geometry import free_vertical_bands
 
 # A line must have some real text before it can inform typography statistics.
 _MINIMUM_MEANINGFUL_CHARACTERS = 2
@@ -35,6 +37,20 @@ _REPEAT_PAGE_RATIO = 0.6
 # Fraction of page height within which a repeated line counts as a header/footer.
 _MARGIN_BAND = 0.15
 
+# A column gutter must run clear for at least this share of a page's text
+# height, and the text either side of it must co-occur vertically for at least
+# this share of it. On the fixtures a real two-column page scores 0.96-1.00 and
+# 0.69-0.83; the most column-like single-column page scores 0.37 and 0.28, so
+# both gates sit in open space rather than being fitted to either population.
+_GUTTER_BAND_RATIO = 0.5
+_GUTTER_CO_OCCURRENCE_RATIO = 0.5
+
+# Fewer lines than this on either side is a stray box, not a column.
+_MINIMUM_COLUMN_LINES = 4
+
+# A page with less text than this cannot be judged; a title page has no columns.
+_MINIMUM_COLUMN_PAGE_LINES = 8
+
 # Running headers usually carry the page number, so the literal text differs on
 # every page. Comparing with digit runs folded away is what lets
 # "Synthetic resume | Page 1" and "... | Page 3" recognise each other.
@@ -47,6 +63,31 @@ def _furniture_key(text: str) -> str:
 
 def _median(values: list[float], fallback: float = 0.0) -> float:
     return statistics.median(values) if values else fallback
+
+
+@dataclass(frozen=True)
+class Gutter:
+    """A vertical corridor of a page that no line of text crosses.
+
+    Its presence means the page has independent columns, and therefore that
+    reading top-to-bottom does not recover the author's reading order.
+    """
+
+    page: int
+    left: float
+    right: float
+    top: float
+    bottom: float
+    left_column_lines: int
+    right_column_lines: int
+
+    @property
+    def width(self) -> float:
+        return self.right - self.left
+
+    @property
+    def bbox(self) -> BBox:
+        return (self.left, self.top, self.right, self.bottom)
 
 
 @dataclass(frozen=True)
@@ -80,6 +121,8 @@ class DocumentStatistics:
     repeated_headers: frozenset[str] = frozenset()
     repeated_footers: frozenset[str] = frozenset()
     horizontal_rules: tuple[Rule, ...] = ()
+    # Empty on the single-column documents v1 targets; see detect_unsupported().
+    column_gutters: tuple[Gutter, ...] = ()
     pages: tuple[PageStatistics, ...] = field(default=(), repr=False)
 
     # -- typography -------------------------------------------------------
@@ -161,6 +204,21 @@ class DocumentStatistics:
                 return index
         return len(self.indentation_levels)
 
+    def separated_by_a_gutter(self, page: int, first: BBox, second: BBox) -> bool:
+        """Whether two boxes sit in different columns of a multi-column page.
+
+        Row grouping asks this before joining two boxes that share a baseline:
+        on a page with independent columns, sharing a baseline is a coincidence
+        of layout rather than evidence that the two belong to one row.
+        """
+        nearer, further = sorted((first, second), key=lambda box: box[0])
+        return any(
+            gutter.page == page
+            and nearer[2] <= gutter.left
+            and further[0] >= gutter.right
+            for gutter in self.column_gutters
+        )
+
     def is_page_furniture(
         self,
         text: str,
@@ -185,6 +243,134 @@ class DocumentStatistics:
             key in self.repeated_footers
             and bottom >= page_height * (1 - _MARGIN_BAND)
         )
+
+
+def _column_lines(page: Page, statistics: "DocumentStatistics") -> list[TextLine]:
+    """The lines on a page that can bound a column.
+
+    Running headers and footers are excluded because they legitimately span
+    every column at once: leaving the page footer in would let one line hide a
+    gutter that runs the whole height of the page above it.
+    """
+    return [
+        line
+        for line in page.lines
+        if line.text.strip()
+        and line.is_horizontal
+        and not statistics.is_page_furniture(
+            line.text,
+            top=line.bbox[1],
+            bottom=line.bbox[3],
+            page_height=page.height,
+        )
+    ]
+
+
+def _gutter_at(
+    x: float,
+    lines: list[TextLine],
+    top: float,
+    bottom: float,
+) -> tuple[float, float, int, int] | None:
+    """The tallest clear band at ``x``, if it looks like a column boundary.
+
+    Returns the band and how many lines sit each side of it, or None when the
+    vertical corridor at ``x`` is too short, too empty, or has text on only one
+    side of it.
+    """
+    height = bottom - top
+    if height <= 0:
+        return None
+
+    crossing = [
+        (line.bbox[1], line.bbox[3]) for line in lines if line.bbox[0] < x < line.bbox[2]
+    ]
+    best: tuple[float, float, int, int] | None = None
+    for band_top, band_bottom in free_vertical_bands(crossing, top, bottom):
+        if band_bottom - band_top < height * _GUTTER_BAND_RATIO:
+            continue
+        left_lines = [
+            line
+            for line in lines
+            if line.bbox[2] <= x and line.bbox[3] > band_top and line.bbox[1] < band_bottom
+        ]
+        right_lines = [
+            line
+            for line in lines
+            if line.bbox[0] >= x and line.bbox[3] > band_top and line.bbox[1] < band_bottom
+        ]
+        if len(left_lines) < _MINIMUM_COLUMN_LINES or len(right_lines) < _MINIMUM_COLUMN_LINES:
+            continue
+
+        # Two columns must be beside each other, not one above the other: a
+        # page whose text is left-hand at the top and right-hand at the bottom
+        # has a clear corridor between them and is still read top to bottom.
+        left_extent = (min(l.bbox[1] for l in left_lines), max(l.bbox[3] for l in left_lines))
+        right_extent = (min(l.bbox[1] for l in right_lines), max(l.bbox[3] for l in right_lines))
+        co_occurrence = min(left_extent[1], right_extent[1]) - max(left_extent[0], right_extent[0])
+        if co_occurrence < height * _GUTTER_CO_OCCURRENCE_RATIO:
+            continue
+
+        candidate = (band_top, band_bottom, len(left_lines), len(right_lines))
+        if best is None or band_bottom - band_top > best[1] - best[0]:
+            best = candidate
+    return best
+
+
+def _page_gutters(page: Page, statistics: "DocumentStatistics") -> list[Gutter]:
+    """Every column gutter on one page, widest corridor first."""
+    lines = _column_lines(page, statistics)
+    if len(lines) < _MINIMUM_COLUMN_PAGE_LINES:
+        return []
+
+    left = min(line.bbox[0] for line in lines)
+    right = max(line.bbox[2] for line in lines)
+    top = min(line.bbox[1] for line in lines)
+    bottom = max(line.bbox[3] for line in lines)
+
+    # Scanned at a point per unit rather than at line edges: a gutter is a
+    # region, and its width is what says whether it is a column boundary or the
+    # ragged right edge of a paragraph.
+    found: list[tuple[float, tuple[float, float, int, int]]] = []
+    for step in range(math.ceil(left) + 1, math.floor(right)):
+        band = _gutter_at(float(step), lines, top, bottom)
+        if band is not None:
+            found.append((float(step), band))
+
+    gutters: list[Gutter] = []
+    run: list[tuple[float, tuple[float, float, int, int]]] = []
+    for entry in found + [None]:  # type: ignore[list-item]
+        if entry is not None and (not run or entry[0] - run[-1][0] <= 1.0):
+            run.append(entry)
+            continue
+        if run:
+            # The tallest corridor in the run describes it; the run's extent is
+            # the gutter's width.
+            tallest = max(run, key=lambda item: item[1][1] - item[1][0])
+            gutters.append(
+                Gutter(
+                    page=page.number,
+                    left=run[0][0],
+                    right=run[-1][0],
+                    top=tallest[1][0],
+                    bottom=tallest[1][1],
+                    left_column_lines=tallest[1][2],
+                    right_column_lines=tallest[1][3],
+                )
+            )
+        run = [entry] if entry is not None else []
+
+    minimum_width = max(2.0, statistics.median_character_width * 2)
+    return sorted(
+        (gutter for gutter in gutters if gutter.width >= minimum_width),
+        key=lambda gutter: -gutter.width,
+    )
+
+
+def _column_gutters(document: Document, statistics: "DocumentStatistics") -> tuple[Gutter, ...]:
+    return tuple(
+        gutter for page in document.pages for gutter in _page_gutters(page, statistics)
+    )
 
 
 def _line_is_measurable(line: TextLine) -> bool:
@@ -306,7 +492,7 @@ def measure(document: Document) -> DocumentStatistics:
     )
     repeated_headers, repeated_footers = _repeated_lines(document)
 
-    return DocumentStatistics(
+    statistics = DocumentStatistics(
         body_font_size=_body_font_size(measurable),
         font_sizes=tuple(sorted(sizes.items(), key=lambda item: -item[1])),
         bold_ratio=bold_characters / total_characters if total_characters else 0.0,
@@ -324,3 +510,6 @@ def measure(document: Document) -> DocumentStatistics:
         ),
         pages=page_statistics,
     )
+    # Measured last because it needs the furniture test the rest of the
+    # statistics provide, and nothing above it depends on the result.
+    return replace(statistics, column_gutters=_column_gutters(document, statistics))

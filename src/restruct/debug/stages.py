@@ -16,9 +16,15 @@ from pathlib import Path
 import pymupdf
 
 from restruct.debug import canvas
-from restruct.debug.colors import LINE_STYLES, PHYSICAL_STYLES, WORD_STYLES
+from restruct.debug.colors import (
+    LINE_STYLES,
+    PHYSICAL_STYLES,
+    UNSUPPORTED_STYLES,
+    WORD_STYLES,
+)
 from restruct.document.physical import Document, Page
 from restruct.document.stats import DocumentStatistics
+from restruct.layout.unsupported import LayoutWarning
 
 
 def render_physical(
@@ -26,11 +32,16 @@ def render_physical(
     document: Document,
     statistics: DocumentStatistics,
     output_directory: Path,
+    warnings: tuple[LayoutWarning, ...] = (),
 ) -> None:
     """Pass 1: what the page physically contains.
 
     Spans, drawn rules, image regions, link rectangles, and the lines the
     statistics identified as running headers or footers.
+
+    Unsupported layouts are drawn here too. The geometry that produced such a
+    warning is pass-1 geometry, and an overlay that shows a column gutter is
+    the fastest way to confirm the detector is looking at what it claims to be.
     """
     for page in document.pages:
         image, draw = canvas.page_canvas(pdf_document, page.number)
@@ -60,9 +71,18 @@ def render_physical(
             canvas.outline(draw, link.bbox, PHYSICAL_STYLES["link"], width=3, label="link")
             counts["link"] += 1
 
+        warning_counts: dict[str, int] = {}
+        for warning in warnings:
+            if warning.page != page.number or warning.bbox is None:
+                continue
+            style = UNSUPPORTED_STYLES[warning.kind]
+            canvas.outline(draw, warning.bbox, style, width=5, label=warning.kind)
+            warning_counts[warning.kind] = warning_counts.get(warning.kind, 0) + 1
+
         canvas.legend(
             draw,
-            [(PHYSICAL_STYLES[name], count) for name, count in counts.items() if count],
+            [(PHYSICAL_STYLES[name], count) for name, count in counts.items() if count]
+            + [(UNSUPPORTED_STYLES[name], count) for name, count in warning_counts.items()],
             title=f"pass 1 - physical  |  page {page.number}"
             + ("  (OCR)" if page.used_ocr else ""),
         )
@@ -169,10 +189,17 @@ def render_stage_overlays(
     statistics: DocumentStatistics,
     debug_directory: Path,
     stages: tuple[int, ...] = (1, 2, 3),
+    warnings: tuple[LayoutWarning, ...] = (),
 ) -> None:
     """Render the requested reconstruction passes as images."""
     if 1 in stages:
-        render_physical(pdf_document, document, statistics, debug_directory / "pass-1-physical")
+        render_physical(
+            pdf_document,
+            document,
+            statistics,
+            debug_directory / "pass-1-physical",
+            warnings,
+        )
     if 2 in stages:
         render_words(pdf_document, document, debug_directory / "pass-2-words")
     if 3 in stages:
