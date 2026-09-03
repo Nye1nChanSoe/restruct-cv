@@ -161,10 +161,30 @@ class DocumentStatistics:
                 return index
         return len(self.indentation_levels)
 
-    def is_page_furniture(self, text: str) -> bool:
-        """Whether a line repeats across pages as a running header or footer."""
+    def is_page_furniture(
+        self,
+        text: str,
+        *,
+        top: float,
+        bottom: float,
+        page_height: float,
+    ) -> bool:
+        """Whether a line is a running header or footer.
+
+        Text and position are both required. After digit runs are folded, a
+        repeated page number and a bare year in a table cell are the same
+        string, so text alone cannot tell them apart -- only sitting in a page
+        margin does.
+        """
+        if page_height <= 0:
+            return False
         key = _furniture_key(text)
-        return key in self.repeated_headers or key in self.repeated_footers
+        if key in self.repeated_headers and top <= page_height * _MARGIN_BAND:
+            return True
+        return (
+            key in self.repeated_footers
+            and bottom >= page_height * (1 - _MARGIN_BAND)
+        )
 
 
 def _line_is_measurable(line: TextLine) -> bool:
@@ -200,8 +220,11 @@ def _repeated_lines(document: Document) -> tuple[frozenset[str], frozenset[str]]
     if len(document.pages) < 2:
         return frozenset(), frozenset()
 
-    headers: Counter[str] = Counter()
-    footers: Counter[str] = Counter()
+    # Pages per key, not occurrences: a running footer appears once on each of
+    # several pages, whereas five table cells on one page are not a footer no
+    # matter how alike they look.
+    headers: dict[str, set[int]] = {}
+    footers: dict[str, set[int]] = {}
     for page in document.pages:
         if page.height <= 0:
             continue
@@ -213,14 +236,14 @@ def _repeated_lines(document: Document) -> tuple[frozenset[str], frozenset[str]]
                 continue
             key = _furniture_key(stripped)
             if line.bbox[1] <= top_band:
-                headers[key] += 1
+                headers.setdefault(key, set()).add(page.number)
             elif line.bbox[3] >= bottom_band:
-                footers[key] += 1
+                footers.setdefault(key, set()).add(page.number)
 
     threshold = max(2, int(len(document.pages) * _REPEAT_PAGE_RATIO))
     return (
-        frozenset(text for text, count in headers.items() if count >= threshold),
-        frozenset(text for text, count in footers.items() if count >= threshold),
+        frozenset(key for key, pages in headers.items() if len(pages) >= threshold),
+        frozenset(key for key, pages in footers.items() if len(pages) >= threshold),
     )
 
 

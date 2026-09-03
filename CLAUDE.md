@@ -58,11 +58,22 @@ refactor changed behavior — fix the code.
 ### Verifying work the snapshots do not cover
 
 Debug images are not in the golden set. `results/` has **121 committed debug artifacts**
-(68 PNGs, 53 JSON). To verify a change that touches rendering or geometry:
+(68 PNGs, 53 JSON) covering passes 4-5. To verify a change that touches rendering or
+section parsing:
 
 ```bash
 uv run restruct && git status --short results/    # clean == byte-identical
 ```
+
+**Passes 1-3 render images and no JSON**, because their output is geometry: a count can be
+right while every box sits ten points too low. They are written to
+`results/<name>/debug/pass-{1-physical,2-words,3-lines}/` and are gitignored — large,
+regenerated every run, and opt-in by design. **Look at them when changing anything
+geometric.** Each carries a legend naming its layers and their counts.
+
+This is not optional diligence. Rendering the pass-1 overlay is what found that five Year
+cells in `7.anomaly`'s certification table were being classified as running footers; every
+numeric test passed while that was true.
 
 ## Architecture
 

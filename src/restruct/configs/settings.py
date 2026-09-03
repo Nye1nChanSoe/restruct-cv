@@ -87,6 +87,9 @@ class ProfileAttributeSettings:
 
 @dataclass(frozen=True)
 class DebugSettings:
+    # Passes 1-3 render images only, never JSON. Opt-in by design; the CLI's
+    # --stages flag will drive this once it exists.
+    stage_overlays_enabled: bool = True
     raw_extraction_enabled: bool = True
     raw_extraction_directory: str = "debug"
     ocr_extraction_enabled: bool = True

@@ -130,8 +130,45 @@ def test_running_footers_are_matched_despite_the_page_number() -> None:
             pages=3,
         )
     )
-    assert statistics.is_page_furniture("Confidential draft | Page 2")
-    assert not statistics.is_page_furniture("Senior Site Engineer")
+    assert statistics.is_page_furniture(
+        "Confidential draft | Page 2", top=banner_top, bottom=banner_top + 11.0,
+        page_height=792.0,
+    )
+    assert not statistics.is_page_furniture(
+        "Senior Site Engineer", top=banner_top, bottom=banner_top + 11.0,
+        page_height=792.0,
+    )
+
+
+def test_a_bare_year_in_a_table_is_not_page_furniture() -> None:
+    """Regression: 7.anomaly's certification table has a Year column, and after
+    digit folding a bare "2022" is the same key as a bare page number. Found by
+    rendering the pass-1 overlay, where five table cells were flagged red."""
+    banner_top = 700.0
+    statistics = measure(
+        document_of(
+            line("Confidential draft | Page 1", banner_top, page=1),
+            line("Confidential draft | Page 2", banner_top, page=2),
+            line("2022", 400.0, page=2),
+            line("2023", 420.0, page=2),
+            pages=2,
+        )
+    )
+    assert not statistics.is_page_furniture(
+        "2022", top=400.0, bottom=411.0, page_height=792.0
+    )
+
+
+def test_repeated_lines_count_pages_not_occurrences() -> None:
+    """Five alike lines on one page are not a running footer."""
+    statistics = measure(
+        document_of(
+            *[line("2020", 700.0 + index, page=1) for index in range(5)],
+            line("real content", 100.0, page=2),
+            pages=2,
+        )
+    )
+    assert not statistics.repeated_footers
 
 
 def test_a_single_page_document_has_no_running_furniture() -> None:
@@ -154,12 +191,20 @@ def test_measurements_are_plausible_on_real_resumes(stem: str) -> None:
 
 
 def test_the_repeated_banner_in_the_anomaly_fixture_is_found() -> None:
-    """7.anomaly repeats a banner on all three pages, numbered per page."""
-    statistics = measure(read_document(pymupdf.open(SYNTHETIC_DIRECTORY / "7.anomaly.pdf")))
-    assert statistics.is_page_furniture(
-        "SYNTHETIC RESUME FOR SOFTWARE / PARSER TESTING - NOT A REAL PERSON  |  Page 2"
-    )
-    assert not statistics.is_page_furniture("EMPLOYMENT HISTORY")
+    """7.anomaly repeats a banner on all three pages, numbered per page -- and
+    nothing else on the page may be mistaken for it."""
+    document = read_document(pymupdf.open(SYNTHETIC_DIRECTORY / "7.anomaly.pdf"))
+    statistics = measure(document)
+    page = document.page(2)
+    flagged = [
+        line
+        for line in page.lines
+        if statistics.is_page_furniture(
+            line.text, top=line.bbox[1], bottom=line.bbox[3], page_height=page.height
+        )
+    ]
+    assert len(flagged) == 1
+    assert flagged[0].text.startswith("SYNTHETIC RESUME")
 
 
 def test_separator_rules_are_measured() -> None:

@@ -16,6 +16,12 @@ debug/*
 debug/ocr/*
 !debug/ocr/.gitkeep
 
+# Pass 1-3 overlays are large, regenerate on every run, and are opt-in by
+# design; they stay local rather than in the repository.
+results/*/debug/pass-1-physical/
+results/*/debug/pass-2-words/
+results/*/debug/pass-3-lines/
+
 # Holdout inputs and their generated results stay local.
 resumes-truths/*
 !resumes-truths/.gitkeep

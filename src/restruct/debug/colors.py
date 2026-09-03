@@ -93,6 +93,33 @@ GROUPED_STYLES: dict[str, ItemStyle] = {
     "bullet": LIST_BULLET,
 }
 
+# --- passes 1-3 -------------------------------------------------------------
+# These render physical reconstruction rather than semantic decisions, so they
+# stay deliberately cooler and thinner than the section overlays: a reader
+# should be able to tell at a glance whether a box is something the document
+# said, or something a model concluded.
+
+PHYSICAL_STYLES: dict[str, ItemStyle] = {
+    "span": ItemStyle("#90A4AE", "span"),
+    "rule": ItemStyle("#D81B60", "drawn rule"),
+    "image": ItemStyle("#8E24AA", "image region"),
+    "link": ItemStyle("#6D4C41", "link annotation"),
+    "furniture": ItemStyle("#E53935", "running header/footer"),
+}
+
+WORD_STYLES: dict[str, ItemStyle] = {
+    "word": ItemStyle("#1E88E5", "word"),
+    "ocr_word": ItemStyle("#00897B", "OCR word"),
+    "linked_word": ItemStyle("#6D4C41", "word under a link"),
+}
+
+LINE_STYLES: dict[str, ItemStyle] = {
+    "line": ItemStyle("#546E7A", "line"),
+    "baseline": ItemStyle("#F9A825", "baseline"),
+    "cell": ItemStyle("#D81B60", "cell"),
+    "row": ItemStyle("#43A047", "row"),
+}
+
 # Drawn on top of every other overlay, so it needs no fill of its own.
 LABEL_BACKGROUND = "#FFFFFF"
 COMBINED_OUTLINE = "#000000"

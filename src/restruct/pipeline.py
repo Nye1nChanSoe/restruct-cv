@@ -23,6 +23,7 @@ from restruct.debug.artifacts import (
     write_summary_debug,
     write_supplementary_sections_debug,
 )
+from restruct.debug.stages import render_stage_overlays
 from restruct.debug.render import (
     render_combined_debug_images,
     render_debug_images,
@@ -68,6 +69,15 @@ def extract_resume(
 
         write_raw_extraction(pdf_path, list(physical.raw_pages), raw_debug_path)
         write_ocr_extraction(pdf_path, list(physical.ocr_pages), ocr_debug_path)
+        if SETTINGS.debug.stage_overlays_enabled:
+            # Passes 1-3 render images and no JSON: their output is geometry,
+            # which a dump cannot usefully convey.
+            render_stage_overlays(
+                document,
+                physical,
+                statistics,
+                output_directory / "debug",
+            )
 
         # Passes 3-5 still consume the flat line view; the bridge is removed as
         # each of them moves onto the physical representation.
