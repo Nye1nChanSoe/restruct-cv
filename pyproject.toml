@@ -14,6 +14,11 @@ dependencies = [
     "transformers>=4.51.3,<5.14.0",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
 [project.scripts]
 extractor-v1 = "extractor_v1:main"
 
@@ -23,3 +28,7 @@ build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-name = "extractor_v1"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

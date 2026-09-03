@@ -1,0 +1,60 @@
+{
+  "source": "7.anomaly.pdf",
+  "notes": [
+    "Every page carries the repeated banner 'SYNTHETIC RESUME FOR SOFTWARE / PARSER TESTING - NOT A REAL PERSON | Page N'. It is a running header and must never reach the extracted content.",
+    "The header line 'WELDER / METAL FABRICATOR / MAINTENANCE TECHNICIAN' is three job titles separated by slashes.",
+    "'Thai citizen' in the contact line is nationality evidence.",
+    "'TRAINING & CERTIFICATIONS' holds a genuine three-column table (Training / Provider / Year), which v1 is not expected to reconstruct as a table."
+  ],
+  "header_profile": {
+    "name": "SOMCHAI RATTANAKUL",
+    "job_titles": ["WELDER", "METAL FABRICATOR", "MAINTENANCE TECHNICIAN"],
+    "location": "Samut Prakan, Thailand",
+    "emails": ["somchai.rattanakul@example.com"],
+    "phones": ["+66 80 000 1472"],
+    "urls": [],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": "Thai citizen",
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary", "experience", "education", "skills", "projects", "certifications"
+  ],
+  "experience": [
+    {
+      "job_titles": ["Senior Welder / Fabricator"],
+      "companies": ["Eastern Process Systems Co., Ltd."],
+      "dates": ["Apr 2022 - Present"],
+      "locations": ["Bang Phli, Samut Prakan, Thailand"]
+    },
+    {
+      "job_titles": ["Welder / Maintenance Helper"],
+      "companies": ["Siam Fresh Foods Manufacturing Co., Ltd."],
+      "dates": ["Jan 2019 - Mar 2022"],
+      "locations": ["Lat Krabang, Bangkok, Thailand"]
+    },
+    {
+      "job_titles": ["Welder / Steel Fabrication Worker"],
+      "companies": ["Chao Phraya Steel & Engineering"],
+      "dates": ["Jun 2016 - Dec 2018"],
+      "locations": ["Nonthaburi and Bangkok project sites, Thailand"]
+    },
+    {
+      "job_titles": ["Workshop Helper / Junior Welder"],
+      "companies": ["Metro Metal Works"],
+      "dates": ["May 2014 - May 2016"],
+      "locations": ["Bang Khae, Bangkok, Thailand"]
+    }
+  ],
+  "education": [
+    {
+      "titles": ["Vocational Certificate - Industrial Mechanics / Metal Work (Certificate Level)"],
+      "institutions": ["Bangkok Technical Training Institute"],
+      "dates": []
+    }
+  ]
+}

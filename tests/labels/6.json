@@ -1,0 +1,51 @@
+{
+  "source": "6.pdf",
+  "notes": [
+    "'CERTIFICATIONS & LANGUAGES' is a compound heading whose two components each own one explicitly labelled line, so both destinations should be populated independently."
+  ],
+  "header_profile": {
+    "name": "ALEX MORGAN",
+    "job_titles": ["Software Engineer"],
+    "location": "Bangkok, Thailand",
+    "emails": ["alex.morgan@example.com"],
+    "phones": ["+66 81 555 0184"],
+    "urls": ["github.com/alexmorgan-dev", "linkedin.com/in/alexmorgan-dev"],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary", "experience", "education", "skills", "projects",
+    "certifications", "languages"
+  ],
+  "experience": [
+    {
+      "job_titles": ["Software Engineer"],
+      "companies": ["Orbit Labs Co., Ltd."],
+      "dates": ["Jan 2024 - Present"],
+      "locations": ["Bangkok, Thailand"]
+    },
+    {
+      "job_titles": ["Junior Backend Developer"],
+      "companies": ["Northstar Digital"],
+      "dates": ["Jun 2022 - Dec 2023"],
+      "locations": ["Yangon, Myanmar"]
+    }
+  ],
+  "education": [
+    {
+      "titles": ["M.Sc. Computer Science"],
+      "institutions": ["Asia Institute of Technology"],
+      "dates": ["2020 - 2022"]
+    },
+    {
+      "titles": ["B.Sc. Computer Science"],
+      "institutions": ["Riverland University"],
+      "dates": ["2016 - 2020"]
+    }
+  ]
+}

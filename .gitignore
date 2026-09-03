@@ -24,3 +24,6 @@ results/0-truths/
 # Project-local Hugging Face weights stay untracked; retain the model store.
 models/*
 !models/.gitkeep
+
+# Pytest cache
+.pytest_cache/

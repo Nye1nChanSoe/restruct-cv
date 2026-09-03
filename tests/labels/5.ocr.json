@@ -1,0 +1,56 @@
+{
+  "source": "5.ocr.pdf",
+  "notes": [
+    "Scanned pages with no native text, so every value depends on OCR quality.",
+    "The phone number is deliberately redacted in the source image as '+66 8X XXX XXXX'.",
+    "'Thai National' in the contact line is nationality evidence.",
+    "'LANGUAGES & ADDITIONAL INFORMATION' is compound: the Thai/English lines belong to languages, and the driving-licence, work-preference and availability lines belong to others.",
+    "CORE SKILLS is laid out as two visual columns of dash bullets; reading order must not interleave them into nonsense."
+  ],
+  "header_profile": {
+    "name": "THANAWAT PRASERT",
+    "job_titles": ["Civil Engineer", "Site Engineer"],
+    "location": "Bangkok, Thailand",
+    "emails": ["thanawat.prasert@example.com"],
+    "phones": ["+66 8X XXX XXXX"],
+    "urls": [],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": "Thai National",
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary", "experience", "education", "skills", "projects",
+    "certifications", "languages", "others"
+  ],
+  "experience": [
+    {
+      "job_titles": ["Senior Site Engineer"],
+      "companies": ["Siam Urban Construction Co., Ltd."],
+      "dates": ["Mar 2022 - Present"],
+      "locations": ["Bangkok, Thailand"]
+    },
+    {
+      "job_titles": ["Site Engineer"],
+      "companies": ["Metro Build & Engineering Co., Ltd."],
+      "dates": ["Jun 2019 - Feb 2022"],
+      "locations": ["Samut Prakan, Thailand"]
+    },
+    {
+      "job_titles": ["Junior Civil Engineer"],
+      "companies": ["Eastern Infrastructure Services"],
+      "dates": ["May 2017 - May 2019"],
+      "locations": ["Chonburi, Thailand"]
+    }
+  ],
+  "education": [
+    {
+      "titles": ["Bachelor of Engineering (Civil Engineering)"],
+      "institutions": ["Rajamangala University of Technology"],
+      "dates": ["2013 - 2017"]
+    }
+  ]
+}

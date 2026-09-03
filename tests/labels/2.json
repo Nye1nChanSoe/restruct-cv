@@ -1,0 +1,53 @@
+{
+  "source": "2.pdf",
+  "notes": [
+    "Header tagline 'Supply Chain Analyst | Inventory Planning | Data Analysis' carries one job title; the other two segments are specialisms.",
+    "'CERTIFICATIONS & TRAINING' is compound but both components resolve to certifications, so the block is unambiguous."
+  ],
+  "header_profile": {
+    "name": "NATTAYA WONGSAKUL",
+    "job_titles": ["Supply Chain Analyst"],
+    "location": "Bangkok, Thailand",
+    "emails": ["nattaya.wongsakul.test@example.com"],
+    "phones": ["+66 92 555 6813"],
+    "urls": [],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary", "experience", "education", "skills", "projects",
+    "certifications", "languages", "others"
+  ],
+  "experience": [
+    {
+      "job_titles": ["Supply Chain Analyst"],
+      "companies": ["Aster Consumer Products (Thailand) Co., Ltd."],
+      "dates": ["January 2024 - Present"],
+      "locations": ["Bangkok, Thailand"]
+    },
+    {
+      "job_titles": ["Inventory Planning Officer"],
+      "companies": ["Metro Distribution Services Co., Ltd."],
+      "dates": ["July 2022 - December 2023"],
+      "locations": ["Bangkok, Thailand"]
+    },
+    {
+      "job_titles": ["Procurement Intern"],
+      "companies": ["Thai Meridian Trading Co., Ltd."],
+      "dates": ["January 2022 - April 2022"],
+      "locations": ["Bangkok, Thailand"]
+    }
+  ],
+  "education": [
+    {
+      "titles": ["Bachelor of Business Administration in Logistics and Supply Chain Management"],
+      "institutions": ["Burapha University"],
+      "dates": ["2018 - 2022"]
+    }
+  ]
+}

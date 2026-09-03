@@ -1,0 +1,54 @@
+{
+  "source": "9.ocr.pdf",
+  "notes": [
+    "Scanned page with no native text, so every value depends on OCR quality.",
+    "'CERTIFICATIONS & ACTIVITIES' is compound. The first bullet is a certification and the second describes volunteering, so a stricter future version could split them; v1 is only expected to resolve the certifications component.",
+    "The page footer 'Synthetic resume generated for testing/demo purposes' must not reach the extracted content.",
+    "Experience dates sit in a right-hand column, visually separated from the job title on the same row."
+  ],
+  "header_profile": {
+    "name": "NADIA PUTRI RAHAYU",
+    "job_titles": ["Operations & Supply Chain Analyst"],
+    "location": "Bandung, Indonesia",
+    "emails": ["nadia.rahayu@example.com"],
+    "phones": ["+62 812 5550 1847"],
+    "urls": [],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary", "experience", "education", "skills", "certifications"
+  ],
+  "experience": [
+    {
+      "job_titles": ["Senior Operations Analyst"],
+      "companies": ["Archipelago Consumer Logistics"],
+      "dates": ["May 2023 - Present"],
+      "locations": ["Jakarta, Indonesia"]
+    },
+    {
+      "job_titles": ["Supply Chain Analyst"],
+      "companies": ["Nusantara Retail Solutions"],
+      "dates": ["Jul 2020 - Apr 2023"],
+      "locations": ["Bandung, Indonesia"]
+    },
+    {
+      "job_titles": ["Operations Intern"],
+      "companies": ["PT Citra Distribusi Mandiri"],
+      "dates": ["Jan 2020 - Jun 2020"],
+      "locations": ["Bandung, Indonesia"]
+    }
+  ],
+  "education": [
+    {
+      "titles": ["B.Sc. Industrial Engineering"],
+      "institutions": ["Institut Teknologi Nasional Bandung"],
+      "dates": ["2016 - 2020"]
+    }
+  ]
+}

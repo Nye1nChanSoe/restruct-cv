@@ -1,0 +1,57 @@
+{
+  "source": "1.pdf",
+  "notes": [
+    "Header tagline is 'Industrial Maintenance Technician | Mechanical & Electrical Maintenance'. Only the first segment is a job title; the second names a specialism, so it is not labelled as a title.",
+    "'SAFETY & TRAINING' is a compound heading. 'Safety' has no v1 destination and 'Training' leans towards certifications, so ownership of the block is uncertain and it belongs under 'others' per the conservative rule."
+  ],
+  "header_profile": {
+    "name": "SOMCHAI RATTANAKUL",
+    "job_titles": ["Industrial Maintenance Technician"],
+    "location": "Samut Prakan, Thailand",
+    "emails": ["somchai.rattanakul.test@example.com"],
+    "phones": ["+66 81 555 2741"],
+    "urls": [],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary", "experience", "education", "skills", "languages", "others"
+  ],
+  "experience": [
+    {
+      "job_titles": ["Industrial Maintenance Technician"],
+      "companies": ["Siam Precision Components Co., Ltd."],
+      "dates": ["March 2022 - Present"],
+      "locations": ["Bang Phli, Samut Prakan, Thailand"]
+    },
+    {
+      "job_titles": ["Maintenance Mechanic"],
+      "companies": ["Eastern Packaging Industries Co., Ltd."],
+      "dates": ["June 2019 - February 2022"],
+      "locations": ["Chon Buri, Thailand"]
+    },
+    {
+      "job_titles": ["Junior Maintenance Technician"],
+      "companies": ["Metro Food Processing Co., Ltd."],
+      "dates": ["May 2017 - May 2019"],
+      "locations": ["Samut Prakan, Thailand"]
+    }
+  ],
+  "education": [
+    {
+      "titles": ["Higher Vocational Certificate (ปวส.) - Industrial Technology"],
+      "institutions": ["Samut Prakan Technical College"],
+      "dates": ["2015 - 2017"]
+    },
+    {
+      "titles": ["Vocational Certificate (ปวช.) - Mechanical Technology"],
+      "institutions": ["Samut Prakan Technical College"],
+      "dates": ["2012 - 2015"]
+    }
+  ]
+}
