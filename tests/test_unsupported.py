@@ -23,6 +23,7 @@ from restruct.ingestion.native import read_document
 from restruct.layout.unsupported import LayoutWarning, detect_unsupported_layouts
 from tests.helpers import (
     SYNTHETIC_DIRECTORY,
+    fixture_path,
     UNSUPPORTED_DIRECTORY,
     synthetic_stems,
     tesseract_available,
@@ -31,8 +32,13 @@ from tests.helpers import (
 UNSUPPORTED_STEMS = ("3.cols", "4.cols")
 
 
-def warnings_for(pdf_path: Path) -> tuple[LayoutWarning, ...]:
-    with pymupdf.open(pdf_path) as pdf:
+def warnings_for(source_path: Path) -> tuple[LayoutWarning, ...]:
+    if source_path.suffix.casefold() == ".docx":
+        from restruct.ingestion.docx import read_docx
+
+        document = read_docx(source_path)
+        return detect_unsupported_layouts(document, measure(document))
+    with pymupdf.open(source_path) as pdf:
         document = read_document(pdf)
         return detect_unsupported_layouts(document, measure(document))
 
@@ -65,7 +71,7 @@ def test_a_supported_resume_raises_nothing(stem: str) -> None:
     """The whole value of the warning is that these six do not trigger it."""
     if stem.endswith(".ocr") and not tesseract_available():
         pytest.skip("needs tesseract")
-    assert warnings_for(SYNTHETIC_DIRECTORY / f"{stem}.pdf") == ()
+    assert warnings_for(fixture_path(stem)) == ()
 
 
 def test_the_gutter_is_where_the_columns_actually_are() -> None:

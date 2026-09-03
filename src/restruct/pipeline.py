@@ -6,8 +6,9 @@ of its own, so the same engine can be driven from Python without the CLI.
 
 from __future__ import annotations
 
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 import pymupdf
 
@@ -21,7 +22,9 @@ from restruct.debug.artifacts import (
 )
 from restruct.debug.stages import render_sections, render_stage_overlays
 from restruct.debug.render import render_combined_debug_images
+from restruct.document.physical import Document
 from restruct.document.stats import measure
+from restruct.ingestion.docx import ReflowableRenderer, read_docx
 from restruct.ingestion.native import extracted_lines, read_document
 from restruct.layout.unsupported import detect_unsupported_layouts
 from restruct.layout.words import reconstruct_words
@@ -41,6 +44,23 @@ from restruct.structure.headings import first_header_boundary
 from restruct.structure.sections import build_sections, summary_debug_value
 
 
+@contextmanager
+def _open_source(path: Path) -> Iterator[tuple[Document, Any]]:
+    """Read one source, and hand back a renderer for it.
+
+    The two formats differ only here. A PDF is read by MuPDF, which is also the
+    renderer the debug overlays and span resolution use. A DOCX has no rendered
+    form at all, so it gets a stand-in that answers "no glyphs here" rather
+    than a branch in every parser that takes a renderer.
+    """
+    if path.suffix.casefold() == ".docx":
+        physical = read_docx(path)
+        yield physical, ReflowableRenderer(physical)
+        return
+    with pymupdf.open(path) as document:
+        yield read_document(document), document
+
+
 def extract_resume(
     pdf_path: Path,
     output_directory: Path,
@@ -56,9 +76,9 @@ def extract_resume(
     ``stages`` selects debug output only. An empty set writes nothing but the
     result, which is what the single-file CLI does unless asked otherwise.
     """
-    with pymupdf.open(pdf_path) as document:
-        # Pass 1: read the document once into the shared representation.
-        physical = read_document(document)
+    with _open_source(pdf_path) as (physical, document):
+        # Pass 1 has already read the document once into the shared
+        # representation; which reader did it is the only thing that differs.
         statistics = measure(physical)
         # Pass 2: group characters into words using those measurements.
         physical = reconstruct_words(physical, statistics)
@@ -72,7 +92,7 @@ def extract_resume(
             write_raw_extraction(pdf_path, list(physical.raw_pages), raw_debug_path)
             write_ocr_extraction(pdf_path, list(physical.ocr_pages), ocr_debug_path)
         physical_stages = tuple(sorted(stages & {1, 2, 3}))
-        if physical_stages:
+        if physical_stages and physical.has_geometry:
             # Passes 1-3 render images and no JSON: their output is geometry,
             # which a dump cannot usefully convey.
             render_stage_overlays(
@@ -107,7 +127,7 @@ def extract_resume(
                 _url_entity_value(document, lines, match)
             )
         sections = build_sections(lines, headings, url_entities_by_line, statistics)
-        if 4 in stages:
+        if 4 in stages and physical.has_geometry:
             # Pass 4 is geometry too: a compound heading can split into the
             # right destinations while the blocks land under the wrong one,
             # and only the overlay shows which.
@@ -197,17 +217,21 @@ def extract_resume(
                 raw_directory,
                 supplementary_sections,
             )
-            render_combined_debug_images(
-                document,
-                header_profile,
-                summary,
-                experience,
-                education,
-                skills,
-                projects,
-                supplementary_sections,
-                output_directory / "debug",
-            )
+            # Overlays draw onto a rendered page. A reflowable source has
+            # none, and inventing one would be a picture of a layout that does
+            # not exist.
+            if physical.has_geometry:
+                render_combined_debug_images(
+                    document,
+                    header_profile,
+                    summary,
+                    experience,
+                    education,
+                    skills,
+                    projects,
+                    supplementary_sections,
+                    output_directory / "debug",
+                )
 
         write_v1_resume(
             output_directory,

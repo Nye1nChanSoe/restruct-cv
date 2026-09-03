@@ -167,6 +167,13 @@ class TextLine:
     used_ocr: bool = False
     # Filled by pass 2; empty until word reconstruction has run.
     words: tuple[Word, ...] = ()
+    # What the source called this line: a DOCX paragraph style name such as
+    # "Heading 1" or "List Bullet". Empty for a PDF, which states nothing and
+    # leaves every such question to be inferred from geometry.
+    style: str = ""
+    # Which table cell this line came from, when it came from one. A DOCX marks
+    # its tables explicitly, so no gap measurement has to guess at them.
+    table_cell: tuple[int, int, int] | None = None
 
     @property
     def text(self) -> str:
@@ -259,6 +266,12 @@ class Document:
     # Untouched PyMuPDF and Tesseract output, retained only for debug dumps.
     raw_pages: tuple[dict, ...] = field(default=(), repr=False)
     ocr_pages: tuple[dict, ...] = field(default=(), repr=False)
+    # False for a reflowable source such as DOCX, whose boxes carry reading
+    # order and nesting but no measurement. Every rule that compares points --
+    # gaps, gutters, baselines, size contrast -- must ask this first and take
+    # the structural path instead. Measuring a layout nobody laid out produces
+    # confident numbers about nothing, which is worse than having none.
+    has_geometry: bool = True
 
     @property
     def lines(self) -> list[TextLine]:

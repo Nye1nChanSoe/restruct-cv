@@ -246,6 +246,7 @@ def extracted_lines(
                 bbox=line.bbox,
                 size=line.size,
                 bold=line.bold,
+                table_cell=line.table_cell,
                 used_ocr=line.used_ocr,
                 baseline=line_baseline(line),
                 words=line.words,

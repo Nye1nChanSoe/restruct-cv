@@ -13,7 +13,7 @@ from restruct.layout.blocks import continues_block, extend_block, last_block_tex
 from restruct.layout.rows import _row_value, _visual_rows
 from restruct.model import DistilBertNerPredictor
 from restruct.patterns.bullets import BULLET_RE
-from restruct.patterns.dates import DATE_RANGE_RE
+from restruct.patterns.dates import DATE_RANGE_RE, date_matches
 from restruct.patterns.education import COURSEWORK_RE, DEGREE_RE, GPA_RE, INSTITUTION_RE
 from restruct.patterns.layout import PAGE_FOOTER_RE
 from restruct.patterns.separators import METADATA_SEPARATOR_RE
@@ -36,13 +36,15 @@ def _education_row_entities(
         result["urls"].extend(line_urls)
         if BULLET_RE.match(line.text):
             continue
-        date_spans = list(DATE_RANGE_RE.finditer(line.text))
+        date_spans = date_matches(line.text)
         for match in date_spans:
             result["dates"].append({
                 "text": match.group(0),
                 "page": line.page,
                 "bbox": resolve_span_box(document, line, match.group(0), match.start(), match.end()),
-                "detectionMethod": "date_regex",
+                "detectionMethod": (
+                    "date_regex" if DATE_RANGE_RE.match(match.group(0)) else "year_regex"
+                ),
             })
 
         gpa_matches = list(GPA_RE.finditer(line.text))

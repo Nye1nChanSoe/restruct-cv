@@ -1,0 +1,157 @@
+{
+  "header_profile": {
+    "name": "NATTHAPORN “NAT” SIRIPONG",
+    "job_titles": [
+      "Digital Marketing Specialist"
+    ],
+    "location": "Bangkok, Thailand",
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null,
+    "current_income": null,
+    "current_package": null,
+    "emails": [
+      "nat.siripong@example.com"
+    ],
+    "phones": [],
+    "urls": [
+      {
+        "text": "linkedin.com/in/nat-siripong",
+        "url": "linkedin.com/in/nat-siripong"
+      }
+    ]
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Performance-focused Digital Marketing Specialist with 5+ years of experience growing B2C and e-commerce brands across Thailand and Southeast Asia. Skilled in paid social, paid search, SEO, CRM, content strategy, influencer campaigns, analytics, and conversion optimization. Managed regional campaigns across Thailand, Singapore, Malaysia, Vietnam, and Indonesia, with hands-on ownership of budgets, reporting, and agency coordination. Strong track record improving ROAS, lowering customer acquisition cost, and turning campaign data into practical growth actions."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Digital Marketing Executive"
+      ],
+      "companies": [
+        "Luma Consumer Brands Co., Ltd."
+      ],
+      "dates": [
+        "Jan 2024 - Present"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Own paid media strategy and optimization across Meta, Google, TikTok, and YouTube for Thailand and selected SEA markets, managing an average monthly media budget of THB 1.8M.",
+        "Improved blended ROAS from 2.9x to 4.1x within 10 months by restructuring campaign segmentation, creative testing, audience exclusions, and landing-page experiments.",
+        "Reduced customer acquisition cost by 24% while increasing online revenue by 38% year over year across direct-to-consumer campaigns.",
+        "Built GA4 and Looker Studio dashboards for weekly channel, funnel, and market reporting, reducing manual reporting time by approximately 6 hours per week.",
+        "Coordinated localized campaigns with partners in Singapore, Malaysia, Vietnam, and Indonesia, adapting messaging, promotion calendars, and creative requirements by market.",
+        "Led influencer and creator campaigns with micro- and mid-tier creators, tracking reach, engagement, attributed sales, and cost per acquisition."
+      ]
+    },
+    {
+      "job_titles": [
+        "Digital Marketing Specialist"
+      ],
+      "companies": [
+        "Nara Commerce Group"
+      ],
+      "dates": [
+        "Jul 2021 - Dec 2023"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Planned and executed full-funnel digital campaigns for e-commerce and retail brands across paid search, paid social, SEO, email, and LINE OA.",
+        "Increased organic website sessions by 62% in 12 months through keyword mapping, technical SEO fixes, content briefs, and internal-link improvements.",
+        "Launched lifecycle email and LINE campaigns for acquisition, cart recovery, repeat purchase, and seasonal promotions, increasing returning-customer revenue by 21%.",
+        "Partnered with designers, copywriters, merchandisers, and external agencies to deliver monthly campaign calendars and localized assets on schedule.",
+        "Ran A/B tests on ad creative, landing pages, offers, and calls to action; documented findings and converted winners into repeatable campaign playbooks."
+      ]
+    },
+    {
+      "job_titles": [
+        "Marketing Coordinator"
+      ],
+      "companies": [
+        "Siam Lifestyle Retail Co., Ltd."
+      ],
+      "dates": [
+        "Jun 2019 - Jun 2021"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Supported social media, campaign execution, event promotion, and digital reporting for lifestyle retail brands in Thailand.",
+        "Grew Facebook and Instagram engagement by 35% over 12 months through a more consistent content calendar, community response workflow, and creator collaborations.",
+        "Prepared weekly performance reports covering reach, engagement, traffic, leads, sales, and campaign spend for the marketing manager."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Bachelor of Business Administration (Marketing)"
+      ],
+      "institutions": [
+        "Bangkok University, Bangkok, Thailand"
+      ],
+      "dates": [
+        "2019"
+      ],
+      "locations": [],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": "Performance Marketing",
+      "paragraphs": [
+        "Meta Ads, Google Ads, TikTok Ads, YouTube Ads, Display, Retargeting | Analytics: GA4, Google Tag Manager, Looker Studio, Search Console, Excel, A/B Testing, Attribution | Growth & CRM: SEO, SEM, Email Marketing, LINE OA, Marketing Automation, Lead Generation, CRO | Content & Social: Content Strategy, Copywriting, Influencer Marketing, Social Media Management, Campaign Planning | Platforms: Shopify, WordPress, HubSpot, Mailchimp, Canva, Meta Business Suite | Languages: Thai (Native), English (Professional Working Proficiency)"
+      ],
+      "bullets": [],
+      "urls": []
+    }
+  ],
+  "projects": null,
+  "certifications": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Google Ads Search Certification | Google Analytics Certification | HubSpot Content Marketing Certification",
+        "Synthetic resume created for ATS / parser testing. Not a real person."
+      ],
+      "bullets": []
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": null,
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null,
+  "others": null
+}

@@ -14,6 +14,7 @@ from restruct.configs import SETTINGS
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import vertical_overlap
 from restruct.patterns.bullets import BULLET_RE
+from restruct.patterns.layout import heading_text
 
 
 def first_header_boundary(
@@ -33,7 +34,7 @@ def _is_reliable_section_heading(
     line: ExtractedLine,
     heading: DetectedHeading,
 ) -> bool:
-    text = line.text.replace("\u200b", "").replace("\ufeff", "").strip()
+    text = heading_text(line.text)
     exact_references = {
         reference.casefold().strip()
         for references in SETTINGS.section_references.values()
@@ -93,7 +94,7 @@ def _peer_sized_section_heading(
 ) -> DetectedHeading | None:
     line = lines[line_index]
     parent = lines[parent_heading.line_index]
-    text = line.text.replace("\u200b", "").replace("\ufeff", "").strip()
+    text = heading_text(line.text)
     if (
         not text
         or BULLET_RE.match(text)

@@ -31,7 +31,7 @@ from restruct.errors import (
 )
 from restruct.stages import ALL_STAGES, DEFAULT_DEBUG_STAGES
 
-SUPPORTED_SUFFIXES = (".pdf",)
+SUPPORTED_SUFFIXES = (".pdf", ".docx")
 
 # One code per failure a caller might handle differently. Grouped by decade so
 # a new member of a family does not disturb the others: 1x input, 2x
@@ -196,6 +196,14 @@ def _validate(path: Path) -> None:
         raise InputNotFound(path)
     if path.suffix.casefold() not in SUPPORTED_SUFFIXES:
         raise UnsupportedFormat(path, SUPPORTED_SUFFIXES)
+    if path.suffix.casefold() == ".docx":
+        # A DOCX has no page count to check and no password to fail on; the
+        # reader raises InvalidDocument itself if the zip is not one.
+        from restruct.ingestion.docx import read_docx
+
+        read_docx(path)
+        return
+
     import pymupdf
 
     try:
@@ -295,7 +303,12 @@ def _batch(input_directory: Path, output_root: Path, models, stages) -> None:
     ocr_debug_directory = project_root / SETTINGS.debug.ocr_extraction_directory
     local = output_root != project_root / SETTINGS.paths.results_directory
 
-    for pdf_path in sorted(input_directory.glob("*.pdf")):
+    sources = sorted(
+        path
+        for suffix in SUPPORTED_SUFFIXES
+        for path in input_directory.glob(f"*{suffix}")
+    )
+    for pdf_path in sources:
         resume_output = output_root / pdf_path.stem
         extract_resume(
             pdf_path,

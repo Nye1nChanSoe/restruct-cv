@@ -100,8 +100,8 @@ def test_a_missing_input_reports_itself(tmp_path: Path) -> None:
 
 
 def test_an_unreadable_format_reports_itself(tmp_path: Path) -> None:
-    document = tmp_path / "resume.docx"
-    document.write_bytes(b"not a pdf")
+    document = tmp_path / "resume.rtf"
+    document.write_bytes(b"{\\rtf1 not a format v1 reads}")
     assert (
         cli.main([str(document), "-o", str(tmp_path / "out.json")])
         == cli.EXIT_UNSUPPORTED_FORMAT

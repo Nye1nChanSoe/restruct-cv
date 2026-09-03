@@ -21,9 +21,28 @@ TRUTHS_LABEL_DIRECTORY = TRUTHS_DIRECTORY / "labels"
 OCR_STEMS = frozenset({"5.ocr", "9.ocr"})
 
 
+# Every format the fixtures may be written in. A stem is unique across them,
+# so a fixture can be replaced with the same resume in another format without
+# renaming its golden file or its labels.
+FIXTURE_SUFFIXES = (".pdf", ".docx")
+
+
 def synthetic_stems() -> list[str]:
     """Every synthetic fixture stem, in a stable order."""
-    return sorted(path.stem for path in SYNTHETIC_DIRECTORY.glob("*.pdf"))
+    return sorted(
+        path.stem
+        for suffix in FIXTURE_SUFFIXES
+        for path in SYNTHETIC_DIRECTORY.glob(f"*{suffix}")
+    )
+
+
+def fixture_path(stem: str, directory: Path = SYNTHETIC_DIRECTORY) -> Path:
+    """The fixture file for a stem, whichever format it is written in."""
+    for suffix in FIXTURE_SUFFIXES:
+        candidate = directory / f"{stem}{suffix}"
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f"no fixture named {stem} in {directory}")
 
 
 def models_available() -> bool:

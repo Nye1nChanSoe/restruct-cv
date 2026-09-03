@@ -5,29 +5,29 @@ derived by reading each resume rather than from pipeline output. A span
 counts as correct when it matches after normalization, or when one side
 fully contains the other.
 
-Resumes scored: 7
+Resumes scored: 9
 
 | Field | Precision | Recall | F1 | TP | FP | FN |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `header.name` | 1.00 | 0.86 | 0.92 | 6 | 0 | 1 |
-| `header.location` | 1.00 | 1.00 | 1.00 | 7 | 0 | 0 |
+| `header.name` | 1.00 | 0.89 | 0.94 | 8 | 0 | 1 |
+| `header.location` | 1.00 | 1.00 | 1.00 | 9 | 0 | 0 |
 | `header.nationality` | 1.00 | 1.00 | 1.00 | 2 | 0 | 0 |
-| `header.job_titles` | 0.62 | 1.00 | 0.77 | 10 | 6 | 0 |
-| `header.emails` | 1.00 | 1.00 | 1.00 | 7 | 0 | 0 |
-| `header.phones` | 1.00 | 0.86 | 0.92 | 6 | 0 | 1 |
-| `header.urls` | 1.00 | 1.00 | 1.00 | 2 | 0 | 0 |
-| `section_routing` | 0.96 | 1.00 | 0.98 | 48 | 2 | 0 |
-| `experience.job_titles` | 0.95 | 1.00 | 0.98 | 20 | 1 | 0 |
-| `experience.companies` | 1.00 | 0.95 | 0.97 | 19 | 0 | 1 |
-| `experience.dates` | 1.00 | 1.00 | 1.00 | 20 | 0 | 0 |
-| `experience.locations` | 1.00 | 0.95 | 0.97 | 19 | 0 | 1 |
-| `experience.entry_count` | 1.00 | 1.00 | 1.00 | 20 | 0 | 0 |
-| `education.titles` | 0.90 | 1.00 | 0.95 | 9 | 1 | 0 |
-| `education.institutions` | 0.90 | 1.00 | 0.95 | 9 | 1 | 0 |
-| `education.dates` | 1.00 | 1.00 | 1.00 | 8 | 0 | 0 |
-| `education.entry_count` | 0.90 | 1.00 | 0.95 | 9 | 1 | 0 |
+| `header.job_titles` | 0.60 | 1.00 | 0.75 | 12 | 8 | 0 |
+| `header.emails` | 1.00 | 1.00 | 1.00 | 9 | 0 | 0 |
+| `header.phones` | 1.00 | 0.88 | 0.93 | 7 | 0 | 1 |
+| `header.urls` | 1.00 | 1.00 | 1.00 | 4 | 0 | 0 |
+| `section_routing` | 0.97 | 1.00 | 0.98 | 57 | 2 | 0 |
+| `experience.job_titles` | 1.00 | 0.96 | 0.98 | 24 | 0 | 1 |
+| `experience.companies` | 1.00 | 0.96 | 0.98 | 24 | 0 | 1 |
+| `experience.dates` | 1.00 | 1.00 | 1.00 | 25 | 0 | 0 |
+| `experience.locations` | 1.00 | 0.96 | 0.98 | 24 | 0 | 1 |
+| `experience.entry_count` | 1.00 | 1.00 | 1.00 | 25 | 0 | 0 |
+| `education.titles` | 0.92 | 1.00 | 0.96 | 11 | 1 | 0 |
+| `education.institutions` | 0.92 | 1.00 | 0.96 | 11 | 1 | 0 |
+| `education.dates` | 1.00 | 1.00 | 1.00 | 10 | 0 | 0 |
+| `education.entry_count` | 0.92 | 1.00 | 0.96 | 11 | 1 | 0 |
 
-**Macro F1 across scored fields: 0.962**
+**Macro F1 across scored fields: 0.966**
 
 ## Misses and spurious values
 
@@ -35,6 +35,8 @@ Resumes scored: 7
   - missed: `6: alex morgan`
 - `header.job_titles`
   - spurious: `1: mechanical & electrical maintenance`
+  - spurious: `11: ux/ui`
+  - spurious: `11: ui designer`
   - spurious: `2: inventory planning`
   - spurious: `2: data analysis`
   - spurious: `5.ocr: structural & construction works`
@@ -46,9 +48,9 @@ Resumes scored: 7
   - spurious: `7.anomaly: languages`
   - spurious: `7.anomaly: others`
 - `experience.job_titles`
-  - spurious: `5.ocr: eastern infrastructure services`
+  - missed: `11: junior product designer`
 - `experience.companies`
-  - missed: `5.ocr: eastern infrastructure services`
+  - missed: `11: northstar digital`
 - `experience.locations`
   - missed: `9.ocr: jakarta, indonesia`
 - `education.titles`

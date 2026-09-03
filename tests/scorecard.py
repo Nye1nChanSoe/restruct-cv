@@ -32,6 +32,7 @@ from tests.helpers import (
     TRUTHS_DIRECTORY,
     TRUTHS_LABEL_DIRECTORY,
     OCR_STEMS,
+    fixture_path,
     label_path,
     models_available,
     run_pipeline,
@@ -246,7 +247,7 @@ def score_resume(label: dict[str, Any], result: dict[str, Any]) -> dict[str, Cou
 def collect_cases() -> list[tuple[str, Path, Path]]:
     """Committed synthetic fixtures, plus local-only real CVs when present."""
     cases = [
-        (stem, SYNTHETIC_DIRECTORY / f"{stem}.pdf", label_path(stem))
+        (stem, fixture_path(stem), label_path(stem))
         for stem in synthetic_stems()
         if label_path(stem).exists()
     ]

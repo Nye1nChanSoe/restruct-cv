@@ -1,0 +1,98 @@
+{
+  "source": "10.tight.docx",
+  "notes": [
+    "The first DOCX fixture. Derived by reading the document's own paragraphs and styles, never from pipeline output.",
+    "A DOCX has no coordinates at all, so every geometric rule in the pipeline has to take its structural path here. What the document states instead is stronger: 'Heading 1' marks each section outright, and there is nothing to infer from font size or vertical gaps.",
+    "Bullets carry a literal '• ' in the run text rather than a list style, so the marker regex sees them exactly as it would in a PDF. The list-style path is exercised by a unit test instead.",
+    "Every experience record is two lines: 'Title | Dates' then 'Company | Location', both pipe-separated. There is no right-hand column, because a DOCX has no columns.",
+    "The phone number is deliberately redacted in the source as '+66 8X XXX XXXX', so no phone is expected.",
+    "The trailing 'Synthetic resume created for ATS / parser testing' line is a disclaimer in the body, not a page footer -- a DOCX footer lives in a separate part and never reaches the body text."
+  ],
+  "header_profile": {
+    "name": "NATTHAPORN “NAT” SIRIPONG",
+    "job_titles": [
+      "Digital Marketing Specialist"
+    ],
+    "location": "Bangkok, Thailand",
+    "emails": [
+      "nat.siripong@example.com"
+    ],
+    "phones": [],
+    "urls": [
+      "linkedin.com/in/nat-siripong"
+    ],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null,
+    "current_income": null,
+    "current_package": null
+  },
+  "sections_present": [
+    "summary",
+    "experience",
+    "education",
+    "skills",
+    "certifications"
+  ],
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Digital Marketing Executive"
+      ],
+      "companies": [
+        "Luma Consumer Brands Co., Ltd."
+      ],
+      "dates": [
+        "Jan 2024 - Present"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ]
+    },
+    {
+      "job_titles": [
+        "Digital Marketing Specialist"
+      ],
+      "companies": [
+        "Nara Commerce Group"
+      ],
+      "dates": [
+        "Jul 2021 - Dec 2023"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ]
+    },
+    {
+      "job_titles": [
+        "Marketing Coordinator"
+      ],
+      "companies": [
+        "Siam Lifestyle Retail Co., Ltd."
+      ],
+      "dates": [
+        "Jun 2019 - Jun 2021"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Bachelor of Business Administration (Marketing)"
+      ],
+      "institutions": [
+        "Bangkok University, Bangkok, Thailand"
+      ],
+      "dates": [
+        "2019"
+      ]
+    }
+  ]
+}

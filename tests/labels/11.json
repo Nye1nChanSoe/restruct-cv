@@ -1,0 +1,85 @@
+{
+  "source": "11.docx",
+  "notes": [
+    "A designer's resume, and much harder than 10.tight: not one paragraph carries a Heading style, so the DOCX states nothing about its own structure and every section has to be recognised from the text after all.",
+    "Sections are numbered by the author -- '01 CORE CAPABILITIES', '02 EXPERIENCE'. The number orders the sections and names no destination, so it is stripped before the heading is classified. Left in, the whole prefix reaches the embedding and no section resolves at all.",
+    "The tagline is 'PRODUCT DESIGNER  ·  UX/UI'. Only the first segment is a job title; the second names a specialism, following the same rule as fixtures 1 and 2.",
+    "Records separate their fields with a spaced slash and a middle dot rather than a pipe: 'UX/UI Designer  /  Northstar Digital', then 'Bangkok, Thailand  ·  Mar 2024 - Present'.",
+    "There is no summary heading. The two opening lines read as a summary to a person, but nothing in the document says so, and v1 does not invent a section for unlabelled text -- they belong to the header region.",
+    "The closing 'Portfolio available at portfolio.example.com/mayatan' is body text, not a footer."
+  ],
+  "header_profile": {
+    "name": "MAYA TAN",
+    "job_titles": [
+      "PRODUCT DESIGNER"
+    ],
+    "location": "Bangkok, Thailand",
+    "emails": [
+      "maya.tan.design@example.com"
+    ],
+    "phones": [
+      "+66 81 234 5678"
+    ],
+    "urls": [
+      "portfolio.example.com/mayatan"
+    ],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null,
+    "current_income": null,
+    "current_package": null
+  },
+  "sections_present": [
+    "skills",
+    "experience",
+    "projects",
+    "education"
+  ],
+  "experience": [
+    {
+      "job_titles": [
+        "UX/UI Designer"
+      ],
+      "companies": [
+        "Northstar Digital"
+      ],
+      "dates": [
+        "Mar 2024 - Present"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ]
+    },
+    {
+      "job_titles": [
+        "Junior Product Designer"
+      ],
+      "companies": [
+        "Kinetic Labs"
+      ],
+      "dates": [
+        "Jul 2022 - Feb 2024"
+      ],
+      "locations": [
+        "Kuala Lumpur, Malaysia"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "BA in Communication Design"
+      ],
+      "institutions": [
+        "RMIT University Vietnam"
+      ],
+      "dates": [
+        "2022"
+      ]
+    }
+  ]
+}

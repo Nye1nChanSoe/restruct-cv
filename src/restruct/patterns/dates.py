@@ -33,3 +33,27 @@ SINGLE_DATE_RE = re.compile(
     rf"(?:{DATED_YEAR_PATTERN}|Present|Current|Now)",
     re.IGNORECASE,
 )
+
+
+def date_matches(text: str) -> list[re.Match[str]]:
+    """Every date in a line: ranges, plus bare years no range already covers.
+
+    A range is claimed first and a year inside one is not claimed again, which
+    is the same precedence the rest of the package uses -- the stronger, more
+    specific reading takes the characters and the weaker one skips them.
+
+    Shared because the grouped sections and education were answering the same
+    question differently: education matched only ranges, so a graduation year
+    written on its own -- which is how most resumes write one -- was not a date
+    at all.
+    """
+    ranges = list(DATE_RANGE_RE.finditer(text))
+    singles = [
+        match
+        for match in SINGLE_YEAR_RE.finditer(text)
+        if not any(
+            date_range.start() < match.end() and match.start() < date_range.end()
+            for date_range in ranges
+        )
+    ]
+    return sorted([*ranges, *singles], key=lambda match: match.start())

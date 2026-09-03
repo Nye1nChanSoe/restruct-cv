@@ -18,6 +18,7 @@ from tests.conftest import require_tesseract_for
 from tests.helpers import (
     PROJECT_ROOT,
     SYNTHETIC_DIRECTORY,
+    fixture_path,
     dump_json,
     golden_path,
     run_pipeline,
@@ -68,7 +69,7 @@ def _result(
 ) -> dict[str, Any]:
     if stem not in extracted:
         extracted[stem] = run_pipeline(
-            SYNTHETIC_DIRECTORY / f"{stem}.pdf",
+            fixture_path(stem),
             workspace,
             models,
         )
@@ -109,7 +110,7 @@ def test_matches_golden_snapshot(
             )
         )
         pytest.fail(
-            f"{stem}.pdf output changed.\n\n{diff}\n"
+            f"{stem} output changed.\n\n{diff}\n"
             "If this change is intended, review every line above, then "
             "re-baseline with: uv run pytest --update-golden"
         )
@@ -166,7 +167,7 @@ def test_output_carries_no_debug_metadata(
                 walk(item)
 
     walk(result)
-    assert not found, f"{stem}.pdf leaked debug metadata into clean output: {sorted(found)}"
+    assert not found, f"{stem} leaked debug metadata into clean output: {sorted(found)}"
 
 
 # -- the published schema ---------------------------------------------------
@@ -188,7 +189,7 @@ def test_output_matches_the_published_schema(stem: str, models, workspace) -> No
     from jsonschema import Draft202012Validator
 
     require_tesseract_for(stem)
-    resume = run_pipeline(SYNTHETIC_DIRECTORY / f"{stem}.pdf", workspace, models)
+    resume = run_pipeline(fixture_path(stem), workspace, models)
     errors = sorted(
         Draft202012Validator(_resume_schema()).iter_errors(resume),
         key=lambda error: list(error.path),

@@ -32,6 +32,9 @@ class ExtractedLine:
     baseline: float = 0.0
     words: tuple[Word, ...] = ()
     cells: tuple[Cell, ...] = ()
+    # (table, row, column) when the source stated it, as a DOCX does. None for
+    # a PDF, where a table has to be recovered from gaps between boxes.
+    table_cell: tuple[int, int, int] | None = None
 
     @property
     def row_like(self) -> bool:

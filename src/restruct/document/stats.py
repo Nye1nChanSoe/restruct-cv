@@ -123,6 +123,10 @@ class DocumentStatistics:
     horizontal_rules: tuple[Rule, ...] = ()
     # Empty on the single-column documents v1 targets; see detect_unsupported().
     column_gutters: tuple[Gutter, ...] = ()
+    # False for a reflowable source. Every comparison below that reads points
+    # has to ask first: the boxes then carry reading order and nesting only,
+    # and a threshold applied to them would be measuring nothing.
+    has_geometry: bool = True
     pages: tuple[PageStatistics, ...] = field(default=(), repr=False)
 
     # -- typography -------------------------------------------------------
@@ -156,6 +160,11 @@ class DocumentStatistics:
         tracks tightly set documents, while half a line height keeps the rule
         sane where leading is near zero.
         """
+        if not self.has_geometry:
+            # A DOCX states its paragraph boundaries outright. There is nothing
+            # to infer and no gap to infer it from -- every line is already a
+            # complete block, so nothing ever continues anything.
+            return False
         return gap <= max(self.median_line_gap * 2.0, self.median_line_height * 0.5)
 
     @property
@@ -180,6 +189,9 @@ class DocumentStatistics:
         conservative multiple stays safe on justified text, where spaces
         legitimately stretch.
         """
+        if not self.has_geometry:
+            # Cells are stated by the source, not recovered from a gap.
+            return 0.0
         reference = max(self.median_space_width, self.median_character_width)
         return reference * 5.0 if reference > 0 else 0.0
 
@@ -368,6 +380,10 @@ def _page_gutters(page: Page, statistics: "DocumentStatistics") -> list[Gutter]:
 
 
 def _column_gutters(document: Document, statistics: "DocumentStatistics") -> tuple[Gutter, ...]:
+    if not document.has_geometry:
+        # A corridor between columns is a fact about a page. A reflowable
+        # source has no page, so there is nothing here to find or to miss.
+        return ()
     return tuple(
         gutter for page in document.pages for gutter in _page_gutters(page, statistics)
     )
@@ -509,6 +525,7 @@ def measure(document: Document) -> DocumentStatistics:
             rule for page in document.pages for rule in page.horizontal_rules
         ),
         pages=page_statistics,
+        has_geometry=document.has_geometry,
     )
     # Measured last because it needs the furniture test the rest of the
     # statistics provide, and nothing above it depends on the result.

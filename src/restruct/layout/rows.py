@@ -33,6 +33,8 @@ def _visual_rows(
         ((index, lines[index]) for index in line_indexes),
         key=lambda item: (item[1].page, item[1].bbox[1], item[1].bbox[0]),
     )
+    if not statistics.has_geometry:
+        return _stated_rows(ordered)
     tolerance = statistics.baseline_tolerance
     rows: list[list[tuple[int, ExtractedLine]]] = []
     for line_index, line in ordered:
@@ -51,6 +53,29 @@ def _visual_rows(
                 continue
         rows.append([(line_index, line)])
     return rows
+
+def _stated_rows(
+    ordered: list[tuple[int, ExtractedLine]],
+) -> list[list[tuple[int, ExtractedLine]]]:
+    """Rows for a source that states its own tables.
+
+    A DOCX marks every cell with its table, row and column, so there is nothing
+    to infer: cells of one row are a row, and everything else stands alone.
+    Grouping these by baseline instead would compare ordinal positions that
+    carry no vertical meaning and find rows that are not there.
+    """
+    rows: list[list[tuple[int, ExtractedLine]]] = []
+    current_key: tuple[int, int] | None = None
+    for line_index, line in ordered:
+        cell = line.table_cell
+        key = (cell[0], cell[1]) if cell is not None else None
+        if key is not None and key == current_key and rows:
+            rows[-1].append((line_index, line))
+            continue
+        rows.append([(line_index, line)])
+        current_key = key
+    return rows
+
 
 def _row_value(row: list[tuple[int, ExtractedLine]]) -> dict[str, Any]:
     row_box = union(line.bbox for _, line in row)

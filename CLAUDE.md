@@ -135,7 +135,7 @@ Five ordered passes over one shared in-memory document. The current code impleme
 fully; passes 1-3 are being built (see *Refactor in flight*).
 
 ```
-ingestion/   physical extraction — native PDF text, per-page OCR fallback
+ingestion/   physical extraction — native PDF text, per-page OCR fallback, DOCX
 document/    shared types (ExtractedLine, DetectedHeading, HeaderEntityMatch)
 layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
 structure/   heading detection, routing, compound headings, precedence resolver, separators
@@ -245,6 +245,25 @@ beneath it. Then:
   registers a destination that owns nothing, and the real section of that type is then the
   second occurrence and goes unread
 
+### DOCX has no geometry, and must never pretend to
+
+`ingestion/docx.py` reads the XML with `python-docx`. **Do not switch it to MuPDF**, which will
+open a DOCX and return convincing bounding boxes: it gets them by re-laying the document out
+with substituted fonts into an invented page box, losing the paragraph styles, the list markers
+and the table structure. Those boxes would then feed every document-relative statistic in the
+package, which would measure a layout nobody laid out and produce plausible output from fiction.
+
+`Document.has_geometry` is `False` for a DOCX, and every rule that compares points asks it
+first: `is_paragraph_gap` never joins (paragraph boundaries are stated), `cell_gap_threshold` is
+zero (cells are stated), column-gutter detection is skipped (there is no page), and `_visual_rows`
+groups by the stated table row instead of by baseline. `bbox` carries reading order and indent
+depth only.
+
+Losing geometry costs less than it sounds, because the DOCX states outright what the geometric
+heuristics were reconstructing — a heading by style name, a list item by style, line boundaries
+by paragraph, cells by table. Where it states a bullet only in the numbering part, the reader
+puts the marker back into the text, so nine downstream bullet rules need no DOCX case.
+
 ### OCR converges on the native types
 
 `ingestion/ocr.py` rebuilds Tesseract TSV into the same line geometry the native path produces,
@@ -292,9 +311,14 @@ Three things carry the run cost, and all three regress silently:
 
 An approved 21-commit plan lives at
 `~/.claude/plans/read-prompt-txt-first-before-robust-forest.md`; the design brief it implements
-is `prompt.txt`. **Milestone 3 is complete** (C14 compound headings, C15 ordered precedence,
-C16 unified renderer), as is C13. Milestone 4 — the product surface, starting with C17's real
-`restruct <path> -o <out>` CLI — is next.
+is `prompt.txt`. Milestone 3 is complete, as are C13, C17 (CLI), C18 (perf) and C19 (DOCX).
+C20 (Tesseract detection, 300→200 DPI) and C21 (schema version, packaging) remain.
+
+**Known and unfixed:** `header.job_titles` is the weakest field (P=0.60). The semantic tier
+over-claims on taglines — `PRODUCT DESIGNER · UX/UI` yields two titles, and resume 6's
+`ALEX MORGAN` is claimed as a title, which is why that fixture reports no name. Six of the eight
+false positives predate the DOCX work. Fixing it means constraining what the semantic tier may
+claim, and it is the single highest-value extraction change left.
 
 C15 left one item of its plan undone on purpose: `_experience_line_entities` still reconciles
 titles and companies across segments with its own logic rather than through `SpanResolver`. The
@@ -306,6 +330,11 @@ spans in that function do run deterministically ahead of the model.
 `__init__.py` split that no longer exists. Scheduled for the final packaging commit.
 
 ## Test data
+
+Fixtures may be `.pdf` or `.docx`; `tests/helpers.fixture_path()` resolves a stem to whichever
+exists, so a fixture can change format without renaming its golden file or its labels. Every
+synthetic fixture must have hand-written labels — `test_every_synthetic_fixture_has_a_label`
+enforces it.
 
 Never commit real resumes or their labels. `resumes-truths/` is gitignored for exactly this
 reason, including any `resumes-truths/labels/` the scorecard picks up. Fixtures in

@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.11"
 dependencies = [
     "pillow>=11.0",
+    "python-docx>=1.1",
     "pymupdf>=1.28.2",
     "sentence-transformers>=6.0.1",
     "transformers>=4.51.3,<5.14.0",
@@ -17,15 +18,11 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=8.0",
-    # Only the test suite needs this: the schema is a published contract,
-    # and a contract nothing checks is a comment.
     "jsonschema>=4.20",
 ]
 
 [project.scripts]
 restruct = "restruct.cli:main"
-# Kept so existing invocations and the README keep working during the refactor.
-extractor-v1 = "restruct.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13.0"]

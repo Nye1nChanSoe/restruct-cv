@@ -23,6 +23,7 @@ from restruct.patterns.personal import (
     LOCATION_SEGMENT_RE,
     NATIONALITY_CONTEXT_RE,
 )
+from restruct.patterns.layout import heading_text
 from restruct.patterns.separators import JOB_TITLE_SEPARATOR_RE, SEGMENT_RE
 
 
@@ -266,7 +267,9 @@ def detect_headings(
 
     reference_embeddings = encode_references(model, reference_texts)
     candidate_embeddings = model.encode(
-        [lines[index].text for index in candidate_indexes],
+        # Classified without the author's section number: "01" orders the
+        # sections and says nothing about which destination this one names.
+        [heading_text(lines[index].text) for index in candidate_indexes],
         normalize_embeddings=True,
     )
     accepted: list[DetectedHeading] = []
