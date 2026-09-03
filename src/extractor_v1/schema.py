@@ -23,6 +23,7 @@ V1_SECTION_ORDER = (
     "publications",
     "references",
     "interests",
+    "others",
 )
 
 
@@ -76,8 +77,10 @@ def _profile_value(header_profile: dict[str, Any] | None) -> dict[str, Any] | No
         ),
         "location": _first_entity_text(entities, "location"),
         "date_of_birth": _first_entity_text(entities, "date_of_birth"),
+        "age": _first_entity_text(entities, "age"),
         "gender": _first_entity_text(entities, "gender"),
         "marital_status": _first_entity_text(entities, "marital_status"),
+        "visa_status": _first_entity_text(entities, "visa_status"),
         "nationality": _first_entity_text(entities, "nationality"),
         "current_residence": _first_entity_text(entities, "current_residence"),
         "emails": _texts(
@@ -178,6 +181,35 @@ def _grouped_section_value(
     ]
 
 
+def _others_value(section: dict[str, Any] | None) -> list[dict[str, Any]] | None:
+    if section is None:
+        return None
+    return [
+        {
+            "heading": _clean_text(section_part.get("heading", {}).get("text", "")),
+            "entries": [
+                {
+                    "subheadings": _texts(entry.get("subheadingLines", [])),
+                    "attributes": [
+                        {
+                            "type": str(attribute["type"]),
+                            "value": _clean_text(attribute.get("text", "")),
+                        }
+                        for attribute in entry.get("attributes", [])
+                        if _clean_text(attribute.get("text", ""))
+                    ],
+                    "dates": _texts(entry.get("dates", [])),
+                    "urls": _urls(entry.get("urls", [])),
+                    "paragraphs": _texts(entry.get("paragraphs", [])),
+                    "bullets": _texts(entry.get("bullets", [])),
+                }
+                for entry in section_part.get("entries", [])
+            ],
+        }
+        for section_part in section.get("sections", [])
+    ]
+
+
 def build_v1_resume(
     *,
     header_profile: dict[str, Any] | None,
@@ -196,10 +228,11 @@ def build_v1_resume(
         "skills": _skills_value(skills),
         "projects": _grouped_section_value(projects),
     }
-    for section_type in V1_SECTION_ORDER[6:]:
+    for section_type in V1_SECTION_ORDER[6:-1]:
         values[section_type] = _grouped_section_value(
             supplementary_sections.get(section_type)
         )
+    values["others"] = _others_value(supplementary_sections.get("others"))
     return {section_type: values.get(section_type) for section_type in V1_SECTION_ORDER}
 
 

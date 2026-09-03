@@ -27,6 +27,7 @@ from extractor_v1.model import (
     LOCATION_SEGMENT_RE as _LOCATION_SEGMENT_RE,
     NATIONALITY_PHRASE_RE as _NATIONALITY_PHRASE_RE,
     detect_headings,
+    classify_profile_attribute_labels,
     load_embedding_model,
     load_ner_model,
     ner_matches_for_profile,
@@ -63,10 +64,19 @@ _EMAIL_RE = re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}")
 _PHONE_RE = re.compile(r"(?<!\w)\+?\d[\d ()\-.]{6,}\d(?!\w)")
 _HEADER_ATTRIBUTE_LABEL_PATTERN = (
     r"date\s+of\s+birth|birth\s+date|d\.?\s*o\.?\s*b\.?|dob|"
-    r"gender|sex|marital\s+status|civil\s+status|marital|"
+    r"current\s+age|age|"
+    r"gender|sex|marital\s+status|martial\s+status|civil\s+status|marital|"
+    r"visa\s+status|visa\s+type|work\s+visa|immigration\s+status|residency\s+visa|"
+    r"work\s+authorization|right\s+to\s+work|visa|"
     r"nationality|citizenship|"
     r"current\s+residen(?:ce|t)|current\s+location|place\s+of\s+residence|"
     r"residen(?:ce|t)"
+)
+_GENERIC_HEADER_ATTRIBUTE_RE = re.compile(
+    r"(?P<label>[A-Za-z][A-Za-z .'/]{1,40}?)"
+    r"\s*(?::|[-\u2013\u2014])\s*"
+    r"(?P<value>.+?)(?=\s*[|\u2022\u00b7]|$)",
+    re.IGNORECASE,
 )
 _HEADER_ATTRIBUTE_RE = re.compile(
     rf"(?P<label>\b(?:{_HEADER_ATTRIBUTE_LABEL_PATTERN})\b)"
@@ -391,10 +401,23 @@ def _header_attribute_kind(label: str) -> str:
     normalized = re.sub(r"[^a-z]+", " ", label.casefold()).strip()
     if normalized in {"date of birth", "birth date", "d o b", "dob"}:
         return "date_of_birth"
+    if normalized in {"age", "current age"}:
+        return "age"
     if normalized in {"gender", "sex"}:
         return "gender"
-    if normalized in {"marital status", "civil status", "marital"}:
+    if normalized in {"marital status", "martial status", "civil status", "marital"}:
         return "marital_status"
+    if normalized in {
+        "visa",
+        "visa status",
+        "visa type",
+        "work visa",
+        "immigration status",
+        "residency visa",
+        "work authorization",
+        "right to work",
+    }:
+        return "visa_status"
     if normalized in {"nationality", "citizenship"}:
         return "nationality"
     return "current_residence"
@@ -409,6 +432,8 @@ def _labelled_header_attribute_matches(
     for line_index in profile_indexes:
         line = lines[line_index]
         for match in _HEADER_ATTRIBUTE_RE.finditer(line.text):
+            # The label establishes the field. Preserve its same-line value
+            # verbatim instead of requiring a particular DOB/date format.
             raw_value = match.group("value")
             value = raw_value.strip(" \t|\u2022\u00b7,;:-\u2013\u2014\u200b\ufeff")
             if not value or not any(character.isalnum() for character in value):
@@ -423,6 +448,7 @@ def _labelled_header_attribute_matches(
                     start=match.start(),
                     end=match.end(),
                     detection_method="label_pattern",
+                    confidence=1.0,
                     bbox=tuple(
                         _entity_box(
                             document,
@@ -434,6 +460,77 @@ def _labelled_header_attribute_matches(
                     ),
                 )
             )
+    return matches
+
+
+def _semantic_header_attribute_matches(
+    document: pymupdf.Document,
+    lines: list[ExtractedLine],
+    profile_indexes: list[int],
+    semantic_model: EmbeddingModel,
+    existing_matches: list[HeaderEntityMatch],
+) -> list[HeaderEntityMatch]:
+    candidates: list[tuple[int, re.Match[str], str, str, int, int]] = []
+    for line_index in profile_indexes:
+        line = lines[line_index]
+        for match in _GENERIC_HEADER_ATTRIBUTE_RE.finditer(line.text):
+            if _overlaps_existing(
+                existing_matches,
+                line_index=line_index,
+                start=match.start(),
+                end=match.end(),
+            ):
+                continue
+            raw_value = match.group("value")
+            value = raw_value.strip(" \t|\u2022\u00b7,;:-\u2013\u2014\u200b\ufeff")
+            label = match.group("label").strip()
+            if not label or not value:
+                continue
+            value_start = match.start("value") + raw_value.find(value)
+            candidates.append(
+                (
+                    line_index,
+                    match,
+                    label,
+                    value,
+                    value_start,
+                    value_start + len(value),
+                )
+            )
+
+    classifications = classify_profile_attribute_labels(
+        semantic_model,
+        [candidate[2] for candidate in candidates],
+    )
+    matches: list[HeaderEntityMatch] = []
+    for candidate, (attribute_type, confidence) in zip(
+        candidates,
+        classifications,
+        strict=True,
+    ):
+        if attribute_type is None:
+            continue
+        line_index, match, _, value, value_start, value_end = candidate
+        matches.append(
+            HeaderEntityMatch(
+                kind=attribute_type,
+                text=value,
+                line_index=line_index,
+                start=match.start(),
+                end=match.end(),
+                detection_method="minilm_label",
+                confidence=confidence,
+                bbox=tuple(
+                    _entity_box(
+                        document,
+                        lines[line_index],
+                        value,
+                        value_start,
+                        value_end,
+                    )
+                ),
+            )
+        )
     return matches
 
 
@@ -727,6 +824,15 @@ def build_header_profile(
         document,
         lines,
         profile_indexes,
+    )
+    matches.extend(
+        _semantic_header_attribute_matches(
+            document,
+            lines,
+            profile_indexes,
+            semantic_model,
+            matches,
+        )
     )
     for line_index in profile_indexes:
         text = lines[line_index].text
@@ -1114,6 +1220,7 @@ def extract_resume(
             lines,
             headings,
             url_entities_by_line,
+            model,
         )
 
         output_directory.mkdir(parents=True, exist_ok=True)

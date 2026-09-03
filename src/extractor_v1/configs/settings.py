@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from extractor_v1.configs.embedding_references import (
     JOB_TITLE_NEGATIVE_REFERENCES,
     JOB_TITLE_REFERENCES,
+    PROFILE_ATTRIBUTE_REFERENCES,
     SECTION_COLORS,
     SECTION_REFERENCES,
 )
@@ -80,6 +81,12 @@ class JobTitleSettings:
 
 
 @dataclass(frozen=True)
+class ProfileAttributeSettings:
+    similarity_threshold: float = 0.62
+    winner_margin: float = 0.08
+
+
+@dataclass(frozen=True)
 class DebugSettings:
     raw_extraction_enabled: bool = True
     raw_extraction_directory: str = "debug"
@@ -100,8 +107,10 @@ class DebugSettings:
         ("nationality", "#F9A825"),
         ("current_residence", "#FB8C00"),
         ("date_of_birth", "#8E24AA"),
+        ("age", "#AB47BC"),
         ("gender", "#00838F"),
         ("marital_status", "#5E35B1"),
+        ("visa_status", "#3949AB"),
         ("email", "#00897B"),
         ("phone", "#1565C0"),
         ("url", "#6D4C41"),
@@ -127,6 +136,9 @@ class ExtractorSettings:
     url: UrlSettings = field(default_factory=UrlSettings)
     header_profile: HeaderProfileSettings = field(default_factory=HeaderProfileSettings)
     job_title: JobTitleSettings = field(default_factory=JobTitleSettings)
+    profile_attribute: ProfileAttributeSettings = field(
+        default_factory=ProfileAttributeSettings
+    )
     debug: DebugSettings = field(default_factory=DebugSettings)
     paths: PathSettings = field(default_factory=PathSettings)
     section_references: dict[str, tuple[str, ...]] = field(
@@ -138,6 +150,9 @@ class ExtractorSettings:
     )
     job_title_negative_references: dict[str, tuple[str, ...]] = field(
         default_factory=lambda: dict(JOB_TITLE_NEGATIVE_REFERENCES)
+    )
+    profile_attribute_references: dict[str, tuple[str, ...]] = field(
+        default_factory=lambda: dict(PROFILE_ATTRIBUTE_REFERENCES)
     )
 
 

@@ -18,6 +18,7 @@ from extractor_v1.model import (
     EmbeddingModel,
     ExtractedLine,
     classify_job_title_candidates,
+    classify_profile_attribute_labels,
 )
 
 
@@ -70,6 +71,10 @@ _SKILL_INLINE_COLON_RE = re.compile(r"^(?P<label>[^:\t]{1,60}):\s*(?P<body>.+)$"
 _SKILL_INLINE_TAB_RE = re.compile(r"^(?P<label>[^\t]{1,60})\t+\s*(?P<body>.+)$")
 _SKILL_INLINE_DASH_RE = re.compile(
     r"^(?P<label>.{1,60}?)\s+(?:-|\u2013|\u2014)\s+(?P<body>.+)$"
+)
+_PROFILE_ATTRIBUTE_INLINE_RE = re.compile(
+    r"^(?P<label>[A-Za-z][A-Za-z .'/]{1,40}?)"
+    r"\s*(?::|[-\u2013\u2014])\s*(?P<body>.+)$"
 )
 _SUPPLEMENTARY_SECTION_TYPES = (
     "certifications",
@@ -1666,6 +1671,7 @@ def _grouped_section_entry() -> dict[str, Any]:
         "metadataRows": [],
         "dates": [],
         "urls": [],
+        "attributes": [],
         "paragraphs": [],
         "bullets": [],
         "_lastType": None,
@@ -1680,6 +1686,7 @@ def _build_grouped_section_debug(
     url_entities_by_line: dict[int, list[dict[str, Any]]],
     section_type: str,
     occurrence: int = 0,
+    semantic_model: EmbeddingModel | None = None,
 ) -> dict[str, Any] | None:
     """Group titles, dates, paragraphs, bullets, and URLs for a minor section."""
     routed = _routed_section_headings(lines, headings)
@@ -1742,6 +1749,13 @@ def _build_grouped_section_debug(
             )
             if left_is_label:
                 stripped = left.text.strip().rstrip(":-–—").strip()
+                attribute_type: str | None = None
+                confidence = 0.0
+                if semantic_model is not None:
+                    attribute_type, confidence = classify_profile_attribute_labels(
+                        semantic_model,
+                        [stripped],
+                    )[0]
                 start = left.text.find(stripped)
                 current = _grouped_section_entry()
                 entries.append(current)
@@ -1760,14 +1774,28 @@ def _build_grouped_section_debug(
                 current["metadataRows"].append(_row_value(row))
                 for line_index, line in right_cells:
                     line_urls = url_entities_by_line.get(line_index, [])
-                    _append_skill_paragraph(
-                        current,
-                        text=line.text,
-                        page=line.page,
-                        bbox=[round(number, 2) for number in line.bbox],
-                        entities=line_urls,
-                    )
                     current["urls"].extend(line_urls)
+                    if attribute_type is not None:
+                        current["attributes"].append({
+                            "type": attribute_type,
+                            "text": line.text,
+                            "page": line.page,
+                            "bbox": [round(number, 2) for number in line.bbox],
+                            "confidence": round(confidence, 4),
+                            "detectionMethod": (
+                                "label_pattern"
+                                if confidence >= 0.9999
+                                else "minilm_label"
+                            ),
+                        })
+                    else:
+                        _append_skill_paragraph(
+                            current,
+                            text=line.text,
+                            page=line.page,
+                            bbox=[round(number, 2) for number in line.bbox],
+                            entities=line_urls,
+                        )
                 continue
 
         if section_type == "others":
@@ -1787,10 +1815,23 @@ def _build_grouped_section_debug(
                 )
                 content_start += leading_space
                 content = line.text[content_start:].strip()
-                inline = _skill_inline_parts(
-                    content,
-                    content_start,
-                    allow_single_dash_body=bullet is None,
+                attribute_inline = _PROFILE_ATTRIBUTE_INLINE_RE.match(content)
+                inline = (
+                    (
+                        attribute_inline.group("label").strip(),
+                        content_start + attribute_inline.start("label"),
+                        content_start + attribute_inline.end("label"),
+                        attribute_inline.group("body").strip(),
+                        content_start + attribute_inline.start("body"),
+                        content_start + attribute_inline.end("body"),
+                        "profile_attribute_delimiter",
+                    )
+                    if attribute_inline is not None
+                    else _skill_inline_parts(
+                        content,
+                        content_start,
+                        allow_single_dash_body=bullet is None,
+                    )
                 )
                 if inline is not None:
                     inline_parts.append((line_index, line, bullet, inline))
@@ -1836,10 +1877,31 @@ def _build_grouped_section_debug(
                     }
                     if line_urls:
                         body_value["entities"] = line_urls
-                    target = "bullets" if bullet else "paragraphs"
-                    current[target].append(body_value)
                     current["urls"].extend(line_urls)
-                    current["_lastType"] = "bullet" if bullet else "paragraph"
+                    attribute_type: str | None = None
+                    confidence = 0.0
+                    if semantic_model is not None:
+                        attribute_type, confidence = classify_profile_attribute_labels(
+                            semantic_model,
+                            [label],
+                        )[0]
+                        if attribute_type is not None:
+                            current["attributes"].append({
+                                "type": attribute_type,
+                                "text": body,
+                                "page": line.page,
+                                "bbox": body_value["bbox"],
+                                "confidence": round(confidence, 4),
+                                "detectionMethod": (
+                                    "label_pattern"
+                                    if confidence >= 0.9999
+                                    else "minilm_label"
+                                ),
+                            })
+                    if attribute_type is None:
+                        target = "bullets" if bullet else "paragraphs"
+                        current[target].append(body_value)
+                        current["_lastType"] = "bullet" if bullet else "paragraph"
                     current["_lastLineBbox"] = [
                         round(number, 2) for number in line.bbox
                     ]
@@ -2037,6 +2099,7 @@ def build_supplementary_sections_debug(
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
     url_entities_by_line: dict[int, list[dict[str, Any]]],
+    semantic_model: EmbeddingModel,
 ) -> dict[str, dict[str, Any]]:
     sections: dict[str, dict[str, Any]] = {}
     for section_type in _SUPPLEMENTARY_SECTION_TYPES:
@@ -2051,6 +2114,7 @@ def build_supplementary_sections_debug(
                     url_entities_by_line,
                     section_type,
                     occurrence,
+                    semantic_model,
                 )
                 if section is None:
                     break
@@ -2216,7 +2280,7 @@ def _render_entry_debug_images(
         for item_index, item in enumerate(page_items):
             item_type = item["type"]
             box = _pixel_box(item["bbox"])
-            color = str(item.get("_debugColor", colors[item_type]))
+            color = str(item.get("_debugColor") or colors[item_type])
             detection_method = str(item.get("detectionMethod", ""))
             model_entity = detection_method.startswith(("distilbert", "minilm"))
             draw.rectangle(
@@ -2232,7 +2296,7 @@ def _render_entry_debug_images(
                     )
                 ),
             )
-            label = str(item.get("_debugLabel", labels[item_type]))
+            label = str(item.get("_debugLabel") or labels[item_type])
             measured_label_box = draw.textbbox((0, 0), label)
             label_width = measured_label_box[2] - measured_label_box[0]
             label_height = measured_label_box[3] - measured_label_box[1]
@@ -2312,8 +2376,8 @@ def render_combined_debug_images(
     ) -> None:
         items.append(
             {
-                "type": item_type,
                 **value,
+                "type": item_type,
                 "_debugColor": color,
                 "_debugLabel": label,
             }
@@ -2487,6 +2551,17 @@ def render_combined_debug_images(
         for entry in section["entries"]:
             for value in entry["subheadingLines"]:
                 add("grouped_subheading", value, section_color, "subheading")
+            for value in entry.get("attributes", []):
+                attribute_type = str(value["type"])
+                add(
+                    "profile_attribute",
+                    value,
+                    dict(SETTINGS.debug.header_entity_colors).get(
+                        attribute_type,
+                        section_color,
+                    ),
+                    f"attribute: {attribute_type}",
+                )
             for key, item_type, color, label in (
                 ("dates", "date", "#F9A825", "regex: date"),
                 ("urls", "url", "#6D4C41", "annotation: url"),
@@ -2784,6 +2859,7 @@ def render_supplementary_sections_debug_images(
     debug_directory: Path,
 ) -> None:
     for section_type, section in sections.items():
+        section_color = SETTINGS.section_colors[section_type]
         section_parts = (
             section["sections"]
             if section_type == "others"
@@ -2802,13 +2878,23 @@ def render_supplementary_sections_debug_images(
                     for item in entry["subheadingLines"]
                 )
                 items.extend({"type": "date", **item} for item in entry["dates"])
+                items.extend(
+                    {
+                        **item,
+                        "type": "profile_attribute",
+                        "_debugColor": dict(
+                            SETTINGS.debug.header_entity_colors
+                        ).get(str(item["type"]), section_color),
+                        "_debugLabel": f"attribute: {item['type']}",
+                    }
+                    for item in entry.get("attributes", [])
+                )
                 items.extend({"type": "url", **item} for item in entry["urls"])
                 items.extend(
                     {"type": "paragraph", **item}
                     for item in entry["paragraphs"]
                 )
                 items.extend({"type": "bullet", **item} for item in entry["bullets"])
-        section_color = SETTINGS.section_colors[section_type]
         _render_entry_debug_images(
             document,
             items,
@@ -2818,6 +2904,7 @@ def render_supplementary_sections_debug_images(
                 "grouped_row": "#ECEFF1",
                 "grouped_subheading": section_color,
                 "date": "#F9A825",
+                "profile_attribute": section_color,
                 "url": "#6D4C41",
                 "paragraph": "#90A4AE",
                 "bullet": "#5C6BC0",
@@ -2827,6 +2914,7 @@ def render_supplementary_sections_debug_images(
                 "grouped_row": "geometry_row",
                 "grouped_subheading": "subheading",
                 "date": "regex: date",
+                "profile_attribute": "attribute",
                 "url": "annotation: url",
                 "paragraph": "paragraph",
                 "bullet": "bullet",

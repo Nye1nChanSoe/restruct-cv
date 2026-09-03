@@ -1,5 +1,31 @@
 """Semantic reference text used by MiniLM classifiers and debug colors."""
 
+PROFILE_ATTRIBUTE_REFERENCES: dict[str, tuple[str, ...]] = {
+    "date_of_birth": (
+        "Date of Birth", "Birth Date", "DOB", "D.O.B.",
+    ),
+    "age": (
+        "Age", "Current Age",
+    ),
+    "gender": (
+        "Gender", "Sex",
+    ),
+    "visa_status": (
+        "Visa", "Visa Status", "Visa Type", "Work Visa", "Immigration Status",
+        "Residency Visa", "Work Authorization", "Right to Work",
+    ),
+    "marital_status": (
+        "Marital Status", "Martial Status", "Civil Status", "Marital",
+    ),
+    "nationality": (
+        "Nationality", "Citizenship", "Citizenship Status",
+    ),
+    "current_residence": (
+        "Current Residence", "Current Resident", "Current Location",
+        "Place of Residence", "Residence", "Resident",
+    ),
+}
+
 SECTION_REFERENCES: dict[str, tuple[str, ...]] = {
     "summary": (
         "Professional Summary", "Career Profile", "Career Objective", "About Me",

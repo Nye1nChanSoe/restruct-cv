@@ -609,3 +609,64 @@ def classify_job_title_candidates(
             )
         )
     return classified
+
+
+def classify_profile_attribute_labels(
+    model: EmbeddingModel,
+    labels: list[str],
+) -> list[tuple[str | None, float]]:
+    """Map short label text to a supported personal attribute."""
+    if not labels:
+        return []
+
+    normalized_references = {
+        " ".join(reference.casefold().split()): attribute_type
+        for attribute_type, references in SETTINGS.profile_attribute_references.items()
+        for reference in references
+    }
+    reference_texts: list[str] = []
+    reference_types: list[str] = []
+    for attribute_type, references in SETTINGS.profile_attribute_references.items():
+        for reference in references:
+            reference_texts.append(reference)
+            reference_types.append(attribute_type)
+
+    unresolved_indexes: list[int] = []
+    classified: list[tuple[str | None, float]] = []
+    for index, label in enumerate(labels):
+        exact_type = normalized_references.get(" ".join(label.casefold().split()))
+        classified.append((exact_type, 1.0 if exact_type else 0.0))
+        if exact_type is None:
+            unresolved_indexes.append(index)
+    if not unresolved_indexes:
+        return classified
+
+    reference_embeddings = model.encode(reference_texts, normalize_embeddings=True)
+    label_embeddings = model.encode(
+        [labels[index] for index in unresolved_indexes],
+        normalize_embeddings=True,
+    )
+    for label_index, embedding in zip(
+        unresolved_indexes,
+        label_embeddings,
+        strict=True,
+    ):
+        scores = embedding @ reference_embeddings.T
+        best_by_type: dict[str, float] = {}
+        for attribute_type, score in zip(reference_types, scores, strict=True):
+            best_by_type[attribute_type] = max(
+                best_by_type.get(attribute_type, -1.0),
+                float(score),
+            )
+        ranked = sorted(best_by_type.items(), key=lambda item: item[1], reverse=True)
+        (winner_type, winner_score), (_, runner_up_score) = ranked[:2]
+        accepted = bool(
+            winner_score >= SETTINGS.profile_attribute.similarity_threshold
+            and winner_score - runner_up_score
+            >= SETTINGS.profile_attribute.winner_margin
+        )
+        classified[label_index] = (
+            winner_type if accepted else None,
+            winner_score,
+        )
+    return classified
