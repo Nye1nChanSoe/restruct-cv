@@ -263,7 +263,10 @@ class Document:
     """Every page, read once, reused by every later pass."""
 
     pages: tuple[Page, ...] = ()
-    # Untouched PyMuPDF and Tesseract output, retained only for debug dumps.
+    # Whatever the reader read, retained only for debug dumps: PyMuPDF
+    # blocks and Tesseract rows for a PDF, python-docx paragraphs for a
+    # DOCX. Each dump is named after its reader, because they answer
+    # different questions.
     raw_pages: tuple[dict, ...] = field(default=(), repr=False)
     ocr_pages: tuple[dict, ...] = field(default=(), repr=False)
     # False for a reflowable source such as DOCX, whose boxes carry reading

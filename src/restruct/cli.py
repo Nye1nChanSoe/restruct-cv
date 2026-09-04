@@ -29,7 +29,7 @@ from restruct.errors import (
     TesseractMissing,
     UnsupportedFormat,
 )
-from restruct.stages import ALL_STAGES, DEFAULT_DEBUG_STAGES
+from restruct.stages import ALL_STAGES, DEFAULT_DEBUG_STAGES, raw_extraction_reader
 
 SUPPORTED_SUFFIXES = (".pdf", ".docx")
 
@@ -270,7 +270,7 @@ def _extract_one(
         extract_resume(
             pdf_path,
             artifact_directory,
-            artifact_directory / "raw" / "pymupdf.json",
+            artifact_directory / "raw" / f"{raw_extraction_reader(pdf_path)}.json",
             artifact_directory / "raw" / "tesseract.json",
             models[0],
             models[1],
@@ -314,9 +314,10 @@ def _batch(input_directory: Path, output_root: Path, models, stages) -> None:
             pdf_path,
             resume_output,
             (
-                resume_output / "raw-pymupdf.json"
+                resume_output / f"raw-{raw_extraction_reader(pdf_path)}.json"
                 if local
-                else raw_debug_directory / f"{pdf_path.stem}.raw-pymupdf.json"
+                else raw_debug_directory
+                / f"{pdf_path.stem}.raw-{raw_extraction_reader(pdf_path)}.json"
             ),
             (
                 resume_output / "debug" / "ocr" / "raw-tesseract.json"

@@ -259,6 +259,13 @@ zero (cells are stated), column-gutter detection is skipped (there is no page), 
 groups by the stated table row instead of by baseline. `bbox` carries reading order and indent
 depth only.
 
+The pass-1 dump is named after its reader — `raw-pymupdf.json` for a PDF, `raw-docx.json` for a
+DOCX — because the two readers state different things. The DOCX dump holds the paragraphs
+python-docx read: style name, indent steps, table cell, resolved run fonts, whether a run stated
+a property itself or inherited it, and whether the bullet marker was in the document or put back
+by the reader. It deliberately omits the ordinal boxes, which are the one thing in that reader
+invented rather than read.
+
 Losing geometry costs less than it sounds, because the DOCX states outright what the geometric
 heuristics were reconstructing — a heading by style name, a list item by style, line boundaries
 by paragraph, cells by table. Where it states a bullet only in the numbering part, the reader

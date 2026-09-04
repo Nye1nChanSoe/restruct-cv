@@ -65,12 +65,15 @@ def run_pipeline(pdf_path: Path, workspace: Path, models: Any) -> dict[str, Any]
     touches the repository's own ``debug/`` or ``results/`` directories.
     """
     from restruct import extract_resume
+    from restruct.stages import raw_extraction_reader
 
     output_directory = workspace / pdf_path.stem
     extract_resume(
         pdf_path,
         output_directory,
-        workspace / "debug" / f"{pdf_path.stem}.raw-pymupdf.json",
+        workspace
+        / "debug"
+        / f"{pdf_path.stem}.raw-{raw_extraction_reader(pdf_path)}.json",
         workspace / "debug" / "ocr" / f"{pdf_path.stem}.ocr-tesseract.json",
         models.embedding,
         models.ner,

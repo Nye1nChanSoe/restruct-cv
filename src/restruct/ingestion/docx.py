@@ -95,6 +95,21 @@ def _resolved_font_property(paragraph: Any, run: Any, name: str) -> Any:
     return None
 
 
+def _directly_stated(run: Any) -> list[str]:
+    """The font properties this run sets itself rather than inheriting.
+
+    Recorded in the debug dump because it is the difference between a document
+    that says *this line* is bold and one that says its style is. The resolved
+    value is identical either way, and only one of them is evidence about the
+    line -- which is exactly the question a reader opens the dump to answer.
+    """
+    return [
+        name
+        for name in ("bold", "italic", "size", "name")
+        if getattr(run.font, name, None) is not None
+    ]
+
+
 def _run_boxes(
     runs: list[Any],
     left: float,
@@ -228,6 +243,7 @@ def _lines_from_container(
     container: Any,
     cursor: list[float],
     links: list[Any],
+    records: list[dict[str, Any]],
     default_size: float = 0.0,
     table_path: tuple[int, int, int] | None = None,
     indent: float = 0.0,
@@ -236,11 +252,12 @@ def _lines_from_container(
 
     ``links`` is filled as a side effect because ``TextLine`` is frozen and a
     link belongs to the page, not to the line -- the same place a PDF puts it.
+    ``records`` is filled the same way, and holds the pass-1 debug dump.
     """
     for kind, item in _block_items(container):
         if kind == "paragraph":
             line = _line_from_paragraph(
-                item, cursor, links, default_size, table_path, indent
+                item, cursor, links, records, default_size, table_path, indent
             )
             if line is not None:
                 yield line
@@ -251,6 +268,7 @@ def _lines_from_container(
                     cell,
                     cursor,
                     links,
+                    records,
                     default_size,
                     (int(cursor[1]), row_index, column_index),
                     indent + _INDENT_STEP,
@@ -262,6 +280,7 @@ def _line_from_paragraph(
     paragraph: Any,
     cursor: list[float],
     links: list[Any],
+    records: list[dict[str, Any]],
     default_size: float,
     table_path: tuple[int, int, int] | None,
     indent: float,
@@ -306,7 +325,21 @@ def _line_from_paragraph(
                 granularity="word",
             ),
         )
-    links.extend(_hyperlinks(paragraph, box))
+    paragraph_links = _hyperlinks(paragraph, box)
+    links.extend(paragraph_links)
+    records.append(
+        _paragraph_record(
+            text=text,
+            style=style,
+            marker_added=marker_added,
+            table_path=table_path,
+            left=left,
+            line_index=int(top),
+            runs=runs,
+            spans=spans,
+            paragraph_links=paragraph_links,
+        )
+    )
     return TextLine(
         page=1,
         bbox=box,
@@ -314,6 +347,61 @@ def _line_from_paragraph(
         style=style,
         table_cell=table_path,
     )
+
+
+def _paragraph_record(
+    *,
+    text: str,
+    style: str,
+    marker_added: bool,
+    table_path: tuple[int, int, int] | None,
+    left: float,
+    line_index: int,
+    runs: list[Any],
+    spans: tuple[Span, ...],
+    paragraph_links: list[Any],
+) -> dict[str, Any]:
+    """One paragraph as the DOCX stated it, for the pass-1 debug dump.
+
+    The PDF path dumps what MuPDF read, so the DOCX path dumps what python-docx
+    read: style names, indent levels, table cells, resolved run fonts. Dumping
+    the ordinal boxes instead would fill the file with the one thing in this
+    reader that is not evidence -- coordinates it invented to preserve order --
+    and leave out everything a reader actually needs to explain a decision.
+
+    The two conclusions this reader draws are written down next to the facts
+    they came from: whether the style reads as a heading or a list, and whether
+    the bullet marker in ``text`` was in the document or put back by us.
+    """
+    stated_per_run = [_directly_stated(run) for run in runs]
+    run_records: list[dict[str, Any]] = []
+    for index, span in enumerate(spans):
+        record: dict[str, Any] = {
+            "text": span.text,
+            "font": span.font,
+            "size": span.size,
+            "bold": bool(span.flags & _FLAG_BOLD),
+            "italic": bool(span.flags & _FLAG_ITALIC),
+        }
+        stated = stated_per_run[index] if index < len(stated_per_run) else []
+        if stated:
+            record["statedOnRun"] = stated
+        run_records.append(record)
+
+    paragraph: dict[str, Any] = {
+        "line": line_index,
+        "style": style,
+        "isHeadingStyle": is_heading_style(style),
+        "isListStyle": is_list_style(style),
+        "indentSteps": left / _INDENT_STEP,
+        "tableCell": list(table_path) if table_path is not None else None,
+        "listMarkerAdded": marker_added,
+        "text": text,
+        "runs": run_records,
+    }
+    if paragraph_links:
+        paragraph["hyperlinks"] = [link.uri for link in paragraph_links]
+    return paragraph
 
 
 def _hyperlinks(paragraph: Any, box: tuple[float, float, float, float]) -> list[Any]:
@@ -362,9 +450,11 @@ def read_docx(path: Path) -> Document:
 
     cursor = [0.0, 0.0]
     collected_links: list[Any] = []
+    paragraph_records: list[dict[str, Any]] = []
+    default_size = _document_default_size(document)
     lines = tuple(
         _lines_from_container(
-            document, cursor, collected_links, _document_default_size(document)
+            document, cursor, collected_links, paragraph_records, default_size
         )
     )
     links = tuple(collected_links)
@@ -376,7 +466,20 @@ def read_docx(path: Path) -> Document:
         lines=lines,
         links=links,
     )
-    return Document(pages=(page,), has_geometry=False)
+    return Document(
+        pages=(page,),
+        has_geometry=False,
+        # The pass-1 dump, in the same slot the PyMuPDF blocks occupy for a
+        # PDF. One entry, because a DOCX has one logical page.
+        raw_pages=(
+            {
+                "page": 1,
+                "reader": "python-docx",
+                "defaultFontSize": default_size,
+                "paragraphs": paragraph_records,
+            },
+        ),
+    )
 
 
 class _ReflowablePage:

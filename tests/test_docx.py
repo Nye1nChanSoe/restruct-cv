@@ -199,6 +199,71 @@ def test_the_renderer_answers_what_the_parsers_ask() -> None:
     assert isinstance(page.get_text("words"), list)
 
 
+# -- the pass-1 dump says what the DOCX said ---------------------------------
+
+
+def test_the_pass_one_dump_records_what_python_docx_read(tmp_path: Path) -> None:
+    """A DOCX dumped in PyMuPDF's shape used to be an empty page list: nothing
+    to reason from. The dump holds the facts this reader worked off instead --
+    style names, indent, cells, resolved fonts -- and not the ordinal boxes,
+    which are the one thing here that was invented rather than read."""
+    path = build([("Heading 1", "EXPERIENCE"), ("List Bullet", "Led it")], tmp_path)
+    page = read_docx(path).raw_pages[0]
+
+    assert page["reader"] == "python-docx"
+    assert page["defaultFontSize"] > 0
+    heading, bullet = page["paragraphs"]
+    assert heading["style"] == "Heading 1" and heading["isHeadingStyle"]
+    assert bullet["isListStyle"] and bullet["listMarkerAdded"]
+    assert bullet["text"] == "• Led it"
+    assert heading["runs"][0]["bold"] and heading["runs"][0]["size"] > 0
+    assert "bbox" not in heading
+
+
+def test_the_dump_separates_what_the_run_said_from_what_it_inherited(
+    tmp_path: Path,
+) -> None:
+    """The resolved value is the same either way, and only one of them is
+    evidence about this line rather than about every line sharing its style."""
+    import docx
+
+    document = docx.Document()
+    document.add_paragraph("HEADING", style="Heading 1")
+    document.add_paragraph().add_run("Emphasised").bold = True
+    path = tmp_path / "stated.docx"
+    document.save(str(path))
+
+    inherited, direct = read_docx(path).raw_pages[0]["paragraphs"]
+    assert inherited["runs"][0]["bold"] and "statedOnRun" not in inherited["runs"][0]
+    assert direct["runs"][0]["statedOnRun"] == ["bold"]
+
+
+def test_the_dump_locates_a_table_cell_by_what_the_table_stated(
+    tmp_path: Path,
+) -> None:
+    import docx
+
+    document = docx.Document()
+    table = document.add_table(rows=1, cols=2)
+    table.cell(0, 0).text = "Training"
+    table.cell(0, 1).text = "2024"
+    path = tmp_path / "table.docx"
+    document.save(str(path))
+
+    paragraphs = read_docx(path).raw_pages[0]["paragraphs"]
+    assert [entry["tableCell"][1:] for entry in paragraphs] == [[0, 0], [0, 1]]
+
+
+def test_the_dump_is_named_after_the_reader_that_produced_it() -> None:
+    """The two readers answer different questions, so a DOCX dump named
+    ``raw-pymupdf.json`` would misdescribe its own contents."""
+    from restruct.stages import raw_extraction_reader
+
+    assert raw_extraction_reader(Path("resume.docx")) == "docx"
+    assert raw_extraction_reader(Path("RESUME.DOCX")) == "docx"
+    assert raw_extraction_reader(Path("resume.pdf")) == "pymupdf"
+
+
 def test_an_unreadable_file_is_reported_as_an_invalid_document(tmp_path: Path) -> None:
     from restruct.errors import InvalidDocument
 
