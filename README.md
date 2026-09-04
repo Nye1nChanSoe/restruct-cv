@@ -19,8 +19,11 @@ or, from a built wheel:
 
 ```bash
 uv build
-pip install dist/restruct-*.whl
+pip install dist/restruct_cv-*.whl
 ```
+
+The distribution is `restruct-cv`; the import name and the command it installs are both
+`restruct`. The unqualified name was already taken on PyPI by an unrelated project.
 
 ### Model weights
 

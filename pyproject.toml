@@ -1,5 +1,5 @@
 [project]
-name = "restruct"
+name = "restruct-cv"
 version = "0.1.0"
 description = "Turn messy PDF, DOCX, and scanned resumes into consistent, explainable, versioned JSON"
 readme = "README.md"
@@ -29,9 +29,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Nye1nChanSoe/restruct"
-Repository = "https://github.com/Nye1nChanSoe/restruct"
-Issues = "https://github.com/Nye1nChanSoe/restruct/issues"
+Homepage = "https://github.com/Nye1nChanSoe/restruct-cv"
+Repository = "https://github.com/Nye1nChanSoe/restruct-cv"
+Issues = "https://github.com/Nye1nChanSoe/restruct-cv/issues"
 
 [dependency-groups]
 dev = [
