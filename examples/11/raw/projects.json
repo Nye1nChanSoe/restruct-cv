@@ -1,0 +1,234 @@
+{
+  "source": "11.docx",
+  "projects": {
+    "sectionType": "projects",
+    "heading": {
+      "text": "03  SELECTED PROJECTS",
+      "page": 1,
+      "bbox": [
+        0.0,
+        19.0,
+        100.0,
+        20.0
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          0.0,
+          20.0,
+          100.0,
+          21.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Merchant Analytics Dashboard   B2B SAAS",
+            "page": 1,
+            "bbox": [
+              0.0,
+              20.0,
+              100.0,
+              21.0
+            ],
+            "lineIndex": 20
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          0.0,
+          21.0,
+          100.0,
+          22.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Simplified reporting workflows and introduced a modular dashboard structure that adapted cleanly from desktop to tablet.",
+            "page": 1,
+            "bbox": [
+              0.0,
+              21.0,
+              100.0,
+              22.0
+            ],
+            "lineIndex": 21
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          0.0,
+          22.0,
+          100.0,
+          23.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Mobile Checkout Redesign   E-COMMERCE",
+            "page": 1,
+            "bbox": [
+              0.0,
+              22.0,
+              100.0,
+              23.0
+            ],
+            "lineIndex": 22
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          0.0,
+          23.0,
+          100.0,
+          24.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Reduced unnecessary checkout steps and redesigned input, validation, and error states for clearer mobile interactions.",
+            "page": 1,
+            "bbox": [
+              0.0,
+              23.0,
+              100.0,
+              24.0
+            ],
+            "lineIndex": 23
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Merchant Analytics Dashboard   B2B SAAS",
+            "page": 1,
+            "bbox": [
+              0.0,
+              20.0,
+              100.0,
+              21.0
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              0.0,
+              20.0,
+              100.0,
+              21.0
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Merchant Analytics Dashboard   B2B SAAS",
+                "page": 1,
+                "bbox": [
+                  0.0,
+                  20.0,
+                  100.0,
+                  21.0
+                ],
+                "lineIndex": 20
+              }
+            ]
+          }
+        ],
+        "dates": [],
+        "urls": [],
+        "attributes": [],
+        "paragraphs": [
+          {
+            "text": "Simplified reporting workflows and introduced a modular dashboard structure that adapted cleanly from desktop to tablet.",
+            "page": 1,
+            "bbox": [
+              0.0,
+              21.0,
+              100.0,
+              22.0
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      },
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [
+          {
+            "text": "Mobile Checkout Redesign   E-COMMERCE",
+            "page": 1,
+            "bbox": [
+              0.0,
+              22.0,
+              100.0,
+              23.0
+            ],
+            "detectionMethod": "geometry_typography"
+          }
+        ],
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              0.0,
+              22.0,
+              100.0,
+              23.0
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Mobile Checkout Redesign   E-COMMERCE",
+                "page": 1,
+                "bbox": [
+                  0.0,
+                  22.0,
+                  100.0,
+                  23.0
+                ],
+                "lineIndex": 22
+              }
+            ]
+          }
+        ],
+        "dates": [],
+        "urls": [],
+        "attributes": [],
+        "paragraphs": [
+          {
+            "text": "Reduced unnecessary checkout steps and redesigned input, validation, and error states for clearer mobile interactions.",
+            "page": 1,
+            "bbox": [
+              0.0,
+              23.0,
+              100.0,
+              24.0
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "education",
+      "text": "04  EDUCATION"
+    }
+  }
+}

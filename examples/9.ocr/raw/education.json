@@ -1,0 +1,121 @@
+{
+  "source": "9.ocr.pdf",
+  "education": {
+    "sectionType": "education",
+    "heading": {
+      "text": "EDUCATION",
+      "page": 1,
+      "bbox": [
+        46.07,
+        466.06,
+        107.73,
+        473.74
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              46.07,
+              485.26,
+              418.2,
+              495.34
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "B.Sc. Industrial Engineering 2016 - 2020",
+                "page": 1,
+                "bbox": [
+                  46.07,
+                  485.26,
+                  418.2,
+                  495.34
+                ],
+                "lineIndex": 30
+              }
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              46.07,
+              498.22,
+              275.2,
+              506.14
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Institut Teknologi Nasional Bandung (fictionalized sample entry)",
+                "page": 1,
+                "bbox": [
+                  46.07,
+                  498.22,
+                  275.2,
+                  506.14
+                ],
+                "lineIndex": 31
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "B.Sc. Industrial Engineering",
+            "page": 1,
+            "bbox": [
+              46.07,
+              485.26,
+              306.56,
+              495.34
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "Institut Teknologi Nasional Bandung",
+            "page": 1,
+            "bbox": [
+              46.07,
+              498.22,
+              171.38,
+              506.14
+            ],
+            "confidence": 0.9929,
+            "detectionMethod": "distilbert_ner"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2016 - 2020",
+            "page": 1,
+            "bbox": [
+              315.87,
+              485.26,
+              418.2,
+              495.34
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "skills",
+      "text": "SKILLS"
+    }
+  }
+}

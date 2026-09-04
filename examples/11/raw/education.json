@@ -1,0 +1,106 @@
+{
+  "source": "11.docx",
+  "education": {
+    "sectionType": "education",
+    "heading": {
+      "text": "04  EDUCATION",
+      "page": 1,
+      "bbox": [
+        0.0,
+        24.0,
+        100.0,
+        25.0
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "geometry_ner_reconstruction",
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              0.0,
+              25.0,
+              100.0,
+              26.0
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "BA in Communication Design  /  RMIT University Vietnam  ·  2022",
+                "page": 1,
+                "bbox": [
+                  0.0,
+                  25.0,
+                  100.0,
+                  26.0
+                ],
+                "lineIndex": 25
+              }
+            ]
+          }
+        ],
+        "titles": [
+          {
+            "text": "BA in Communication Design  /  RMIT University Vietnam",
+            "page": 1,
+            "bbox": [
+              0.0,
+              25.0,
+              85.71,
+              26.0
+            ],
+            "detectionMethod": "education_title_pattern"
+          }
+        ],
+        "institutions": [
+          {
+            "text": "BA in Communication Design  /  RMIT University Vietnam",
+            "page": 1,
+            "bbox": [
+              0.0,
+              25.0,
+              85.71,
+              26.0
+            ],
+            "detectionMethod": "institution_pattern"
+          }
+        ],
+        "dates": [
+          {
+            "text": "2022",
+            "page": 1,
+            "bbox": [
+              93.65,
+              25.0,
+              100.0,
+              26.0
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "locations": [],
+        "gpa": [],
+        "skills": [],
+        "urls": [],
+        "paragraphs": [
+          {
+            "text": "Portfolio available at portfolio.example.com/mayatan",
+            "page": 1,
+            "bbox": [
+              0.0,
+              26.0,
+              100.0,
+              27.0
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": []
+      }
+    ],
+    "stoppedAtSection": null
+  }
+}

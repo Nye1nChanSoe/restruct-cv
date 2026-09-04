@@ -1,0 +1,146 @@
+{
+  "source": "7.anomaly.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "nerBackend": "distilbert",
+  "nerModel": "dslim/distilbert-NER",
+  "nerModelRevision": "dfa2838a127384aabb82ed7719e16dab84c42a2a",
+  "headerProfile": {
+    "page": 1,
+    "bbox": [
+      65.0,
+      40.25,
+      547.18,
+      93.9
+    ],
+    "text": "SOMCHAI RATTANAKUL\nWELDER / METAL FABRICATOR / MAINTENANCE TECHNICIAN\nSamut Prakan, Thailand  |  +66 80 000 1472  |  somchai.rattanakul@example.com  |  Thai citizen | Available for shift work",
+    "stoppedAtSection": {
+      "text": "PROFESSIONAL SUMMARY",
+      "sectionType": "summary",
+      "page": 1,
+      "bbox": [
+        46.9,
+        103.8,
+        186.8,
+        115.52
+      ],
+      "similarity": 1.0
+    },
+    "entities": [
+      {
+        "type": "name",
+        "text": "SOMCHAI RATTANAKUL",
+        "page": 1,
+        "bbox": [
+          187.25,
+          40.25,
+          424.81,
+          62.57
+        ],
+        "detectionMethod": "geometry_fallback"
+      },
+      {
+        "type": "job_title",
+        "text": "WELDER",
+        "page": 1,
+        "bbox": [
+          140.2,
+          67.39,
+          187.81,
+          79.67
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "job_title",
+        "text": "METAL FABRICATOR",
+        "page": 1,
+        "bbox": [
+          196.95,
+          67.39,
+          310.51,
+          79.67
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "job_title",
+        "text": "MAINTENANCE TECHNICIAN",
+        "page": 1,
+        "bbox": [
+          319.7,
+          67.39,
+          471.72,
+          79.67
+        ],
+        "detectionMethod": "semantic_similarity",
+        "confidence": 1.0
+      },
+      {
+        "type": "location",
+        "text": "Samut Prakan, Thailand",
+        "page": 1,
+        "bbox": [
+          65.0,
+          83.86,
+          161.48,
+          93.9
+        ],
+        "detectionMethod": "distilbert_ner",
+        "confidence": 0.9943
+      },
+      {
+        "type": "phone",
+        "text": "+66 80 000 1472",
+        "page": 1,
+        "bbox": [
+          173.85,
+          83.86,
+          241.66,
+          93.9
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "email",
+        "text": "somchai.rattanakul@example.com",
+        "page": 1,
+        "bbox": [
+          253.95,
+          83.86,
+          392.1,
+          93.9
+        ],
+        "detectionMethod": "regex"
+      },
+      {
+        "type": "nationality",
+        "text": "Thai citizen",
+        "page": 1,
+        "bbox": [
+          404.4,
+          83.86,
+          449.89,
+          93.9
+        ],
+        "detectionMethod": "distilbert_ner",
+        "confidence": 0.9976
+      },
+      {
+        "type": "other",
+        "text": "Available for shift work",
+        "page": 1,
+        "bbox": [
+          457.21,
+          83.86,
+          547.18,
+          93.9
+        ],
+        "detectionMethod": "unclassified",
+        "inside": "headerProfile"
+      }
+    ]
+  }
+}

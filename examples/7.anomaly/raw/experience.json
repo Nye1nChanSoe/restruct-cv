@@ -1,0 +1,676 @@
+{
+  "source": "7.anomaly.pdf",
+  "experience": {
+    "sectionType": "experience",
+    "heading": {
+      "text": "EMPLOYMENT HISTORY",
+      "page": 1,
+      "bbox": [
+        46.9,
+        464.0,
+        170.47,
+        475.72
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "Apr 2022 - Present",
+            "page": 1,
+            "bbox": [
+              456.15,
+              484.11,
+              535.13,
+              494.15
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Senior Welder / Fabricator | Eastern Process Systems Co., Ltd.",
+            "page": 1,
+            "bbox": [
+              77.1,
+              484.15,
+              366.11,
+              495.31
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Bang Phli, Samut Prakan, Thailand",
+            "page": 1,
+            "bbox": [
+              77.1,
+              497.31,
+              217.09,
+              507.35
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Senior Welder / Fabricator",
+            "page": 1,
+            "bbox": [
+              77.1,
+              484.15,
+              201.44,
+              495.31
+            ],
+            "confidence": 0.7488,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [
+          {
+            "text": "Eastern Process Systems Co., Ltd.",
+            "page": 1,
+            "bbox": [
+              209.44,
+              484.6,
+              366.11,
+              495.2
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9888
+          }
+        ],
+        "dates": [
+          {
+            "text": "Apr 2022 - Present",
+            "page": 1,
+            "bbox": [
+              456.15,
+              484.11,
+              535.13,
+              494.15
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Bang Phli, Samut Prakan, Thailand",
+            "page": 1,
+            "bbox": [
+              77.1,
+              497.31,
+              217.09,
+              507.35
+            ],
+            "confidence": 0.9974,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Fabricate carbon-steel and stainless-steel frames, machine guards, pipe supports, platforms, access ladders, handrails,\nbrackets and small process-equipment parts based on drawings and supervisor sketches.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              510.8,
+              564.21,
+              532.75
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Perform MIG/MAG welding for general fabrication and SMAW for repair and site work; use TIG for selected stainless-\nsteel thin sections and finishing jobs under senior technician guidance.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              533.05,
+              550.91,
+              555.0
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Measure, mark, cut, drill, grind and fit components before welding; check squareness, alignment, overall dimensions\nand hole positions before sending completed items for installation or painting.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              555.3,
+              549.41,
+              577.25
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Support installation and repair work at customer factories around Samut Prakan, Chonburi and Rayong, including\nshutdown periods requiring night shifts and overtime.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              577.55,
+              537.29,
+              599.5
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Complete daily hot-work checks, inspect cables and welding leads, keep fire extinguisher/fire blanket nearby, and\ncoordinate fire-watch requirements when working outside the workshop.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              599.8,
+              537.81,
+              621.75
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Help train 3 junior helpers on basic welding setup, safe grinding, material handling, tack sequence and workshop\nhousekeeping.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              622.05,
+              534.65,
+              644.0
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Reduced rework on repeated machine-guard jobs by using simple jigs and a measurement checklist before final\nwelding; supervisor reported noticeably fewer fit-up corrections during installation.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              644.3,
+              531.51,
+              666.25
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Assist maintenance technicians with conveyor frame repairs, broken brackets, damaged guards, trolley repairs and\nurgent production-line welding when machines are stopped.",
+            "page": 1,
+            "bbox": [
+              51.2,
+              666.55,
+              544.15,
+              688.5
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "Jan 2019 - Mar 2022",
+            "page": 1,
+            "bbox": [
+              450.6,
+              692.01,
+              535.1,
+              702.05
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Welder / Maintenance Helper | Siam Fresh Foods Manufacturing Co., Ltd.",
+            "page": 1,
+            "bbox": [
+              77.1,
+              692.05,
+              412.0,
+              703.21
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Lat Krabang, Bangkok, Thailand",
+            "page": 1,
+            "bbox": [
+              77.1,
+              705.2,
+              205.63,
+              715.25
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Welder / Maintenance Helper",
+            "page": 1,
+            "bbox": [
+              77.1,
+              692.05,
+              213.14,
+              703.21
+            ],
+            "confidence": 0.751,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [
+          {
+            "text": "Siam Fresh Foods Manufacturing Co., Ltd.",
+            "page": 1,
+            "bbox": [
+              221.09,
+              692.5,
+              412.0,
+              703.1
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9582
+          }
+        ],
+        "dates": [
+          {
+            "text": "Jan 2019 - Mar 2022",
+            "page": 1,
+            "bbox": [
+              450.6,
+              692.01,
+              535.1,
+              702.05
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Lat Krabang, Bangkok, Thailand",
+            "page": 1,
+            "bbox": [
+              77.1,
+              705.2,
+              205.63,
+              715.25
+            ],
+            "confidence": 0.848,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Worked in the engineering maintenance team of a chilled and frozen food factory, supporting daily repairs and planned\nmaintenance in production, packing, warehouse and utility areas.\nSYNTHETIC RESUME FOR SOFTWARE / PARSER TESTING - NOT A REAL PERSON  |  Page 1",
+            "page": 1,
+            "bbox": [
+              51.2,
+              718.7,
+              560.01,
+              756.0
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Welded stainless and mild-steel guards, carts, racks, drain covers, work tables, pipe brackets and replacement support\nframes; carried out grinding and finishing where smooth, clean surfaces were required.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              39.7,
+              561.02,
+              61.65
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Assisted technicians during conveyor belt replacement, roller replacement, motor changes, pump maintenance, bearing\nwork and alignment checks; prepared tools and cleaned equipment before restart.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              61.95,
+              563.71,
+              83.9
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Responded to breakdown calls from production supervisors and helped isolate damaged mechanical parts so repairs\ncould be completed quickly and safely.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              84.2,
+              552.64,
+              106.15
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Followed hygiene-zone rules, tool-control procedures, PPE requirements and cleaning instructions for food-production\nareas. Learned to avoid leaving metal filings, welding rods or loose hardware in controlled zones.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              106.45,
+              557.35,
+              128.4
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Kept simple handwritten maintenance notes for completed workshop jobs, materials used and unfinished tasks for the\nnext shift.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              128.7,
+              555.74,
+              150.65
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Participated in annual shutdown maintenance and weekend repair work, regularly working 10-12 hour shifts during\nmajor maintenance periods.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              150.95,
+              542.06,
+              172.9
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "Jun 2016 - Dec 2018",
+            "page": 2,
+            "bbox": [
+              449.6,
+              176.4,
+              535.09,
+              186.45
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Welder / Steel Fabrication Worker | Chao Phraya Steel & Engineering",
+            "page": 2,
+            "bbox": [
+              77.1,
+              176.45,
+              394.73,
+              187.61
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Nonthaburi and Bangkok project sites, Thailand",
+            "page": 2,
+            "bbox": [
+              77.1,
+              189.6,
+              266.15,
+              199.65
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Welder / Steel Fabrication Worker",
+            "page": 2,
+            "bbox": [
+              77.1,
+              176.45,
+              236.41,
+              187.61
+            ],
+            "confidence": 0.7727,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [
+          {
+            "text": "Chao Phraya Steel & Engineering",
+            "page": 2,
+            "bbox": [
+              244.44,
+              176.9,
+              394.73,
+              187.5
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.9954
+          }
+        ],
+        "dates": [
+          {
+            "text": "Jun 2016 - Dec 2018",
+            "page": 2,
+            "bbox": [
+              449.6,
+              176.4,
+              535.09,
+              186.45
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Nonthaburi and Bangkok project sites, Thailand",
+            "page": 2,
+            "bbox": [
+              77.1,
+              189.6,
+              266.15,
+              199.65
+            ],
+            "confidence": 0.9982,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Fabricated and installed steel gates, awnings, stair railings, fencing, roof supports, equipment stands and general\nstructural items for small factories, warehouses, shops and residential projects.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              203.1,
+              537.27,
+              225.05
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Used SMAW extensively for site welding and MIG in the workshop; prepared joints with grinder, cut steel using chop\nsaw and oxy-fuel equipment, and corrected fit-up problems on site.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              225.35,
+              549.38,
+              247.3
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Loaded and unloaded steel sections, moved fabricated parts with team members, set up work areas, and worked from\nladders or temporary platforms following supervisor instructions.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              247.6,
+              557.86,
+              269.55
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Read basic dimensions from hand drawings and site measurements; checked level and plumb before final welding and\nbolting.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              269.85,
+              560.56,
+              291.8
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Worked with crews of 4-8 people and sometimes stayed at provincial sites for several days until installation was\ncompleted.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              292.1,
+              529.87,
+              314.05
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "May 2014 - May 2016",
+            "page": 2,
+            "bbox": [
+              447.1,
+              317.56,
+              535.14,
+              327.6
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Workshop Helper / Junior Welder | Metro Metal Works",
+            "page": 2,
+            "bbox": [
+              77.1,
+              317.6,
+              327.16,
+              328.76
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Bang Khae, Bangkok, Thailand",
+            "page": 2,
+            "bbox": [
+              77.1,
+              330.76,
+              201.13,
+              340.8
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "Workshop Helper / Junior Welder",
+            "page": 2,
+            "bbox": [
+              77.1,
+              317.6,
+              234.77,
+              328.76
+            ],
+            "confidence": 0.7196,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [
+          {
+            "text": "Metro Metal Works",
+            "page": 2,
+            "bbox": [
+              242.74,
+              318.05,
+              327.16,
+              328.65
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.996
+          }
+        ],
+        "dates": [
+          {
+            "text": "May 2014 - May 2016",
+            "page": 2,
+            "bbox": [
+              447.1,
+              317.56,
+              535.14,
+              327.6
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Bang Khae, Bangkok, Thailand",
+            "page": 2,
+            "bbox": [
+              77.1,
+              330.76,
+              201.13,
+              340.8
+            ],
+            "confidence": 0.8017,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Started as a general workshop helper preparing materials, cleaning steel, holding parts for fit-up, moving gas cylinders\nwith a trolley, sweeping work areas and assisting experienced welders.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              344.25,
+              558.38,
+              366.2
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Progressed to basic tack welding and SMAW on non-critical frames after in-house practice and supervisor approval.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              366.5,
+              545.73,
+              378.26
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Learned correct use of tape measure, square, grinder, drill press and common workshop hand tools, plus basic\nelectrode storage and machine cable checks.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              377.65,
+              527.8,
+              399.6
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Helped fabricate shelving, carts, sign frames, gates and repair jobs for local customers.",
+            "page": 2,
+            "bbox": [
+              51.2,
+              399.9,
+              425.42,
+              411.66
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "projects",
+      "text": "SELECTED PROJECTS & PRACTICAL EXPERIENCE"
+    }
+  }
+}

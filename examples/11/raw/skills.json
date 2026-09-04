@@ -1,0 +1,135 @@
+{
+  "source": "11.docx",
+  "skills": {
+    "sectionType": "skills",
+    "heading": {
+      "text": "01  CORE CAPABILITIES",
+      "page": 1,
+      "bbox": [
+        0.0,
+        5.0,
+        100.0,
+        6.0
+      ],
+      "similarity": 0.7227,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          0.0,
+          6.0,
+          100.0,
+          7.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "DESIGN  User flows · Wireframes · Interaction design · Responsive UI · Prototyping · Design systems",
+            "page": 1,
+            "bbox": [
+              0.0,
+              6.0,
+              100.0,
+              7.0
+            ],
+            "lineIndex": 6
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          0.0,
+          7.0,
+          100.0,
+          8.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "RESEARCH  User interviews · Usability testing · Journey mapping · Accessibility reviews",
+            "page": 1,
+            "bbox": [
+              0.0,
+              7.0,
+              100.0,
+              8.0
+            ],
+            "lineIndex": 7
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          0.0,
+          8.0,
+          100.0,
+          9.0
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "TOOLS  Figma · FigJam · Adobe Illustrator · Adobe Photoshop · Jira · Notion",
+            "page": 1,
+            "bbox": [
+              0.0,
+              8.0,
+              100.0,
+              9.0
+            ],
+            "lineIndex": 8
+          }
+        ]
+      }
+    ],
+    "groups": [
+      {
+        "subheading": null,
+        "paragraphs": [
+          {
+            "text": "DESIGN  User flows · Wireframes · Interaction design · Responsive UI · Prototyping · Design systems",
+            "page": 1,
+            "bbox": [
+              0.0,
+              6.0,
+              100.0,
+              7.0
+            ],
+            "detectionMethod": "geometry_default"
+          },
+          {
+            "text": "RESEARCH  User interviews · Usability testing · Journey mapping · Accessibility reviews",
+            "page": 1,
+            "bbox": [
+              0.0,
+              7.0,
+              100.0,
+              8.0
+            ],
+            "detectionMethod": "geometry_default"
+          },
+          {
+            "text": "TOOLS  Figma · FigJam · Adobe Illustrator · Adobe Photoshop · Jira · Notion",
+            "page": 1,
+            "bbox": [
+              0.0,
+              8.0,
+              100.0,
+              9.0
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [],
+        "urls": []
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "experience",
+      "text": "02  EXPERIENCE"
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "header_profile": {
+    "name": "NADIA PUTRI RAHAYU",
+    "job_titles": [
+      "Operations & Supply Chain Analyst"
+    ],
+    "location": "Bandung, Indonesia",
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null,
+    "current_income": null,
+    "current_package": null,
+    "emails": [
+      "nadia.rahayu@example.com"
+    ],
+    "phones": [
+      "+62 812 5550 1847"
+    ],
+    "urls": []
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Operations and supply chain analyst with 5+ years of experience supporting regional distribution,\nvendor performance, inventory planning, and process improvement across Indonesia and Singapore-\nlinked operations. Strong in Excel, SQL, dashboarding, and cross-functional coordination with\nwarehouse, procurement, and commercial teams."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Operations Analyst"
+      ],
+      "companies": [
+        "Archipelago Consumer Logistics, Jakarta, Indonesia"
+      ],
+      "dates": [
+        "May 2023 - Present"
+      ],
+      "locations": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Built weekly inventory and order-fulfilment dashboards for 6 distribution points, improving\nvisibility of stock ageing and service levels.",
+        "Reduced manual reporting time by approximately 35% by consolidating shipment, warehouse, and\nsales data into repeatable Excel and SQL workflows.\nSupported carrier and 3PL performance reviews using on-time delivery, damage-rate, and cost-\nper-order metrics.\nCoordinated root-cause reviews for fulfilment exceptions and documented corrective actions\nwith warehouse and customer-service teams."
+      ]
+    },
+    {
+      "job_titles": [
+        "Supply Chain Analyst"
+      ],
+      "companies": [
+        "Nusantara Retail Solutions"
+      ],
+      "dates": [
+        "Jul 2020 - Apr 2023"
+      ],
+      "locations": [
+        "Bandung, Indonesia"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Maintained demand and replenishment reports for fast-moving consumer goods across West Java.",
+        "Prepared supplier scorecards and purchase-order tracking reports for procurement and finance\nstakeholders.",
+        "Helped standardize monthly stock reconciliation between warehouse records and ERP extracts."
+      ]
+    },
+    {
+      "job_titles": [
+        "Operations Intern"
+      ],
+      "companies": [
+        "PT Citra Distribusi Mandiri"
+      ],
+      "dates": [
+        "Jan 2020 - Jun 2020"
+      ],
+      "locations": [
+        "Bandung, Indonesia"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Assisted with delivery scheduling, daily shipment logs, and warehouse documentation.",
+        "Prepared simple KP! summaries for route completion and delivery exceptions."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "B.Sc. Industrial Engineering"
+      ],
+      "institutions": [
+        "Institut Teknologi Nasional Bandung"
+      ],
+      "dates": [
+        "2016 - 2020"
+      ],
+      "locations": [],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": "Data & Reporting",
+      "paragraphs": [
+        "Microsoft Excel, SQL, Power BI, KPI dashboards, basic Python"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Supply Chain",
+      "paragraphs": [
+        "Inventory analysis, order fulfilment, supplier performance, 3PL coordination"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Languages",
+      "paragraphs": [
+        "Bahasa Indonesia (native), English (professional working proficiency)"
+      ],
+      "bullets": [],
+      "urls": []
+    }
+  ],
+  "projects": null,
+  "certifications": [
+    {
+      "subheadings": [],
+      "dates": [
+        "2024",
+        "2022"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "Synthetic resume generated for testing/demo purposes - all personal details are fictional."
+      ],
+      "bullets": [
+        "Lean Six Sigma Yellow Belt - training certificate, 2024",
+        "Volunteer logistics coordinator - community food distribution program, Bandung, 2022"
+      ]
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": null,
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null,
+  "others": null
+}

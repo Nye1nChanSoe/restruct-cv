@@ -24,6 +24,7 @@ from restruct.debug.reconstruct import (
     resume_blocks,
 )
 from tests.helpers import PROJECT_ROOT
+from tools.refresh_examples import EXAMPLES
 
 FULL_RESUME: dict[str, Any] = {
     "schema_version": "1.0",
@@ -202,15 +203,18 @@ def test_a_known_shape_is_not_reported_as_unplaced(tmp_path: Path) -> None:
     assert not [block for block in resume_blocks(FULL_RESUME) if block.style == "unplaced"]
 
 
-@pytest.mark.parametrize(
-    "stem", ["1", "2", "6", "7.anomaly", "8.compound", "9.ocr", "10.tight", "11"]
-)
+@pytest.mark.parametrize("stem", EXAMPLES)
 def test_no_committed_result_reports_unplaced_content(stem: str) -> None:
-    """The corpus is the widest sample of real output there is; if the renderer
-    has fallen behind the schema, it shows up here first."""
-    path = PROJECT_ROOT / "results" / stem / "resume.json"
-    if not path.exists():  # a corpus that has not been regenerated
-        pytest.skip(f"{stem} has no committed result")
+    """The committed examples are the widest sample of real output there is; if
+    the renderer has fallen behind the schema, it shows up here first.
+
+    They are read from ``examples/`` rather than ``results/`` because that is
+    the copy the repository actually carries -- ``results/`` is regenerated per
+    run and untracked, so a check against it would pass on this machine and
+    skip everywhere else."""
+    path = PROJECT_ROOT / "examples" / stem / "resume.json"
+    if not path.exists():  # a checkout without the examples
+        pytest.skip(f"{stem} has no committed example")
     resume = json.loads(path.read_text(encoding="utf-8"))
     unplaced = [block.text for block in resume_blocks(resume) if block.style == "unplaced"]
     assert not unplaced, f"{stem}: {unplaced}"

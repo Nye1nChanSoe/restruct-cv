@@ -1,0 +1,430 @@
+{
+  "source": "7.anomaly.pdf",
+  "others": {
+    "sectionType": "others",
+    "sections": [
+      {
+        "sectionType": "others",
+        "heading": {
+          "text": "ADDITIONAL INFORMATION",
+          "page": 3,
+          "bbox": [
+            46.9,
+            169.3,
+            188.56,
+            181.02
+          ],
+          "similarity": 0.0,
+          "detectionMethod": "geometry_unknown_boundary"
+        },
+        "rows": [
+          {
+            "page": 3,
+            "bbox": [
+              51.2,
+              187.7,
+              377.44,
+              199.46
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Available for rotating shifts, night work, weekends and reasonable overtime.",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  187.7,
+                  377.44,
+                  199.46
+                ],
+                "lineIndex": 140
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              51.2,
+              198.85,
+              547.85,
+              210.61
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Comfortable with factory, warehouse and construction-site environments; able to work standing for long periods and",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  198.85,
+                  547.85,
+                  210.61
+                ],
+                "lineIndex": 141
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              59.85,
+              210.2,
+              323.08,
+              220.8
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "handle normal workshop material movement as part of a team.",
+                "page": 3,
+                "bbox": [
+                  59.85,
+                  210.2,
+                  323.08,
+                  220.8
+                ],
+                "lineIndex": 142
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              51.2,
+              221.1,
+              402.73,
+              232.86
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Valid Thai motorcycle and private-car driving licences (synthetic detail for testing).",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  221.1,
+                  402.73,
+                  232.86
+                ],
+                "lineIndex": 143
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              51.2,
+              232.25,
+              565.73,
+              244.01
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Open to work in Bangkok, Samut Prakan, Chonburi, Rayong and other industrial areas; relocation within Southeast Asia",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  232.25,
+                  565.73,
+                  244.01
+                ],
+                "lineIndex": 144
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              59.85,
+              243.6,
+              299.94,
+              254.2
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "can be considered depending on employer requirements.",
+                "page": 3,
+                "bbox": [
+                  59.85,
+                  243.6,
+                  299.94,
+                  254.2
+                ],
+                "lineIndex": 145
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              51.2,
+              254.5,
+              463.95,
+              266.26
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "Expected salary: negotiable based on shift allowance, overtime, location and job responsibilities.",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  254.5,
+                  463.95,
+                  266.26
+                ],
+                "lineIndex": 146
+              }
+            ]
+          },
+          {
+            "page": 3,
+            "bbox": [
+              51.2,
+              265.65,
+              201.22,
+              277.41
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "References: available on request.",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  265.65,
+                  201.22,
+                  277.41
+                ],
+                "lineIndex": 147
+              }
+            ]
+          }
+        ],
+        "entries": [
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [],
+            "metadataRows": [],
+            "dates": [],
+            "urls": [],
+            "attributes": [],
+            "paragraphs": [],
+            "bullets": [
+              {
+                "text": "Available for rotating shifts, night work, weekends and reasonable overtime.",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  187.7,
+                  377.44,
+                  199.46
+                ],
+                "detectionMethod": "bullet_marker"
+              },
+              {
+                "text": "Comfortable with factory, warehouse and construction-site environments; able to work standing for long periods and\nhandle normal workshop material movement as part of a team.",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  198.85,
+                  547.85,
+                  220.8
+                ],
+                "detectionMethod": "bullet_marker"
+              }
+            ]
+          },
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Valid Thai motorcycle and private",
+                "page": 3,
+                "bbox": [
+                  59.85,
+                  221.3,
+                  200.16,
+                  231.9
+                ],
+                "detectionMethod": "profile_attribute_delimiter"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  221.1,
+                  402.73,
+                  232.86
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Valid Thai motorcycle and private-car driving licences (synthetic detail for testing).",
+                    "page": 3,
+                    "bbox": [
+                      51.2,
+                      221.1,
+                      402.73,
+                      232.86
+                    ],
+                    "lineIndex": 143
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "attributes": [],
+            "paragraphs": [],
+            "bullets": [
+              {
+                "text": "car driving licences (synthetic detail for testing).",
+                "page": 3,
+                "bbox": [
+                  203.33,
+                  221.3,
+                  402.73,
+                  231.9
+                ],
+                "detectionMethod": "bullet_marker"
+              },
+              {
+                "text": "Open to work in Bangkok, Samut Prakan, Chonburi, Rayong and other industrial areas; relocation within Southeast Asia\ncan be considered depending on employer requirements.",
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  232.25,
+                  565.73,
+                  254.2
+                ],
+                "detectionMethod": "bullet_marker"
+              }
+            ]
+          },
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "Expected salary",
+                "page": 3,
+                "bbox": [
+                  59.85,
+                  254.7,
+                  127.36,
+                  265.3
+                ],
+                "detectionMethod": "profile_attribute_delimiter"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  254.5,
+                  463.95,
+                  266.26
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "Expected salary: negotiable based on shift allowance, overtime, location and job responsibilities.",
+                    "page": 3,
+                    "bbox": [
+                      51.2,
+                      254.5,
+                      463.95,
+                      266.26
+                    ],
+                    "lineIndex": 146
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "attributes": [],
+            "paragraphs": [],
+            "bullets": [
+              {
+                "text": "negotiable based on shift allowance, overtime, location and job responsibilities.",
+                "page": 3,
+                "bbox": [
+                  132.64,
+                  254.7,
+                  463.95,
+                  265.3
+                ],
+                "detectionMethod": "bullet_marker"
+              }
+            ]
+          },
+          {
+            "detectionMethod": "geometry_reconstruction",
+            "subheadingLines": [
+              {
+                "text": "References",
+                "page": 3,
+                "bbox": [
+                  59.85,
+                  265.85,
+                  108.38,
+                  276.45
+                ],
+                "detectionMethod": "profile_attribute_delimiter"
+              }
+            ],
+            "metadataRows": [
+              {
+                "page": 3,
+                "bbox": [
+                  51.2,
+                  265.65,
+                  201.22,
+                  277.41
+                ],
+                "detectionMethod": "geometry_row",
+                "cells": [
+                  {
+                    "text": "References: available on request.",
+                    "page": 3,
+                    "bbox": [
+                      51.2,
+                      265.65,
+                      201.22,
+                      277.41
+                    ],
+                    "lineIndex": 147
+                  }
+                ]
+              }
+            ],
+            "dates": [],
+            "urls": [],
+            "attributes": [],
+            "paragraphs": [],
+            "bullets": [
+              {
+                "text": "available on request.",
+                "page": 3,
+                "bbox": [
+                  113.66,
+                  265.85,
+                  201.22,
+                  276.45
+                ],
+                "detectionMethod": "bullet_marker"
+              }
+            ]
+          }
+        ],
+        "stoppedAtSection": null
+      }
+    ]
+  }
+}

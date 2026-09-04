@@ -1,0 +1,49 @@
+{
+  "source": "9.ocr.pdf",
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "modelRevision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "summary": {
+    "sectionType": "summary",
+    "heading": {
+      "text": "PROFESSIONAL SUMMARY",
+      "page": 1,
+      "bbox": [
+        43.91,
+        117.36,
+        185.95,
+        125.52
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Operations and supply chain analyst with 5+ years of experience supporting regional distribution,\nvendor performance, inventory planning, and process improvement across Indonesia and Singapore-\nlinked operations. Strong in Excel, SQL, dashboarding, and cross-functional coordination with\nwarehouse, procurement, and commercial teams.",
+        "page": 1,
+        "bbox": [
+          43.67,
+          136.08,
+          461.63,
+          180.47
+        ],
+        "detectionMethod": "geometry_default"
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "experience",
+      "heading": {
+        "text": "PROFESSIONAL EXPERIENCE",
+        "page": 1,
+        "bbox": [
+          44.39,
+          190.55,
+          197.23,
+          198.95
+        ],
+        "similarity": 1.0,
+        "detectionMethod": "geometry_semantic"
+      }
+    }
+  }
+}

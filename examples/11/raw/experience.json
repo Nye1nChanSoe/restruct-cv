@@ -1,0 +1,225 @@
+{
+  "source": "11.docx",
+  "experience": {
+    "sectionType": "experience",
+    "heading": {
+      "text": "02  EXPERIENCE",
+      "page": 1,
+      "bbox": [
+        0.0,
+        9.0,
+        100.0,
+        10.0
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "entries": [
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "UX/UI Designer  /  Northstar Digital",
+            "page": 1,
+            "bbox": [
+              0.0,
+              10.0,
+              100.0,
+              11.0
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Bangkok, Thailand  ·  Mar 2024 - Present",
+            "page": 1,
+            "bbox": [
+              0.0,
+              11.0,
+              100.0,
+              12.0
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [
+          {
+            "text": "UX/UI Designer  /  Northstar Digital",
+            "page": 1,
+            "bbox": [
+              0.0,
+              10.0,
+              100.0,
+              11.0
+            ],
+            "confidence": 0.715,
+            "detectionMethod": "minilm_reconciled"
+          }
+        ],
+        "companies": [],
+        "dates": [
+          {
+            "text": "Mar 2024 - Present",
+            "page": 1,
+            "bbox": [
+              55.0,
+              11.0,
+              100.0,
+              12.0
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Bangkok, Thailand",
+            "page": 1,
+            "bbox": [
+              0.0,
+              11.0,
+              42.5,
+              12.0
+            ],
+            "confidence": 0.9959,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Designed end-to-end workflows and responsive interfaces for B2B dashboards and customer-facing web products.",
+            "page": 1,
+            "bbox": [
+              0.28,
+              12.0,
+              100.0,
+              13.0
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Built and maintained reusable Figma components, improving consistency between design and engineering handoff.",
+            "page": 1,
+            "bbox": [
+              0.28,
+              13.0,
+              100.0,
+              14.0
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Planned lightweight usability sessions and translated recurring friction points into iterative product improvements.",
+            "page": 1,
+            "bbox": [
+              0.28,
+              14.0,
+              100.0,
+              15.0
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      },
+      {
+        "detectionMethod": "ner_minilm_reconciliation",
+        "subheadingLines": [
+          {
+            "text": "Junior Product Designer  /  Kinetic Labs",
+            "page": 1,
+            "bbox": [
+              0.0,
+              15.0,
+              100.0,
+              16.0
+            ],
+            "detectionMethod": "experience_metadata"
+          },
+          {
+            "text": "Kuala Lumpur, Malaysia  ·  Jul 2022 - Feb 2024",
+            "page": 1,
+            "bbox": [
+              0.0,
+              16.0,
+              100.0,
+              17.0
+            ],
+            "detectionMethod": "experience_metadata"
+          }
+        ],
+        "jobTitles": [],
+        "companies": [
+          {
+            "text": "Junior Product Designer  /  Kinetic Labs",
+            "page": 1,
+            "bbox": [
+              0.0,
+              15.0,
+              100.0,
+              16.0
+            ],
+            "detectionMethod": "distilbert_ner_reconciled",
+            "confidence": 0.6194
+          }
+        ],
+        "dates": [
+          {
+            "text": "Jul 2022 - Feb 2024",
+            "page": 1,
+            "bbox": [
+              58.7,
+              16.0,
+              100.0,
+              17.0
+            ],
+            "detectionMethod": "date_regex"
+          }
+        ],
+        "locations": [
+          {
+            "text": "Kuala Lumpur, Malaysia",
+            "page": 1,
+            "bbox": [
+              0.0,
+              16.0,
+              47.83,
+              17.0
+            ],
+            "confidence": 0.7583,
+            "detectionMethod": "distilbert_ner_reconciled"
+          }
+        ],
+        "urls": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Created wireframes, interactive prototypes, and production-ready UI for fintech and e-commerce products.",
+            "page": 1,
+            "bbox": [
+              0.28,
+              17.0,
+              100.0,
+              18.0
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Worked with product managers and developers to refine user flows, edge cases, and interaction states before build.",
+            "page": 1,
+            "bbox": [
+              0.28,
+              18.0,
+              100.0,
+              19.0
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "projects",
+      "text": "03  SELECTED PROJECTS"
+    }
+  }
+}

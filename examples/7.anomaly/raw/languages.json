@@ -1,0 +1,162 @@
+{
+  "source": "7.anomaly.pdf",
+  "languages": {
+    "sectionType": "languages",
+    "heading": {
+      "text": "LANGUAGES",
+      "page": 3,
+      "bbox": [
+        46.9,
+        98.1,
+        113.91,
+        109.82
+      ],
+      "similarity": 1.0,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 3,
+        "bbox": [
+          51.2,
+          116.5,
+          113.64,
+          128.26
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Thai - Native",
+            "page": 3,
+            "bbox": [
+              51.2,
+              116.5,
+              113.64,
+              128.26
+            ],
+            "lineIndex": 135
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          51.2,
+          127.65,
+          527.75,
+          139.41
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "English - Basic working level; can understand common workshop terms, tool names, safety instructions, simple",
+            "page": 3,
+            "bbox": [
+              51.2,
+              127.65,
+              527.75,
+              139.41
+            ],
+            "lineIndex": 136
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          59.85,
+          139.0,
+          237.12,
+          149.6
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "drawings and short supervisor instructions",
+            "page": 3,
+            "bbox": [
+              59.85,
+              139.0,
+              237.12,
+              149.6
+            ],
+            "lineIndex": 137
+          }
+        ]
+      },
+      {
+        "page": 3,
+        "bbox": [
+          51.2,
+          149.9,
+          360.06,
+          161.66
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Lao - Basic conversational understanding from coworkers and site work",
+            "page": 3,
+            "bbox": [
+              51.2,
+              149.9,
+              360.06,
+              161.66
+            ],
+            "lineIndex": 138
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [],
+        "metadataRows": [],
+        "dates": [],
+        "urls": [],
+        "attributes": [],
+        "paragraphs": [],
+        "bullets": [
+          {
+            "text": "Thai - Native",
+            "page": 3,
+            "bbox": [
+              51.2,
+              116.5,
+              113.64,
+              128.26
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "English - Basic working level; can understand common workshop terms, tool names, safety instructions, simple\ndrawings and short supervisor instructions",
+            "page": 3,
+            "bbox": [
+              51.2,
+              127.65,
+              527.75,
+              149.6
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Lao - Basic conversational understanding from coworkers and site work",
+            "page": 3,
+            "bbox": [
+              51.2,
+              149.9,
+              360.06,
+              161.66
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": {
+      "sectionType": "others",
+      "text": "ADDITIONAL INFORMATION"
+    }
+  }
+}

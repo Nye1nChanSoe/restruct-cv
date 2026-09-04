@@ -32,8 +32,8 @@ that does not exist yet.
 `--stages` selects **debug artifacts, never whether a pass runs** — every pass feeds the next,
 so a flag that skipped one would quietly produce a different resume. `--stages` implies
 `--debug`. The batch form writes every stage: its purpose is to regenerate the committed corpus,
-and anything less would let a stale artifact survive a run and make `git status results/` read
-as clean.
+and anything less would let a stale artifact survive a run and make `git status examples/` read
+as clean after a refresh.
 
 `errors.py` names every failure; `cli.py` is the only place that maps one to an exit code, so
 the Python API raises and a caller embedding restruct keeps its process. Codes are grouped by
@@ -93,17 +93,33 @@ results/<name>/debug/page-N.png      the combined overlay, one per source page
 results/<name>/debug/pass-*/         passes 1-4, gitignored
 ```
 
-`results/` holds **86 committed artifacts** (64 raw JSON, 15 overlays, 7 `resume.json`). There
-are no per-section overlays: the combined image draws every one of their boxes with the same
+**`results/` is untracked in full.** Every run rewrites it, and its overlays were 113MB of this
+repository's history before that history was rewritten to drop them. Three resumes are kept as
+committed evidence instead, one per ingestion track:
+
+```
+examples/7.anomaly/   native PDF: geometry, layout warnings, three overlays
+examples/9.ocr/       scanned PDF: OCR rebuilt into the same line geometry
+examples/11/          DOCX: no overlays, because there is no geometry to draw
+```
+
+They are **copied out of `results/`, never edited by hand** — `tools/refresh_examples.py` mirrors
+each one, minus the pass overlays and reconstructions. That is what keeps them evidence rather
+than illustration, and it is how a change that touches rendering or section parsing is verified:
+
+```bash
+uv run restruct && uv run python tools/refresh_examples.py
+git status --short examples/    # clean == byte-identical
+```
+
+A file that stops being produced stops being committed, because the refresh empties each example
+before copying. `EXAMPLES` in that script is the list; `test_no_committed_result_reports_unplaced_content`
+reads it, so adding an example needs no second edit.
+
+There are no per-section overlays: the combined image draws every one of their boxes with the same
 colours and labels, and shows the boundaries between sections as well, so 65 PNGs were dropped
 for 25MB and no information. The per-section renderers went with them — `git log` has them if a
 `--stages` flag ever wants one back.
-
-To verify a change that touches rendering or section parsing:
-
-```bash
-uv run restruct && git status --short results/    # clean == byte-identical
-```
 
 **Passes 1-4 render images and no JSON**, because their output is geometry: a count can be
 right while every box sits ten points too low. They are written to

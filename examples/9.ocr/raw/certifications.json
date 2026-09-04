@@ -1,0 +1,207 @@
+{
+  "source": "9.ocr.pdf",
+  "certifications": {
+    "sectionType": "certifications",
+    "heading": {
+      "text": "CERTIFICATIONS & ACTIVITIES",
+      "page": 1,
+      "bbox": [
+        46.31,
+        578.86,
+        209.22,
+        591.34
+      ],
+      "similarity": 0.8585,
+      "detectionMethod": "geometry_semantic"
+    },
+    "rows": [
+      {
+        "page": 1,
+        "bbox": [
+          48.95,
+          599.74,
+          277.36,
+          608.86
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "¢ Lean Six Sigma Yellow Belt - training certificate, 2024",
+            "page": 1,
+            "bbox": [
+              48.95,
+              599.74,
+              277.36,
+              608.86
+            ],
+            "lineIndex": 37
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          48.95,
+          610.06,
+          413.89,
+          619.9
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "¢ Volunteer logistics coordinator - community food distribution program, Bandung, 2022",
+            "page": 1,
+            "bbox": [
+              48.95,
+              610.06,
+              413.89,
+              619.9
+            ],
+            "lineIndex": 38
+          }
+        ]
+      },
+      {
+        "page": 1,
+        "bbox": [
+          47.75,
+          804.21,
+          369.26,
+          814.77
+        ],
+        "detectionMethod": "geometry_row",
+        "cells": [
+          {
+            "text": "Synthetic resume generated for testing/demo purposes - all personal details are fictional.",
+            "page": 1,
+            "bbox": [
+              47.75,
+              804.21,
+              369.26,
+              814.77
+            ],
+            "lineIndex": 39
+          }
+        ]
+      }
+    ],
+    "entries": [
+      {
+        "detectionMethod": "geometry_reconstruction",
+        "subheadingLines": [],
+        "metadataRows": [
+          {
+            "page": 1,
+            "bbox": [
+              48.95,
+              599.74,
+              277.36,
+              608.86
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "¢ Lean Six Sigma Yellow Belt - training certificate, 2024",
+                "page": 1,
+                "bbox": [
+                  48.95,
+                  599.74,
+                  277.36,
+                  608.86
+                ],
+                "lineIndex": 37
+              }
+            ]
+          },
+          {
+            "page": 1,
+            "bbox": [
+              48.95,
+              610.06,
+              413.89,
+              619.9
+            ],
+            "detectionMethod": "geometry_row",
+            "cells": [
+              {
+                "text": "¢ Volunteer logistics coordinator - community food distribution program, Bandung, 2022",
+                "page": 1,
+                "bbox": [
+                  48.95,
+                  610.06,
+                  413.89,
+                  619.9
+                ],
+                "lineIndex": 38
+              }
+            ]
+          }
+        ],
+        "dates": [
+          {
+            "text": "2024",
+            "page": 1,
+            "bbox": [
+              261.33,
+              599.74,
+              277.36,
+              608.86
+            ],
+            "detectionMethod": "year_regex"
+          },
+          {
+            "text": "2022",
+            "page": 1,
+            "bbox": [
+              396.91,
+              610.06,
+              413.89,
+              619.9
+            ],
+            "detectionMethod": "year_regex"
+          }
+        ],
+        "urls": [],
+        "attributes": [],
+        "paragraphs": [
+          {
+            "text": "Synthetic resume generated for testing/demo purposes - all personal details are fictional.",
+            "page": 1,
+            "bbox": [
+              47.75,
+              804.21,
+              369.26,
+              814.77
+            ],
+            "detectionMethod": "geometry_default"
+          }
+        ],
+        "bullets": [
+          {
+            "text": "Lean Six Sigma Yellow Belt - training certificate, 2024",
+            "page": 1,
+            "bbox": [
+              48.95,
+              599.74,
+              277.36,
+              608.86
+            ],
+            "detectionMethod": "bullet_marker"
+          },
+          {
+            "text": "Volunteer logistics coordinator - community food distribution program, Bandung, 2022",
+            "page": 1,
+            "bbox": [
+              48.95,
+              610.06,
+              413.89,
+              619.9
+            ],
+            "detectionMethod": "bullet_marker"
+          }
+        ]
+      }
+    ],
+    "stoppedAtSection": null
+  }
+}

@@ -56,11 +56,14 @@ nothing got worse.
 
 ### Verifying what the snapshots do not cover
 
-Debug artifacts are not in the golden set. To check a change that touches rendering or section
-parsing, regenerate the committed corpus and confirm nothing moved:
+Debug artifacts are not in the golden set. `results/` itself is untracked — every run rewrites
+it, and its overlays are large. What is committed is `examples/`: three resumes, one per
+ingestion track, copied out of `results/` by a script rather than curated by hand. To check a
+change that touches rendering or section parsing, regenerate and confirm nothing moved:
 
 ```bash
-uv run restruct && git status --short results/    # clean == byte-identical
+uv run restruct && uv run python tools/refresh_examples.py
+git status --short examples/    # clean == byte-identical
 ```
 
 Passes 1-4 render images and no JSON, because their output is geometry: a count can be right while
@@ -75,7 +78,7 @@ read it:
 
 ```bash
 uv run restruct <resume.pdf> -o out.json --reconstruct
-uv run restruct results/1/resume.json --reconstruct     # or one already extracted
+uv run restruct examples/11/resume.json --reconstruct   # or one already extracted
 ```
 
 ## Adding a field or a section

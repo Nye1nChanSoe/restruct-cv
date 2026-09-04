@@ -1,0 +1,400 @@
+{
+  "schema_version": "1.0",
+  "header_profile": {
+    "name": "SOMCHAI RATTANAKUL",
+    "job_titles": [
+      "WELDER",
+      "METAL FABRICATOR",
+      "MAINTENANCE TECHNICIAN"
+    ],
+    "location": "Samut Prakan, Thailand",
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": "Thai citizen",
+    "current_residence": null,
+    "current_income": null,
+    "current_package": null,
+    "emails": [
+      "somchai.rattanakul@example.com"
+    ],
+    "phones": [
+      "+66 80 000 1472"
+    ],
+    "urls": []
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Hands-on welder and metal fabricator with more than 9 years of experience supporting manufacturing, food-processing,\nwarehouse, and construction environments in Thailand. Experienced with MIG/MAG, SMAW (stick), basic TIG stainless-\nsteel work, cutting, grinding, fit-up, jig work, equipment repair, and preventive maintenance. Comfortable reading shop\ndrawings, taking measurements, preparing material, checking weld appearance and dimensions, and coordinating with\nThai and international supervisors. Strong record of shift attendance and safety compliance. Used to hot-work permits,\nconfined work areas, production deadlines, and physically demanding jobs. Seeking a stable welding, fabrication,\nmaintenance, or plant technician position in Thailand or elsewhere in Southeast Asia."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Welder / Fabricator"
+      ],
+      "companies": [
+        "Eastern Process Systems Co., Ltd."
+      ],
+      "dates": [
+        "Apr 2022 - Present"
+      ],
+      "locations": [
+        "Bang Phli, Samut Prakan, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Fabricate carbon-steel and stainless-steel frames, machine guards, pipe supports, platforms, access ladders, handrails,\nbrackets and small process-equipment parts based on drawings and supervisor sketches.",
+        "Perform MIG/MAG welding for general fabrication and SMAW for repair and site work; use TIG for selected stainless-\nsteel thin sections and finishing jobs under senior technician guidance.",
+        "Measure, mark, cut, drill, grind and fit components before welding; check squareness, alignment, overall dimensions\nand hole positions before sending completed items for installation or painting.",
+        "Support installation and repair work at customer factories around Samut Prakan, Chonburi and Rayong, including\nshutdown periods requiring night shifts and overtime.",
+        "Complete daily hot-work checks, inspect cables and welding leads, keep fire extinguisher/fire blanket nearby, and\ncoordinate fire-watch requirements when working outside the workshop.",
+        "Help train 3 junior helpers on basic welding setup, safe grinding, material handling, tack sequence and workshop\nhousekeeping.",
+        "Reduced rework on repeated machine-guard jobs by using simple jigs and a measurement checklist before final\nwelding; supervisor reported noticeably fewer fit-up corrections during installation.",
+        "Assist maintenance technicians with conveyor frame repairs, broken brackets, damaged guards, trolley repairs and\nurgent production-line welding when machines are stopped."
+      ]
+    },
+    {
+      "job_titles": [
+        "Welder / Maintenance Helper"
+      ],
+      "companies": [
+        "Siam Fresh Foods Manufacturing Co., Ltd."
+      ],
+      "dates": [
+        "Jan 2019 - Mar 2022"
+      ],
+      "locations": [
+        "Lat Krabang, Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Worked in the engineering maintenance team of a chilled and frozen food factory, supporting daily repairs and planned\nmaintenance in production, packing, warehouse and utility areas.\nSYNTHETIC RESUME FOR SOFTWARE / PARSER TESTING - NOT A REAL PERSON  |  Page 1",
+        "Welded stainless and mild-steel guards, carts, racks, drain covers, work tables, pipe brackets and replacement support\nframes; carried out grinding and finishing where smooth, clean surfaces were required.",
+        "Assisted technicians during conveyor belt replacement, roller replacement, motor changes, pump maintenance, bearing\nwork and alignment checks; prepared tools and cleaned equipment before restart.",
+        "Responded to breakdown calls from production supervisors and helped isolate damaged mechanical parts so repairs\ncould be completed quickly and safely.",
+        "Followed hygiene-zone rules, tool-control procedures, PPE requirements and cleaning instructions for food-production\nareas. Learned to avoid leaving metal filings, welding rods or loose hardware in controlled zones.",
+        "Kept simple handwritten maintenance notes for completed workshop jobs, materials used and unfinished tasks for the\nnext shift.",
+        "Participated in annual shutdown maintenance and weekend repair work, regularly working 10-12 hour shifts during\nmajor maintenance periods."
+      ]
+    },
+    {
+      "job_titles": [
+        "Welder / Steel Fabrication Worker"
+      ],
+      "companies": [
+        "Chao Phraya Steel & Engineering"
+      ],
+      "dates": [
+        "Jun 2016 - Dec 2018"
+      ],
+      "locations": [
+        "Nonthaburi and Bangkok project sites, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Fabricated and installed steel gates, awnings, stair railings, fencing, roof supports, equipment stands and general\nstructural items for small factories, warehouses, shops and residential projects.",
+        "Used SMAW extensively for site welding and MIG in the workshop; prepared joints with grinder, cut steel using chop\nsaw and oxy-fuel equipment, and corrected fit-up problems on site.",
+        "Loaded and unloaded steel sections, moved fabricated parts with team members, set up work areas, and worked from\nladders or temporary platforms following supervisor instructions.",
+        "Read basic dimensions from hand drawings and site measurements; checked level and plumb before final welding and\nbolting.",
+        "Worked with crews of 4-8 people and sometimes stayed at provincial sites for several days until installation was\ncompleted."
+      ]
+    },
+    {
+      "job_titles": [
+        "Workshop Helper / Junior Welder"
+      ],
+      "companies": [
+        "Metro Metal Works"
+      ],
+      "dates": [
+        "May 2014 - May 2016"
+      ],
+      "locations": [
+        "Bang Khae, Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Started as a general workshop helper preparing materials, cleaning steel, holding parts for fit-up, moving gas cylinders\nwith a trolley, sweeping work areas and assisting experienced welders.",
+        "Progressed to basic tack welding and SMAW on non-critical frames after in-house practice and supervisor approval.",
+        "Learned correct use of tape measure, square, grinder, drill press and common workshop hand tools, plus basic\nelectrode storage and machine cable checks.",
+        "Helped fabricate shelving, carts, sign frames, gates and repair jobs for local customers."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Vocational Certificate",
+        "Industrial Mechanics / Metal Work (Certificate Level)"
+      ],
+      "institutions": [
+        "Bangkok Technical Training Institute"
+      ],
+      "dates": [],
+      "locations": [],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    },
+    {
+      "titles": [],
+      "institutions": [
+        "(fictional sample institution), Bangkok"
+      ],
+      "dates": [],
+      "locations": [],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [
+        "Completed 2014. Coursework included workshop safety, basic welding, machine tools, technical drawing, measurement,\nmechanical maintenance and industrial practice."
+      ],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": "Welding",
+      "paragraphs": [
+        "MIG/MAG (GMAW), SMAW/arc welding, basic TIG (GTAW), tack welding, fillet and butt\njoints, vertical and overhead practice"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Fabrication",
+      "paragraphs": [
+        "Steel and stainless fit-up, measuring, marking, cutting, drilling, grinding, bevel preparation,\njigs, brackets, frames, handrails and guards"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Maintenance",
+      "paragraphs": [
+        "Minor machine repair, bearing/guard replacement support, conveyors, pumps, motors,\nworkshop repairs, preventive maintenance assistance"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Tools",
+      "paragraphs": [
+        "Angle grinder, cut-off saw, magnetic drill, bench drill, hand drill, oxy-fuel cutting, plasma\ncutter, measuring tape, vernier caliper, spirit level"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Safety",
+      "paragraphs": [
+        "PPE, hot-work permit procedures, fire watch, lockout/tagout awareness, housekeeping,\nlifting awareness, toolbox talks, 5S"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Work Style",
+      "paragraphs": [
+        "Shift work, overtime, production support, team coordination, job handover, basic work\nrecords, material control"
+      ],
+      "bullets": [],
+      "urls": []
+    }
+  ],
+  "projects": [
+    {
+      "subheadings": [],
+      "dates": [
+        "2024",
+        "2023",
+        "2022",
+        "2020-2021",
+        "2016-2018"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Food-factory conveyor upgrade (2024): fabricated stainless support frames and guards, modified brackets during\ninstallation, and supported overnight commissioning work in Chonburi.",
+        "Warehouse safety improvement project (2023): produced approximately 40 protective bollards, guard sections and\npedestrian barriers from repeated drawings and site measurements.",
+        "Production line relocation (2022): cut and modified existing frames, fabricated new machine bases, and supported\nreinstallation during a planned factory shutdown.",
+        "Cold-storage maintenance work (2020-2021): repaired racks, carts, protective rails and equipment guards in low-\ntemperature areas using task-specific PPE and short work rotations.",
+        "Commercial steel fabrication (2016-2018): completed gates, roof frames, stairs, handrails and fencing across multiple\nBangkok-area construction and renovation jobs."
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "subheadings": [
+        "Training / Certification",
+        "Provider",
+        "Year",
+        "Welding Skills Development - SMAW &",
+        "Private vocational training center, Samut"
+      ],
+      "dates": [
+        "2022"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "GMAW",
+        "Prakan"
+      ],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "Basic TIG Welding for Stainless Steel",
+        "Employer internal workshop / supervised"
+      ],
+      "dates": [
+        "2023"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "practical training"
+      ],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "Safety for Hot Work and Fire Watch",
+        "Employer annual safety training"
+      ],
+      "dates": [
+        "2024",
+        "2025"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "2024, refreshed 2025"
+      ],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "Basic Lockout / Tagout Awareness",
+        "Siam Fresh Foods Manufacturing"
+      ],
+      "dates": [
+        "2021"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "Forklift Safety Awareness (non-licensed\noperator training)",
+        "Employer toolbox and warehouse safety"
+      ],
+      "dates": [
+        "2020"
+      ],
+      "urls": [],
+      "paragraphs": [
+        "program"
+      ],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "First Aid Awareness",
+        "Workplace safety day program"
+      ],
+      "dates": [
+        "2024"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": []
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Thai - Native",
+        "English - Basic working level; can understand common workshop terms, tool names, safety instructions, simple\ndrawings and short supervisor instructions",
+        "Lao - Basic conversational understanding from coworkers and site work"
+      ]
+    }
+  ],
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null,
+  "others": [
+    {
+      "heading": "ADDITIONAL INFORMATION",
+      "entries": [
+        {
+          "subheadings": [],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [],
+          "bullets": [
+            "Available for rotating shifts, night work, weekends and reasonable overtime.",
+            "Comfortable with factory, warehouse and construction-site environments; able to work standing for long periods and\nhandle normal workshop material movement as part of a team."
+          ]
+        },
+        {
+          "subheadings": [
+            "Valid Thai motorcycle and private"
+          ],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [],
+          "bullets": [
+            "car driving licences (synthetic detail for testing).",
+            "Open to work in Bangkok, Samut Prakan, Chonburi, Rayong and other industrial areas; relocation within Southeast Asia\ncan be considered depending on employer requirements."
+          ]
+        },
+        {
+          "subheadings": [
+            "Expected salary"
+          ],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [],
+          "bullets": [
+            "negotiable based on shift allowance, overtime, location and job responsibilities."
+          ]
+        },
+        {
+          "subheadings": [
+            "References"
+          ],
+          "attributes": [],
+          "dates": [],
+          "urls": [],
+          "paragraphs": [],
+          "bullets": [
+            "available on request."
+          ]
+        }
+      ]
+    }
+  ]
+}

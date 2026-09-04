@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "header_profile": {
+    "name": "MAYA TAN",
+    "job_titles": [
+      "PRODUCT DESIGNER",
+      "UX/UI",
+      "UI designer"
+    ],
+    "location": "Bangkok, Thailand",
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null,
+    "current_income": null,
+    "current_package": null,
+    "emails": [
+      "maya.tan.design@example.com"
+    ],
+    "phones": [
+      "+66 81 234 5678"
+    ],
+    "urls": [
+      {
+        "text": "portfolio.example.com/mayatan",
+        "url": "portfolio.example.com/mayatan"
+      }
+    ]
+  },
+  "summary": null,
+  "experience": [
+    {
+      "job_titles": [
+        "UX/UI Designer  /  Northstar Digital"
+      ],
+      "companies": [],
+      "dates": [
+        "Mar 2024 - Present"
+      ],
+      "locations": [
+        "Bangkok, Thailand"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Designed end-to-end workflows and responsive interfaces for B2B dashboards and customer-facing web products.",
+        "Built and maintained reusable Figma components, improving consistency between design and engineering handoff.",
+        "Planned lightweight usability sessions and translated recurring friction points into iterative product improvements."
+      ]
+    },
+    {
+      "job_titles": [],
+      "companies": [
+        "Junior Product Designer  /  Kinetic Labs"
+      ],
+      "dates": [
+        "Jul 2022 - Feb 2024"
+      ],
+      "locations": [
+        "Kuala Lumpur, Malaysia"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Created wireframes, interactive prototypes, and production-ready UI for fintech and e-commerce products.",
+        "Worked with product managers and developers to refine user flows, edge cases, and interaction states before build."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "BA in Communication Design  /  RMIT University Vietnam"
+      ],
+      "institutions": [
+        "BA in Communication Design  /  RMIT University Vietnam"
+      ],
+      "dates": [
+        "2022"
+      ],
+      "locations": [],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [
+        "Portfolio available at portfolio.example.com/mayatan"
+      ],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": null,
+      "paragraphs": [
+        "DESIGN  User flows · Wireframes · Interaction design · Responsive UI · Prototyping · Design systems",
+        "RESEARCH  User interviews · Usability testing · Journey mapping · Accessibility reviews",
+        "TOOLS  Figma · FigJam · Adobe Illustrator · Adobe Photoshop · Jira · Notion"
+      ],
+      "bullets": [],
+      "urls": []
+    }
+  ],
+  "projects": [
+    {
+      "subheadings": [
+        "Merchant Analytics Dashboard   B2B SAAS"
+      ],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Simplified reporting workflows and introduced a modular dashboard structure that adapted cleanly from desktop to tablet."
+      ],
+      "bullets": []
+    },
+    {
+      "subheadings": [
+        "Mobile Checkout Redesign   E-COMMERCE"
+      ],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Reduced unnecessary checkout steps and redesigned input, validation, and error states for clearer mobile interactions."
+      ],
+      "bullets": []
+    }
+  ],
+  "certifications": null,
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": null,
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null,
+  "others": null
+}
