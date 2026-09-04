@@ -27,20 +27,40 @@ The distribution is `restruct-cv`; the import name and the command it installs a
 
 ### Model weights
 
-All inference weights are **local-only** and never fetched at run time. Two directories are
-required:
+All inference weights are **local-only** and never fetched at run time. Inference runs on ONNX
+Runtime, so there is no torch, no `transformers` and no CUDA wheel in the install; each model
+directory holds a `model.onnx` and the tokenizer that goes with it:
 
 ```text
 models/
-  all-MiniLM-L6-v2/
-  distilbert-NER/
+  all-MiniLM-L6-v2/    model.onnx, tokenizer.json, sentence_bert_config.json
+  distilbert-NER/      model.onnx, tokenizer.json, config.json
 ```
 
 They are looked for, in order, in `models/` beside the checkout (when running from one), `models/`
 under the current working directory, and `~/.restruct/models`. Set
 `RESTRUCT_MODELS_DIRECTORY=/path/to/models` to name the directory outright, which is the usual
-answer for an installed copy; when it is set nothing else is consulted. A run with no weights
-exits `20` and names every place it looked.
+answer for an installed copy; when it is set nothing else is consulted. A run without a
+`model.onnx` in both directories exits `20` and names every place it looked.
+
+#### Producing them
+
+Download the two source models, then export each to ONNX once:
+
+```bash
+pip install "huggingface_hub[cli]"
+hf download sentence-transformers/all-MiniLM-L6-v2 \
+  --revision 1110a243fdf4706b3f48f1d95db1a4f5529b4d41 --local-dir models/all-MiniLM-L6-v2
+hf download dslim/distilbert-NER \
+  --revision dfa2838a127384aabb82ed7719e16dab84c42a2a --local-dir models/distilbert-NER
+
+uv run --group export python tools/export_onnx.py
+```
+
+The export needs torch, transformers and optimum; they are in the `export` dependency group and
+are installed only by that command, never by an ordinary install. The exported weights are fp32,
+which reproduces the torch pipeline exactly — `tools/export_onnx.py` records what int8
+quantization was measured to cost on this corpus and why it does not ship.
 
 ### Tesseract
 
@@ -165,7 +185,8 @@ document/    shared types and document-wide statistics
 layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
 structure/   heading detection, routing, compound headings, precedence resolver, separators
 parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
-model.py     DistilBERT NER and MiniLM adapters, loaded on first use
+model.py     the model-backed extraction stages, loaded on first use
+encoders.py  ONNX Runtime adapters: MiniLM sentence embeddings, DistilBERT NER
 patterns/    deterministic regex evidence, grouped by what it describes
 debug/       artifacts (JSON) and overlays (Pillow), one canvas, one colour registry
 schema.py    the lean, versioned output (contract: resume.schema.json)

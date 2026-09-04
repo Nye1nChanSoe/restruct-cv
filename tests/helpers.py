@@ -45,10 +45,14 @@ def fixture_path(stem: str, directory: Path = SYNTHETIC_DIRECTORY) -> Path:
 
 
 def models_available() -> bool:
-    """Both local model directories are present and non-empty."""
+    """Both local model directories hold exported ONNX weights.
+
+    Asked the way the CLI asks it: a directory that still holds only the
+    safetensors it was exported from cannot be run, so a machine with one
+    skips the model-backed tests rather than failing them.
+    """
     return all(
-        (PROJECT_ROOT / "models" / name).is_dir()
-        and any((PROJECT_ROOT / "models" / name).iterdir())
+        (PROJECT_ROOT / "models" / name / "model.onnx").is_file()
         for name in ("all-MiniLM-L6-v2", "distilbert-NER")
     )
 

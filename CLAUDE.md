@@ -21,6 +21,8 @@ uv run restruct <path> -o <out.json> --stages 1-3   # + those stages (implies --
 uv run restruct                                # batch: every PDF in resumes-synthetic/
 uv run restruct --truths                       # batch: only resumes-truths/ (local, gitignored)
 uv run restruct --unsupported                  # batch: resumes-unsupported/ (see below)
+
+uv run --group export python tools/export_onnx.py    # re-export models/*/model.onnx
 ```
 
 `-o` takes a file or a directory. A directory — `.`, `out/`, an existing path — writes
@@ -41,12 +43,20 @@ decade — 1x input, 2x environment, 3x extraction, 4x output — and `2` is lef
 
 ### Setup expectations
 
-Model weights are **local only** and gitignored — `AutoTokenizer`/`SentenceTransformer` are
-loaded with `local_files_only=True` and never hit the network. Both directories must exist:
+Model weights are **local only** and gitignored, and inference runs on ONNX Runtime — there is
+no torch, no `transformers` and no `sentence-transformers` in the install. Both directories must
+exist and each must hold an exported `model.onnx` beside its `tokenizer.json`:
 
 ```
 models/all-MiniLM-L6-v2/     models/distilbert-NER/
 ```
+
+`tools/export_onnx.py` is what writes those, and the `export` dependency group (torch,
+transformers, optimum) exists only for it. **Nothing under `src/` may import anything in that
+group.** The exports are fp32 on purpose: at fp32 the ONNX path reproduces the torch path
+byte-for-byte across the golden snapshots and field-for-field on the scorecard. int8 is four
+times smaller and does not — the tool's docstring records what each quantization variant was
+measured to cost, and the change budget below is what rejected them.
 
 Tesseract is a system dependency (`brew install tesseract`), needed only for the scanned
 fixtures. Tests **skip** rather than fail when models or Tesseract are absent, so a fresh clone
@@ -163,7 +173,8 @@ document/    shared types (ExtractedLine, DetectedHeading, HeaderEntityMatch)
 layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
 structure/   heading detection, routing, compound headings, precedence resolver, separators
 parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
-models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
+model.py     the model-backed extraction stages (heading detection, NER, semantic)
+encoders.py  ONNX Runtime adapters: MiniLM mean-pooled embeddings, DistilBERT NER
 stages.py    which debug artifacts each stage owns; importable without the models
 patterns/    deterministic regex evidence, grouped by what it describes
 debug/       artifacts (JSON), render (Pillow overlays), reconstruct (the result as a page)
@@ -349,11 +360,14 @@ Three things carry the run cost, and all three regress silently:
   configuration phrases re-embedded once per experience metadata line. Never route *candidate*
   text through that cache: candidates are per-document and unbounded, so caching them is a leak.
 - **Models load on first use**, via `LazyEmbeddingModel` / `LazyNerPredictor`. The presence
-  check stays eager so missing weights still exit with their own code immediately.
+  check stays eager so missing weights still exit with their own code immediately, and it asks
+  for `model.onnx` rather than for a non-empty directory: a directory left from the torch era
+  would otherwise be accepted and fail later, reporting the wrong problem.
 - **`restruct/__init__.py` must not import the pipeline eagerly.** It re-exports `main` and
   `extract_resume` through PEP 562 `__getattr__` because a plain import cost four seconds of
   torch and transformers that `--help` never needs. `tests/test_performance.py` asserts that
-  importing `restruct.cli` leaves `sys.modules` free of them.
+  importing `restruct.cli` leaves `sys.modules` free of them — and of `onnxruntime` and
+  `tokenizers`, which took their place.
 
 ### Gotchas that have already caused bugs
 
@@ -396,6 +410,25 @@ on a machine that had them. The order is `RESTRUCT_MODELS_DIRECTORY` (which sett
 then `models/` beside the checkout *if it is one*, then `models/` under the working directory,
 then `~/.restruct/models`; `ModelAssetsMissing` names every place it looked. The settings name the
 model folder (`all-MiniLM-L6-v2`), and the loaders take the directory those folders live in.
+
+### The two model adapters
+
+`encoders.py` reimplements two behaviours that used to come from a library, and both are the
+published behaviour of the model they belong to, not an approximation of it:
+
+- **MiniLM**: mean pooling over the unmasked tokens, then L2 normalization — what `modules.json`
+  and `1_Pooling/` in the model directory state. Pooling must stay masked; a batch pads to its
+  longest member, so an unmasked mean makes an embedding depend on what it was encoded beside.
+  `encode()` collapses the batch dimension for a bare string and swallows unknown keyword
+  arguments, because it stands in for `SentenceTransformer.encode` at every call site.
+- **DistilBERT NER**: the transformers pipeline's `aggregation_strategy="simple"` — softmax,
+  argmax per token, consecutive tokens of one tag grouped, the group scored by the mean of its
+  members. A label with no `B-`/`I-` prefix counts as a continuation. The thresholds in
+  `SETTINGS.ner` were tuned against exactly these scores.
+
+Offsets come from `tokenizers` and index the **original** text, which is why the old
+format-character normalisation and its index remapping are gone: every header entity is later
+reversed back onto its source line, so an offset into anything else is a silent mis-split.
 
 ## Test data
 

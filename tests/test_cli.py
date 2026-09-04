@@ -237,8 +237,23 @@ def _weights(directory: Path) -> Path:
     """A directory shaped like a populated models/ directory."""
     for name in cli.MODEL_DIRECTORY_NAMES:
         (directory / name).mkdir(parents=True)
-        (directory / name / "config.json").write_text("{}")
+        (directory / name / cli.MODEL_WEIGHTS_FILE).write_text("")
     return directory
+
+
+def test_a_directory_without_onnx_weights_is_not_a_models_directory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A directory left over from the torch era holds safetensors and no
+    `model.onnx`. Accepting it because it is non-empty would let the run get
+    as far as loading before failing, and would report the wrong problem."""
+    monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
+    monkeypatch.chdir(tmp_path)
+    for name in cli.MODEL_DIRECTORY_NAMES:
+        (tmp_path / "models" / name).mkdir(parents=True)
+        (tmp_path / "models" / name / "model.safetensors").write_text("")
+    with pytest.raises(cli.ModelAssetsMissing):
+        cli._load_models(tmp_path / "not-a-checkout")
 
 
 def test_the_checkout_is_only_a_candidate_when_it_is_a_checkout(

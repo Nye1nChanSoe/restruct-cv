@@ -99,10 +99,16 @@ def test_a_model_is_not_read_until_something_needs_it() -> None:
 def test_importing_the_package_does_not_import_the_model_libraries() -> None:
     """`restruct --help` and a run that fails validation used to pay four
     seconds for libraries they never touch, because __init__ re-exported the
-    pipeline eagerly."""
+    pipeline eagerly.
+
+    The torch names stay in the probe after the ONNX swap: they are no longer
+    dependencies, so finding one in ``sys.modules`` would mean something had
+    started importing an installed copy again -- the export group's, most
+    likely -- and the whole point of the swap is that a run never does."""
     probe = (
         "import sys, restruct, restruct.cli;"
-        "heavy = [n for n in ('torch', 'transformers', 'sentence_transformers')"
+        "heavy = [n for n in ('torch', 'transformers', 'sentence_transformers',"
+        " 'onnxruntime', 'tokenizers')"
         " if n in sys.modules];"
         "print(','.join(heavy))"
     )

@@ -4,15 +4,12 @@ from __future__ import annotations
 
 import re
 import statistics
-import unicodedata
 from pathlib import Path
 from typing import Any, Protocol, Sequence
 from weakref import WeakKeyDictionary
 
-from sentence_transformers import SentenceTransformer
-from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
-
 from restruct.configs import SETTINGS
+from restruct.encoders import DistilBertNerPredictor, MiniLmEncoder
 from restruct.document.types import (
     DetectedHeading,
     ExtractedLine,
@@ -53,100 +50,6 @@ def encode_references(model: EmbeddingModel, references: Sequence[str]) -> Any:
     return cached
 
 
-class DistilBertNerPredictor:
-    """Adapt fixed CoNLL entities to the resume header entity interface."""
-
-    _LABEL_TO_TYPE = {
-        "LABEL_0": "O",
-        "LABEL_1": "PER",
-        "LABEL_2": "PER",
-        "LABEL_3": "ORG",
-        "LABEL_4": "ORG",
-        "LABEL_5": "LOC",
-        "LABEL_6": "LOC",
-        "LABEL_7": "MISC",
-        "LABEL_8": "MISC",
-    }
-    _TYPE_TO_LABEL = {
-        "PER": "person name",
-        "ORG": "organization",
-        "LOC": "location",
-        "MISC": "nationality",
-    }
-
-    def __init__(self, model_directory: Path) -> None:
-        tokenizer = AutoTokenizer.from_pretrained(
-            model_directory,
-            local_files_only=True,
-        )
-        model = AutoModelForTokenClassification.from_pretrained(
-            model_directory,
-            local_files_only=True,
-        )
-        self._pipeline = pipeline(
-            "token-classification",
-            model=model,
-            tokenizer=tokenizer,
-            aggregation_strategy="simple",
-            device=-1,
-        )
-
-    def predict_entities(
-        self,
-        text: str,
-        labels: list[str],
-        threshold: float,
-    ) -> list[dict[str, Any]]:
-        requested_labels = set(labels)
-        normalized_characters: list[str] = []
-        original_indexes: list[int] = []
-        for index, character in enumerate(text):
-            if unicodedata.category(character) == "Cf":
-                continue
-            normalized_characters.append(character)
-            original_indexes.append(index)
-        normalized_text = "".join(normalized_characters)
-        predictions: list[dict[str, Any]] = []
-        for prediction in self._pipeline(normalized_text):
-            raw_type = str(
-                prediction.get("entity_group", prediction.get("entity", ""))
-            ).upper()
-            entity_type = self._LABEL_TO_TYPE.get(
-                raw_type,
-                raw_type.removeprefix("B-").removeprefix("I-"),
-            )
-            label = self._TYPE_TO_LABEL.get(entity_type)
-            score = float(prediction.get("score", 0.0))
-            if label not in requested_labels or score < threshold:
-                continue
-            normalized_start = int(prediction.get("start", 0))
-            normalized_end = int(prediction.get("end", 0))
-            if not original_indexes or normalized_start >= len(original_indexes):
-                continue
-            start = original_indexes[normalized_start]
-            end = original_indexes[min(normalized_end - 1, len(original_indexes) - 1)] + 1
-            predictions.append(
-                {
-                    "label": label,
-                    "text": text[start:end],
-                    "start": start,
-                    "end": end,
-                    "score": score,
-                }
-            )
-        merged: list[dict[str, Any]] = []
-        for prediction in predictions:
-            if merged and merged[-1]["label"] == prediction["label"]:
-                gap = text[int(merged[-1]["end"]):int(prediction["start"])]
-                if len(gap) <= 3 and not any(character.isalnum() for character in gap):
-                    merged[-1]["end"] = prediction["end"]
-                    merged[-1]["text"] = text[int(merged[-1]["start"]):int(prediction["end"])]
-                    merged[-1]["score"] = min(float(merged[-1]["score"]), float(prediction["score"]))
-                    continue
-            merged.append(prediction)
-        return merged
-
-
 def _require_local_model(models_directory: Path, name: str) -> Path:
     model_directory = models_directory / name
     if not model_directory.is_dir():
@@ -156,9 +59,9 @@ def _require_local_model(models_directory: Path, name: str) -> Path:
     return model_directory
 
 
-def load_embedding_model(models_directory: Path) -> SentenceTransformer:
-    return SentenceTransformer(
-        str(_require_local_model(models_directory, SETTINGS.model.local_directory))
+def load_embedding_model(models_directory: Path) -> MiniLmEncoder:
+    return MiniLmEncoder(
+        _require_local_model(models_directory, SETTINGS.model.local_directory)
     )
 
 
@@ -184,7 +87,7 @@ class LazyEmbeddingModel:
 
     def __init__(self, models_directory: Path) -> None:
         self._models_directory = models_directory
-        self._model: SentenceTransformer | None = None
+        self._model: MiniLmEncoder | None = None
 
     @property
     def loaded(self) -> bool:

@@ -1,6 +1,6 @@
 [project]
 name = "restruct-cv"
-version = "0.1.0"
+version = "0.2.0"
 description = "Turn messy PDF, DOCX, and scanned resumes into consistent, explainable, versioned JSON"
 readme = "README.md"
 authors = [
@@ -24,8 +24,9 @@ dependencies = [
     "pillow>=11.0",
     "python-docx>=1.1",
     "pymupdf>=1.28.2",
-    "sentence-transformers>=6.0.1",
-    "transformers>=4.51.3,<5.14.0",
+    "numpy>=1.26",
+    "onnxruntime>=1.20",
+    "tokenizers>=0.20",
 ]
 
 [project.urls]
@@ -38,7 +39,16 @@ dev = [
     "pytest>=8.0",
     "jsonschema>=4.20",
 ]
-
+# Only `tools/export_onnx.py` needs these, and only when the ONNX weights are
+# regenerated. Keeping torch out of `dependencies` is the whole point of the
+# ONNX run time, so nothing here may be imported from `src/`.
+export = [
+    "optimum>=2.1,<2.2",
+    "optimum-onnx>=0.1",
+    "onnx>=1.17",
+    "transformers>=4.51.3,<4.58",
+    "torch>=2.4",
+]
 [project.scripts]
 restruct = "restruct.cli:main"
 

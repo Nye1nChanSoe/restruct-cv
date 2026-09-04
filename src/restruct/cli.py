@@ -243,26 +243,6 @@ def _validate(path: Path) -> None:
         raise InvalidDocument(path, str(error)) from error
 
 
-def _silence_model_progress() -> None:
-    """Stop the model libraries printing to the terminal.
-
-    Loading weights draws a progress bar, which makes a successful run noisy
-    and unusable in a pipe. This is presentation, so it lives here rather than
-    in the engine, where a library caller may well want it left alone.
-    """
-    import os
-
-    os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
-    os.environ.setdefault("TRANSFORMERS_NO_ADVISORY_WARNINGS", "1")
-    try:
-        from transformers.utils import logging as transformers_logging
-
-        transformers_logging.disable_progress_bar()
-        transformers_logging.set_verbosity_error()
-    except Exception:  # a version without the helper must not break the run
-        pass
-
-
 MODELS_DIRECTORY_VARIABLE = "RESTRUCT_MODELS_DIRECTORY"
 
 
@@ -297,7 +277,7 @@ def _models_directory(project_root: Path) -> Path:
     candidates = _candidate_model_directories(project_root)
     for candidate in candidates:
         if all(
-            (candidate / name).is_dir() and any((candidate / name).iterdir())
+            (candidate / name / MODEL_WEIGHTS_FILE).is_file()
             for name in MODEL_DIRECTORY_NAMES
         ):
             return candidate
@@ -305,6 +285,12 @@ def _models_directory(project_root: Path) -> Path:
 
 
 MODEL_DIRECTORY_NAMES = ("all-MiniLM-L6-v2", "distilbert-NER")
+
+# The one file a directory has to hold to be usable. Checking for it rather
+# than for any content at all is what tells a reader that a directory left
+# over from the torch era -- safetensors and nothing else -- needs re-exporting
+# rather than that the weights are missing.
+MODEL_WEIGHTS_FILE = "model.onnx"
 
 
 def _load_models(project_root: Path):
@@ -317,11 +303,10 @@ def _load_models(project_root: Path):
     """
     from restruct.model import LazyEmbeddingModel, LazyNerPredictor
 
-    _silence_model_progress()
     models_directory = _models_directory(project_root)
     for name in MODEL_DIRECTORY_NAMES:
         directory = models_directory / name
-        if not directory.is_dir() or not any(directory.iterdir()):
+        if not (directory / MODEL_WEIGHTS_FILE).is_file():
             raise ModelAssetsMissing(
                 directory,
                 searched=_candidate_model_directories(project_root),
