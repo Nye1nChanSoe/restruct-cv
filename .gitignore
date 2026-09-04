@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# Local publishing credentials. Keep the placeholder template tracked.
+.env.pypi
+
 # Generated native PyMuPDF inspection dumps; retain the empty directory.
 debug/*
 !debug/.gitkeep
