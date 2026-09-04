@@ -87,8 +87,8 @@ def test_candidate_text_is_never_cached() -> None:
 def test_a_model_is_not_read_until_something_needs_it() -> None:
     from restruct.model import LazyEmbeddingModel, LazyNerPredictor
 
-    embedding = LazyEmbeddingModel(PROJECT_ROOT)
-    ner = LazyNerPredictor(PROJECT_ROOT)
+    embedding = LazyEmbeddingModel(PROJECT_ROOT / "models")
+    ner = LazyNerPredictor(PROJECT_ROOT / "models")
     assert not embedding.loaded and not ner.loaded
 
     embedding.encode(["a heading"], normalize_embeddings=True)

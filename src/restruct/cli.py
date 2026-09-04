@@ -238,6 +238,50 @@ def _silence_model_progress() -> None:
         pass
 
 
+MODELS_DIRECTORY_VARIABLE = "RESTRUCT_MODELS_DIRECTORY"
+
+
+def _candidate_model_directories(project_root: Path) -> list[Path]:
+    """Where to look for the weights, in the order they are preferred.
+
+    A checkout keeps them in `models/` beside the source, which is why that
+    used to be the only answer. It is wrong for an installed copy: the same
+    expression resolves to `site-packages/..`, a directory nobody has ever put
+    model weights in, so a pip-installed `restruct` could report missing
+    weights on a machine that had them. Each candidate is somewhere a person
+    would actually keep them, and the environment variable exists because an
+    installed copy has no checkout to fall back on.
+    """
+    override = os.environ.get(MODELS_DIRECTORY_VARIABLE)
+    if override:
+        # An explicit answer settles the question; nothing else is consulted.
+        return [Path(override).expanduser()]
+    candidates = []
+    # Only when it is a checkout. In an installed copy the same expression is
+    # `site-packages/..`, and listing it in the error would send the reader to
+    # put weights somewhere no one should.
+    if (project_root / "pyproject.toml").is_file():
+        candidates.append(project_root / "models")
+    candidates.append(Path.cwd() / "models")
+    candidates.append(Path.home() / ".restruct" / "models")
+    return candidates
+
+
+def _models_directory(project_root: Path) -> Path:
+    """The first candidate holding both models, or the first for the error."""
+    candidates = _candidate_model_directories(project_root)
+    for candidate in candidates:
+        if all(
+            (candidate / name).is_dir() and any((candidate / name).iterdir())
+            for name in MODEL_DIRECTORY_NAMES
+        ):
+            return candidate
+    return candidates[0]
+
+
+MODEL_DIRECTORY_NAMES = ("all-MiniLM-L6-v2", "distilbert-NER")
+
+
 def _load_models(project_root: Path):
     """Check the weights are present, then hand back loaders, not models.
 
@@ -249,11 +293,18 @@ def _load_models(project_root: Path):
     from restruct.model import LazyEmbeddingModel, LazyNerPredictor
 
     _silence_model_progress()
-    for name in ("all-MiniLM-L6-v2", "distilbert-NER"):
-        directory = project_root / "models" / name
+    models_directory = _models_directory(project_root)
+    for name in MODEL_DIRECTORY_NAMES:
+        directory = models_directory / name
         if not directory.is_dir() or not any(directory.iterdir()):
-            raise ModelAssetsMissing(directory)
-    return LazyEmbeddingModel(project_root), LazyNerPredictor(project_root)
+            raise ModelAssetsMissing(
+                directory,
+                searched=_candidate_model_directories(project_root),
+            )
+    return (
+        LazyEmbeddingModel(models_directory),
+        LazyNerPredictor(models_directory),
+    )
 
 
 def _extract_one(

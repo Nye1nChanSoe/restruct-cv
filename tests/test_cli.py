@@ -147,6 +147,68 @@ def test_missing_model_weights_report_themselves(
     )
 
 
+# -- where the weights are looked for ----------------------------------------
+
+
+def _weights(directory: Path) -> Path:
+    """A directory shaped like a populated models/ directory."""
+    for name in cli.MODEL_DIRECTORY_NAMES:
+        (directory / name).mkdir(parents=True)
+        (directory / name / "config.json").write_text("{}")
+    return directory
+
+
+def test_the_checkout_is_only_a_candidate_when_it_is_a_checkout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """In an installed copy, `parents[2]` is site-packages/.. -- a directory
+    nobody puts weights in. Offering it would send the reader to set up their
+    environment in the wrong place."""
+    monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
+    installed = tmp_path / "site-packages-parent"
+    installed.mkdir()
+    assert installed / "models" not in cli._candidate_model_directories(installed)
+
+    checkout = tmp_path / "checkout"
+    checkout.mkdir()
+    (checkout / "pyproject.toml").write_text("[project]\n")
+    assert cli._candidate_model_directories(checkout)[0] == checkout / "models"
+
+
+def test_an_explicit_directory_settles_the_question(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Someone who has said where the weights are should not have the tool
+    quietly find a different set somewhere else."""
+    monkeypatch.setenv(cli.MODELS_DIRECTORY_VARIABLE, str(tmp_path / "elsewhere"))
+    assert cli._candidate_model_directories(tmp_path) == [tmp_path / "elsewhere"]
+
+
+def test_the_working_directory_is_searched(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The installed-copy case: no checkout to fall back on, and weights kept
+    beside the resumes being read."""
+    monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
+    monkeypatch.chdir(tmp_path)
+    _weights(tmp_path / "models")
+    assert cli._models_directory(tmp_path / "not-a-checkout") == tmp_path / "models"
+
+
+def test_the_failure_names_every_place_that_was_looked_in(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The reader's next question is always "where does it want them?", and
+    for an installed copy the answer is not obvious."""
+    monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(cli.ModelAssetsMissing) as raised:
+        cli._load_models(tmp_path / "not-a-checkout")
+    message = str(raised.value)
+    assert str(tmp_path / "models") in message
+    assert str(Path.home() / ".restruct" / "models") in message
+
+
 def test_every_error_has_its_own_exit_code() -> None:
     """A script branching on these breaks silently if two ever collide."""
     codes = [code for _, code in cli._EXIT_CODES]

@@ -2,10 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/restruct/extractor-v1/resume.schema.json",
   "title": "Restruct v1 resume",
-  "description": "The lean, metadata-free output written to resume.json. Sixteen keys, always present, always in this order. No bounding boxes, fonts, geometry, model names, confidences, detection methods, or routing state ever appear here — that evidence lives under results/<name>/raw/ instead. A section is null when the resume has none; an empty array means the section exists but yielded no entries. A key is never absent. NOTE: schema_version is not yet emitted; it is added as the first key in commit C21.",
+  "description": "The lean, metadata-free output written to resume.json. Sixteen keys, always present, always in this order. No bounding boxes, fonts, geometry, model names, confidences, detection methods, or routing state ever appear here — that evidence lives under results/<name>/raw/ instead. A section is null when the resume has none; an empty array means the section exists but yielded no entries. A key is never absent. The first key is schema_version, which names the shape of the file rather than the version of the extractor that wrote it.",
   "type": "object",
   "additionalProperties": false,
   "required": [
+    "schema_version",
     "header_profile",
     "summary",
     "experience",
@@ -24,6 +25,11 @@
     "others"
   ],
   "properties": {
+    "schema_version": {
+      "description": "The version of this contract, always the first key. Bumped when the shape changes, not when extraction accuracy does.",
+      "type": "string",
+      "const": "1.0"
+    },
     "header_profile": {
       "description": "Identity and contact detail from the region above the first section heading.",
       "oneOf": [{ "$ref": "#/$defs/headerProfile" }, { "type": "null" }]

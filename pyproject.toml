@@ -1,10 +1,10 @@
 [project]
 name = "restruct"
 version = "0.1.0"
-description = "Explainable resume extraction from native and scanned PDFs"
+description = "Explainable and deterministic resume extraction from native, scanned PDFs and DOCX"
 readme = "README.md"
 authors = [
-    { name = "Nyein Chan Soe", email = "nyeinchansoe.business@gmail.com" }
+    { name = "Nyein Chan Soe", email = "contact@nyeinchansoe.com" }
 ]
 requires-python = ">=3.11"
 dependencies = [

@@ -147,8 +147,8 @@ class DistilBertNerPredictor:
         return merged
 
 
-def _require_local_model(project_root: Path, relative_directory: str) -> Path:
-    model_directory = project_root / relative_directory
+def _require_local_model(models_directory: Path, name: str) -> Path:
+    model_directory = models_directory / name
     if not model_directory.is_dir():
         raise FileNotFoundError(
             f"local model directory is missing: {model_directory}"
@@ -156,15 +156,15 @@ def _require_local_model(project_root: Path, relative_directory: str) -> Path:
     return model_directory
 
 
-def load_embedding_model(project_root: Path) -> SentenceTransformer:
+def load_embedding_model(models_directory: Path) -> SentenceTransformer:
     return SentenceTransformer(
-        str(_require_local_model(project_root, SETTINGS.model.local_directory))
+        str(_require_local_model(models_directory, SETTINGS.model.local_directory))
     )
 
 
-def load_ner_model(project_root: Path) -> DistilBertNerPredictor:
+def load_ner_model(models_directory: Path) -> DistilBertNerPredictor:
     model_directory = _require_local_model(
-        project_root,
+        models_directory,
         SETTINGS.ner.distilbert_local_directory,
     )
     return DistilBertNerPredictor(model_directory)
@@ -182,8 +182,8 @@ class LazyEmbeddingModel:
     would silently start a second cache.
     """
 
-    def __init__(self, project_root: Path) -> None:
-        self._project_root = project_root
+    def __init__(self, models_directory: Path) -> None:
+        self._models_directory = models_directory
         self._model: SentenceTransformer | None = None
 
     @property
@@ -192,15 +192,15 @@ class LazyEmbeddingModel:
 
     def encode(self, sentences: Any, **kwargs: Any) -> Any:
         if self._model is None:
-            self._model = load_embedding_model(self._project_root)
+            self._model = load_embedding_model(self._models_directory)
         return self._model.encode(sentences, **kwargs)
 
 
 class LazyNerPredictor:
     """A DistilBERT that loads the first time something asks it to predict."""
 
-    def __init__(self, project_root: Path) -> None:
-        self._project_root = project_root
+    def __init__(self, models_directory: Path) -> None:
+        self._models_directory = models_directory
         self._model: DistilBertNerPredictor | None = None
 
     @property
@@ -209,7 +209,7 @@ class LazyNerPredictor:
 
     def predict_entities(self, *arguments: Any, **keywords: Any) -> Any:
         if self._model is None:
-            self._model = load_ner_model(self._project_root)
+            self._model = load_ner_model(self._models_directory)
         return self._model.predict_entities(*arguments, **keywords)
 
 

@@ -13,6 +13,7 @@ carries the original exception rather than replacing it.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Sequence
 
 
 class RestructError(Exception):
@@ -60,13 +61,23 @@ class ModelAssetsMissing(RestructError):
     a specific fix rather than something to retry.
     """
 
-    def __init__(self, directory: Path) -> None:
+    def __init__(
+        self,
+        directory: Path,
+        searched: Sequence[Path] = (),
+    ) -> None:
+        # Naming every place that was looked in, because the reader's next
+        # question is always "where does it want them?" -- and for an
+        # installed copy, unlike a checkout, the answer is not obvious.
+        locations = "".join(f"\n  {candidate}" for candidate in searched)
         super().__init__(
             f"model weights are missing: {directory}. "
             "Weights are local-only and are never fetched at run time; "
             "see the README for the expected layout."
+            + (f" Looked in:{locations}" if locations else "")
         )
         self.directory = directory
+        self.searched = tuple(searched)
 
 
 class TesseractMissing(RestructError):

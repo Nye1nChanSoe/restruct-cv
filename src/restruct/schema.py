@@ -7,6 +7,14 @@ from pathlib import Path
 from typing import Any
 
 
+# The contract's own version, first key in every file. A consumer that reads
+# one field before anything else should read the one that tells it how to read
+# the rest -- and a file whose first line already says "1.0" can be routed by a
+# streaming reader without parsing the whole document. Bumped when the shape
+# changes, not when the extraction improves: the same version must keep meaning
+# the same keys.
+SCHEMA_VERSION = "1.0"
+
 V1_SECTION_ORDER = (
     "header_profile",
     "summary",
@@ -235,7 +243,10 @@ def build_v1_resume(
             supplementary_sections.get(section_type)
         )
     values["others"] = _others_value(supplementary_sections.get("others"))
-    return {section_type: values.get(section_type) for section_type in V1_SECTION_ORDER}
+    return {
+        "schema_version": SCHEMA_VERSION,
+        **{section_type: values.get(section_type) for section_type in V1_SECTION_ORDER},
+    }
 
 
 def write_v1_resume(output_directory: Path, resume: dict[str, Any]) -> None:

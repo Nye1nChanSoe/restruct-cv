@@ -162,7 +162,8 @@ box arithmetic → `geometry.py`; anything drawn or dumped → `debug/`.
 
 ### Two output tracks, deliberately separate
 
-`resume.json` is **lean and metadata-free**: no bboxes, fonts, geometry, model names,
+`resume.json` opens with `schema_version` (`schema.SCHEMA_VERSION`, currently `"1.0"`) and is
+otherwise **lean and metadata-free**: no bboxes, fonts, geometry, model names,
 confidences, or detection methods. All of that evidence lives only under `raw/`.
 `test_output_carries_no_debug_metadata` enforces the separation — if you add a field to the
 clean schema, it must be plain data.
@@ -325,8 +326,9 @@ Three things carry the run cost, and all three regress silently:
 
 An approved 21-commit plan lives at
 `~/.claude/plans/read-prompt-txt-first-before-robust-forest.md`; the design brief it implements
-is `prompt.txt`. Milestone 3 is complete, as are C13, C17 (CLI), C18 (perf) and C19 (DOCX).
-C20 (Tesseract detection, 300→200 DPI) and C21 (schema version, packaging) remain.
+is `prompt.txt`. Milestone 3 is complete, as are C13, C17 (CLI), C18 (perf), C19 (DOCX), C20 (Tesseract
+detection; the 300→200 DPI half was measured and rejected — see `SETTINGS.ocr.dpi`) and C21
+(schema version, packaging). All 21 commits of the plan are now implemented.
 
 **Known and unfixed:** `header.job_titles` is the weakest field (P=0.60). The semantic tier
 over-claims on taglines — `PRODUCT DESIGNER · UX/UI` yields two titles, and resume 6's
@@ -340,8 +342,13 @@ reconciliation is a comparison *between* segments, not a first-come claim, so it
 the resolver's shape without a redesign that would move output. The `@` split and the date
 spans in that function do run deterministically ahead of the model.
 
-`README.md`'s architecture section is stale: it describes the `model.py` / `routing.py` /
-`__init__.py` split that no longer exists. Scheduled for the final packaging commit.
+Model weights are resolved at run time by `cli._models_directory()`, not by
+`Path(__file__).parents[2]`. That expression is the checkout when running from source and
+`site-packages/..` in an installed wheel, so a pip-installed `restruct` reported missing weights
+on a machine that had them. The order is `RESTRUCT_MODELS_DIRECTORY` (which settles it alone),
+then `models/` beside the checkout *if it is one*, then `models/` under the working directory,
+then `~/.restruct/models`; `ModelAssetsMissing` names every place it looked. The settings name the
+model folder (`all-MiniLM-L6-v2`), and the loaders take the directory those folders live in.
 
 ## Test data
 

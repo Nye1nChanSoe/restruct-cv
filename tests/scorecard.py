@@ -269,8 +269,8 @@ def load_models() -> Any:
     from restruct.model import load_embedding_model, load_ner_model
 
     return _Models(
-        embedding=load_embedding_model(PROJECT_ROOT),
-        ner=load_ner_model(PROJECT_ROOT),
+        embedding=load_embedding_model(PROJECT_ROOT / "models"),
+        ner=load_ner_model(PROJECT_ROOT / "models"),
     )
 
 

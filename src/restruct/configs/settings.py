@@ -15,14 +15,14 @@ from restruct.configs.embedding_references import (
 class ModelSettings:
     name: str = "sentence-transformers/all-MiniLM-L6-v2"
     revision: str = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
-    local_directory: str = "models/all-MiniLM-L6-v2"
+    local_directory: str = "all-MiniLM-L6-v2"
 
 
 @dataclass(frozen=True)
 class NerSettings:
     distilbert_name: str = "dslim/distilbert-NER"
     distilbert_revision: str = "dfa2838a127384aabb82ed7719e16dab84c42a2a"
-    distilbert_local_directory: str = "models/distilbert-NER"
+    distilbert_local_directory: str = "distilbert-NER"
     minimum_confidence: float = 0.50
     labels: tuple[str, ...] = (
         "person name",

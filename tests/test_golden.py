@@ -123,10 +123,11 @@ def test_schema_exposes_every_section_in_order(
     workspace: Path,
     models: Any,
 ) -> None:
-    """All 16 destinations are always present, in the same order."""
+    """All 16 destinations are always present, in the same order, behind the
+    one key that says how to read them."""
     require_tesseract_for(stem)
     result = _result(stem, extracted, workspace, models)
-    assert tuple(result.keys()) == EXPECTED_SECTION_ORDER
+    assert tuple(result.keys()) == ("schema_version",) + EXPECTED_SECTION_ORDER
 
 
 @pytest.mark.parametrize("stem", STEMS)
@@ -170,6 +171,41 @@ def test_output_carries_no_debug_metadata(
     assert not found, f"{stem} leaked debug metadata into clean output: {sorted(found)}"
 
 
+@pytest.mark.parametrize("stem", STEMS)
+def test_the_version_is_the_first_key(
+    stem: str,
+    extracted: dict[str, dict[str, Any]],
+    workspace: Path,
+    models: Any,
+) -> None:
+    """A consumer should be able to read how to read the file before reading
+    the file, which a key buried in the middle does not allow."""
+    from restruct.schema import SCHEMA_VERSION
+
+    require_tesseract_for(stem)
+    result = _result(stem, extracted, workspace, models)
+    assert next(iter(result)) == "schema_version"
+    assert result["schema_version"] == SCHEMA_VERSION == "1.0"
+
+
+def test_every_key_is_present_even_when_it_has_no_value(
+    extracted: dict[str, dict[str, Any]],
+    workspace: Path,
+    models: Any,
+) -> None:
+    """The null/[] discipline, stated as a test rather than as prose: null for
+    an absent section, [] for a present one that yielded no entries, and never
+    an absent key. A consumer that has to distinguish "missing" from "empty"
+    by whether a key exists cannot tell either from a bug."""
+    result = _result("1", extracted, workspace, models)
+    for section in EXPECTED_SECTION_ORDER:
+        assert section in result
+        value = result[section]
+        assert value is None or isinstance(value, (list, dict))
+        if isinstance(value, list):
+            assert all(isinstance(entry, dict) for entry in value)
+
+
 # -- the published schema ---------------------------------------------------
 
 
@@ -197,6 +233,17 @@ def test_output_matches_the_published_schema(stem: str, models, workspace) -> No
     assert not errors, "\n".join(
         f"{list(error.path)}: {error.message}" for error in errors[:5]
     )
+
+
+def test_the_schema_rejects_a_version_it_does_not_describe() -> None:
+    """The version is a promise about the shape of the rest of the file. A
+    schema that accepted any string there would let a future shape validate
+    against this description of the current one."""
+    from jsonschema import Draft202012Validator
+
+    resume = json.loads(golden_path("1").read_text(encoding="utf-8"))
+    resume["schema_version"] = "2.0"
+    assert list(Draft202012Validator(_resume_schema()).iter_errors(resume))
 
 
 def test_the_schema_rejects_a_missing_section() -> None:
