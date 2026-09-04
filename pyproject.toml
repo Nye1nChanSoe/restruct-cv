@@ -1,12 +1,25 @@
 [project]
 name = "restruct"
 version = "0.1.0"
-description = "Explainable and deterministic resume extraction from native, scanned PDFs and DOCX"
+description = "Turn messy PDF, DOCX, and scanned resumes into consistent, explainable, versioned JSON"
 readme = "README.md"
 authors = [
     { name = "Nyein Chan Soe", email = "contact@nyeinchansoe.com" }
 ]
 requires-python = ">=3.11"
+keywords = ["resume", "cv", "parser", "ats", "applicant-tracking", "ocr", "pdf", "docx"]
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Text Processing",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
 dependencies = [
     "pillow>=11.0",
     "python-docx>=1.1",
@@ -14,6 +27,11 @@ dependencies = [
     "sentence-transformers>=6.0.1",
     "transformers>=4.51.3,<5.14.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Nye1nChanSoe/restruct"
+Repository = "https://github.com/Nye1nChanSoe/restruct"
+Issues = "https://github.com/Nye1nChanSoe/restruct/issues"
 
 [dependency-groups]
 dev = [
