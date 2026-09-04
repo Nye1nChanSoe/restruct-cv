@@ -122,6 +122,10 @@ box is something the document said or something a model concluded.
 `--reconstruct` draws `resume.json` back out as a page — `reconstruction.pdf` and one PNG per
 page — so the result can be proof-read by eye.
 
+Drawing a result on its own writes those files flat beside the JSON, named after it
+(`resume-reconstruction.pdf`, `resume-page-1.png`); `-o` names a directory to put them in
+instead, under their plain names.
+
 It answers a different question from the overlays. An overlay draws on top of the document, so it
 shows whether a box landed on the right words; the document keeps making sense regardless of what
 was understood. A reconstruction throws the page away and draws only what was understood, which is

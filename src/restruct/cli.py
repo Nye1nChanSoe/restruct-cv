@@ -378,19 +378,29 @@ def _extract_one(
 def _reconstruction_output(
     arguments: argparse.Namespace,
     resume_path: Path,
-) -> Path:
-    """Where a standalone reconstruction is written.
+) -> tuple[Path, str]:
+    """Where a standalone reconstruction is written, and under what names.
 
     ``-o`` names a directory here rather than a file, because the run produces
-    a page and not a result. Without it the drawing lands beside the JSON it
-    was drawn from, which is where someone looking for it will look.
+    a page and not a result, and the drawing is written into it under the plain
+    names.
+
+    Without ``-o`` the drawing lands flat beside the JSON it was drawn from,
+    named after it: a directory holding two files is a directory to open, and
+    the one thing anybody does next is look at the page. The stem is what keeps
+    two resumes drawn into the same place from overwriting each other, which is
+    the only thing the directory was buying.
     """
     if arguments.output:
-        return Path(arguments.output)
-    return resume_path.parent / f"{resume_path.stem}-reconstruction"
+        return Path(arguments.output), ""
+    return resume_path.parent, f"{resume_path.stem}-"
 
 
-def _reconstruct(resume_path: Path, output_directory: Path) -> None:
+def _reconstruct(
+    resume_path: Path,
+    output_directory: Path,
+    prefix: str = "",
+) -> None:
     """Draw one written resume.json, reporting a failure as an output failure.
 
     Reads the file rather than taking the dictionary the pipeline just built,
@@ -399,7 +409,7 @@ def _reconstruct(resume_path: Path, output_directory: Path) -> None:
     from restruct.debug.reconstruct import render_resume_file
 
     try:
-        render_resume_file(resume_path, output_directory)
+        render_resume_file(resume_path, output_directory, prefix=prefix)
     except OSError as error:
         raise OutputWriteFailed(output_directory, str(error)) from error
 
@@ -464,7 +474,7 @@ def main(argv: list[str] | None = None) -> int:
             resume_path = Path(arguments.path)
             if not resume_path.exists():
                 raise InputNotFound(resume_path)
-            _reconstruct(resume_path, _reconstruction_output(arguments, resume_path))
+            _reconstruct(resume_path, *_reconstruction_output(arguments, resume_path))
             return EXIT_OK
 
         if arguments.path is not None:

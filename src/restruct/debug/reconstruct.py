@@ -594,13 +594,22 @@ def _characters(blocks: list[Block]) -> set[str]:
     return {character for block in blocks for character in block.text}
 
 
-def render_resume(resume: dict[str, Any], output_directory: Path) -> list[Path]:
+def render_resume(
+    resume: dict[str, Any],
+    output_directory: Path,
+    *,
+    prefix: str = "",
+) -> list[Path]:
     """Draw one resume into ``reconstruction.pdf`` and one PNG per page.
 
     Both, because they answer different needs: the PDF is what a person reads
     and annotates, and the PNGs sit beside ``debug/page-N.png`` so the
     reconstruction and the overlay of the same document can be read side by
     side.
+
+    ``prefix`` is what lets the two file names be written flat into a directory
+    that holds other things: the names are fixed, so a caller that is not
+    writing into a directory of its own has to qualify them itself.
     """
     blocks = resume_blocks(resume)
     chosen = choose_font(_characters(blocks))
@@ -620,7 +629,7 @@ def render_resume(resume: dict[str, Any], output_directory: Path) -> list[Path]:
 
     output_directory.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
-    pdf_path = output_directory / "reconstruction.pdf"
+    pdf_path = output_directory / f"{prefix}reconstruction.pdf"
     # A font chosen for coverage is a large file -- Arial Unicode is 23MB --
     # and embedding it whole put all of it in every drawing, which made a
     # two-page resume too big to open on a phone or send anywhere. Subsetting
@@ -629,14 +638,19 @@ def render_resume(resume: dict[str, Any], output_directory: Path) -> list[Path]:
     document.save(str(pdf_path), garbage=4, deflate=True, clean=True)
     written.append(pdf_path)
     for number in range(1, cursor.page_count + 1):
-        image_path = output_directory / f"page-{number}.png"
+        image_path = output_directory / f"{prefix}page-{number}.png"
         document[number - 1].get_pixmap(dpi=144).save(str(image_path))
         written.append(image_path)
     document.close()
     return written
 
 
-def render_resume_file(resume_path: Path, output_directory: Path) -> list[Path]:
+def render_resume_file(
+    resume_path: Path,
+    output_directory: Path,
+    *,
+    prefix: str = "",
+) -> list[Path]:
     """Draw the resume written at ``resume_path``.
 
     Reading the file back, rather than taking the dictionary from the pipeline
@@ -646,4 +660,4 @@ def render_resume_file(resume_path: Path, output_directory: Path) -> list[Path]:
     import json
 
     resume = json.loads(resume_path.read_text(encoding="utf-8"))
-    return render_resume(resume, output_directory)
+    return render_resume(resume, output_directory, prefix=prefix)

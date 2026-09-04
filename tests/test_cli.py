@@ -184,7 +184,30 @@ def test_an_existing_result_is_drawn_without_loading_a_model(
         encoding="utf-8",
     )
     assert cli.main([str(resume_path), "--reconstruct"]) == cli.EXIT_OK
-    assert (tmp_path / "resume-reconstruction" / "reconstruction.pdf").is_file()
+    # Flat beside the JSON, named after it: a directory holding two files
+    # is a directory to open, and the stem is what keeps two resumes drawn
+    # into one place from overwriting each other.
+    assert (tmp_path / "resume-reconstruction.pdf").is_file()
+    assert (tmp_path / "resume-page-1.png").is_file()
+
+
+def test_o_names_a_directory_for_a_standalone_drawing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The run produces a page and not a result, so -o names where to put it,
+    and inside a directory of its own the plain names need no qualifying."""
+    monkeypatch.setattr(
+        cli, "_load_models", lambda root: pytest.fail("drawing must not read a model")
+    )
+    resume_path = tmp_path / "resume.json"
+    resume_path.write_text(
+        json.dumps({"schema_version": "1.0", "header_profile": {"name": "Somchai"}}),
+        encoding="utf-8",
+    )
+    drawn = tmp_path / "drawn"
+    assert cli.main([str(resume_path), "--reconstruct", "-o", str(drawn)]) == cli.EXIT_OK
+    assert (drawn / "reconstruction.pdf").is_file()
+    assert (drawn / "page-1.png").is_file()
 
 
 def test_a_result_that_is_not_there_reports_itself(tmp_path: Path) -> None:

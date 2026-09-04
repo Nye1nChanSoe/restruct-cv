@@ -28,7 +28,8 @@ results/1-unsupported/
 # Reconstructions are drawn from a committed resume.json, so committing them
 # too would store the same information twice and let the two disagree.
 results/*/reconstruction/
-results/*/*-reconstruction/
+results/*/*-reconstruction.pdf
+results/*/*-page-*.png
 
 # Holdout inputs and their generated results stay local.
 resumes-truths/*
