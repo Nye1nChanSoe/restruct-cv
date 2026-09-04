@@ -13,8 +13,11 @@ from __future__ import annotations
 
 import csv
 import io
+import os
+import shutil
 import statistics
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +27,58 @@ from restruct.configs import SETTINGS
 from restruct.errors import OcrFailed, TesseractMissing
 from restruct.document.physical import Span, TextLine, Token
 from restruct.geometry import union
+
+
+def _known_install_locations() -> tuple[str, ...]:
+    """Where an installer puts Tesseract when it does not put it on PATH.
+
+    The Windows installer the error message names is the common case: it
+    installs into Program Files and leaves PATH alone, so ``tesseract`` is
+    absent from a fresh shell while the binary sits right there. Homebrew's two
+    prefixes are here for the same reason -- a GUI-launched process inherits a
+    PATH that often has neither. Nothing here installs anything; it only looks.
+    """
+    if sys.platform == "win32":
+        directories = [
+            directory
+            for directory in (
+                os.environ.get("ProgramFiles"),
+                os.environ.get("ProgramFiles(x86)"),
+            )
+            if directory
+        ]
+        local_applications = os.environ.get("LOCALAPPDATA")
+        if local_applications:
+            directories.append(os.path.join(local_applications, "Programs"))
+        return tuple(
+            os.path.join(directory, "Tesseract-OCR", "tesseract.exe")
+            for directory in directories
+        )
+    if sys.platform == "darwin":
+        return ("/opt/homebrew/bin/tesseract", "/usr/local/bin/tesseract")
+    return ("/usr/bin/tesseract", "/usr/local/bin/tesseract")
+
+
+def find_tesseract() -> str | None:
+    """The Tesseract binary to run, or None when it cannot be found.
+
+    Deliberately not called up front. A native PDF and a DOCX never render a
+    page, and requiring an OCR engine to read a document that needs none would
+    turn an optional dependency into a mandatory one. This is asked once per
+    page that actually has too little text to parse, and ``shutil.which`` is
+    far cheaper than the render it precedes.
+    """
+    configured = SETTINGS.ocr.tesseract_command
+    found = shutil.which(configured)
+    if found:
+        return found
+    # A path in the settings that PATH lookup cannot resolve.
+    if os.path.isabs(configured) and os.access(configured, os.X_OK):
+        return configured
+    for candidate in _known_install_locations():
+        if os.access(candidate, os.X_OK):
+            return candidate
+    return None
 
 
 def _run_ocr_command(arguments: list[str], program_name: str) -> subprocess.CompletedProcess[str]:
@@ -52,6 +107,12 @@ def _tesseract_words(
     Word boxes are scaled from render pixels back into PDF space, so every
     coordinate downstream is in the same units as the native path.
     """
+    # Before the render, not after: a missing engine is not worth several
+    # hundred milliseconds of rasterising a page nothing will read.
+    executable = find_tesseract()
+    if executable is None:
+        raise TesseractMissing(SETTINGS.ocr.tesseract_command)
+
     page_number = page_index + 1
     image_path = temporary_directory / f"page-{page_number}.png"
     pixmap = page.get_pixmap(dpi=SETTINGS.ocr.dpi, alpha=False)
@@ -61,7 +122,7 @@ def _tesseract_words(
 
     result = _run_ocr_command(
         [
-            SETTINGS.ocr.tesseract_command,
+            executable,
             str(image_path),
             "stdout",
             "-l",

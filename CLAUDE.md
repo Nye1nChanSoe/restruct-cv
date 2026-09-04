@@ -52,6 +52,13 @@ Tesseract is a system dependency (`brew install tesseract`), needed only for the
 fixtures. Tests **skip** rather than fail when models or Tesseract are absent, so a fresh clone
 stays green.
 
+It is looked for by `ingestion/ocr.find_tesseract()` on PATH first and then where installers put
+it (Program Files on Windows, both Homebrew prefixes on macOS), and **only on a page that has
+too little native text to parse** — a native PDF and a DOCX must run on a machine with no OCR
+engine at all, which `tests/test_ocr.py` enforces. `SETTINGS.ocr.dpi` stays at 300: the 200 the
+design asks for was measured and loses bullet markers, and the comment there records the
+numbers.
+
 ## The test harness is the point
 
 The repository had no tests before this refactor. Two guards were added because they answer

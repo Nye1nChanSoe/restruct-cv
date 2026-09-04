@@ -35,6 +35,16 @@ class NerSettings:
 class OcrSettings:
     enabled: bool = True
     language: str = "eng"
+    # 300 rather than the 200 the design asks for, because it was measured and
+    # 200 lost more than it gained. At 200 two words come back right that were
+    # wrong at 300 (RFIs, KPI) and two blocks come back structurally wrong: a
+    # bullet marker misread as a guillemet turns its line into a subheading,
+    # and a summary paragraph splits mid-word. At 250 the bullet glyph is lost
+    # on both fixtures and eight bullets collapse into one paragraph. Mean word
+    # confidence is flat (94-95) at every DPI from 150 to 400, so confidence is
+    # not the thing to tune on: the marker glyphs are. Lowering this costs ~30%
+    # of OCR time and must be re-measured against the golden snapshots, not the
+    # scorecard, which does not score bullets or paragraphs.
     dpi: int = 300
     engine_mode: int = 1
     page_segmentation_mode: int = 3

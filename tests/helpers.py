@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import shutil
 from pathlib import Path
 from typing import Any
 
@@ -55,7 +54,15 @@ def models_available() -> bool:
 
 
 def tesseract_available() -> bool:
-    return shutil.which("tesseract") is not None
+    """Asked the same way the pipeline asks it.
+
+    A plain PATH lookup would skip the OCR fixtures on a machine where the
+    binary is installed somewhere the pipeline looks and PATH does not, which
+    is the ordinary Windows install.
+    """
+    from restruct.ingestion.ocr import find_tesseract
+
+    return find_tesseract() is not None
 
 
 def run_pipeline(pdf_path: Path, workspace: Path, models: Any) -> dict[str, Any]:
