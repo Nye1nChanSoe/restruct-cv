@@ -70,12 +70,24 @@ every box sits ten points too low. **Look at them when changing anything geometr
 uv run restruct <resume.pdf> -o out.json --stages 1-3
 ```
 
+To check what was *understood* rather than where the boxes landed, draw the result back out and
+read it:
+
+```bash
+uv run restruct <resume.pdf> -o out.json --reconstruct
+uv run restruct results/1/resume.json --reconstruct     # or one already extracted
+```
+
 ## Adding a field or a section
 
 `resume.schema.json` is the published contract, hand-written rather than generated, and every
 fixture is validated against it. A new field means editing it **in the same commit**, and the field
 must be plain data: no bounding boxes, fonts, geometry, model names, confidences or detection
 methods reach `resume.json`. That evidence belongs in the `raw/` track.
+
+It also means teaching `debug/reconstruct.py` how to draw the field. A field it does not know is
+drawn in red under UNPLACED rather than dropped, and a test fails on any committed result that
+reports one — so the reminder arrives on its own.
 
 Every synthetic fixture must have hand-written labels; a test enforces it.
 

@@ -61,6 +61,8 @@ uv run restruct <resume.pdf> -o out.json      # one resume; quiet, writes nothin
 uv run restruct <resume.docx> -o .            # a directory: writes <resume>.json into it
 uv run restruct <resume.pdf> -o out.json --debug        # + stage 4-5 artifacts in out/
 uv run restruct <resume.pdf> -o out.json --stages 1-3   # + those stages (implies --debug)
+uv run restruct <resume.pdf> -o out.json --reconstruct  # + the result drawn back as a page
+uv run restruct results/1/resume.json --reconstruct     # draw a result already extracted
 
 uv run restruct                               # batch over resumes-synthetic/
 uv run restruct --truths                      # batch over resumes-truths/ (local, gitignored)
@@ -114,6 +116,21 @@ single-file form writes it beside the other evidence in `raw/`; the batch writes
 
 A model-backed box is drawn more heavily than a deterministic one, so a reader can tell whether a
 box is something the document said or something a model concluded.
+
+### Reading the result back
+
+`--reconstruct` draws `resume.json` back out as a page — `reconstruction.pdf` and one PNG per
+page — so the result can be proof-read by eye.
+
+It answers a different question from the overlays. An overlay draws on top of the document, so it
+shows whether a box landed on the right words; the document keeps making sense regardless of what
+was understood. A reconstruction throws the page away and draws only what was understood, which is
+what makes a bullet filed under education or a date read as a job title visible at a glance.
+
+It is deliberately not a facsimile — imitating the original layout would hide the errors it exists
+to reveal. Absent and empty fields are skipped, so what is on the page is what was extracted, and
+anything the renderer cannot place is drawn in red under UNPLACED rather than dropped. Given a
+`resume.json` as the input it draws that and runs nothing else, loading no models.
 
 ## Architecture
 

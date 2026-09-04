@@ -147,6 +147,66 @@ def test_missing_model_weights_report_themselves(
     )
 
 
+# -- --reconstruct -----------------------------------------------------------
+
+
+@needs_models
+def test_reconstruct_draws_the_result_beside_it(tmp_path: Path) -> None:
+    output = tmp_path / "out.json"
+    assert cli.main([str(NATIVE_FIXTURE), "-o", str(output), "--reconstruct"]) == cli.EXIT_OK
+    drawn = tmp_path / "out" / "reconstruction"
+    assert (drawn / "reconstruction.pdf").is_file()
+    assert (drawn / "page-1.png").is_file()
+
+
+@needs_models
+def test_without_the_flag_nothing_is_drawn(tmp_path: Path) -> None:
+    """Quiet on success means quiet: a run that was not asked for a drawing
+    leaves no drawing."""
+    output = tmp_path / "out.json"
+    assert cli.main([str(NATIVE_FIXTURE), "-o", str(output)]) == cli.EXIT_OK
+    assert not (tmp_path / "out" / "reconstruction").exists()
+
+
+def test_an_existing_result_is_drawn_without_loading_a_model(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Drawing needs no models and no source document, so a result from last
+    week can be looked at without re-running anything."""
+    monkeypatch.setattr(
+        cli,
+        "_load_models",
+        lambda root: pytest.fail("drawing a result must not read a model"),
+    )
+    resume_path = tmp_path / "resume.json"
+    resume_path.write_text(
+        json.dumps({"schema_version": "1.0", "header_profile": {"name": "Somchai"}}),
+        encoding="utf-8",
+    )
+    assert cli.main([str(resume_path), "--reconstruct"]) == cli.EXIT_OK
+    assert (tmp_path / "resume-reconstruction" / "reconstruction.pdf").is_file()
+
+
+def test_a_result_that_is_not_there_reports_itself(tmp_path: Path) -> None:
+    assert (
+        cli.main([str(tmp_path / "absent.json"), "--reconstruct"])
+        == cli.EXIT_INPUT_NOT_FOUND
+    )
+
+
+def test_a_json_path_without_the_flag_is_still_an_unsupported_format(
+    tmp_path: Path,
+) -> None:
+    """--reconstruct is what makes a .json input meaningful; without it the
+    file is a resume the extractor cannot read."""
+    resume_path = tmp_path / "resume.json"
+    resume_path.write_text("{}", encoding="utf-8")
+    assert (
+        cli.main([str(resume_path), "-o", str(tmp_path / "out.json")])
+        == cli.EXIT_UNSUPPORTED_FORMAT
+    )
+
+
 # -- where the weights are looked for ----------------------------------------
 
 

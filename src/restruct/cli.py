@@ -126,6 +126,15 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--reconstruct",
+        action="store_true",
+        help=(
+            "Also draw the result back out as a readable page, for "
+            "proof-reading by eye: reconstruction.pdf and one PNG per page. "
+            "Given a resume.json as PATH, draws that and runs nothing else."
+        ),
+    )
+    parser.add_argument(
         "--truths",
         action="store_true",
         help="Batch over resumes-truths/ into results/0-truths/.",
@@ -140,9 +149,25 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     arguments = parser.parse_args(argv)
-    if arguments.path is not None and arguments.output is None:
+    if (
+        arguments.path is not None
+        and arguments.output is None
+        and not _is_reconstruction_source(arguments)
+    ):
         parser.error("-o/--output is required when a PATH is given")
     return arguments
+
+
+def _is_reconstruction_source(arguments: argparse.Namespace) -> bool:
+    """Whether PATH is an already-extracted resume to draw rather than read.
+
+    Drawing needs no models and no source document, so a result from last week
+    can be looked at without re-running anything -- and `-o` names nothing,
+    because nothing new is extracted.
+    """
+    return bool(arguments.reconstruct) and Path(
+        arguments.path
+    ).suffix.casefold() == ".json"
 
 
 def _selected_stages(arguments: argparse.Namespace) -> frozenset[int]:
@@ -312,6 +337,8 @@ def _extract_one(
     output_path: Path,
     stages: frozenset[int],
     models,
+    *,
+    reconstruct: bool = False,
 ) -> None:
     """Extract one resume to an explicit output file."""
     from restruct.pipeline import extract_resume
@@ -344,8 +371,47 @@ def _extract_one(
     except OSError as error:
         raise OutputWriteFailed(output_path, str(error)) from error
 
+    if reconstruct:
+        _reconstruct(output_path, artifact_directory / "reconstruction")
 
-def _batch(input_directory: Path, output_root: Path, models, stages) -> None:
+
+def _reconstruction_output(
+    arguments: argparse.Namespace,
+    resume_path: Path,
+) -> Path:
+    """Where a standalone reconstruction is written.
+
+    ``-o`` names a directory here rather than a file, because the run produces
+    a page and not a result. Without it the drawing lands beside the JSON it
+    was drawn from, which is where someone looking for it will look.
+    """
+    if arguments.output:
+        return Path(arguments.output)
+    return resume_path.parent / f"{resume_path.stem}-reconstruction"
+
+
+def _reconstruct(resume_path: Path, output_directory: Path) -> None:
+    """Draw one written resume.json, reporting a failure as an output failure.
+
+    Reads the file rather than taking the dictionary the pipeline just built,
+    which is what keeps this a check on what was actually published.
+    """
+    from restruct.debug.reconstruct import render_resume_file
+
+    try:
+        render_resume_file(resume_path, output_directory)
+    except OSError as error:
+        raise OutputWriteFailed(output_directory, str(error)) from error
+
+
+def _batch(
+    input_directory: Path,
+    output_root: Path,
+    models,
+    stages,
+    *,
+    reconstruct: bool = False,
+) -> None:
     """Regenerate a whole corpus. Writes every stage, which is its purpose."""
     from restruct.pipeline import extract_resume
 
@@ -379,6 +445,10 @@ def _batch(input_directory: Path, output_root: Path, models, stages) -> None:
             models[1],
             stages=stages,
         )
+        if reconstruct:
+            _reconstruct(
+                resume_output / "resume.json", resume_output / "reconstruction"
+            )
         print(f"extracted: {pdf_path.name}")
 
 
@@ -388,11 +458,26 @@ def main(argv: list[str] | None = None) -> int:
     stages = _selected_stages(arguments)
 
     try:
+        if _is_reconstruction_source(arguments):
+            # Nothing is extracted, so no models are read and no source
+            # document is opened: this draws a result that already exists.
+            resume_path = Path(arguments.path)
+            if not resume_path.exists():
+                raise InputNotFound(resume_path)
+            _reconstruct(resume_path, _reconstruction_output(arguments, resume_path))
+            return EXIT_OK
+
         if arguments.path is not None:
             _validate(arguments.path)
             output_path = resolve_output_path(arguments.output, arguments.path)
             models = _load_models(project_root)
-            _extract_one(arguments.path, output_path, stages, models)
+            _extract_one(
+                arguments.path,
+                output_path,
+                stages,
+                models,
+                reconstruct=arguments.reconstruct,
+            )
             return EXIT_OK
 
         if arguments.truths:
@@ -413,6 +498,7 @@ def main(argv: list[str] | None = None) -> int:
             output_root,
             models,
             arguments.stages if arguments.stages is not None else ALL_STAGES,
+            reconstruct=arguments.reconstruct,
         )
         return EXIT_OK
     except RestructError as error:

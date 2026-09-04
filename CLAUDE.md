@@ -150,7 +150,7 @@ parsers/     one module per section shape (header, experience, education, skills
 models/      DistilBERT NER and MiniLM adapters  (currently still model.py)
 stages.py    which debug artifacts each stage owns; importable without the models
 patterns/    deterministic regex evidence, grouped by what it describes
-debug/       artifacts (JSON) and render (Pillow overlays), one canvas, one colour registry
+debug/       artifacts (JSON), render (Pillow overlays), reconstruct (the result as a page)
 schema.py    the lean, versioned clean output (contract: resume.schema.json)
 errors.py    the failure taxonomy; only cli.py turns one into an exit code
 pipeline.py  orchestration only — the only module that knows the stage order
@@ -214,6 +214,37 @@ join a whole section. A separator found *inside* brackets is part of the phrase,
 boundary, so splits are taken at depth zero.
 
 **Never classify content merely because it follows a heading.** Ambiguous content stays `other`.
+
+### A reconstruction is read instead of the JSON, not beside it
+
+`debug/reconstruct.py` draws `resume.json` back out as a readable page (`--reconstruct`). It
+answers the question the overlays cannot: an overlay draws on the document, so the document keeps
+making sense whatever was understood, and a bullet filed under education looks perfectly correct.
+Throwing the page away and drawing only what was understood is what makes that visible.
+
+Three properties hold it up, and each is a test:
+
+- **It renders from the written `resume.json`**, never from the parser's types — so it is a
+  consumer of the published contract, and a field the contract cannot express is one it cannot
+  draw. `render_resume_file` reads the file back for exactly this reason.
+- **Absent and empty values are skipped.** A page of "none" rows is a page nobody proof-reads.
+- **Content it cannot place is drawn in red under UNPLACED.** Adding a schema field without
+  teaching the renderer would otherwise make the field invisible, and invisible reads as an
+  extraction failure. `_DRAWN_KEYS` is what that check is made of; a new schema key belongs there
+  in the same commit.
+
+It is **not** a facsimile. Imitating the source layout would hide the errors it exists to reveal,
+and for a DOCX it would mean inventing the geometry ingestion refuses to invent.
+
+The font is chosen against the characters of the document rather than by name: the corpus already
+carries en dashes, curly quotes and Thai, and PDF's base-14 faces draw every one of those as a
+middle dot — which a reader would take for an extraction bug. When nothing installed covers the
+text, the page says which characters are missing. Weight is drawn by stroking the outline, because
+the one face that covers a document may have no bold, and losing a glyph to gain a heavier heading
+is a bad trade in a tool for reading.
+
+Reconstructions are gitignored: they are drawn from a committed `resume.json`, so committing them
+would store the same information twice and let the two disagree.
 
 ### Unsupported layouts are recorded, never repaired
 
