@@ -621,7 +621,12 @@ def render_resume(resume: dict[str, Any], output_directory: Path) -> list[Path]:
     output_directory.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
     pdf_path = output_directory / "reconstruction.pdf"
-    document.save(str(pdf_path))
+    # A font chosen for coverage is a large file -- Arial Unicode is 23MB --
+    # and embedding it whole put all of it in every drawing, which made a
+    # two-page resume too big to open on a phone or send anywhere. Subsetting
+    # keeps only the glyphs actually drawn: 23MB becomes about 60KB.
+    document.subset_fonts(verbose=False)
+    document.save(str(pdf_path), garbage=4, deflate=True, clean=True)
     written.append(pdf_path)
     for number in range(1, cursor.page_count + 1):
         image_path = output_directory / f"page-{number}.png"

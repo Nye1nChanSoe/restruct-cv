@@ -254,6 +254,14 @@ def test_it_draws_the_file_that_was_written(tmp_path: Path) -> None:
     assert "Somchai Rattanakul" in _drawn_text(tmp_path / "drawn")
 
 
+def test_only_the_glyphs_drawn_are_embedded(tmp_path: Path) -> None:
+    """A font chosen for coverage is a large file -- Arial Unicode is 23MB --
+    and embedding it whole made a two-page resume too big to open on a phone
+    or send anywhere."""
+    render_resume(FULL_RESUME, tmp_path)
+    assert (tmp_path / "reconstruction.pdf").stat().st_size < 1_000_000
+
+
 def test_a_long_resume_paginates(tmp_path: Path) -> None:
     resume = dict(FULL_RESUME)
     resume["experience"] = [
