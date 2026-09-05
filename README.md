@@ -1,5 +1,11 @@
 <h1 align="center">Restruct</h1>
 
+<p align="center">
+  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/v/restruct-cv.svg" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/pyversions/restruct-cv.svg" alt="Python versions"></a>
+  <a href="https://github.com/Nye1nChanSoe/restruct-cv/blob/master/LICENSE"><img src="https://img.shields.io/pypi/l/restruct-cv.svg" alt="License"></a>
+</p>
+
 <h3 align="center">Turn a resume PDF, DOCX, or a Scan into clean, consistent JSON.</h3>
 
 <h4 align="center">Runs entirely on your machine. No upload, no API key.</h4>
