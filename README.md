@@ -26,6 +26,15 @@ an applicant tracking system, a search index, or an analytics pipeline.
 
 <br>
 
+## Why Restruct exists
+
+Restruct grew out of my work on [Open LinkedOut](https://github.com/Nye1nChanSoe/open-linkedout), a lightweight, local-first job scraping and matching system.
+Small local models consumed too much RAM and disk space while still hallucinating resume details.
+Restruct takes a more deterministic and resource-efficient approach,
+leaving language models to what they do best **contextual understanding**, not **factual extraction**.
+
+<br>
+
 ## Install
 
 ```bash

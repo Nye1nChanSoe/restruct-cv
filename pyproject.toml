@@ -1,6 +1,6 @@
 [project]
 name = "restruct-cv"
-version = "0.2.2"
+version = "0.2.3"
 description = "Turn messy PDF, DOCX, and scanned resumes into consistent, explainable, versioned JSON"
 readme = "README.md"
 authors = [
