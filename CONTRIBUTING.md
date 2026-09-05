@@ -19,61 +19,92 @@ uv sync
 ```
 
 Model weights are local-only and gitignored; see [README.md](README.md#model-weights) for the two
-directories and where they are looked for. Tesseract is needed only for the scanned fixtures.
-Tests **skip** rather than fail when either is absent, so a fresh clone stays green.
+directories and where they are looked for. Tesseract is only needed for the scanned fixtures. If
+either is missing, the tests skip rather than fail, so a fresh clone stays green and you can start
+on the model-free parts right away.
+
+## The dev CLI
+
+The commands a contributor needs live in `tools/dev.py` rather than in the shipped `restruct`
+command. Everything in there reads or writes a directory that only exists in a checkout, so
+shipping it as a console script would hand every PyPI user a command that cannot work.
+
+```bash
+uv run tools/dev.py batch [--truths | --unsupported] [--stages 1-5] [--reconstruct]
+uv run tools/dev.py examples                        # refresh examples/ from results/
+uv run tools/dev.py scorecard [--update-baseline]
+uv run --group export tools/dev.py export-onnx      # re-export models/*/model.onnx
+uv run tools/dev.py --version
+```
+
+`batch` writes every stage by default. Its job is to regenerate the committed corpus, and writing
+less would let a stale artifact survive a run and quietly look correct.
+
+The shipped `restruct` stays small on purpose: `-o`, `--ats`, `--reconstruct`, `--install-models`
+and `--version`. There is one more, `--stages`, kept out of `--help` for the per-document case
+described below.
 
 ## The two guards
 
-Both must pass on every commit, because they answer different questions.
+There are two checks, and it is worth running both, because they answer different questions.
 
 ```bash
 uv run pytest                                  # full suite (~50s; loads both models once)
 uv run pytest tests/test_patterns.py           # fast, model-free unit tests
 uv run pytest -k "golden and 7.anomaly"        # one fixture
 
-uv run python -m tests.scorecard               # per-field precision/recall/F1
+uv run tools/dev.py scorecard                  # per-field precision/recall/F1
 ```
 
 - **`tests/golden/`** holds byte-for-byte snapshots of `resume.json` for every synthetic fixture.
-  They catch any *change*. The pipeline is deterministic, so an empty diff is a real signal.
-- **`tests/labels/` + `tests/scorecard.py`** hold hand-written ground truth, read off each resume
-  rather than taken from pipeline output. They catch output getting *worse*, which a snapshot
-  cannot distinguish from a fix. `tests/baseline_scores.json` is the enforced per-field F1 floor.
+  They tell you that something *changed*. The pipeline is deterministic, so an empty diff really
+  does mean nothing moved.
+- **`tests/labels/` + `tests/scorecard.py`** hold ground truth written by hand, read off each
+  resume rather than copied from pipeline output. They tell you whether the output got *worse* —
+  which a snapshot on its own cannot distinguish from a fix. `tests/baseline_scores.json` is the
+  per-field F1 floor the suite enforces.
 
 ### Change budget
 
-**Never re-baseline a golden snapshot to make a test pass.** A diff during a refactor means the
-refactor changed behavior — fix the code.
+The one rule worth stating flatly: **don't re-baseline a golden snapshot just to make a test
+pass.** If a refactor produces a diff, the refactor changed behavior, and the code is what needs
+fixing.
 
-- **Refactor** (moving code, deduplicating): output must be **byte-identical**. Hard gate.
-- **Behavior change**: diffs are expected. Review every line, re-baseline *in the same commit*
-  with `uv run pytest --update-golden`, and put the before/after scorecard in the commit message.
-  Scorecard F1 must not drop on any field.
+Beyond that it comes down to which kind of change you are making:
 
-The scorecard does not score bullets or paragraphs, so a change that touches OCR or layout must be
-reviewed against the golden diff as well — an identical scorecard is not by itself evidence that
-nothing got worse.
+- **A refactor** — moving code around, removing duplication — should leave the output
+  byte-identical. If it doesn't, something real changed.
+- **A behavior change** is expected to produce diffs. Read through them, re-baseline in the same
+  commit with `uv run pytest --update-golden`, and put the before/after scorecard in the commit
+  message so the next person can see what the change cost or bought. F1 shouldn't drop on any
+  field.
+
+One caveat: the scorecard doesn't score bullets or paragraphs. If your change touches OCR or
+layout, read the golden diff too — an unchanged scorecard isn't evidence on its own that nothing
+got worse.
 
 ### Verifying what the snapshots do not cover
 
-Debug artifacts are not in the golden set. `results/` itself is untracked — every run rewrites
-it, and its overlays are large. What is committed is `examples/`: three resumes, one per
-ingestion track, copied out of `results/` by a script rather than curated by hand. To check a
-change that touches rendering or section parsing, regenerate and confirm nothing moved:
+Debug artifacts aren't in the golden set. `results/` is untracked entirely — every run rewrites it
+and the overlays are large. What is committed instead is `examples/`: three resumes, one per
+ingestion track, copied out of `results/` by a script rather than curated by hand. If your change
+touches rendering or section parsing, regenerate them and see whether anything moved:
 
 ```bash
-uv run restruct && uv run python tools/refresh_examples.py
+uv run tools/dev.py batch && uv run tools/dev.py examples
 git status --short examples/    # clean == byte-identical
 ```
 
-Passes 1-4 render images and no JSON, because their output is geometry: a count can be right while
-every box sits ten points too low. **Look at them when changing anything geometric.**
+Passes 1-4 render images and no JSON, because what they produce is geometry — a count can be
+perfectly right while every box sits ten points too low. **Look at them whenever you change
+anything geometric.**
 
 ```bash
-uv run restruct <resume.pdf> -o out.json --stages 1-3
+uv run restruct <resume.pdf> -o out.json --stages 1-3   # one resume, hidden flag
+uv run tools/dev.py batch --stages 1-3                  # the whole corpus
 ```
 
-To check what was *understood* rather than where the boxes landed, draw the result back out and
+And to see what was *understood* rather than where the boxes landed, draw the result back out and
 read it:
 
 ```bash
@@ -83,16 +114,16 @@ uv run restruct examples/11/resume.json --reconstruct   # or one already extract
 
 ## Adding a field or a section
 
-`resume.schema.json` is the published contract, hand-written rather than generated, and every
-fixture is validated against it. A new field means editing it **in the same commit**, and the field
-must be plain data: no bounding boxes, fonts, geometry, model names, confidences or detection
-methods reach `resume.json`. That evidence belongs in the `raw/` track.
+`resume.schema.json` is the published contract. It's hand-written rather than generated, and every
+fixture is validated against it, so a new field means editing it **in the same commit**. The field
+also has to be plain data: no bounding boxes, fonts, geometry, model names, confidences or
+detection methods make it into `resume.json`. That evidence belongs in the `raw/` track.
 
-It also means teaching `debug/reconstruct.py` how to draw the field. A field it does not know is
-drawn in red under UNPLACED rather than dropped, and a test fails on any committed result that
-reports one — so the reminder arrives on its own.
+You'll also want to teach `debug/reconstruct.py` how to draw the field. If you forget, it isn't
+dropped silently — it's drawn in red under UNPLACED, and a test fails on any committed result that
+reports one, so the reminder finds you.
 
-Every synthetic fixture must have hand-written labels; a test enforces it.
+Every synthetic fixture needs hand-written labels; a test enforces that too.
 
 ## Conventions
 
@@ -103,24 +134,8 @@ Every synthetic fixture must have hand-written labels; a test enforces it.
 
 ## Privacy and Test Data
 
-Please do not submit real resumes containing PII, or their labels. `resumes-truths/` is gitignored
-for exactly this reason. When providing examples, test files, bug reports, or reproduction cases,
-use anonymized data.
-
-## Major Changes
-
-For major changes, please open an issue first to discuss your idea before submitting a pull
-request. This helps ensure that proposed changes align with the project's direction and avoids
-unnecessary work.
-
-## Pull Requests
-
-When submitting a pull request:
-
-- Keep the change focused on a single issue or improvement.
-- Clearly describe what was changed and why.
-- Include reproduction steps when fixing a bug.
-- Add or update tests when appropriate.
-- Update documentation if your change affects setup, usage, or behavior.
+Please don't submit real resumes containing PII, or their labels — `resumes-truths/` is gitignored
+for exactly that reason. Anonymized data is fine for examples, test files, bug reports and
+reproduction cases.
 
 Thank you for contributing!

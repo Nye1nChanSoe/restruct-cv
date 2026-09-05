@@ -10,20 +10,22 @@ uv run pytest tests/test_patterns.py           # fast, model-free unit tests
 uv run pytest -k "golden and 7.anomaly"        # one fixture
 uv run pytest --update-golden                  # re-baseline snapshots (see Change budget)
 
-uv run python -m tests.scorecard               # per-field precision/recall/F1
-uv run python -m tests.scorecard --update-baseline   # re-freeze the accuracy floor
+uv run tools/dev.py scorecard                  # per-field precision/recall/F1
+uv run tools/dev.py scorecard --update-baseline      # re-freeze the accuracy floor
 
 uv run restruct <path> -o <out.json>           # one resume; quiet, writes nothing else
 uv run restruct <path> -o .                    # a directory: writes <resume>.json into it
 uv run restruct <path> -o <out.json> --ats     # + the ATS check (stage 4-5 artifacts) in <out>/
 uv run restruct <path> -o <out.json> --stages 1-3   # + those stages (implies --ats)
 
-uv run restruct                                # batch: every PDF in resumes-synthetic/
-uv run restruct --truths                       # batch: only resumes-truths/ (local, gitignored)
-uv run restruct --unsupported                  # batch: resumes-unsupported/ (see below)
-
 uv run restruct --install-models               # download the weights and exit
-uv run --group export python tools/export_onnx.py    # re-export models/*/model.onnx
+uv run restruct --version                      # the installed version (also tools/dev.py --version)
+
+uv run tools/dev.py batch                      # batch: every PDF in resumes-synthetic/
+uv run tools/dev.py batch --truths             # batch: only resumes-truths/ (local, gitignored)
+uv run tools/dev.py batch --unsupported        # batch: resumes-unsupported/ (see below)
+uv run tools/dev.py examples                   # refresh examples/ from results/
+uv run --group export tools/dev.py export-onnx       # re-export models/*/model.onnx
 ```
 
 `-o` takes a file or a directory. A directory — `.`, `out/`, an existing path — writes
@@ -123,7 +125,7 @@ each one, minus the pass overlays and reconstructions. That is what keeps them e
 than illustration, and it is how a change that touches rendering or section parsing is verified:
 
 ```bash
-uv run restruct && uv run python tools/refresh_examples.py
+uv run tools/dev.py batch && uv run tools/dev.py examples
 git status --short examples/    # clean == byte-identical
 ```
 
@@ -160,7 +162,7 @@ The unsupported fixtures are not in the batch run, since their parse is untrustw
 definition. Render their overlays with:
 
 ```bash
-uv run restruct --unsupported      # resumes-unsupported/ -> results/1-unsupported/ (gitignored)
+uv run tools/dev.py batch --unsupported   # resumes-unsupported/ -> results/1-unsupported/ (gitignored)
 ```
 
 This is not optional diligence. Rendering the pass-1 overlay is what found that five Year
@@ -189,6 +191,13 @@ install.py   the only module that opens a socket: pinned, verified weight downlo
 pipeline.py  orchestration only — the only module that knows the stage order
 cli.py       argparse and filesystem layout only
 ```
+
+`tools/dev.py` is the contributor CLI and is deliberately **not** a `[project.scripts]` entry:
+every command it has reads or writes a directory that exists only in a checkout, so a console
+script installed from PyPI would be broken for everyone who had it. The shipped `restruct` is the
+five flags a user needs plus a hidden `--stages`; the corpus runs, the examples refresh, the
+scorecard and the ONNX export live in `dev.py`, which calls the same `extract_resume` a user
+does rather than reaching into the pipeline.
 
 Where new code goes: shared by two parsers → `layout/` or `structure/`; a regex → `patterns/`;
 box arithmetic → `geometry.py`; anything drawn or dumped → `debug/`.

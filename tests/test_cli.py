@@ -439,3 +439,21 @@ def test_extracting_into_the_current_directory(tmp_path: Path) -> None:
     shutil.copy(NATIVE_FIXTURE, tmp_path / "priya.pdf")
     assert cli.main([str(tmp_path / "priya.pdf"), "-o", str(tmp_path)]) == cli.EXIT_OK
     assert (tmp_path / "priya.json").exists()
+
+
+# -- version -----------------------------------------------------------------
+
+
+def test_version_prints_the_installed_version_and_exits(capsys):
+    """``--version`` answers from the distribution metadata, not a literal.
+
+    A second copy of the number in the source is one that goes stale the first
+    time ``pyproject.toml`` is bumped without it.
+    """
+    import restruct
+
+    with pytest.raises(SystemExit) as exit_status:
+        cli._parse_arguments(["--version"])
+
+    assert exit_status.value.code == 0
+    assert capsys.readouterr().out.strip() == f"restruct {restruct.__version__}"

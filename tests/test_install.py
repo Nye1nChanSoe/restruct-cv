@@ -314,13 +314,13 @@ def test_an_install_is_the_whole_run(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """`--install-models` writes no result, so it must not fall through into
-    the batch and start extracting a corpus."""
+    an extraction nobody asked for."""
     installed: list[Path] = []
     monkeypatch.setattr(
         cli, "_install_models", lambda destination: installed.append(destination)
     )
     monkeypatch.setattr(
-        cli, "_batch", lambda *arguments, **keywords: pytest.fail("ran the batch")
+        cli, "_extract_one", lambda *arguments, **keywords: pytest.fail("extracted")
     )
     assert cli.main(["--install-models", str(tmp_path / "here")]) == cli.EXIT_OK
     assert installed == [tmp_path / "here"]

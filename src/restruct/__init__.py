@@ -14,6 +14,13 @@ and the shared document types; everything else lives in the stage packages:
     schema/      the versioned clean output
 """
 
+from importlib.metadata import PackageNotFoundError, version as _distribution_version
+
+try:
+    __version__ = _distribution_version("restruct-cv")
+except PackageNotFoundError:  # a source tree that was never installed
+    __version__ = "0.0.0+unknown"
+
 from restruct.document.types import (
     DetectedHeading,
     ExtractedLine,
@@ -58,4 +65,5 @@ __all__ = [
     "install_models",
     "main",
     "write_v1_resume",
+    "__version__",
 ]

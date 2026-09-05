@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-from restruct.configs import SETTINGS
+from restruct import __version__
 from restruct.errors import (
     ExtractionFailed,
     InputNotFound,
@@ -30,7 +30,7 @@ from restruct.errors import (
     TesseractMissing,
     UnsupportedFormat,
 )
-from restruct.stages import ALL_STAGES, DEFAULT_DEBUG_STAGES, raw_extraction_reader
+from restruct.stages import DEFAULT_DEBUG_STAGES, raw_extraction_reader
 
 SUPPORTED_SUFFIXES = (".pdf", ".docx")
 
@@ -91,6 +91,13 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         description="Extract a structured resume from a PDF or DOCX into JSON.",
     )
     parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=f"restruct {__version__}",
+        help="Print the version and exit.",
+    )
+    parser.add_argument(
         "path",
         nargs="?",
         type=Path,
@@ -145,16 +152,12 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
             "only thing in restruct that uses the network."
         ),
     )
-    # Corpus regeneration, for contributors working in a checkout. Hidden:
-    # neither directory exists in an installed copy.
-    parser.add_argument("--truths", action="store_true", help=argparse.SUPPRESS)
-    parser.add_argument("--unsupported", action="store_true", help=argparse.SUPPRESS)
     arguments = parser.parse_args(argv)
-    if (
-        arguments.path is not None
-        and arguments.output is None
-        and not _is_reconstruction_source(arguments)
-    ):
+    if arguments.path is None:
+        if arguments.install_models is None:
+            parser.error("PATH is required")
+        return arguments
+    if arguments.output is None and not _is_reconstruction_source(arguments):
         parser.error("-o/--output is required when a PATH is given")
     return arguments
 
@@ -520,54 +523,6 @@ def _reconstruct(
         raise OutputWriteFailed(output_directory, str(error)) from error
 
 
-def _batch(
-    input_directory: Path,
-    output_root: Path,
-    models,
-    stages,
-    *,
-    reconstruct: bool = False,
-) -> None:
-    """Regenerate a whole corpus. Writes every stage, which is its purpose."""
-    from restruct.pipeline import extract_resume
-
-    project_root = Path(__file__).resolve().parents[2]
-    raw_debug_directory = project_root / SETTINGS.debug.raw_extraction_directory
-    ocr_debug_directory = project_root / SETTINGS.debug.ocr_extraction_directory
-    local = output_root != project_root / SETTINGS.paths.results_directory
-
-    sources = sorted(
-        path
-        for suffix in SUPPORTED_SUFFIXES
-        for path in input_directory.glob(f"*{suffix}")
-    )
-    for pdf_path in sources:
-        resume_output = output_root / pdf_path.stem
-        extract_resume(
-            pdf_path,
-            resume_output,
-            (
-                resume_output / f"raw-{raw_extraction_reader(pdf_path)}.json"
-                if local
-                else raw_debug_directory
-                / f"{pdf_path.stem}.raw-{raw_extraction_reader(pdf_path)}.json"
-            ),
-            (
-                resume_output / "debug" / "ocr" / "raw-tesseract.json"
-                if local
-                else ocr_debug_directory / f"{pdf_path.stem}.ocr-tesseract.json"
-            ),
-            models[0],
-            models[1],
-            stages=stages,
-        )
-        if reconstruct:
-            _reconstruct(
-                resume_output / "resume.json", resume_output / "reconstruction"
-            )
-        print(f"extracted: {pdf_path.name}")
-
-
 def _models(project_root: Path):
     """The loaders, offering to fetch the weights once if they are absent."""
     try:
@@ -601,40 +556,18 @@ def main(argv: list[str] | None = None) -> int:
             _reconstruct(resume_path, *_reconstruction_output(arguments, resume_path))
             return EXIT_OK
 
-        if arguments.path is not None:
-            _validate(arguments.path)
-            output_path = resolve_output_path(arguments.output, arguments.path)
-            models = _models(project_root)
-            _extract_one(
-                arguments.path,
-                output_path,
-                stages,
-                models,
-                reconstruct=arguments.reconstruct,
-            )
-            return EXIT_OK
-
-        if arguments.truths:
-            input_directory = project_root / SETTINGS.paths.truths_input_directory
-            output_root = project_root / SETTINGS.paths.truths_results_directory
-        elif arguments.unsupported:
-            input_directory = project_root / SETTINGS.paths.unsupported_input_directory
-            output_root = project_root / SETTINGS.paths.unsupported_results_directory
-        else:
-            input_directory = project_root / SETTINGS.paths.input_directory
-            output_root = project_root / SETTINGS.paths.results_directory
+        _validate(arguments.path)
+        output_path = resolve_output_path(arguments.output, arguments.path)
         models = _models(project_root)
-        # The batch exists to regenerate the committed corpus, so it writes
-        # everything unless told otherwise. Anything less and a stale artifact
-        # would survive a run and make `git status results/` read as clean.
-        _batch(
-            input_directory,
-            output_root,
+        _extract_one(
+            arguments.path,
+            output_path,
+            stages,
             models,
-            arguments.stages if arguments.stages is not None else ALL_STAGES,
             reconstruct=arguments.reconstruct,
         )
         return EXIT_OK
+
     except RestructError as error:
         print(f"restruct: {error}", file=sys.stderr)
         for error_type, code in _EXIT_CODES:
