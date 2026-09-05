@@ -52,7 +52,7 @@ def test_a_bad_stage_spec_is_rejected(spec: str) -> None:
         cli.parse_stages(spec)
 
 
-# -- what --debug and --stages mean ------------------------------------------
+# -- what --ats and --stages mean ------------------------------------------
 
 
 def selected(argv: list[str]) -> frozenset[int]:
@@ -64,7 +64,7 @@ def test_no_flag_writes_no_artifacts() -> None:
 
 
 def test_debug_alone_means_stages_four_and_five() -> None:
-    assert selected([str(NATIVE_FIXTURE), "-o", "out.json", "--debug"]) == {4, 5}
+    assert selected([str(NATIVE_FIXTURE), "-o", "out.json", "--ats"]) == {4, 5}
 
 
 def test_stages_without_debug_enables_debug() -> None:
@@ -79,7 +79,7 @@ def test_stages_without_debug_enables_debug() -> None:
 
 def test_stages_overrides_the_debug_default() -> None:
     assert selected(
-        [str(NATIVE_FIXTURE), "-o", "out.json", "--debug", "--stages", "2"]
+        [str(NATIVE_FIXTURE), "-o", "out.json", "--ats", "--stages", "2"]
     ) == {2}
 
 
@@ -337,7 +337,7 @@ def test_extracting_one_resume_is_quiet_and_writes_only_the_result(
 @pytest.mark.parametrize(
     ("flags", "expected"),
     [
-        (["--debug"], {"pass-4-sections"}),
+        (["--ats"], {"pass-4-sections"}),
         (["--stages", "1-3"], {"pass-1-physical", "pass-2-words", "pass-3-lines"}),
         (["--stages", "2"], {"pass-2-words"}),
     ],
@@ -363,7 +363,7 @@ def test_selecting_stages_never_changes_the_result(
     select what is *written*, never what is *run*. If it gated execution this
     comparison would drift."""
     results = []
-    for index, flags in enumerate(([], ["--debug"], ["--stages", "1-5"])):
+    for index, flags in enumerate(([], ["--ats"], ["--stages", "1-5"])):
         output = tmp_path / f"out{index}.json"
         assert cli.main([str(NATIVE_FIXTURE), "-o", str(output), *flags]) == cli.EXIT_OK
         results.append(output.read_text(encoding="utf-8"))

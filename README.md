@@ -1,134 +1,141 @@
-# Restruct
+<h1 align="center">Restruct</h1>
 
-Restruct turns messy PDF, DOCX, and scanned resumes into consistent, explainable, versioned JSON.
-It combines OCR, layout geometry, NER, semantic similarity, and deterministic rules so every result
-can be traced back to the thing on the page that produced it.
+<h3 align="center">Turn a resume PDF, DOCX, or a Scan into clean, consistent JSON.</h3>
 
-Built for applicant tracking systems, candidate search, analytics pipelines, talent platforms, and
-other systems that need trustworthy resume data.
+<h4 align="center">Runs entirely on your machine. No upload, no API key.</h4>
 
 ---
+
+Restruct reads a resume the way a person does: it looks at the layout, finds the sections, and
+pulls out the name, the contact details, the jobs, the dates, the schools, the skills.
+
+The result has **the same shape every time**, whatever the resume looked like, ready to drop into
+an applicant tracking system, a search index, or an analytics pipeline.
+
+- **PDF, DOCX and scanned pages.** One command, one output shape for all three.
+- **Fully local.** The models are files on your disk; nothing leaves the machine.
+- **Sixteen fixed sections.** Always present, always in the same order, never a missing key.
+- **Two ways to check the result.** Draw it back as a page, or see it drawn on the original.
+- **Careful by default.** What it isn't sure about goes to `others`, not into the wrong field.
+
+<br>
 
 ## Install
 
 ```bash
-uv sync                      # from a checkout
+uv add restruct-cv
+uv run restruct --install-models
 ```
 
-or, from a built wheel:
+<br>
 
-```bash
-uv build
-pip install dist/restruct_cv-*.whl
-```
+**About those two commands**
 
-The distribution is `restruct-cv`; the import name and the command it installs are both
-`restruct`. The unqualified name was already taken on PyPI by an unrelated project.
+- The distribution is **`restruct-cv`**; the command it installs is **`restruct`**. The
+  unqualified name was already taken on PyPI by an unrelated project.
+- `--install-models` downloads the two models Restruct uses: **352 MB, once**. They are ordinary
+  local files, verified by checksum as they arrive.
+- It is the **only** command that touches the network. Everything after it works offline.
 
-### Model weights
+<br>
 
-Inference runs on ONNX Runtime, so there is no torch, no `transformers` and no CUDA wheel in the
-install. Weights are **local files**, not something an extraction ever fetches for itself; each
-model directory holds a `model.onnx` and the tokenizer that goes with it:
-
-```text
-models/
-  all-MiniLM-L6-v2/    model.onnx, tokenizer.json, tokenizer_config.json, sentence_bert_config.json
-  distilbert-NER/      model.onnx, tokenizer.json, tokenizer_config.json, config.json
-```
-
-```bash
-uv run restruct --install-models             # 352 MB, verified, into the directory below
-uv run restruct --install-models /some/dir   # or somewhere named outright
-```
-
-That is the only command in restruct that uses the network. Each file is pinned by both its
-source revision and its SHA-256, written to a temporary name and moved into place only once the
-digest matches — so an install that is interrupted leaves nothing that looks loadable, and
-running it again resumes rather than restarts.
-
-An extraction with no weights **asks** rather than downloading: on a terminal it says what is
-missing, how large the download is and where it would go, and waits for an answer. A
-non-interactive run — a script, a container build, a pipe — is never prompted and exits `20`
-with the same message it always gave, because a program that starts a 352 MB transfer nobody is
-watching is worse than one that fails with an instruction.
-
-Weights are looked for, in order, in `models/` beside the checkout (when running from one),
-`models/` under the current working directory, and `~/.restruct/models`. Set
-`RESTRUCT_MODELS_DIRECTORY=/path/to/models` to name the directory outright, which is the usual
-answer for an installed copy; when it is set nothing else is consulted. An install writes to the
-same place a run looks first, except that an installed copy writes to `~/.restruct/models` rather
-than to whatever directory the shell happened to be in.
-
-#### Producing them instead
-
-`--install-models` fetches the fp32 ONNX exports the two source repositories publish themselves.
-They were checked against a local export before being trusted: every golden snapshot is
-byte-identical and the scorecard's macro F1 is unchanged. To export from the safetensors anyway:
-
-```bash
-pip install "huggingface_hub[cli]"
-hf download sentence-transformers/all-MiniLM-L6-v2 \
-  --revision 1110a243fdf4706b3f48f1d95db1a4f5529b4d41 --local-dir models/all-MiniLM-L6-v2
-hf download dslim/distilbert-NER \
-  --revision dfa2838a127384aabb82ed7719e16dab84c42a2a --local-dir models/distilbert-NER
-
-uv run --group export python tools/export_onnx.py
-```
-
-The export needs torch, transformers and optimum; they are in the `export` dependency group and
-are installed only by that command, never by an ordinary install. The exported weights are fp32,
-which reproduces the torch pipeline exactly — `tools/export_onnx.py` records what int8
-quantization was measured to cost on this corpus and why it does not ship.
-
-### Tesseract
-
-Tesseract is a system dependency, needed **only** for scanned pages — a PDF with its own text
-layer and a DOCX never ask for it.
+**Scanned resumes**, the ones that are pictures of pages with no text inside them, also need
+Tesseract. A normal PDF or DOCX never asks for it.
 
 ```bash
 brew install tesseract                 # macOS
-apt-get install tesseract-ocr          # Debian/Ubuntu
+apt-get install tesseract-ocr          # Debian / Ubuntu
 ```
 
-It is found on `PATH`, or where the installers put it (Program Files on Windows, either Homebrew
-prefix on macOS). PyMuPDF renders an OCR page at 300 DPI and `tesseract` is invoked directly,
-without a shell, using the English language data, LSTM engine mode 1 and page segmentation mode 3.
-Rendered page images are deleted after each document.
+<br>
 
-## Usage
+## Use it
 
 ```bash
-uv run restruct <resume.pdf> -o out.json      # one resume; quiet, writes nothing else
-uv run restruct <resume.docx> -o .            # a directory: writes <resume>.json into it
-uv run restruct <resume.pdf> -o out.json --debug        # + stage 4-5 artifacts in out/
-uv run restruct <resume.pdf> -o out.json --stages 1-3   # + those stages (implies --debug)
-uv run restruct <resume.pdf> -o out.json --reconstruct  # + the result drawn back as a page
-uv run restruct examples/11/resume.json --reconstruct   # draw a result already extracted
-
-uv run restruct                               # batch over resumes-synthetic/
-uv run restruct --truths                      # batch over resumes-truths/ (local, gitignored)
-uv run restruct --unsupported                 # batch over resumes-unsupported/
-
-uv run restruct --install-models              # download the weights and exit
+uv run restruct resume.pdf -o .
 ```
 
-`--stages` selects **debug artifacts, never whether a pass runs**: every pass feeds the next, so a
-flag that skipped one would quietly produce a different resume.
+That writes `resume.json` next to you, and prints nothing.
 
-Exit codes are an API, grouped by decade — `1x` input, `2x` environment, `3x` extraction, `4x`
-output, with `2` left to argparse. `errors.py` names every failure and `cli.py` is the only module
-that maps one to a code, so a caller embedding restruct as a library catches an exception by type
-instead of losing its process.
+**`-o` takes a file or a directory:**
 
-## Output
+| You write     | You get                                |
+| ------------- | -------------------------------------- |
+| `-o out.json` | exactly that file                      |
+| `-o .`        | `resume.json` in the current directory |
+| `-o results/` | `resume.json` inside `results/`        |
 
-`resume.json` is lean and metadata-free: no bounding boxes, fonts, geometry, model names,
-confidences or detection methods. Its first key is `schema_version`, and `resume.schema.json` in
-the repository root is the published contract every fixture is validated against.
+A directory gets `<resume>.json`, **named after the input**, so extracting several resumes into
+one place doesn't have each one overwrite the last.
 
-Sixteen destinations are always present, always in the same order. A section is `null` when the
-resume has none, `[]` when it exists but yielded no entries; a key is never absent.
+<br>
+
+## See what was understood
+
+```bash
+uv run restruct resume.pdf -o . --reconstruct
+```
+
+<p align="center">
+  <img src="examples/7.anomaly-reconstruction-page-1.png" width="620"
+       alt="A resume redrawn from the extracted JSON: name, titles and contact line at the top, then SUMMARY and EXPERIENCE sections with job title, employer, location, dates and bullets.">
+</p>
+
+This draws the extracted result **back out as a readable page**, `reconstruction.pdf` plus a PNG
+per page, built only from what was extracted, with the original layout thrown away.
+
+That's the whole point:
+
+- A bullet filed under the wrong section is **obvious at a glance** here, and invisible in a wall
+  of JSON.
+- A date read as a job title shows up in the wrong line of the header.
+- Anything Restruct **could not place** is drawn in red under `UNPLACED`, rather than quietly
+  dropped.
+
+It is deliberately **not** a facsimile. Imitating the original layout would hide the very errors
+it exists to reveal.
+
+You can also draw a result you already have, without re-extracting anything:
+
+```bash
+uv run restruct resume.json --reconstruct
+```
+
+<br>
+
+## Check it is ATS-friendly
+
+```bash
+uv run restruct resume.pdf -o . --ats
+```
+
+<p align="center">
+  <img src="examples/7.anomaly/debug/page-1.png" width="620"
+       alt="The same resume with coloured boxes drawn over it: name, job titles, phone, email and location in the header, then boxes around each section heading, each skill group and each bullet.">
+</p>
+
+Alongside the JSON you get **an overlay of every page**, showing exactly what a parser could read
+and where it thought each section began and ended.
+
+- Boxes in the **wrong places, or missing**, are the layouts machines choke on: side-by-side
+  columns, text inside a graphic, a table nested in a table.
+- Each box is **labelled with the field it became**: `name`, `job_title`, `bullet`, `skill_group`.
+- **Heavier boxes are model conclusions.** Lighter ones are things the document stated outright,
+  so you can tell a guess from a fact.
+
+Scans go through the same path. OCR is rebuilt into the same geometry a native PDF produces, so a
+scanned page gets an overlay that looks like any other:
+
+<p align="center">
+  <img src="examples/9.ocr/debug/page-1.png" width="620"
+       alt="A scanned resume page with the same style of extraction overlay drawn on it.">
+</p>
+
+<br>
+
+## What you get back
+
+`resume.json` is **plain data**: no bounding boxes, no model names, no confidence scores.
 
 ```json
 {
@@ -142,99 +149,63 @@ resume has none, `[]` when it exists but yielded no entries; a key is never abse
 }
 ```
 
-All the evidence behind those values — boxes, fonts, confidences, which method decided what —
-lives in a separate track under `raw/`, and the overlays draw it:
+- **Sixteen sections**, always present, always in the same order.
+- `null` when the resume has none, `[]` when the section exists but yielded nothing, **never
+  absent**.
+- [`resume.schema.json`](resume.schema.json) is the published contract, and every release is
+  validated against it.
+- A section Restruct isn't confident about goes to **`others`, with its original heading kept**,
+  rather than being guessed into the wrong place.
 
-```text
-results/<name>/
-  resume.json           the lean output
-  raw/*.json            the evidence: boxes, fonts, confidences, methods
-  debug/page-N.png      the combined overlay, one per source page
-  debug/pass-*/         passes 1-4, gitignored
+Restruct is deliberately careful about what it claims. **v1 targets single-column resumes**, and a
+layout whose reading order can't be recovered is _recorded_ as such, never silently repaired into
+something that reads plausibly and is wrong.
+
+<br>
+
+### From Python
+
+```python
+from restruct import extract_resume
 ```
 
-The pass-1 dump is named after the reader that produced it — `pymupdf.json` for a PDF, `docx.json`
-for a DOCX, since the two read different things and only one of them has coordinates. The
-single-file form writes it beside the other evidence in `raw/`; the batch writes it to
-`debug/<name>.raw-<reader>.json`.
+Failures are raised as **typed exceptions**, so embedding Restruct in a service doesn't cost you
+your process. The command-line tool turns those into exit codes instead, grouped by decade:
 
-A model-backed box is drawn more heavily than a deterministic one, so a reader can tell whether a
-box is something the document said or something a model concluded.
+| Code | Meaning                                                         |
+| ---- | --------------------------------------------------------------- |
+| `0`  | success                                                         |
+| `1x` | input: not found, unsupported format, unreadable document       |
+| `2x` | environment: models missing, Tesseract missing, download failed |
+| `3x` | extraction                                                      |
+| `4x` | output                                                          |
 
-### Reading the result back
+<br>
 
-`--reconstruct` draws `resume.json` back out as a page — `reconstruction.pdf` and one PNG per
-page — so the result can be proof-read by eye.
+## Examples
 
-Drawing a result on its own writes those files flat beside the JSON, named after it
-(`resume-reconstruction.pdf`, `resume-page-1.png`); `-o` names a directory to put them in
-instead, under their plain names.
+Three extracted resumes are committed under [`examples/`](examples/), one per kind of input:
 
-It answers a different question from the overlays. An overlay draws on top of the document, so it
-shows whether a box landed on the right words; the document keeps making sense regardless of what
-was understood. A reconstruction throws the page away and draws only what was understood, which is
-what makes a bullet filed under education or a date read as a job title visible at a glance.
+| Example                             | Source              | What's in it                                     |
+| ----------------------------------- | ------------------- | ------------------------------------------------ |
+| [`7.anomaly/`](examples/7.anomaly/) | native PDF, 3 pages | JSON and a page overlay per page                 |
+| [`9.ocr/`](examples/9.ocr/)         | scanned PDF         | the same shapes, recovered by OCR                |
+| [`11/`](examples/11/)               | DOCX                | JSON only, because a DOCX has no page to draw on |
 
-It is deliberately not a facsimile — imitating the original layout would hide the errors it exists
-to reveal. Absent and empty fields are skipped, so what is on the page is what was extracted, and
-anything the renderer cannot place is drawn in red under UNPLACED rather than dropped. Given a
-`resume.json` as the input it draws that and runs nothing else, loading no models.
+Worth a look before installing anything.
 
-### Worked examples
+<br>
 
-`results/` is regenerated by every run and is not committed. Three resumes are, under
-`examples/` — one per ingestion track, because what each track makes available is different:
+## Contributing
 
-| Example | Source | What it shows |
-| --- | --- | --- |
-| [`examples/7.anomaly/`](examples/7.anomaly/) | native PDF, 3 pages | The full evidence track. `debug/page-N.png` draws every section box on the page it came from, model-backed boxes drawn more heavily than deterministic ones. `raw/layout-warnings.json` is written even when empty, so an absent finding is distinguishable from an absent check. |
-| [`examples/9.ocr/`](examples/9.ocr/) | scanned PDF | The same shapes from a page with no text layer. OCR is rebuilt into the line geometry the native path produces, so nothing downstream has an OCR case — which is visible here as an overlay that looks like any other. |
-| [`examples/11/`](examples/11/) | DOCX | No overlays at all. A DOCX has no geometry and must never pretend to, so there is nothing to draw on — the structure comes from what the document states outright: styles, list markers, table cells. |
+Contributions are welcome. See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the setup, the test
+suite and the accuracy scorecard, and `CLAUDE.md` for the design decisions behind each module.
 
-Each holds the `resume.json`, the `raw/*.json` evidence behind it, and the overlays where there
-are any. They are copied out of `results/` by `tools/refresh_examples.py` rather than curated by
-hand, so they are what the pipeline currently produces and not a snapshot of what it once did.
-Their inputs are in `resumes-synthetic/`, and every one is synthetic.
+> ⚠️ Please do **not** submit real resumes, or labels derived from them. The fixtures in
+> `resumes-synthetic/` are synthetic and safe to commit.
 
-## Architecture
+<br>
 
-Five ordered passes over one shared in-memory document.
+## License
 
-```text
-ingestion/   physical extraction — native PDF text, per-page OCR fallback, DOCX
-document/    shared types and document-wide statistics
-layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
-structure/   heading detection, routing, compound headings, precedence resolver, separators
-parsers/     one module per section shape (header, experience, education, skills, grouped, urls)
-model.py     the model-backed extraction stages, loaded on first use
-encoders.py  ONNX Runtime adapters: MiniLM sentence embeddings, DistilBERT NER
-patterns/    deterministic regex evidence, grouped by what it describes
-debug/       artifacts (JSON) and overlays (Pillow), one canvas, one colour registry
-schema.py    the lean, versioned output (contract: resume.schema.json)
-errors.py    the failure taxonomy; only cli.py turns one into an exit code
-pipeline.py  orchestration only — the only module that knows the stage order
-cli.py       argparse and filesystem layout only
-```
-
-Extraction runs in a fixed precedence — deterministic, context-sensitive deterministic, NER,
-MiniLM, geometry, then `other` — and `structure/resolver.py` **enforces** that order rather than
-documenting it: a stage that runs after a weaker one has already claimed a span raises.
-
-v1 targets single-column resumes. Layouts whose reading order cannot be recovered (column gutters,
-vertical text, overlapping boxes, nested tables) are **recorded, never repaired**, in
-`debug/layout-warnings.json`.
-
-## Development
-
-```bash
-uv run pytest                                # full suite
-uv run python -m tests.scorecard             # per-field precision/recall/F1
-uv run restruct && uv run python tools/refresh_examples.py
-git status --short examples/    # clean == byte-identical
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the test and scorecard workflow, and `CLAUDE.md` for the
-design decisions behind each module.
-
-Please do not submit **real** resumes or their labels; `resumes-truths/` is gitignored for exactly
-that reason. Fixtures in `resumes-synthetic/` are synthetic and safe to commit.
+[MIT](LICENSE)

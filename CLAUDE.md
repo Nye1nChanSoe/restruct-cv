@@ -15,8 +15,8 @@ uv run python -m tests.scorecard --update-baseline   # re-freeze the accuracy fl
 
 uv run restruct <path> -o <out.json>           # one resume; quiet, writes nothing else
 uv run restruct <path> -o .                    # a directory: writes <resume>.json into it
-uv run restruct <path> -o <out.json> --debug   # + stage 4-5 artifacts in <out>/
-uv run restruct <path> -o <out.json> --stages 1-3   # + those stages (implies --debug)
+uv run restruct <path> -o <out.json> --ats     # + the ATS check (stage 4-5 artifacts) in <out>/
+uv run restruct <path> -o <out.json> --stages 1-3   # + those stages (implies --ats)
 
 uv run restruct                                # batch: every PDF in resumes-synthetic/
 uv run restruct --truths                       # batch: only resumes-truths/ (local, gitignored)
@@ -34,7 +34,7 @@ that does not exist yet.
 
 `--stages` selects **debug artifacts, never whether a pass runs** — every pass feeds the next,
 so a flag that skipped one would quietly produce a different resume. `--stages` implies
-`--debug`. The batch form writes every stage: its purpose is to regenerate the committed corpus,
+`--ats`. The batch form writes every stage: its purpose is to regenerate the committed corpus,
 and anything less would let a stale artifact survive a run and make `git status examples/` read
 as clean after a refresh.
 

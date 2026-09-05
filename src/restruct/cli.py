@@ -88,19 +88,14 @@ def parse_stages(value: str) -> frozenset[int]:
 def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="restruct",
-        description="Extract a structured resume from a PDF.",
-        epilog=(
-            "With no PATH, every PDF in resumes-synthetic/ is extracted into "
-            "results/ with all stages written, which is how the committed "
-            "corpus is regenerated."
-        ),
+        description="Extract a structured resume from a PDF or DOCX into JSON.",
     )
     parser.add_argument(
         "path",
         nargs="?",
         type=Path,
         metavar="PATH",
-        help="The resume to extract. Omit to run the batch over a directory.",
+        help="The resume to extract: a .pdf or a .docx.",
     )
     parser.add_argument(
         "-o",
@@ -108,33 +103,35 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         metavar="FILE",
         help=(
             "Where to write the resume JSON. A directory ('-o .', '-o out/') "
-            "writes <resume>.json inside it. Debug artifacts, if any, go in a "
-            "directory beside the result: '-o out.json' writes out/raw/ and "
-            "out/debug/."
+            "writes <resume>.json inside it. Anything --ats or --reconstruct "
+            "adds goes in a directory beside the result: '-o out.json' writes "
+            "out/."
         ),
     )
+    # Named for the question it answers rather than for the machinery behind
+    # it: the artifacts are stage 4 and 5 output, but what a person wants from
+    # them is whether a parser can read their resume.
     parser.add_argument(
-        "--debug",
+        "--ats",
         action="store_true",
-        help="Write debug artifacts for stages 4 and 5.",
+        help=(
+            "Also write the ATS check beside the result: what a parser could "
+            "read from each page, and an overlay of it drawn on the page."
+        ),
     )
     parser.add_argument(
         "--stages",
         type=parse_stages,
         metavar="SPEC",
-        help=(
-            "Which stages' debug artifacts to write: 1-5, 3, 2,4,5, 1-3,5. "
-            "Implies --debug. Selects artifacts only -- every pass always "
-            "runs, because each one feeds the next."
-        ),
+        help=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--reconstruct",
         action="store_true",
         help=(
-            "Also draw the result back out as a readable page, for "
-            "proof-reading by eye: reconstruction.pdf and one PNG per page. "
-            "Given a resume.json as PATH, draws that and runs nothing else."
+            "Also draw the result back out as a readable page, so it can be "
+            "proof-read by eye: reconstruction.pdf and one PNG per page. "
+            "Given a resume.json as PATH, draws that and extracts nothing."
         ),
     )
     parser.add_argument(
@@ -143,25 +140,15 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         const="",
         metavar="DIR",
         help=(
-            "Download the model weights and exit. Writes into DIR, or into "
-            "the directory a run would look in first. This is the only thing "
-            "in restruct that uses the network, and it never runs on its own."
+            "Download the model weights (352 MB) and exit. Writes into DIR, "
+            "or into the directory a run would look in first. This is the "
+            "only thing in restruct that uses the network."
         ),
     )
-    parser.add_argument(
-        "--truths",
-        action="store_true",
-        help="Batch over resumes-truths/ into results/0-truths/.",
-    )
-    parser.add_argument(
-        "--unsupported",
-        action="store_true",
-        help=(
-            "Batch over resumes-unsupported/ into results/1-unsupported/. "
-            "Those parses are untrustworthy by definition; this is for reading "
-            "the overlays that show why."
-        ),
-    )
+    # Corpus regeneration, for contributors working in a checkout. Hidden:
+    # neither directory exists in an installed copy.
+    parser.add_argument("--truths", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--unsupported", action="store_true", help=argparse.SUPPRESS)
     arguments = parser.parse_args(argv)
     if (
         arguments.path is not None
@@ -185,10 +172,10 @@ def _is_reconstruction_source(arguments: argparse.Namespace) -> bool:
 
 
 def _selected_stages(arguments: argparse.Namespace) -> frozenset[int]:
-    """--stages implies --debug; --debug alone means stages 4 and 5."""
+    """--stages implies --ats; --ats alone means stages 4 and 5."""
     if arguments.stages is not None:
         return arguments.stages
-    return DEFAULT_DEBUG_STAGES if arguments.debug else frozenset()
+    return DEFAULT_DEBUG_STAGES if arguments.ats else frozenset()
 
 
 def resolve_output_path(output: str, source: Path) -> Path:
