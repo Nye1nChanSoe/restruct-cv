@@ -27,25 +27,44 @@ The distribution is `restruct-cv`; the import name and the command it installs a
 
 ### Model weights
 
-All inference weights are **local-only** and never fetched at run time. Inference runs on ONNX
-Runtime, so there is no torch, no `transformers` and no CUDA wheel in the install; each model
-directory holds a `model.onnx` and the tokenizer that goes with it:
+Inference runs on ONNX Runtime, so there is no torch, no `transformers` and no CUDA wheel in the
+install. Weights are **local files**, not something an extraction ever fetches for itself; each
+model directory holds a `model.onnx` and the tokenizer that goes with it:
 
 ```text
 models/
-  all-MiniLM-L6-v2/    model.onnx, tokenizer.json, sentence_bert_config.json
-  distilbert-NER/      model.onnx, tokenizer.json, config.json
+  all-MiniLM-L6-v2/    model.onnx, tokenizer.json, tokenizer_config.json, sentence_bert_config.json
+  distilbert-NER/      model.onnx, tokenizer.json, tokenizer_config.json, config.json
 ```
 
-They are looked for, in order, in `models/` beside the checkout (when running from one), `models/`
-under the current working directory, and `~/.restruct/models`. Set
+```bash
+uv run restruct --install-models             # 352 MB, verified, into the directory below
+uv run restruct --install-models /some/dir   # or somewhere named outright
+```
+
+That is the only command in restruct that uses the network. Each file is pinned by both its
+source revision and its SHA-256, written to a temporary name and moved into place only once the
+digest matches — so an install that is interrupted leaves nothing that looks loadable, and
+running it again resumes rather than restarts.
+
+An extraction with no weights **asks** rather than downloading: on a terminal it says what is
+missing, how large the download is and where it would go, and waits for an answer. A
+non-interactive run — a script, a container build, a pipe — is never prompted and exits `20`
+with the same message it always gave, because a program that starts a 352 MB transfer nobody is
+watching is worse than one that fails with an instruction.
+
+Weights are looked for, in order, in `models/` beside the checkout (when running from one),
+`models/` under the current working directory, and `~/.restruct/models`. Set
 `RESTRUCT_MODELS_DIRECTORY=/path/to/models` to name the directory outright, which is the usual
-answer for an installed copy; when it is set nothing else is consulted. A run without a
-`model.onnx` in both directories exits `20` and names every place it looked.
+answer for an installed copy; when it is set nothing else is consulted. An install writes to the
+same place a run looks first, except that an installed copy writes to `~/.restruct/models` rather
+than to whatever directory the shell happened to be in.
 
-#### Producing them
+#### Producing them instead
 
-Download the two source models, then export each to ONNX once:
+`--install-models` fetches the fp32 ONNX exports the two source repositories publish themselves.
+They were checked against a local export before being trusted: every golden snapshot is
+byte-identical and the scorecard's macro F1 is unchanged. To export from the safetensors anyway:
 
 ```bash
 pip install "huggingface_hub[cli]"
@@ -90,6 +109,8 @@ uv run restruct examples/11/resume.json --reconstruct   # draw a result already 
 uv run restruct                               # batch over resumes-synthetic/
 uv run restruct --truths                      # batch over resumes-truths/ (local, gitignored)
 uv run restruct --unsupported                 # batch over resumes-unsupported/
+
+uv run restruct --install-models              # download the weights and exit
 ```
 
 `--stages` selects **debug artifacts, never whether a pass runs**: every pass feeds the next, so a

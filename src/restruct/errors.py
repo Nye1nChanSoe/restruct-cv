@@ -57,8 +57,10 @@ class InvalidDocument(RestructError):
 class ModelAssetsMissing(RestructError):
     """Local model weights are absent.
 
-    Weights are never downloaded at run time, so this is a setup problem with
-    a specific fix rather than something to retry.
+    An extraction never downloads them itself, so this is a setup problem with
+    a specific fix rather than something to retry. The fix is one command --
+    ``restruct --install-models`` -- and the message names it, because the
+    reader's next question is always what to do about it.
     """
 
     def __init__(
@@ -72,12 +74,28 @@ class ModelAssetsMissing(RestructError):
         locations = "".join(f"\n  {candidate}" for candidate in searched)
         super().__init__(
             f"model weights are missing: {directory}. "
-            "Weights are local-only and are never fetched at run time; "
-            "see the README for the expected layout."
+            "Run 'restruct --install-models' to download them, or see the "
+            "README for the expected layout."
             + (f" Looked in:{locations}" if locations else "")
         )
         self.directory = directory
         self.searched = tuple(searched)
+
+
+class ModelDownloadFailed(RestructError):
+    """An explicit model install reached the network and did not finish.
+
+    Distinct from ``ModelAssetsMissing`` because the two have different
+    remedies and only one of them is worth retrying: weights that were never
+    fetched are a setup step not yet taken, while a download that broke part
+    way through is a connection, a disk, or a file that did not arrive as the
+    bytes it was pinned to.
+    """
+
+    def __init__(self, url: str, detail: str) -> None:
+        super().__init__(f"could not download {url}: {detail}")
+        self.url = url
+        self.detail = detail
 
 
 class TesseractMissing(RestructError):

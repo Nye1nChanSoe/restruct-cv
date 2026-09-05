@@ -22,6 +22,7 @@ uv run restruct                                # batch: every PDF in resumes-syn
 uv run restruct --truths                       # batch: only resumes-truths/ (local, gitignored)
 uv run restruct --unsupported                  # batch: resumes-unsupported/ (see below)
 
+uv run restruct --install-models               # download the weights and exit
 uv run --group export python tools/export_onnx.py    # re-export models/*/model.onnx
 ```
 
@@ -45,13 +46,17 @@ decade — 1x input, 2x environment, 3x extraction, 4x output — and `2` is lef
 
 Model weights are **local only** and gitignored, and inference runs on ONNX Runtime — there is
 no torch, no `transformers` and no `sentence-transformers` in the install. Both directories must
-exist and each must hold an exported `model.onnx` beside its `tokenizer.json`:
+exist and each must hold a `model.onnx` beside its `tokenizer.json`:
 
 ```
 models/all-MiniLM-L6-v2/     models/distilbert-NER/
 ```
 
-`tools/export_onnx.py` is what writes those, and the `export` dependency group (torch,
+There are two ways to get them. `restruct --install-models` (`install.py`) downloads the fp32
+ONNX exports the two source repositories publish themselves, pinned by revision *and* SHA-256,
+with no torch involved — those published exports were checked against a local export before
+being trusted, and reproduce every golden snapshot byte-for-byte at an unchanged macro F1 of
+0.966. `tools/export_onnx.py` is the other, and the `export` dependency group (torch,
 transformers, optimum) exists only for it. **Nothing under `src/` may import anything in that
 group.** The exports are fp32 on purpose: at fp32 the ONNX path reproduces the torch path
 byte-for-byte across the golden snapshots and field-for-field on the scorecard. int8 is four
@@ -180,6 +185,7 @@ patterns/    deterministic regex evidence, grouped by what it describes
 debug/       artifacts (JSON), render (Pillow overlays), reconstruct (the result as a page)
 schema.py    the lean, versioned clean output (contract: resume.schema.json)
 errors.py    the failure taxonomy; only cli.py turns one into an exit code
+install.py   the only module that opens a socket: pinned, verified weight downloads
 pipeline.py  orchestration only — the only module that knows the stage order
 cli.py       argparse and filesystem layout only
 ```

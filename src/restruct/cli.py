@@ -23,6 +23,7 @@ from restruct.errors import (
     InputNotFound,
     InvalidDocument,
     ModelAssetsMissing,
+    ModelDownloadFailed,
     OcrFailed,
     OutputWriteFailed,
     RestructError,
@@ -45,6 +46,7 @@ EXIT_INVALID_DOCUMENT = 12
 EXIT_MODEL_ASSETS_MISSING = 20
 EXIT_TESSERACT_MISSING = 21
 EXIT_OCR_FAILED = 22
+EXIT_MODEL_DOWNLOAD_FAILED = 23
 EXIT_EXTRACTION_FAILED = 30
 EXIT_OUTPUT_WRITE_FAILED = 40
 
@@ -53,6 +55,7 @@ _EXIT_CODES: tuple[tuple[type[RestructError], int], ...] = (
     (UnsupportedFormat, EXIT_UNSUPPORTED_FORMAT),
     (InvalidDocument, EXIT_INVALID_DOCUMENT),
     (ModelAssetsMissing, EXIT_MODEL_ASSETS_MISSING),
+    (ModelDownloadFailed, EXIT_MODEL_DOWNLOAD_FAILED),
     (TesseractMissing, EXIT_TESSERACT_MISSING),
     (OcrFailed, EXIT_OCR_FAILED),
     (ExtractionFailed, EXIT_EXTRACTION_FAILED),
@@ -132,6 +135,17 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
             "Also draw the result back out as a readable page, for "
             "proof-reading by eye: reconstruction.pdf and one PNG per page. "
             "Given a resume.json as PATH, draws that and runs nothing else."
+        ),
+    )
+    parser.add_argument(
+        "--install-models",
+        nargs="?",
+        const="",
+        metavar="DIR",
+        help=(
+            "Download the model weights and exit. Writes into DIR, or into "
+            "the directory a run would look in first. This is the only thing "
+            "in restruct that uses the network, and it never runs on its own."
         ),
     )
     parser.add_argument(
@@ -317,6 +331,126 @@ def _load_models(project_root: Path):
     )
 
 
+def _install_directory(project_root: Path, requested: str) -> Path:
+    """Where an install writes.
+
+    An explicit DIR settles it. Otherwise the weights go where a run would
+    look first, so installing and finding cannot disagree -- with one
+    difference: an installed copy is sent to `~/.restruct/models` rather than
+    to `models/` under whatever directory the person happened to be standing
+    in. A search may accept a `models/` in the working directory, since
+    somebody put it there deliberately; writing 350 MB there because that is
+    where the shell was is a different thing.
+    """
+    if requested:
+        return Path(requested).expanduser()
+    override = os.environ.get(MODELS_DIRECTORY_VARIABLE)
+    if override:
+        return Path(override).expanduser()
+    if (project_root / "pyproject.toml").is_file():
+        return project_root / "models"
+    return Path.home() / ".restruct" / "models"
+
+
+def _install_models(destination: Path) -> None:
+    """Download the weights, reporting progress on stderr.
+
+    stderr rather than stdout because the tool is quiet on success and a
+    caller may be reading its output; a progress bar is a message to a person
+    watching, not part of the result.
+    """
+    from restruct import install
+
+    outstanding = install.missing_assets(destination)
+    if not outstanding:
+        print(f"restruct: models already installed: {destination}", file=sys.stderr)
+        return
+
+    total = sum(asset.size for asset in outstanding)
+    required = total + _INSTALL_HEADROOM_BYTES
+    available = install.free_space(destination)
+    if available < required:
+        raise ModelDownloadFailed(
+            str(destination),
+            f"not enough space: {install.human_size(total)} to download, "
+            f"{install.human_size(available)} free",
+        )
+
+    print(
+        f"restruct: downloading {install.human_size(total)} into {destination}",
+        file=sys.stderr,
+    )
+    interactive = sys.stderr.isatty()
+    written = 0
+
+    def on_progress(count: int) -> None:
+        nonlocal written
+        written += count
+        if interactive:
+            share = written / total if total else 1.0
+            print(
+                f"\r  {install.human_size(written)} / "
+                f"{install.human_size(total)}  ({share:6.1%})",
+                end="",
+                file=sys.stderr,
+                flush=True,
+            )
+
+    def on_file(asset, remote, present: bool) -> None:
+        if not interactive and not present:
+            print(
+                f"  {asset.local_directory}/{remote.local_name} "
+                f"({install.human_size(remote.size)})",
+                file=sys.stderr,
+            )
+
+    try:
+        install.install_models(
+            destination, assets=outstanding, on_progress=on_progress, on_file=on_file
+        )
+    finally:
+        if interactive:
+            print(file=sys.stderr)
+    print(f"restruct: models installed: {destination}", file=sys.stderr)
+
+
+# Room for the temporary copy each file is written to before it is verified
+# and renamed, plus enough slack that an install does not fill a disk exactly.
+_INSTALL_HEADROOM_BYTES = 300_000_000
+
+
+def _offer_install(project_root: Path) -> bool:
+    """Ask whether to download the weights, and do it if the answer is yes.
+
+    Only on a terminal, and only after saying how large the download is. A
+    non-interactive run -- a script, a container build, a pipe -- gets the
+    error it has always got, because a program that starts a 350 MB transfer
+    nobody asked for is worse than one that fails with an instruction.
+    """
+    from restruct import install
+
+    if not (sys.stdin.isatty() and sys.stderr.isatty()):
+        return False
+    destination = _install_directory(project_root, "")
+    # Deliberately not the error text: declining re-raises, and the handler
+    # prints it then. Saying it twice reads as two problems.
+    print(
+        f"restruct: the model weights are not installed "
+        f"({install.human_size(install.TOTAL_DOWNLOAD_BYTES)} to download, "
+        f"into {destination})",
+        file=sys.stderr,
+    )
+    try:
+        answer = input("Download them? [y/N] ")
+    except (EOFError, KeyboardInterrupt):
+        print(file=sys.stderr)
+        return False
+    if answer.strip().casefold() not in ("y", "yes"):
+        return False
+    _install_models(destination)
+    return True
+
+
 def _extract_one(
     pdf_path: Path,
     output_path: Path,
@@ -447,12 +581,30 @@ def _batch(
         print(f"extracted: {pdf_path.name}")
 
 
+def _models(project_root: Path):
+    """The loaders, offering to fetch the weights once if they are absent."""
+    try:
+        return _load_models(project_root)
+    except ModelAssetsMissing:
+        if not _offer_install(project_root):
+            raise
+    return _load_models(project_root)
+
+
 def main(argv: list[str] | None = None) -> int:
     arguments = _parse_arguments(argv)
     project_root = Path(__file__).resolve().parents[2]
     stages = _selected_stages(arguments)
 
     try:
+        if arguments.install_models is not None:
+            # An install is the whole run: it writes no result, so it does not
+            # continue into an extraction the person did not ask for.
+            _install_models(
+                _install_directory(project_root, arguments.install_models)
+            )
+            return EXIT_OK
+
         if _is_reconstruction_source(arguments):
             # Nothing is extracted, so no models are read and no source
             # document is opened: this draws a result that already exists.
@@ -465,7 +617,7 @@ def main(argv: list[str] | None = None) -> int:
         if arguments.path is not None:
             _validate(arguments.path)
             output_path = resolve_output_path(arguments.output, arguments.path)
-            models = _load_models(project_root)
+            models = _models(project_root)
             _extract_one(
                 arguments.path,
                 output_path,
@@ -484,7 +636,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             input_directory = project_root / SETTINGS.paths.input_directory
             output_root = project_root / SETTINGS.paths.results_directory
-        models = _load_models(project_root)
+        models = _models(project_root)
         # The batch exists to regenerate the committed corpus, so it writes
         # everything unless told otherwise. Anything less and a stale artifact
         # would survive a run and make `git status results/` read as clean.

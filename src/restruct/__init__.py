@@ -26,9 +26,13 @@ from restruct.schema import build_v1_resume, write_v1_resume
 # package pay that -- including `restruct --help` and a run that fails
 # validation before a model is ever consulted. PEP 562 keeps the public names
 # where they were and defers the cost to the first use.
+# ``install_models`` is deferred for a different reason: it is the one entry
+# point that opens a socket, and a library import should not pull the network
+# stack in for a caller that only ever reads local weights.
 _LAZY_EXPORTS = {
     "main": ("restruct.cli", "main"),
     "extract_resume": ("restruct.pipeline", "extract_resume"),
+    "install_models": ("restruct.install", "install_models"),
 }
 
 
@@ -51,6 +55,7 @@ __all__ = [
     "HeaderEntityMatch",
     "build_v1_resume",
     "extract_resume",
+    "install_models",
     "main",
     "write_v1_resume",
 ]
