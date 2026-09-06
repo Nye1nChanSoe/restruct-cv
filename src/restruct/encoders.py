@@ -9,7 +9,7 @@ it. `onnxruntime` + `tokenizers` + `numpy` is about 40 MB and has no GPU
 variant to resolve into by accident.
 
 The weights are the `model.onnx` written into each model directory by
-`tools/export_onnx.py`, quantized to int8. Tokenization is the same
+`tools/export_onnx.py`, quantized to fp32. Tokenization is the same
 `tokenizer.json` the torch path used, read directly by `tokenizers`.
 
 Two behaviours are reimplemented here because they used to come from a
