@@ -227,8 +227,18 @@ def test_the_font_is_chosen_against_the_text_it_must_draw() -> None:
     """Which font covers a document is a property of the document. The base-14
     faces draw an en dash, a curly quote and Thai all as a middle dot, which in
     a proof-reading tool would be read as an extraction bug."""
-    chosen = choose_font(set("Rattanakul – · “ ปวส"))
-    assert not chosen.missing, f"no installed font covers: {chosen.missing}"
+    latin = choose_font(set("Rattanakul – · “"))
+    assert not latin.missing, f"no installed font covers: {latin.missing}"
+
+    # Thai is the part of this that depends on the machine rather than on the
+    # chooser: a bare Linux runner ships DejaVu and nothing else. Skipping is
+    # honest there -- the assertion above already proves the search happens,
+    # and asserting Thai coverage would be asserting the runner's font set.
+    if choose_font(set("ปวส")).missing:
+        pytest.skip("this machine has no font covering Thai")
+    # A font exists for each half, so the chooser must find one for both at
+    # once rather than settling for whichever half it looked at first.
+    assert not choose_font(set("Rattanakul – · “ ปวส")).missing
 
 
 def test_missing_glyphs_are_reported_rather_than_drawn_silently(

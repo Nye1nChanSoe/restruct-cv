@@ -109,6 +109,9 @@ def test_drawn_rules_are_captured() -> None:
     assert all(rule.orientation == "horizontal" and rule.length > 10 for rule in rules)
 
 
+# Reading this fixture at all runs the OCR fallback: the page has no native
+# text, so `read_document` reaches Tesseract before it records the image.
+@pytest.mark.skipif(not tesseract_available(), reason="needs tesseract")
 def test_scanned_pages_are_recorded_as_images() -> None:
     document = read_document(pymupdf.open(SYNTHETIC_DIRECTORY / "9.ocr.pdf"))
     assert document.pages[0].images

@@ -96,6 +96,37 @@ def golden_path(stem: str) -> Path:
     return GOLDEN_DIRECTORY / f"{stem}.resume.json"
 
 
+# The Tesseract build that produced the committed OCR snapshots. Written by
+# `--update-golden`, read by the snapshot test.
+GOLDEN_TESSERACT_VERSION_PATH = GOLDEN_DIRECTORY / "tesseract-version.txt"
+
+
+def tesseract_version() -> str | None:
+    """The installed engine's version string, or None if it is not installed.
+
+    Asked through `find_tesseract` so it names the same binary the pipeline
+    would run, not whichever one PATH happens to expose.
+    """
+    import subprocess
+
+    from restruct.ingestion.ocr import find_tesseract
+
+    executable = find_tesseract()
+    if executable is None:
+        return None
+    try:
+        completed = subprocess.run(
+            [str(executable), "--version"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    # "tesseract 5.5.3\n leptonica-1.87.0 ..." -- the first line is the engine.
+    return completed.stdout.splitlines()[0].strip() if completed.stdout else None
+
+
 def label_path(stem: str) -> Path:
     return LABEL_DIRECTORY / f"{stem}.json"
 

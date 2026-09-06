@@ -16,6 +16,8 @@ import pytest
 
 from tests.conftest import require_tesseract_for
 from tests.helpers import (
+    GOLDEN_TESSERACT_VERSION_PATH,
+    OCR_STEMS,
     PROJECT_ROOT,
     SYNTHETIC_DIRECTORY,
     fixture_path,
@@ -23,6 +25,7 @@ from tests.helpers import (
     golden_path,
     run_pipeline,
     synthetic_stems,
+    tesseract_version,
 )
 
 
@@ -76,6 +79,32 @@ def _result(
     return extracted[stem]
 
 
+def _require_the_baselined_ocr_engine(stem: str) -> None:
+    """A scanned snapshot is only a regression guard against the engine that
+    produced it.
+
+    Tesseract's own reading changes between builds -- 5.3 reads `KPI` where
+    5.5 reads `KP!` -- and a byte-for-byte diff cannot tell that apart from a
+    change in this repository. So the snapshot is compared only on the engine
+    it was baselined with, and skipped, loudly, on any other. The structural
+    checks and the scorecard still run for these fixtures everywhere.
+    """
+    if stem not in OCR_STEMS:
+        return
+    installed = tesseract_version()
+    if not GOLDEN_TESSERACT_VERSION_PATH.exists():
+        pytest.skip(
+            "the OCR snapshots record no engine version; "
+            "re-baseline with: uv run pytest --update-golden"
+        )
+    baselined = GOLDEN_TESSERACT_VERSION_PATH.read_text(encoding="utf-8").strip()
+    if installed != baselined:
+        pytest.skip(
+            f"{stem} was baselined on {baselined!r}, this machine has "
+            f"{installed!r}; OCR output is engine-specific"
+        )
+
+
 @pytest.mark.parametrize("stem", STEMS)
 def test_matches_golden_snapshot(
     stem: str,
@@ -91,7 +120,17 @@ def test_matches_golden_snapshot(
     if update_golden:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(actual, encoding="utf-8")
+        if stem in OCR_STEMS:
+            # Recorded here rather than by hand: a snapshot and the engine that
+            # produced it must be re-baselined together or the gate lies.
+            version = tesseract_version()
+            if version:
+                GOLDEN_TESSERACT_VERSION_PATH.write_text(
+                    version + "\n", encoding="utf-8"
+                )
         pytest.skip(f"rebaselined {path.name}")
+
+    _require_the_baselined_ocr_engine(stem)
 
     if not path.exists():
         pytest.fail(

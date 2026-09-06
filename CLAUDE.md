@@ -83,6 +83,11 @@ different questions, and **both must pass on every commit**:
 
 - **`tests/golden/`** — byte-for-byte snapshots of `resume.json` for the six synthetic fixtures.
   Catches any *change*. The pipeline is deterministic, so an empty diff is a real signal.
+  The two scanned fixtures are the exception: Tesseract's reading changes between builds
+  (5.3 reads `KPI` where 5.5 reads `KP!`), so their snapshot is compared only on the engine
+  recorded in `tests/golden/tesseract-version.txt`, which `--update-golden` writes alongside
+  them, and skipped loudly on any other. Their structural checks and the scorecard still run
+  everywhere.
 - **`tests/labels/` + `tests/scorecard.py`** — hand-written ground truth, derived by reading each
   resume (the scanned ones from rendered page images, never from OCR output). Catches output
   getting *worse*, which a snapshot cannot distinguish from a fix.
