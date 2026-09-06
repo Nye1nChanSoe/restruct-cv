@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The claim in CONTRIBUTING.md: a fresh clone with no weights and no OCR
+  # engine is green, because the tests that need them skip rather than fail.
+  # Nothing here may install either -- an installed model would make this job
+  # a copy of the one below and stop verifying anything.
+  fresh-clone:
+    name: fresh clone (no models, no tesseract)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: The runner really has neither
+        run: |
+          test ! -e models/all-MiniLM-L6-v2/model.onnx
+          test ! -e "$HOME/.restruct/models"
+          ! command -v tesseract
+      # -rs prints why each test skipped, so the log says which parts of the
+      # suite this job actually covered rather than only that it was green.
+      - run: uv run --locked pytest -rs
+
+  full:
+    name: full suite (models + tesseract)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: sudo apt-get update && sudo apt-get install -y tesseract-ocr
+
+      # `--install-models` writes into the checkout's `models/` when it is run
+      # from one, and that is also the first place `tests.helpers` looks. The
+      # key carries the pinned revisions and digests, so changing a pin
+      # downloads the new weights instead of restoring the old ones.
+      - uses: actions/cache@v4
+        with:
+          path: models
+          key: models-${{ hashFiles('src/restruct/install.py', 'src/restruct/configs/settings.py') }}
+      - name: Download the weights on a cache miss
+        run: |
+          test -f models/all-MiniLM-L6-v2/model.onnx \
+            && test -f models/distilbert-NER/model.onnx \
+            || uv run --locked restruct --install-models
+
+      - run: uv run --locked pytest -rs
+
+      # The per-field floor is enforced by `test_no_field_regressed_below_baseline`
+      # in the run above. This prints the table it compared against, so a green
+      # master says what the accuracy is and not only that it did not drop.
+      - name: Report the scorecard
+        run: uv run --locked tools/dev.py scorecard
