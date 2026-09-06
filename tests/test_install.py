@@ -286,6 +286,10 @@ def test_a_non_interactive_run_is_never_offered_a_download(
     with an instruction."""
     monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
     monkeypatch.chdir(tmp_path)
+    # `~/.restruct/models` is where an installed copy puts its weights, so on
+    # a machine that has run --install-models it is a real candidate and these
+    # tests would find weights they never wrote. Own the home directory too.
+    monkeypatch.setenv("HOME", str(tmp_path))
     monkeypatch.setattr(cli.sys.stdin, "isatty", lambda: False, raising=False)
 
     called = False
@@ -305,6 +309,10 @@ def test_the_missing_weights_message_names_the_command_that_fixes_it(
 ) -> None:
     monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
     monkeypatch.chdir(tmp_path)
+    # `~/.restruct/models` is where an installed copy puts its weights, so on
+    # a machine that has run --install-models it is a real candidate and these
+    # tests would find weights they never wrote. Own the home directory too.
+    monkeypatch.setenv("HOME", str(tmp_path))
     with pytest.raises(cli.ModelAssetsMissing) as raised:
         cli._load_models(tmp_path / "not-a-checkout")
     assert "--install-models" in str(raised.value)

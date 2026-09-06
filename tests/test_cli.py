@@ -249,6 +249,10 @@ def test_a_directory_without_onnx_weights_is_not_a_models_directory(
     as far as loading before failing, and would report the wrong problem."""
     monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
     monkeypatch.chdir(tmp_path)
+    # `~/.restruct/models` is where an installed copy puts its weights, so on
+    # a machine that has run --install-models it is a real candidate and these
+    # tests would find weights they never wrote. Own the home directory too.
+    monkeypatch.setenv("HOME", str(tmp_path))
     for name in cli.MODEL_DIRECTORY_NAMES:
         (tmp_path / "models" / name).mkdir(parents=True)
         (tmp_path / "models" / name / "model.safetensors").write_text("")
@@ -300,6 +304,10 @@ def test_the_failure_names_every_place_that_was_looked_in(
     for an installed copy the answer is not obvious."""
     monkeypatch.delenv(cli.MODELS_DIRECTORY_VARIABLE, raising=False)
     monkeypatch.chdir(tmp_path)
+    # `~/.restruct/models` is where an installed copy puts its weights, so on
+    # a machine that has run --install-models it is a real candidate and these
+    # tests would find weights they never wrote. Own the home directory too.
+    monkeypatch.setenv("HOME", str(tmp_path))
     with pytest.raises(cli.ModelAssetsMissing) as raised:
         cli._load_models(tmp_path / "not-a-checkout")
     message = str(raised.value)
