@@ -11,6 +11,7 @@ import pymupdf
 import pytest
 
 from restruct.document.physical import Document, Page, Span, TextLine, Token
+from restruct.document.stats import measure
 from restruct.ingestion.native import extracted_lines, read_document
 from tests.helpers import SYNTHETIC_DIRECTORY, tesseract_available
 
@@ -153,9 +154,139 @@ def test_ocr_line_size_resists_a_single_tall_glyph() -> None:
 
 @pytest.mark.parametrize("stem", ["1", "6"])
 def test_extracted_lines_bridge_drops_only_blank_lines(stem: str) -> None:
-    """The bridge feeding the existing parsers must not lose content."""
+    """The bridge feeding the existing parsers must not lose content.
+
+    Called without statistics, which is the only way to ask for every line: the
+    furniture drop below needs measurements, so this asks the narrower question
+    of whether the bridge itself invents or loses anything.
+    """
     document = read_document(pymupdf.open(SYNTHETIC_DIRECTORY / f"{stem}.pdf"))
     bridged = extracted_lines(document)
     non_blank = [line for line in document.lines if line.text.strip()]
     assert len(bridged) == len(non_blank)
     assert [line.text for line in bridged] == [line.text.strip() for line in non_blank]
+
+
+# -- page furniture is dropped from the view, not from the document ---------
+
+# The bridge is where a running header or footer stops being content, because
+# it is the one view every section parser reads. The tests below are the pair
+# that has to hold together: the banner leaves the parsers' view, and nothing
+# that merely looks like it -- body text at the same position, a year cell in
+# a margin band -- leaves with it.
+
+
+def _furniture_line(
+    text: str,
+    top: float,
+    *,
+    page: int = 1,
+    left: float = 72.0,
+    size: float = 11.0,
+) -> TextLine:
+    box = (left, top, left + 5.0 * len(text), top + size)
+    return TextLine(page, box, (span(text, size=size),))
+
+
+def _paged_document(
+    *lines: TextLine,
+    pages: int,
+    height: float = 792.0,
+    has_geometry: bool = True,
+) -> Document:
+    by_page: dict[int, list[TextLine]] = {}
+    for item in lines:
+        by_page.setdefault(item.page, []).append(item)
+    return Document(
+        pages=tuple(
+            Page(number, 612.0, height, lines=tuple(by_page.get(number, ())))
+            for number in range(1, pages + 1)
+        ),
+        has_geometry=has_geometry,
+    )
+
+
+def test_a_running_banner_is_dropped_from_the_parsers_view() -> None:
+    """Regression: 7.anomaly's page-1 banner was accumulated onto the end of an
+    experience bullet, because the parsers never asked what the statistics had
+    already worked out."""
+    document = _paged_document(
+        _furniture_line("Confidential draft | Page 1", 700.0, page=1),
+        _furniture_line("Maintained the packing line", 300.0, page=1),
+        _furniture_line("Confidential draft | Page 2", 700.0, page=2),
+        pages=2,
+    )
+    bridged = extracted_lines(document, measure(document))
+    assert [line.text for line in bridged] == ["Maintained the packing line"]
+
+
+def test_the_dropped_banner_stays_in_the_physical_document() -> None:
+    """The overlays draw the document, not the view. A banner removed from both
+    would be a removal nobody could check."""
+    document = _paged_document(
+        _furniture_line("Confidential draft | Page 1", 700.0, page=1),
+        _furniture_line("Confidential draft | Page 2", 700.0, page=2),
+        pages=2,
+    )
+    extracted_lines(document, measure(document))
+    assert [line.text for line in document.lines] == [
+        "Confidential draft | Page 1",
+        "Confidential draft | Page 2",
+    ]
+
+
+def test_repeated_body_text_away_from_the_margins_is_kept() -> None:
+    """Repetition alone is not furniture: a resume may say the same thing twice
+    in the middle of two pages and mean it both times."""
+    document = _paged_document(
+        _furniture_line("Health and safety training", 300.0, page=1),
+        _furniture_line("Health and safety training", 300.0, page=2),
+        pages=2,
+    )
+    bridged = extracted_lines(document, measure(document))
+    assert len(bridged) == 2
+
+
+def test_a_year_cell_low_on_the_page_survives_the_bridge() -> None:
+    """After digit folding a bare year and a bare page number are the same key,
+    and 7.anomaly's certification table puts a Year cell inside the bottom
+    margin band, one line below the banner that is furniture.
+
+    What separates them is pages, not position: the years are all on page 2, so
+    the key never repeats across pages. That is the whole load-bearing part --
+    a year column repeated in the same band of two pages would be
+    indistinguishable from a page number, and this heuristic would drop it.
+    """
+    document = read_document(pymupdf.open(SYNTHETIC_DIRECTORY / "7.anomaly.pdf"))
+    page = document.page(2)
+    band = page.height * 0.85
+    low_years = [
+        line.text.strip()
+        for line in page.lines
+        if line.text.strip().isdigit() and line.bbox[3] >= band
+    ]
+    assert low_years, "the fixture no longer exercises the case"
+    bridged = {line.text for line in extracted_lines(document, measure(document))}
+    assert set(low_years) <= bridged
+
+
+def test_a_reflowable_source_loses_nothing_to_furniture_detection() -> None:
+    """A DOCX states its paragraphs and has no page, so the margin band would be
+    measured against an ordinal height -- a threshold applied to nothing."""
+    document = _paged_document(
+        _furniture_line("Confidential draft | Page 1", 700.0, page=1),
+        _furniture_line("Confidential draft | Page 2", 700.0, page=2),
+        pages=2,
+        has_geometry=False,
+    )
+    bridged = extracted_lines(document, measure(document))
+    assert len(bridged) == 2
+
+
+def test_the_anomaly_banner_never_reaches_the_parsers() -> None:
+    """The same guard on the real fixture, whose banner is numbered per page and
+    whose Year column is the thing that must survive beside it."""
+    document = read_document(pymupdf.open(SYNTHETIC_DIRECTORY / "7.anomaly.pdf"))
+    bridged = extracted_lines(document, measure(document))
+    assert not [line for line in bridged if line.text.startswith("SYNTHETIC RESUME")]
+    assert any(line.text.startswith("SYNTHETIC RESUME") for line in document.lines)

@@ -16,7 +16,7 @@
 <p align="center"><strong>PDF (OCR) · DOCX · PNG · JPEG</strong></p>
 <p align="center"><i>Runs on your machine. No resume upload and no API key.</i></p>
 
----
+<br>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Nye1nChanSoe/restruct-cv/master/docs/readme-pipeline.webp" width="900"
@@ -41,9 +41,9 @@ a layout the parser cannot read reliably is reported instead of silently rearran
 ## Why Restruct exists
 
 Restruct grew out of my work on [Open LinkedOut](https://github.com/Nye1nChanSoe/open-linkedout), a lightweight, local-first job scraping and matching system.
-Small local models consumed too much RAM and disk space while still hallucinating resume details.
-Restruct uses document structure and explicit patterns first. Local models are used only when the
-document itself does not settle the meaning of a span.
+I initially experimented with small open-weight language models, such as Qwen3 4B, running locally. Even at that scale, they consumed enough RAM and disk space that they could not run comfortably on my laptop, while still being prone to hallucinating resume details.
+
+Restruct therefore uses document structure and explicit patterns first. Smaller, task-specific NLP models from Hugging Face are used only when the document itself does not settle the meaning of a span.
 
 <br>
 

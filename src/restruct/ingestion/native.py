@@ -223,6 +223,29 @@ def read_document(document: pymupdf.Document) -> Document:
     )
 
 
+def _is_page_furniture(
+    line: TextLine,
+    document: Document,
+    statistics: DocumentStatistics,
+) -> bool:
+    """Whether this line is a running header or footer rather than content.
+
+    Both halves of the question are geometric -- repeated across pages, and
+    sitting in a page margin -- so a reflowable source, whose boxes carry
+    reading order and no measurement, is never asked. Its paragraph boundaries
+    are stated outright, and a margin band measured against an ordinal page
+    height would be a threshold applied to nothing.
+    """
+    if not document.has_geometry:
+        return False
+    return statistics.is_page_furniture(
+        line.text,
+        top=line.bbox[1],
+        bottom=line.bbox[3],
+        page_height=document.page(line.page).height,
+    )
+
+
 def extracted_lines(
     document: Document,
     statistics: DocumentStatistics | None = None,
@@ -232,11 +255,20 @@ def extracted_lines(
     The bridge from the physical representation to the parsers. Pass-3 data --
     baseline, words and cells -- rides along on each line so the parsers can
     adopt it one at a time rather than in a single rewrite.
+
+    Running headers and footers are dropped here, which is the only place they
+    can be dropped once: every parser reads this view, and one that had to
+    recognise page furniture itself would be the tenth copy of a judgement the
+    statistics have already made. They are dropped from the *view* and not from
+    the document, so the pass-1 overlay still draws what was physically on the
+    page -- which is how a wrong removal is seen at all.
     """
     lines: list[ExtractedLine] = []
     for line in document.lines:
         text = line.text.strip()
         if not text:
+            continue
+        if statistics is not None and _is_page_furniture(line, document, statistics):
             continue
         cells = cells_in_line(line, statistics) if statistics is not None else ()
         lines.append(
