@@ -66,15 +66,19 @@ times smaller and does not — the tool's docstring records what each quantizati
 measured to cost, and the change budget below is what rejected them.
 
 Tesseract is a system dependency (`brew install tesseract`), needed only for the scanned
-fixtures. Tests **skip** rather than fail when models or Tesseract are absent, so a fresh clone
-stays green.
+fixtures and for image input, which has no other reader. Tests **skip** rather than fail when
+models or Tesseract are absent, so a fresh clone stays green.
 
 It is looked for by `ingestion/ocr.find_tesseract()` on PATH first and then where installers put
 it (Program Files on Windows, both Homebrew prefixes on macOS), and **only on a page that has
 too little native text to parse** — a native PDF and a DOCX must run on a machine with no OCR
-engine at all, which `tests/test_ocr.py` enforces. `SETTINGS.ocr.dpi` stays at 300: the 200 the
-design asks for was measured and loses bullet markers, and the comment there records the
-numbers.
+engine at all, which `tests/test_ocr.py` enforces. A PNG or JPEG is the one exception, and it is
+checked in `cli._validate` rather than at the render: an image has no native text to fall back on,
+so OCR is not its fallback but its only reader, and reporting that after the model load would be
+reporting it late.
+
+`SETTINGS.ocr.dpi` stays at 300: the 200 the design asks for was measured and loses bullet
+markers, and the comment there records the numbers.
 
 ## The test harness is the point
 
@@ -180,7 +184,7 @@ Five ordered passes over one shared in-memory document. The current code impleme
 fully; passes 1-3 are being built (see *Refactor in flight*).
 
 ```
-ingestion/   physical extraction — native PDF text, per-page OCR fallback, DOCX
+ingestion/   physical extraction — native PDF text, per-page OCR fallback, DOCX, image
 document/    shared types (ExtractedLine, DetectedHeading, HeaderEntityMatch)
 layout/      row clustering, paragraph/bullet accumulation, unsupported-layout detection
 structure/   heading detection, routing, compound headings, precedence resolver, separators
@@ -361,6 +365,34 @@ puts the marker back into the text, so nine downstream bullet rules need no DOCX
 
 `ingestion/ocr.py` rebuilds Tesseract TSV into the same line geometry the native path produces,
 so nothing downstream needs OCR-specific handling. Preserve this when touching ingestion.
+
+### An image is given a page, and the page is in points
+
+`ingestion/image.py` reads a PNG or JPEG. MuPDF will open one directly and that is the tempting
+one-liner; it is also wrong in a way that is easy to miss. The page it returns has a box measured
+in the image's **pixels**, because an image carries no statement of what its pixels measure and
+most carry none at all. Every rule downstream that reads a box as points is then reading a number
+that does not mean what it says: rendering a metadata-free phone photo at `SETTINGS.ocr.dpi`
+upscaled it fourfold into an 85-megapixel, 255 MB raster of pixels that were never in the file,
+and `debug.scale` multiplied the same wrong number again.
+
+So the image is placed on a page whose long side is `SETTINGS.image.page_long_side_points`,
+keeping its proportions exactly, and from there it is a scanned page like any other — the same
+too-little-native-text test sends it to OCR, and at the OCR DPI that page renders to about 3500
+pixels, which is the size Tesseract is tuned for. Nothing is invented: the pixels and their
+proportions are the document's own and only the units are chosen. The docstring in
+`configs/settings.ImageSettings` carries the measurements, and rendering 1:1 instead was measured
+to be no better anywhere and much worse on a small source.
+
+**EXIF orientation is applied here, and it has to be.** MuPDF reads the tag when it opens an image
+*as a document* and ignores it when it places one *on a page*, which is the path this reader
+takes. A phone stores the sensor's pixels sideways plus a tag saying which way it was held, and
+OCR of a sideways page returns nothing worth having — the test's control is exactly that: the same
+pixels with the tag stripped come back as `psooid` and no email. The four mirrored orientations
+are deliberately left alone.
+
+Only `.png`, `.jpg` and `.jpeg` are accepted. MuPDF decodes more, but each format claimed is a
+fixture and a test owed, and these are the two a resume actually arrives as.
 
 ## Conventions
 

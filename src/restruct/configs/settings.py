@@ -53,6 +53,37 @@ class OcrSettings:
 
 
 @dataclass(frozen=True)
+class ImageSettings:
+    """How a PNG or JPEG is presented as the page it photographs.
+
+    An image has pixels, not points, and most carry no statement of what those
+    pixels measure. MuPDF opens one as a page whose box is its pixel count, and
+    every rule downstream that reads a box as points -- the OCR DPI, the debug
+    canvas multiplier, every geometric threshold -- is then applied to a number
+    that does not mean what it says. Rendering a metadata-free phone photo "at
+    300 dpi" upscales it fourfold into an 85-megapixel, 255 MB raster of pixels
+    that were never there.
+
+    So an image is given a page of this size, keeping its aspect ratio, and
+    everything downstream reads an ordinary page. The long side is A4's, which
+    at the DPI above renders to about 3500 pixels -- the size Tesseract is
+    tuned for, text around 30 pixels tall.
+
+    Measured on one page rendered at six source resolutions, word agreement
+    against that page's own native text, rendering the image 1:1 against
+    rendering it to this page size:
+
+        596px source   0.579 -> 0.931      2484px source  0.946 -> 0.946
+        795px source   0.925 -> 0.932      3312px source  0.946 -> 0.946
+       1242px source   0.932 -> 0.946      and 2.0s -> 1.6s
+
+    At or above 1:1 everywhere, and the cost stops growing with the source.
+    """
+
+    page_long_side_points: float = 842.0
+
+
+@dataclass(frozen=True)
 class HeadingSettings:
     similarity_threshold: float = 0.55
     winner_margin: float = 0.06
@@ -147,6 +178,7 @@ class ExtractorSettings:
     model: ModelSettings = field(default_factory=ModelSettings)
     ner: NerSettings = field(default_factory=NerSettings)
     ocr: OcrSettings = field(default_factory=OcrSettings)
+    image: ImageSettings = field(default_factory=ImageSettings)
     heading: HeadingSettings = field(default_factory=HeadingSettings)
     section_router: SectionRouterSettings = field(default_factory=SectionRouterSettings)
     url: UrlSettings = field(default_factory=UrlSettings)

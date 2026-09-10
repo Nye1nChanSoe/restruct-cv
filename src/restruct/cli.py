@@ -32,7 +32,7 @@ from restruct.errors import (
 )
 from restruct.stages import DEFAULT_DEBUG_STAGES, raw_extraction_reader
 
-SUPPORTED_SUFFIXES = (".pdf", ".docx")
+SUPPORTED_SUFFIXES = (".pdf", ".docx", ".png", ".jpg", ".jpeg")
 
 # One code per failure a caller might handle differently. Grouped by decade so
 # a new member of a family does not disturb the others: 1x input, 2x
@@ -102,7 +102,7 @@ def _parse_arguments(argv: list[str] | None = None) -> argparse.Namespace:
         nargs="?",
         type=Path,
         metavar="PATH",
-        help="The resume to extract: a .pdf or a .docx.",
+        help="The resume to extract: a .pdf, .docx, .png or .jpg.",
     )
     parser.add_argument(
         "-o",
@@ -219,6 +219,27 @@ def _artifact_directory(output_path: Path) -> Path:
     return candidate
 
 
+def _validate_ocr_is_available(path: Path) -> None:
+    """Refuse an image up front when nothing can read it.
+
+    Every other format degrades: a PDF with no OCR engine still parses its
+    native text, and a DOCX never needed one. An image has nothing else, so
+    running the pipeline on one without Tesseract would load the models, render
+    the page, and only then report a missing engine -- or, with OCR turned off
+    in settings, report nothing at all and write an empty resume.
+    """
+    from restruct.configs import SETTINGS
+    from restruct.ingestion.ocr import find_tesseract
+
+    if not SETTINGS.ocr.enabled:
+        raise InvalidDocument(
+            path,
+            "an image can only be read by OCR, which is disabled in settings",
+        )
+    if find_tesseract() is None:
+        raise TesseractMissing(SETTINGS.ocr.tesseract_command)
+
+
 def _validate(path: Path) -> None:
     """Check what can be checked before loading several hundred MB of models."""
     if not path.exists():
@@ -235,8 +256,18 @@ def _validate(path: Path) -> None:
 
     import pymupdf
 
+    from restruct.ingestion.image import is_image, read_image
+
+    source_is_image = is_image(path)
+    if source_is_image:
+        # An image is pixels and nothing else: no native text to fall back on
+        # and no styles to state, so OCR is not a fallback for it but the only
+        # reader it has. Saying so now costs a PATH lookup; saying so where the
+        # render happens costs the model load first.
+        _validate_ocr_is_available(path)
+
     try:
-        with pymupdf.open(path) as document:
+        with (read_image(path) if source_is_image else pymupdf.open(path)) as document:
             if document.needs_pass:
                 raise InvalidDocument(path, "the document is password-protected")
             if document.page_count == 0:

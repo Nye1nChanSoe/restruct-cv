@@ -7,7 +7,7 @@
   <a href="https://github.com/Nye1nChanSoe/restruct-cv/blob/master/LICENSE"><img src="https://img.shields.io/pypi/l/restruct-cv.svg" alt="License"></a>
 </p>
 
-<h3 align="center">Turn a resume PDF, DOCX, or a Scan into clean, consistent JSON.</h3>
+<h3 align="center">Turn a resume PDF, DOCX, scan or photo into clean, consistent JSON.</h3>
 
 <h4 align="center">Runs entirely on your machine. No upload, no API key.</h4>
 
@@ -19,7 +19,7 @@ pulls out the name, the contact details, the jobs, the dates, the schools, the s
 The result has **the same shape every time**, whatever the resume looked like, ready to drop into
 an applicant tracking system, a search index, or an analytics pipeline.
 
-- **PDF, DOCX and scanned pages.** One command, one output shape for all three.
+- **PDF, DOCX, scans and photos.** A PNG or JPEG of a page reads like any other resume.
 - **Fully local.** The models are files on your disk; nothing leaves the machine.
 - **Sixteen fixed sections.** Always present, always in the same order, never a missing key.
 - **Two ways to check the result.** Draw it back as a page, or see it drawn on the original.
@@ -55,8 +55,9 @@ uv run restruct --install-models
 
 <br>
 
-**Scanned resumes**, the ones that are pictures of pages with no text inside them, also need
-Tesseract. A normal PDF or DOCX never asks for it.
+**Scanned resumes** -- pictures of pages with no text inside them, including a PNG or JPEG
+straight from a phone -- also need Tesseract. A normal PDF or DOCX never asks for it, and an
+image says so before anything else happens rather than after the models load.
 
 ```bash
 brew install tesseract                 # macOS
@@ -139,8 +140,9 @@ and where it thought each section began and ended.
 - **Heavier boxes are model conclusions.** Lighter ones are things the document stated outright,
   so you can tell a guess from a fact.
 
-Scans go through the same path. OCR is rebuilt into the same geometry a native PDF produces, so a
-scanned page gets an overlay that looks like any other:
+Scans and photographs go through the same path. A PNG or JPEG is placed on a page of its own
+proportions and read as a scan, and OCR is rebuilt into the same geometry a native PDF produces,
+so a photographed page gets an overlay that looks like any other:
 
 <p align="center">
   <img src="examples/9.ocr/debug/page-1.png" width="620"

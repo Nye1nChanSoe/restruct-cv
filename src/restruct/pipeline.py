@@ -25,6 +25,7 @@ from restruct.debug.render import render_combined_debug_images
 from restruct.document.physical import Document
 from restruct.document.stats import measure
 from restruct.ingestion.docx import ReflowableRenderer, read_docx
+from restruct.ingestion.image import is_image, read_image
 from restruct.ingestion.native import extracted_lines, read_document
 from restruct.layout.unsupported import detect_unsupported_layouts
 from restruct.layout.words import reconstruct_words
@@ -48,16 +49,18 @@ from restruct.structure.sections import build_sections, summary_debug_value
 def _open_source(path: Path) -> Iterator[tuple[Document, Any]]:
     """Read one source, and hand back a renderer for it.
 
-    The two formats differ only here. A PDF is read by MuPDF, which is also the
-    renderer the debug overlays and span resolution use. A DOCX has no rendered
-    form at all, so it gets a stand-in that answers "no glyphs here" rather
-    than a branch in every parser that takes a renderer.
+    The formats differ only here. A PDF is read by MuPDF, which is also the
+    renderer the debug overlays and span resolution use. An image is given a
+    page and read the same way, so from the next line on it is a scanned page
+    like any other. A DOCX has no rendered form at all, so it gets a stand-in
+    that answers "no glyphs here" rather than a branch in every parser that
+    takes a renderer.
     """
     if path.suffix.casefold() == ".docx":
         physical = read_docx(path)
         yield physical, ReflowableRenderer(physical)
         return
-    with pymupdf.open(path) as document:
+    with (read_image(path) if is_image(path) else pymupdf.open(path)) as document:
         yield read_document(document), document
 
 
