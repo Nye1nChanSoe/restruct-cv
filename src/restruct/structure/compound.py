@@ -29,6 +29,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from restruct.configs import SETTINGS
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.structure.headings import (
     _looks_like_subheading,
@@ -216,6 +217,7 @@ def _assign_line_indexes(
     lines: list[ExtractedLine],
     line_indexes: list[int],
     components: tuple[HeadingComponent, ...],
+    statistics: DocumentStatistics,
 ) -> tuple[dict[str, list[int]], list[int]]:
     """Split a section's lines between its heading's components.
 
@@ -224,7 +226,9 @@ def _assign_line_indexes(
     evidence, which is the same rule that stops content being classified merely
     because it follows a heading.
     """
-    body_size, body_bold = _section_body_style([lines[index] for index in line_indexes])
+    body_size, body_bold, body_indent_level = _section_body_style(
+        [lines[index] for index in line_indexes], statistics
+    )
     claimed: dict[str, list[int]] = {}
     unclaimed: list[int] = []
     # A local subheading owns the lines under it until the next one. This is
@@ -236,7 +240,13 @@ def _assign_line_indexes(
     for line_index in line_indexes:
         line = lines[line_index]
         text = _without_marker(line.text)
-        if _looks_like_subheading(line, body_size=body_size, body_bold=body_bold):
+        if _looks_like_subheading(
+            line,
+            body_size=body_size,
+            body_bold=body_bold,
+            body_indent_level=body_indent_level,
+            statistics=statistics,
+        ):
             subheading_owner = _exact_section_type(text)
             if any(
                 subheading_owner == component.section_type
@@ -262,6 +272,7 @@ def logical_sections(
     lines: list[ExtractedLine],
     heading: DetectedHeading,
     line_indexes: list[int],
+    statistics: DocumentStatistics,
 ) -> list[LogicalSection]:
     """Divide one physical section into the logical sections it contains.
 
@@ -312,7 +323,9 @@ def logical_sections(
             )
         ]
 
-    claimed, unclaimed = _assign_line_indexes(lines, line_indexes, components)
+    claimed, unclaimed = _assign_line_indexes(
+        lines, line_indexes, components, statistics
+    )
     if not claimed:
         return [
             LogicalSection(
@@ -348,6 +361,7 @@ def logical_sections(
 def routed_logical_sections(
     lines: list[ExtractedLine],
     headings: list[DetectedHeading],
+    statistics: DocumentStatistics,
     *,
     minimum_line_index: int = 0,
 ) -> list[LogicalSection]:
@@ -370,6 +384,11 @@ def routed_logical_sections(
             else len(lines)
         )
         sections.extend(
-            logical_sections(lines, heading, list(range(heading.line_index + 1, end)))
+            logical_sections(
+                lines,
+                heading,
+                list(range(heading.line_index + 1, end)),
+                statistics,
+            )
         )
     return sections

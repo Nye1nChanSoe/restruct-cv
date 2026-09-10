@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 
+from restruct.patterns.invisibles import without_invisibles
+
 # Matched only against lines already near the bottom of a page, so an ordinary
 # sentence ending in a number is not mistaken for a running footer.
 PAGE_FOOTER_RE = re.compile(r"\bpage\s+\d+\s*$", re.IGNORECASE)
@@ -24,7 +26,7 @@ HEADING_ORDINAL_RE = re.compile(
 
 def heading_text(text: str) -> str:
     """A heading with its ordinal prefix and invisible characters removed."""
-    cleaned = text.replace("​", "").replace("﻿", "").strip()
+    cleaned = without_invisibles(text).strip()
     stripped = HEADING_ORDINAL_RE.sub("", cleaned)
     # Never strip everything: a heading that is only a number is not one, and
     # returning an empty string would make it match nothing at all.

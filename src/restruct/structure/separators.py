@@ -24,6 +24,7 @@ import re
 from dataclasses import dataclass
 
 from restruct.patterns.dates import SINGLE_DATE_RE
+from restruct.patterns.invisibles import ZERO_WIDTH_CHARACTERS
 
 # A label this short is a label whatever else is true of it.
 _ALWAYS_SHORT_LABEL_WORDS = 7
@@ -85,6 +86,41 @@ def is_parenthetically_complete(text: str) -> bool:
     boundary between fields.
     """
     return parenthesis_depth(text) == 0
+
+
+# What may sit between a value and the bracket that was orphaned beside it:
+# the same trailing punctuation a split already discards, plus the zero-width
+# set -- named once in patterns/invisibles rather than partially re-listed here,
+# which is how four copies of it came to exist.
+_ORPHAN_ADJACENT = " \t,;:-\u2013\u2014" + ZERO_WIDTH_CHARACTERS
+
+
+def trim_orphaned_brackets(text: str) -> str:
+    """``text`` with unmatched brackets removed from its edges.
+
+    Carving a span out of a line can leave a bracket whose partner went with
+    the span: ``Institution (Aug-2024 - July-2026)`` yields the dates and
+    ``Institution (``, and the lone ``)`` on the right strips to nothing. The
+    bracket is punctuation the value never owned, so it goes.
+
+    Only *unmatched* edge brackets are trimmed, which is what keeps this from
+    touching a parenthetical the document really wrote. ``C++ (graphics)`` and
+    ``Lithan Myanmar (eduCLaaS)`` close what they open, so nothing here
+    applies to them; a leading ``)`` cannot have an opener in front of it, and
+    a trailing ``(`` has nothing left to close it.
+
+    Interior brackets are never touched. A fragment reading ``(cont. from`` is
+    still half a phrase, and this is not the stage that repairs one.
+    """
+    previous = None
+    while text != previous:
+        previous = text
+        text = text.strip(_ORPHAN_ADJACENT)
+        if text and text[0] in ")]":
+            text = text[1:]
+        elif text and text[-1] in "([" and parenthesis_depth(text) > 0:
+            text = text[:-1]
+    return text
 
 
 def _is_date_like(text: str) -> bool:

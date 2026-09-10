@@ -237,6 +237,97 @@ def test_an_unmatched_bracket_cannot_swallow_a_section() -> None:
     )
 
 
+def test_an_unmatched_bracket_cannot_swallow_a_section_one_hop_at_a_time() -> None:
+    """The gap bound is per hop and nothing about it accumulates, so a bracket
+    that never closes kept earning another join for as long as each individual
+    gap stayed under it -- walking to the end of the page three lines at a
+    time. The single-hop test above passed throughout.
+    """
+    from restruct.layout.blocks import continues_block, extend_block, last_block_text
+
+    statistics = _statistics_with(line_height=12.0, line_gap=1.0)
+    # Under the 36pt per-hop bound, so only the cumulative bound can stop this.
+    gap = 35.0
+    entry = {
+        "bullets": [{"text": "Skills (ongoing", "bbox": (50.0, 100.0, 300.0, 112.0)}],
+        "paragraphs": [],
+        "_lastType": "bullet",
+    }
+    previous = (50.0, 100.0, 300.0, 112.0)
+    joined = 0
+    for index in range(8):
+        top = previous[3] + gap
+        current = (50.0, top, 300.0, top + 12.0)
+        if not continues_block(
+            previous,
+            current,
+            same_page=True,
+            require_horizontal_overlap=False,
+            statistics=statistics,
+            previous_text=last_block_text(entry),
+        ):
+            break
+        extend_block(entry["bullets"][-1], text=f"unrelated line {index}", box=current)
+        previous = current
+        joined += 1
+    assert joined == 3, f"one unclosed bracket drew in {joined} lines"
+
+
+def test_a_parenthetical_spanning_three_lines_still_joins() -> None:
+    """The bound must not be so tight that it breaks what the rule is for: a
+    bracket opened on one line and closed two lines later is one phrase."""
+    from restruct.layout.blocks import continues_block, extend_block, last_block_text
+
+    statistics = _statistics_with(line_height=12.0, line_gap=1.0)
+    texts = [
+        "Certified in Industrial Safety (Level 2,",
+        "non-licensed operator, refresher",
+        "required annually) - Bangkok",
+    ]
+    boxes = [
+        (50.0, 100.0, 300.0, 112.0),
+        (50.0, 126.0, 300.0, 138.0),
+        (50.0, 152.0, 300.0, 164.0),
+    ]
+    entry = {
+        "bullets": [{"text": texts[0], "bbox": boxes[0]}],
+        "paragraphs": [],
+        "_lastType": "bullet",
+    }
+    for index in (1, 2):
+        assert continues_block(
+            boxes[index - 1],
+            boxes[index],
+            same_page=True,
+            require_horizontal_overlap=False,
+            statistics=statistics,
+            previous_text=last_block_text(entry),
+        )
+        extend_block(entry["bullets"][-1], text=texts[index], box=boxes[index])
+    assert len(entry["bullets"]) == 1
+    assert entry["bullets"][0]["text"].count("\n") == 2
+
+
+def test_the_bracket_override_releases_once_the_bracket_closes() -> None:
+    """Otherwise the block would stay open for the rest of the section."""
+    from restruct.layout.blocks import continues_block
+
+    statistics = _statistics_with(line_height=12.0, line_gap=1.0)
+    common = dict(
+        same_page=True,
+        require_horizontal_overlap=False,
+        statistics=statistics,
+    )
+    previous, current = (50.0, 100.0, 300.0, 112.0), (50.0, 126.0, 300.0, 138.0)
+    assert continues_block(previous, current, **common, previous_text="Safety (Level 2")
+    assert not continues_block(
+        previous,
+        current,
+        **common,
+        previous_text="Safety (Level 2\nrefresher required)",
+    )
+
+
 def test_an_open_bracket_never_joins_across_a_page() -> None:
     from restruct.layout.blocks import continues_block
 

@@ -290,3 +290,37 @@ def test_the_anomaly_banner_never_reaches_the_parsers() -> None:
     bridged = extracted_lines(document, measure(document))
     assert not [line for line in bridged if line.text.startswith("SYNTHETIC RESUME")]
     assert any(line.text.startswith("SYNTHETIC RESUME") for line in document.lines)
+
+
+# -- a line of only invisible characters is not content ---------------------
+
+
+def test_a_zero_width_only_line_is_dropped_by_the_bridge() -> None:
+    """Regression: a real resume carried a line holding one U+200B, left after
+    a heading by a Google Docs export. ``str.strip()`` keeps it, so it reached
+    the parsers as content and opened a sixth experience record owning nothing.
+
+    Written as an escape, and asserted at the bridge rather than through a
+    fixture: PDF's base-14 Helvetica has no glyph for U+200B and substitutes a
+    middle dot for it, so a fixture built to carry this case would carry a
+    visible "·" instead and test the wrong thing.
+    """
+    document = _paged_document(
+        _furniture_line("\u200b", 100.0, page=1),
+        _furniture_line("Real content", 130.0, page=1),
+        pages=1,
+    )
+    bridged = extracted_lines(document, measure(document))
+    assert [line.text for line in bridged] == ["Real content"]
+
+
+def test_a_bullet_padded_with_a_zero_width_space_is_still_content() -> None:
+    """The control. The marker in that same resume is a bullet glyph followed
+    by U+200B, so the fix must drop a line that is *nothing but* invisible
+    characters and never one that merely contains them."""
+    document = _paged_document(
+        _furniture_line("●\u200b Built ingestion jobs", 100.0, page=1),
+        pages=1,
+    )
+    bridged = extracted_lines(document, measure(document))
+    assert [line.text for line in bridged] == ["●\u200b Built ingestion jobs"]

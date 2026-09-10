@@ -6,11 +6,12 @@ subheadings that merely look like them.
 """
 from __future__ import annotations
 
-import statistics
+from statistics import median
 
 import pymupdf
 
 from restruct.configs import SETTINGS
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.geometry import vertical_overlap
 from restruct.patterns.bullets import BULLET_RE
@@ -156,31 +157,91 @@ def _routed_section_headings(
         routed.append(heading)
     return routed
 
+def _is_wrapped_continuation(
+    line: ExtractedLine,
+    previous: ExtractedLine | None,
+    statistics: DocumentStatistics,
+) -> bool:
+    """Whether ``line`` is the wrapped tail of the line above it.
+
+    A hanging indent is what a wrap looks like: the continuation sits deeper
+    than the line it continues. Such a line ends in a full stop only because
+    its parent's sentence happened to end there, so counting it as prose
+    measures a fragment and calls it a sentence.
+
+    Indent *levels* rather than points, because the two ingestion tracks state
+    position in different units -- 18pt steps for this corpus's PDFs, single
+    ordinal steps for a DOCX -- and a threshold in either would be meaningless
+    in the other.
+    """
+    if previous is None or previous.page != line.page:
+        return False
+    return statistics.indentation_level(
+        pymupdf.Rect(line.bbox).x0
+    ) > statistics.indentation_level(pymupdf.Rect(previous.bbox).x0)
+
+
 def _section_body_style(
     content_lines: list[ExtractedLine],
-) -> tuple[float, bool]:
+    statistics: DocumentStatistics,
+) -> tuple[float, bool, int]:
+    """The size and weight of a section's body text.
+
+    Wrapped continuations are excluded from the estimate. They are the reason
+    a section could measure its own body wrongly: a wrap is short and inherits
+    its parent's closing full stop, so it passes the prose test, and a section
+    whose blocks are set at two sizes can end up measured entirely from the
+    wraps of the smaller one. Every line of the larger block then reads as
+    "bigger than body", and a wrapped line in it becomes a subheading.
+    """
     prose_lines = [
         line
-        for line in content_lines
-        if len(line.text.split()) > SETTINGS.section_router.maximum_subheading_words
-        or line.text.rstrip().endswith((".", ",", ";", ":"))
+        for index, line in enumerate(content_lines)
+        if (
+            len(line.text.split()) > SETTINGS.section_router.maximum_subheading_words
+            or line.text.rstrip().endswith((".", ",", ";", ":"))
+        )
+        and not _is_wrapped_continuation(
+            line,
+            content_lines[index - 1] if index else None,
+            statistics,
+        )
     ]
     reference_lines = prose_lines or content_lines
     sizes = [line.size for line in reference_lines if line.size > 0]
-    body_size = statistics.median(sizes) if sizes else 0.0
+    body_size = median(sizes) if sizes else 0.0
     body_bold = bool(reference_lines) and sum(
         line.bold for line in reference_lines
     ) > len(reference_lines) / 2
-    return body_size, body_bold
+    # The shallowest indent any line in the section uses. A subheading heads
+    # the content below it, so it cannot be set in further than all of it.
+    indent_levels = [
+        statistics.indentation_level(pymupdf.Rect(line.bbox).x0)
+        for line in content_lines
+    ]
+    body_indent_level = min(indent_levels) if indent_levels else 0
+    return body_size, body_bold, body_indent_level
 
 def _looks_like_subheading(
     line: ExtractedLine,
     *,
     body_size: float,
     body_bold: bool,
+    body_indent_level: int,
+    statistics: DocumentStatistics,
 ) -> bool:
+    """Whether a line reads as a subheading within its section.
+
+    Typography alone is not enough, because a section set at two sizes can
+    measure its own body from the smaller one and then read every line of the
+    larger as a heading. Position settles it: a line indented deeper than
+    every other line in the section is continuing one of them, whatever its
+    size or weight. A wrapped bullet tail is exactly that shape.
+    """
     text = line.text.strip()
     if not text or text.endswith((".", ",", ";", ":")):
+        return False
+    if statistics.indentation_level(pymupdf.Rect(line.bbox).x0) > body_indent_level:
         return False
     if len(text) > SETTINGS.section_router.maximum_subheading_characters:
         return False

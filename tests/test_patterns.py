@@ -14,7 +14,12 @@ from restruct.patterns.bullets import BULLET_RE
 from restruct.patterns.contacts import EMAIL_RE, PHONE_RE, URL_RE
 from restruct.patterns.dates import DATE_RANGE_RE, SINGLE_YEAR_RE
 from restruct.patterns.education import DEGREE_RE, GPA_RE, INSTITUTION_RE
-from restruct.patterns.layout import PAGE_FOOTER_RE
+from restruct.patterns.invisibles import (
+    ZERO_WIDTH_CHARACTERS,
+    is_blank,
+    without_invisibles,
+)
+from restruct.patterns.layout import PAGE_FOOTER_RE, heading_text
 from restruct.patterns.organizations import COMPANY_MARKER_RE
 from restruct.patterns.personal import (
     LABELLED_ATTRIBUTE_RE,
@@ -183,3 +188,77 @@ def test_key_value_dash_requires_spaced_dash() -> None:
     """A hyphenated word must not be read as a key-value delimiter."""
     assert KEY_VALUE_DASH_RE.match("Tools - Angle grinder, cut-off saw")
     assert KEY_VALUE_DASH_RE.match("lockout/tagout-awareness training") is None
+
+
+# -- zero-width characters ---------------------------------------------------
+
+# Written as escapes throughout, and referred to by codepoint in prose. A
+# literal renders as nothing, so it is silently lost the moment anyone retypes
+# the line -- which is how patterns/layout.py came to hold two of them.
+
+
+def test_zero_width_characters_are_written_as_escapes() -> None:
+    """The set itself, by codepoint. If a literal is ever pasted over one of
+    these the constant still compiles, so only this test would notice."""
+    assert [ord(character) for character in ZERO_WIDTH_CHARACTERS] == [
+        0x200B,
+        0xFEFF,
+        0x200C,
+        0x200D,
+        0x00AD,
+    ]
+
+
+def test_no_source_file_holds_a_literal_zero_width_character() -> None:
+    """The convention CLAUDE.md states, enforced rather than remembered.
+
+    patterns/layout.py held a literal U+200B and U+FEFF in its heading cleaner
+    while the bullet pattern beside it wrote the same two as escapes, and the
+    scorecard kept a fourth copy of the set as literals. Tests and tools are
+    scanned too: the rule is about anyone retyping a line, and a fixture string
+    is retyped as often as a pattern.
+    """
+    from pathlib import Path
+
+    invisible = {0x200B, 0xFEFF, 0x200C, 0x200D, 0x00AD, 0xF0B7}
+    offenders: list[str] = []
+    project_root = Path(__file__).resolve().parents[1]
+    roots = (project_root / "src", project_root / "tests", project_root / "tools")
+    for path in sorted(path for root in roots for path in root.rglob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        for number, line in enumerate(text.splitlines(), start=1):
+            if any(ord(character) in invisible for character in line):
+                offenders.append(f"{path.name}:{number}")
+    assert not offenders, f"literal invisible characters in {offenders}"
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "\u200b",
+        "\ufeff",
+        "\u200b\u200b",
+        "  \u200b  ",
+        "",
+        "   ",
+    ],
+)
+def test_a_line_of_only_invisible_characters_is_blank(text: str) -> None:
+    """Regression: a line holding one U+200B survived str.strip(), reached the
+    parsers as content, and opened an experience record that owned nothing."""
+    assert is_blank(text)
+
+
+@pytest.mark.parametrize("text", ["a", "\u200ba", "●\u200b Bullet text", "-"])
+def test_a_line_with_any_visible_character_is_not_blank(text: str) -> None:
+    assert not is_blank(text)
+
+
+def test_without_invisibles_keeps_every_visible_character() -> None:
+    """Including the bullet glyph: the marker is content, the padding is not."""
+    assert without_invisibles("●\u200b Skills") == "● Skills"
+    assert without_invisibles("café – Bangkok") == "café – Bangkok"
+
+
+def test_heading_text_strips_invisibles_through_the_shared_helper() -> None:
+    assert heading_text("\ufeff01 EXPERIENCE\u200b") == "EXPERIENCE"

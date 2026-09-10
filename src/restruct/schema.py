@@ -120,10 +120,27 @@ def _summary_value(summary: dict[str, Any] | None) -> dict[str, Any] | None:
     }
 
 
+def _owns_nothing(entry: dict[str, Any]) -> bool:
+    """Whether a built entry carries no content in any field.
+
+    Such an entry is not a thin record, it is a record of nothing: it registers
+    a destination that owns no lines, and the real entry of that type then
+    becomes the second occurrence and goes unread. The same reasoning already
+    keeps a compound heading from emitting an empty component.
+
+    Deliberately narrower than "owns no bullets". An entry holding only a
+    subheading, or only a job title, is thin but it is still text the document
+    wrote, and dropping it here would delete that text from the only output
+    anyone reads. This removes records that carry nothing at all, and nothing
+    else -- so it cannot lose content, only stop announcing an absence.
+    """
+    return not any(entry.values())
+
+
 def _experience_value(experience: dict[str, Any] | None) -> list[dict[str, Any]] | None:
     if experience is None:
         return None
-    return [
+    built = [
         {
             "job_titles": _texts(entry.get("jobTitles", [])),
             "companies": _texts(entry.get("companies", [])),
@@ -135,12 +152,13 @@ def _experience_value(experience: dict[str, Any] | None) -> list[dict[str, Any]]
         }
         for entry in experience.get("entries", [])
     ]
+    return [entry for entry in built if not _owns_nothing(entry)]
 
 
 def _education_value(education: dict[str, Any] | None) -> list[dict[str, Any]] | None:
     if education is None:
         return None
-    return [
+    built = [
         {
             "titles": _texts(entry.get("titles", [])),
             "institutions": _texts(entry.get("institutions", [])),
@@ -154,6 +172,7 @@ def _education_value(education: dict[str, Any] | None) -> list[dict[str, Any]] |
         }
         for entry in education.get("entries", [])
     ]
+    return [entry for entry in built if not _owns_nothing(entry)]
 
 
 def _skills_value(skills: dict[str, Any] | None) -> list[dict[str, Any]] | None:
@@ -179,7 +198,7 @@ def _grouped_section_value(
 ) -> list[dict[str, Any]] | None:
     if section is None:
         return None
-    return [
+    built = [
         {
             "subheadings": _texts(entry.get("subheadingLines", [])),
             "dates": _texts(entry.get("dates", [])),
@@ -189,6 +208,7 @@ def _grouped_section_value(
         }
         for entry in section.get("entries", [])
     ]
+    return [entry for entry in built if not _owns_nothing(entry)]
 
 
 def _others_value(section: dict[str, Any] | None) -> list[dict[str, Any]] | None:

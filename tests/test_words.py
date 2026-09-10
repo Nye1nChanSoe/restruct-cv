@@ -161,7 +161,7 @@ def test_a_bullet_glyph_separates_from_the_word_after_it() -> None:
     document = reconstruct_words(document, measure(document))
     bulleted = [
         line for line in document.lines
-        if line.words and line.words[0].text == ""
+        if line.words and line.words[0].text == "\uf0b7"
     ]
     assert bulleted
     assert bulleted[0].words[1].text.isalpha()

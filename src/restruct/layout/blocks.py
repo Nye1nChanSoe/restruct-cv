@@ -25,15 +25,46 @@ from restruct.geometry import horizontal_overlap, rounded, union
 MINIMUM_GAP = -2.0
 
 # How far an unclosed bracket may reach for its closing one, in line heights.
-# A resume wraps a parenthetical onto the next line, not across a section: the
-# bound is what stops an unmatched "(" joining everything after it.
+# A resume wraps a parenthetical onto the next line, not across a section.
 _UNCLOSED_BRACKET_LINES = 3.0
+
+# How many lines one unclosed bracket may draw in altogether. The gap bound
+# above is measured per hop, against that hop's own gap, and nothing about it
+# accumulates -- so a bracket that never closes kept earning another join for
+# as long as each individual gap stayed under the bound, and would walk to the
+# end of the page three lines at a time. This is the bound that actually stops
+# an unmatched "(" swallowing everything after it; both are needed, because one
+# hop must not leap a section break and the whole run must not outgrow a
+# parenthetical.
+_UNCLOSED_BRACKET_MAXIMUM_LINES = 3
 
 
 def _has_unclosed_bracket(text: str) -> bool:
     from restruct.structure.separators import is_parenthetically_complete
 
     return bool(text) and not is_parenthetically_complete(text)
+
+
+def _lines_since_unclosed_bracket(text: str) -> int:
+    """How many line breaks sit between the still-open bracket and the end.
+
+    ``text`` is the block accumulated so far and ``extend_block`` joins with a
+    newline, so counting breaks after the unmatched opener counts the lines
+    that bracket has already drawn in. Stateless on purpose: the reach is a
+    property of the text, so no caller has to carry a counter for it.
+    """
+    depth = 0
+    opened_at: int | None = None
+    for index, character in enumerate(text):
+        if character in "([":
+            if depth == 0:
+                opened_at = index
+            depth += 1
+        elif character in ")]":
+            depth = max(0, depth - 1)
+            if depth == 0:
+                opened_at = None
+    return text.count("\n", opened_at) if opened_at is not None else 0
 
 
 def continues_block(
@@ -72,6 +103,11 @@ def continues_block(
         if not _has_unclosed_bracket(previous_text):
             return False
         if gap > max(statistics.median_line_height, 1.0) * _UNCLOSED_BRACKET_LINES:
+            return False
+        if (
+            _lines_since_unclosed_bracket(previous_text)
+            >= _UNCLOSED_BRACKET_MAXIMUM_LINES
+        ):
             return False
     if require_horizontal_overlap:
         return horizontal_overlap(previous, current) > 0

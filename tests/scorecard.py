@@ -25,6 +25,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
+from restruct.patterns.invisibles import ZERO_WIDTH_CHARACTERS
+
 from tests.helpers import (
     LABEL_DIRECTORY,
     PROJECT_ROOT,
@@ -78,7 +80,10 @@ ROUTED_SECTIONS = (
 )
 
 _DASHES = dict.fromkeys(map(ord, "‐‑‒–—―−"), "-")
-_INVISIBLE = dict.fromkeys(map(ord, "​‌‍﻿­"), None)
+# The same set the package strips, not a fourth copy of it: this table and
+# patterns/invisibles.py disagreeing would mean the scorecard normalised text
+# the parser did not.
+_INVISIBLE = dict.fromkeys(map(ord, ZERO_WIDTH_CHARACTERS), None)
 
 # Below this length a substring match is coincidence rather than agreement.
 _MINIMUM_CONTAINMENT_LENGTH = 6

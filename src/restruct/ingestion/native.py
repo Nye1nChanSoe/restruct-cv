@@ -27,6 +27,7 @@ from restruct.document.physical import (
 from restruct.document.stats import DocumentStatistics
 from restruct.document.types import ExtractedLine
 from restruct.layout.lines import cells_in_line, line_baseline
+from restruct.patterns.invisibles import is_blank
 from restruct.ingestion.ocr import ocr_page
 
 # A drawing this thin in one axis is a rule rather than a filled shape.
@@ -265,9 +266,12 @@ def extracted_lines(
     """
     lines: list[ExtractedLine] = []
     for line in document.lines:
-        text = line.text.strip()
-        if not text:
+        # is_blank() rather than a bare strip(): a line holding only a
+        # zero-width space survives str.strip() and then reaches the parsers
+        # as content, where it opens a record that owns nothing.
+        if is_blank(line.text):
             continue
+        text = line.text.strip()
         if statistics is not None and _is_page_furniture(line, document, statistics):
             continue
         cells = cells_in_line(line, statistics) if statistics is not None else ()

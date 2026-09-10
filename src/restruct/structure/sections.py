@@ -25,7 +25,7 @@ def _content_blocks(
 ) -> list[dict[str, Any]]:
     """Route lines into subheadings, paragraphs, or reconstructed bullets."""
     content_lines = [lines[index] for index in line_indexes]
-    body_size, body_bold = _section_body_style(content_lines)
+    body_size, body_bold, body_indent_level = _section_body_style(content_lines, statistics)
     blocks: list[dict[str, Any]] = []
 
     for line_index in line_indexes:
@@ -55,6 +55,8 @@ def _content_blocks(
                 line,
                 body_size=body_size,
                 body_bold=body_bold,
+                body_indent_level=body_indent_level,
+                statistics=statistics,
             )
             else "paragraph"
         )
@@ -130,6 +132,7 @@ def build_sections(
     logical = routed_logical_sections(
         lines,
         headings,
+        statistics,
         minimum_line_index=first_boundary.line_index,
     )
     semantic_heading_indexes = {heading.line_index for heading in headings}

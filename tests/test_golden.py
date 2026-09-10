@@ -294,3 +294,70 @@ def test_the_schema_rejects_a_missing_section() -> None:
     resume = json.loads(golden_path("1").read_text(encoding="utf-8"))
     del resume["licenses"]
     assert list(Draft202012Validator(_resume_schema()).iter_errors(resume))
+
+
+@pytest.mark.parametrize("stem", STEMS)
+def test_no_emitted_string_has_unbalanced_brackets(
+    stem: str,
+    extracted: dict[str, dict[str, Any]],
+    workspace: Path,
+    models: Any,
+) -> None:
+    """A value that opens a bracket it never closes is a carved span, not text.
+
+    Removing a date from ``Institution (Aug-2024 - July-2026)`` left the
+    institution holding a trailing ``(`` and threw the ``)`` away, on all three
+    education entries of a real resume. No fixture reproduced it, and nothing
+    else in the suite could see it -- a snapshot cannot tell damage from
+    intent, and the scorecard's own normalisation folds punctuation away.
+
+    This is the check rather than a repair: it fails loudly and points at the
+    parser, where the offsets that prove which bracket was orphaned still
+    exist. A cleanup pass over this file would have neither the offsets nor a
+    way to tell residue from a document that really reads ``Foo (``.
+    """
+    require_tesseract_for(stem)
+    result = _result(stem, extracted, workspace, models)
+    offenders: list[str] = []
+
+    def walk(value: Any, path: str = "") -> None:
+        if isinstance(value, dict):
+            for key, item in value.items():
+                walk(item, f"{path}/{key}")
+        elif isinstance(value, list):
+            for index, item in enumerate(value):
+                walk(item, f"{path}[{index}]")
+        elif isinstance(value, str) and (
+            value.count("(") != value.count(")")
+            or value.count("[") != value.count("]")
+        ):
+            offenders.append(f"{path}: {value!r}")
+
+    walk(result)
+    assert not offenders, f"{stem} emitted unbalanced brackets: {offenders}"
+
+
+@pytest.mark.parametrize("stem", STEMS)
+def test_no_emitted_entry_owns_nothing(
+    stem: str,
+    extracted: dict[str, dict[str, Any]],
+    workspace: Path,
+    models: Any,
+) -> None:
+    """An entry with every field empty registers a destination owning no lines.
+
+    The real entry of that type is then the second occurrence and goes unread,
+    which is the same reasoning that stops a compound heading emitting an empty
+    component. One reached a real resume's output as a sixth experience record,
+    opened on a line that held nothing but a zero-width space.
+    """
+    require_tesseract_for(stem)
+    result = _result(stem, extracted, workspace, models)
+    offenders: list[str] = []
+    for section, value in result.items():
+        if not isinstance(value, list):
+            continue
+        for index, entry in enumerate(value):
+            if isinstance(entry, dict) and not any(entry.values()):
+                offenders.append(f"{section}[{index}]")
+    assert not offenders, f"{stem} emitted entries owning nothing: {offenders}"

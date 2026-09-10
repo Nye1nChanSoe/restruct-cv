@@ -40,7 +40,7 @@ def test_values_match(expected: str, actual: str, matches: bool) -> None:
 
 
 def test_normalize_strips_invisible_and_folds_dashes() -> None:
-    assert scorecard.normalize("Jan​ 2024 – Present") == "jan 2024 - present"
+    assert scorecard.normalize("Jan\u200b 2024 – Present") == "jan 2024 - present"
 
 
 def test_score_sets_counts_each_side_once() -> None:

@@ -87,7 +87,7 @@ def _build_grouped_section_debug(
     semantic_model: EmbeddingModel | None = None,
 ) -> dict[str, Any] | None:
     """Group titles, dates, paragraphs, bullets, and URLs for a minor section."""
-    routed = routed_logical_sections(lines, headings)
+    routed = routed_logical_sections(lines, headings, statistics)
     positions = [
         index
         for index, item in enumerate(routed)
@@ -103,7 +103,9 @@ def _build_grouped_section_debug(
     # destinations interleaved lines, not two contiguous halves.
     line_range = logical.line_indexes
     rows = _visual_rows(lines, line_range, statistics)
-    body_size, body_bold = _section_body_style([lines[index] for index in line_range])
+    body_size, body_bold, body_indent_level = _section_body_style(
+        [lines[index] for index in line_range], statistics
+    )
     titled_section = section_type in {
         "projects",
         "certifications",
@@ -142,6 +144,8 @@ def _build_grouped_section_debug(
                         left,
                         body_size=body_size,
                         body_bold=body_bold,
+                        body_indent_level=body_indent_level,
+                        statistics=statistics,
                     )
                     or pymupdf.Rect(right_cells[0][1].bbox).x0
                     > pymupdf.Rect(left.bbox).x1 + left.size
@@ -330,6 +334,8 @@ def _build_grouped_section_debug(
                 line,
                 body_size=body_size,
                 body_bold=body_bold,
+                body_indent_level=body_indent_level,
+                statistics=statistics,
             )
             row_title = row_has_date and len(row) >= 2
             first_title = (

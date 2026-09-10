@@ -17,6 +17,35 @@ from restruct.geometry import resolve_span_box, rounded
 from restruct.patterns.contacts import URL_RE
 
 
+# What separates one contact item from the next on a header line. A link's
+# visible label never begins or ends with one of these: "LinkedIn | GitHub" is
+# two labels and a separator, not a label called "| GitHub".
+_LABEL_SEPARATORS = " \t|\u00b7\u2022\u2219/\\,;:\u2013\u2014-"
+
+
+def _trimmed_label(
+    line: ExtractedLine,
+    start: int,
+    end: int,
+) -> tuple[str, int, int] | None:
+    """A link's visible label with separator punctuation trimmed off its edges.
+
+    Offsets are narrowed with the text rather than recomputed, because a URL
+    match is later reversed onto its source line: a label whose offsets no
+    longer bracket it is a silent mis-split.
+
+    The annotation rectangle is widened by a tolerance before words are matched
+    under it, which is what lets the separator beside a link fall inside it.
+    Trimming the edges is cheaper and safer than tightening that tolerance,
+    which exists because annotation boxes and glyph boxes genuinely disagree.
+    """
+    while start < end and line.text[start] in _LABEL_SEPARATORS:
+        start += 1
+    while end > start and line.text[end - 1] in _LABEL_SEPARATORS:
+        end -= 1
+    return (line.text[start:end], start, end) if end > start else None
+
+
 def _annotation_text_span(
     line: ExtractedLine,
     annotation_rectangle: pymupdf.Rect,
@@ -46,7 +75,7 @@ def _annotation_text_span(
         if positions:
             start = min(position[0] for position in positions)
             end = max(position[1] for position in positions)
-            return line.text[start:end], start, end
+            return _trimmed_label(line, start, end)
 
     intersection = line_rectangle & annotation_rectangle
     if intersection.is_empty or line_rectangle.width <= 0 or not line.text:
@@ -61,12 +90,7 @@ def _annotation_text_span(
         * min(line_rectangle.width, intersection.x1 - line_rectangle.x0)
         / line_rectangle.width
     )
-    raw_text = line.text[start:end]
-    visible_text = raw_text.strip()
-    if not visible_text:
-        return None
-    start += len(raw_text) - len(raw_text.lstrip())
-    return visible_text, start, start + len(visible_text)
+    return _trimmed_label(line, max(0, start), min(len(line.text), end))
 
 def _annotation_url_matches(
     document: pymupdf.Document,

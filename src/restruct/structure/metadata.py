@@ -9,6 +9,7 @@ import re
 
 
 from restruct.patterns.education import DEGREE_RE, INSTITUTION_RE
+from restruct.structure.separators import trim_orphaned_brackets
 
 
 def _metadata_candidates(
@@ -58,7 +59,10 @@ def _metadata_candidates(
             residual_ranges = next_ranges
         for raw_start, raw_end in residual_ranges:
             raw = text[raw_start:raw_end]
-            value = raw.strip(" \t,;:-–—\u200b\ufeff")
+            # Bracket bookkeeping as well as punctuation: removing the date span
+            # above can orphan the bracket it sat inside, and that bracket is
+            # punctuation this value never owned.
+            value = trim_orphaned_brackets(raw)
             if not value:
                 continue
             start = raw_start + raw.find(value)

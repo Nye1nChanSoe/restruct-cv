@@ -57,7 +57,9 @@ def build_skills_debug(
     heading_line = lines[heading.line_index]
     line_range = range(heading.line_index + 1, end)
     rows = _visual_rows(lines, line_range, statistics)
-    body_size, body_bold = _section_body_style([lines[index] for index in line_range])
+    body_size, body_bold, body_indent_level = _section_body_style(
+        [lines[index] for index in line_range], statistics
+    )
     groups: list[dict[str, Any]] = []
     routed_rows: list[list[tuple[int, ExtractedLine]]] = []
     current: dict[str, Any] | None = None
@@ -80,7 +82,13 @@ def build_skills_debug(
                 and len(left.text) <= 50
                 and (
                     left.bold
-                    or _looks_like_subheading(left, body_size=body_size, body_bold=body_bold)
+                    or _looks_like_subheading(
+                        left,
+                        body_size=body_size,
+                        body_bold=body_bold,
+                        body_indent_level=body_indent_level,
+                        statistics=statistics,
+                    )
                     or pymupdf.Rect(right_cells[0][1].bbox).x0
                     > pymupdf.Rect(left.bbox).x1 + left.size
                 )
@@ -167,6 +175,8 @@ def build_skills_debug(
                         line,
                         body_size=body_size,
                         body_bold=body_bold,
+                        body_indent_level=body_indent_level,
+                        statistics=statistics,
                     )
                 )
             )

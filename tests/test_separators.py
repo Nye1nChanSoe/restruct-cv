@@ -17,6 +17,7 @@ from restruct.structure.separators import (
     dash_field_boundary,
     dash_is_range,
     repeated_label_rows,
+    trim_orphaned_brackets,
 )
 
 
@@ -185,3 +186,52 @@ def test_a_label_that_has_not_closed_its_bracket_is_not_a_label() -> None:
     be labelling anything yet."""
     assert not colon_is_key_value("Forklift Safety Awareness (non-licensed")
     assert colon_is_key_value("Forklift Safety Awareness (non-licensed operator)")
+
+
+# -- orphaned brackets -------------------------------------------------------
+
+# Carving a span out of a line can leave a bracket whose partner went with the
+# span. The false-positive half matters more than the fix: a parenthetical the
+# document really wrote must survive untouched, and the corpus is full of them.
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        # Regression: the date span is cut out of "Institution (dates)", so the
+        # institution kept the "(" and the lone ")" was discarded.
+        ("Harbour.Space@UTCC University (", "Harbour.Space@UTCC University"),
+        ("University of Greenwich (  ", "University of Greenwich"),
+        (") - Bangkok", "Bangkok"),
+        (")", ""),
+        ("Foo (bar) (", "Foo (bar)"),
+    ],
+)
+def test_an_orphaned_edge_bracket_is_trimmed(text: str, expected: str) -> None:
+    assert trim_orphaned_brackets(text) == expected
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "C++ (graphics)",
+        "Redis (pub-sub)",
+        "Linux (Ubuntu)",
+        "Lithan Myanmar (eduCLaaS)",
+        "Freelance Software Engineer (Part-time)",
+        "Integrated AWS services (Cognito, S3, ECS, Lambda)",
+        "Retrieval-Augmented Generation (RAG)",
+        "plain text with no brackets",
+    ],
+)
+def test_a_balanced_parenthetical_is_never_touched(text: str) -> None:
+    """Every one of these comes through the real corpus correct today. The trim
+    must close what it opens and nothing else."""
+    assert trim_orphaned_brackets(text) == text
+
+
+def test_a_leading_opener_is_left_alone() -> None:
+    """A fragment that opens a bracket it has not closed is half a phrase, and
+    the block continuation rule is what finishes it. Trimming the "(" here
+    would destroy the evidence that the thought continues."""
+    assert trim_orphaned_brackets("(cont. from") == "(cont. from"

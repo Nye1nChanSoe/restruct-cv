@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import pytest
 
+from restruct.document.stats import DocumentStatistics
 from restruct.document.types import DetectedHeading, ExtractedLine
 from restruct.structure.compound import (
     LogicalSection,
@@ -111,6 +112,28 @@ def line(text: str, *, size: float = 10.0, bold: bool = False) -> ExtractedLine:
     )
 
 
+def flat_statistics() -> DocumentStatistics:
+    """Statistics for a body whose lines all sit at one indent.
+
+    ``line()`` gives every line the same box, which is what these tests want:
+    ownership here is decided by labels, subheadings and typography, and the
+    indentation guard on subheadings must stay neutral rather than becoming a
+    second variable in every assertion below.
+    """
+    return DocumentStatistics(
+        body_font_size=10.0,
+        font_sizes=(),
+        bold_ratio=0.0,
+        median_character_width=5.0,
+        median_space_width=2.5,
+        median_line_height=12.0,
+        median_line_gap=1.0,
+        left_margin=50.0,
+        right_margin=300.0,
+        indentation_levels=(50.0,),
+    )
+
+
 def sections_for(heading_text: str, body: list[ExtractedLine]) -> list[LogicalSection]:
     lines = [line(heading_text, size=13.0, bold=True), *body]
     heading = DetectedHeading(
@@ -119,7 +142,12 @@ def sections_for(heading_text: str, body: list[ExtractedLine]) -> list[LogicalSe
         similarity=0.9,
         runner_up_similarity=0.5,
     )
-    return logical_sections(lines, heading, list(range(1, len(lines))))
+    return logical_sections(
+        lines,
+        heading,
+        list(range(1, len(lines))),
+        flat_statistics(),
+    )
 
 
 def routed(sections: list[LogicalSection]) -> list[tuple[str, int]]:
@@ -206,6 +234,6 @@ def test_an_ordinary_heading_keeps_its_own_destination() -> None:
         similarity=0.9,
         runner_up_similarity=0.4,
     )
-    sections = logical_sections(lines, heading, [1])
+    sections = logical_sections(lines, heading, [1], flat_statistics())
     assert routed(sections) == [("skills", 1)]
     assert sections[0].compound_heading_text is None
