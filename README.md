@@ -1,29 +1,73 @@
 <h1 align="center">Restruct</h1>
 
-<p align="center">
-  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/v/restruct-cv.svg" alt="PyPI version"></a>
-  <a href="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml"><img src="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/pyversions/restruct-cv.svg" alt="Python versions"></a>
-  <a href="https://github.com/Nye1nChanSoe/restruct-cv/blob/master/LICENSE"><img src="https://img.shields.io/pypi/l/restruct-cv.svg" alt="License"></a>
+<p align="center" style="margin-bottom: 2px;">
+  <a href="https://pypi.org/project/restruct-cv/">
+    <img src="https://img.shields.io/pypi/v/restruct-cv.svg" alt="PyPI version">
+  </a>
+
+  <a href="https://pypi.org/project/restruct-cv/">
+    <img src="https://img.shields.io/pypi/dm/restruct-cv.svg" alt="PyPI downloads">
+  </a>
+
+  <a href="https://pypi.org/project/restruct-cv/">
+    <img src="https://img.shields.io/pypi/wheel/restruct-cv" alt="PyPI wheel">
+  </a>
 </p>
 
-<h3 align="center">Turn a resume PDF, DOCX, scan or photo into clean, consistent JSON.</h3>
+<p align="center" style="margin-top: 0;">
+  <a href="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml">
+    <img src="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
 
-<h4 align="center">Runs entirely on your machine. No upload, no API key.</h4>
+  <a href="https://pypi.org/project/restruct-cv/">
+    <img src="https://img.shields.io/pypi/pyversions/restruct-cv.svg" alt="Python versions">
+  </a>
+
+  <a href="https://github.com/Nye1nChanSoe/restruct-cv/blob/master/LICENSE">
+    <img src="https://img.shields.io/pypi/l/restruct-cv.svg" alt="License">
+  </a>
+</p>
+
+<h3 align="center">Extract structured JSON from single-column resumes.</h3>
+
+<p align="center"><strong>PDF (native text or scanned pages with OCR) · DOCX · PNG · JPEG</strong></p>
+
+<h4 align="center">Runs on your machine. No resume upload and no API key.</h4>
+
+<br>
+
+<p align="center">
+  <img src="docs/readme-structured-json.png" width="900"
+       alt="A single-column resume PDF on the left and the resume.json it becomes on the right, showing schema_version, header_profile with the name and location, and an experience entry with its job title and dates.">
+</p>
 
 ---
 
-Restruct reads a resume the way a person does: it looks at the layout, finds the sections, and
-pulls out the name, the contact details, the jobs, the dates, the schools, the skills.
+**Single column in, structured JSON out.** Restruct extracts names, contact details, jobs,
+dates, schools and skills from flat, single-column resumes.
 
-The result has **the same shape every time**, whatever the resume looked like, ready to drop into
-an applicant tracking system, a search index, or an analytics pipeline.
+**Reading order matters, not file type.** v1 supports one top-to-bottom content stream.
+Sidebars and multiple columns are not reliable; detected layout problems are reported
+instead of silently rearranged.
 
-- **PDF, DOCX, scans and photos.** A PNG or JPEG of a page reads like any other resume.
-- **Fully local.** The models are files on your disk; nothing leaves the machine.
-- **Sixteen fixed sections.** Always present, always in the same order, never a missing key.
-- **Two ways to check the result.** Draw it back as a page, or see it drawn on the original.
-- **Careful by default.** What it isn't sure about goes to `others`, not into the wrong field.
+<p align="center">
+  <img src="docs/readme-reading-order.png" width="900"
+       alt="Two resumes side by side. The single-column one is outlined in green and labelled SUPPORTED, with its name, job titles, section headings and skill groups identified. The two-column one is outlined in red and labelled NOT RELIABLE in v1, with its columns marked as a detected layout problem.">
+</p>
+
+**See exactly what it understood.** Use `--ats` to draw detected fields on the source page,
+including job titles, companies and dates. Use `--reconstruct` to inspect a document drawn
+from the extracted JSON.
+
+<p align="center">
+  <img src="docs/readme-overlay.png" width="900"
+       alt="A close-up of one experience entry with boxes drawn over it: arrows label the job title, the company and the date range, and every bullet beneath them is outlined as extracted content.">
+</p>
+
+- **Inputs:** PDF, including scanned PDFs through OCR; DOCX; PNG; and JPEG.
+- **Local processing:** after the model files are installed, resume extraction makes no network request.
+- **Stable output:** sixteen sections in a fixed order, validated against `resume.schema.json`.
+  Absent sections keep their keys.
 
 <br>
 
@@ -31,8 +75,22 @@ an applicant tracking system, a search index, or an analytics pipeline.
 
 Restruct grew out of my work on [Open LinkedOut](https://github.com/Nye1nChanSoe/open-linkedout), a lightweight, local-first job scraping and matching system.
 Small local models consumed too much RAM and disk space while still hallucinating resume details.
-Restruct takes a more deterministic and resource-efficient approach,
-leaving language models to what they do best **contextual understanding**, not **factual extraction**.
+Restruct uses document structure and explicit patterns first. Local models are used only when the
+document itself does not settle the meaning of a span.
+
+<br>
+
+## Built with
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=flat&amp;logo=python&amp;logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/DistilBERT-FFD21E?style=flat&amp;logo=huggingface&amp;logoColor=black" alt="DistilBERT">
+  <img src="https://img.shields.io/badge/all--MiniLM--L6--v2-FFD21E?style=flat&amp;logo=huggingface&amp;logoColor=black" alt="all-MiniLM-L6-v2">
+  <img src="https://img.shields.io/badge/Tesseract-OCR-5A5A5A?style=flat" alt="Tesseract OCR">
+  <img src="https://img.shields.io/badge/PDF-PyMuPDF-EC1C24?style=flat" alt="PyMuPDF">
+  <img src="https://img.shields.io/badge/DOCX-python--docx-2B579A?style=flat" alt="python-docx">
+  <img src="https://img.shields.io/badge/Local--First-111111?style=flat" alt="Local First">
+</p>
 
 <br>
 
@@ -55,9 +113,9 @@ uv run restruct --install-models
 
 <br>
 
-**Scanned resumes** -- pictures of pages with no text inside them, including a PNG or JPEG
-straight from a phone -- also need Tesseract. A normal PDF or DOCX never asks for it, and an
-image says so before anything else happens rather than after the models load.
+**Scanned PDFs, PNG files and JPEG files** contain pixels rather than readable text, so they also
+need Tesseract. A native-text PDF or DOCX does not. Each PNG or JPEG is treated as one resume page,
+with its original proportions and camera-orientation metadata preserved.
 
 ```bash
 brew install tesseract                 # macOS
@@ -178,6 +236,27 @@ so a photographed page gets an overlay that looks like any other:
 Restruct is deliberately careful about what it claims. **v1 targets single-column resumes**, and a
 layout whose reading order can't be recovered is _recorded_ as such, never silently repaired into
 something that reads plausibly and is wrong.
+
+<br>
+
+## Accuracy and known failures
+
+Accuracy numbers are useful only when they say **what was tested**: the number and kind of resumes,
+the fields scored, and the failures behind the average. The repository already has a reproducible
+field-level scorecard:
+
+```bash
+uv run tools/dev.py scorecard
+```
+
+A public accuracy summary will be added here as the evaluation corpus grows. It will include
+precision, recall and F1 by field—not one unexplained headline number—and example images showing
+where extraction fails. Until then, the included examples and golden tests should be read as
+regression evidence, not as a broad accuracy claim.
+
+Known layout boundary: **multi-column resumes, sidebars, text embedded in graphics and nested
+tables are not parsed reliably in v1**. Use `--ats` to see those warnings and inspect the detected
+reading order.
 
 <br>
 
