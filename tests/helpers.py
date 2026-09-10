@@ -17,13 +17,15 @@ TRUTHS_DIRECTORY = PROJECT_ROOT / "resumes-truths"
 TRUTHS_LABEL_DIRECTORY = TRUTHS_DIRECTORY / "labels"
 
 # Fixtures whose pages carry no native text, so they need Tesseract.
-OCR_STEMS = frozenset({"5.ocr", "9.ocr"})
+# Fixtures that need Tesseract: the two scanned PDFs, and the image, which has
+# no reader but OCR at all.
+OCR_STEMS = frozenset({"5.ocr", "9.ocr", "12.ats"})
 
 
 # Every format the fixtures may be written in. A stem is unique across them,
 # so a fixture can be replaced with the same resume in another format without
 # renaming its golden file or its labels.
-FIXTURE_SUFFIXES = (".pdf", ".docx")
+FIXTURE_SUFFIXES = (".pdf", ".docx", ".png")
 
 
 def synthetic_stems() -> list[str]:

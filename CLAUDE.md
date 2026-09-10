@@ -484,8 +484,10 @@ reversed back onto its source line, so an offset into anything else is a silent 
 
 ## Test data
 
-Fixtures may be `.pdf` or `.docx`; `tests/helpers.fixture_path()` resolves a stem to whichever
-exists, so a fixture can change format without renaming its golden file or its labels. Every
+Fixtures may be `.pdf`, `.docx` or `.png`; `tests/helpers.fixture_path()` resolves a stem to
+whichever exists, so a fixture can change format without renaming its golden file or its labels.
+An image fixture belongs in `OCR_STEMS` as well: it has no reader but Tesseract, so its golden
+snapshot and its scorecard entry skip on a machine without one, the same way the scanned PDFs do. Every
 synthetic fixture must have hand-written labels — `test_every_synthetic_fixture_has_a_label`
 enforces it.
 

@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.0",
+  "header_profile": {
+    "name": "MARIA CLARA REYES",
+    "job_titles": [
+      "Registered Nurse",
+      "Medical-Surgical & Post-Operative Care"
+    ],
+    "location": "Quezon City, Philippines",
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null,
+    "current_income": null,
+    "current_package": null,
+    "emails": [
+      "maria.reyes.rn@example.com"
+    ],
+    "phones": [
+      "+63 917-555-0142"
+    ],
+    "urls": [
+      {
+        "text": "linkedin.com/in/maria-reyes-rn",
+        "url": "linkedin.com/in/maria-reyes-rn"
+      }
+    ]
+  },
+  "summary": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Registered Nurse with 6 years of hospital experience across medical-surgical and post-operative wards. Skilled in\npatient assessment, medication administration, IV therapy, wound care and discharge education. Experienced with\n12-hour rotating shifts, electronic medical records and multidisciplinary handover in a 32-bed ward."
+      }
+    ]
+  },
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Staff Nurse"
+      ],
+      "companies": [
+        "St. Bernadette Medical Center"
+      ],
+      "dates": [
+        "March 2021 - Present"
+      ],
+      "locations": [
+        "Quezon City, Philippines"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Care for 8 to 10 medical-surgical patients per shift, including post-operative and chronic-disease cases.",
+        "Administer prescribed medication and IV therapy, and record every dose in the hospital medical record system.",
+        "Lead shift handover for a 32-bed ward and precept two junior nurses per rotation.",
+        "Escalate deteriorating patients using the early warning score and coordinate review with the duty resident."
+      ]
+    },
+    {
+      "job_titles": [
+        "Staff Nurse",
+        "Riverside General Hospital"
+      ],
+      "companies": [],
+      "dates": [
+        "June 2018 - February 2021"
+      ],
+      "locations": [
+        "Pasig City, Philippines"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Provided bedside care for surgical and internal medicine patients on day and night rotations.",
+        "Assisted with wound dressing, catheter care, blood sampling and pre-operative preparation.",
+        "Maintained accurate charting for admissions, medication rounds, transfers and discharges."
+      ]
+    },
+    {
+      "job_titles": [
+        "Nurse Intern",
+        "Riverside General Hospital"
+      ],
+      "companies": [],
+      "dates": [
+        "January 2018 - May 2018"
+      ],
+      "locations": [
+        "Pasig City, Philippines"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Completed supervised rotations in emergency, paediatric and surgical wards.",
+        "Recorded vital signs, supported patient mobilisation and prepared ward supplies."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Bachelor of Science in Nursing"
+      ],
+      "institutions": [
+        "Our Lady of Mercy College"
+      ],
+      "dates": [
+        "2014 - 2018"
+      ],
+      "locations": [
+        "Manila, Philippines"
+      ],
+      "gpa": [],
+      "skills": [],
+      "urls": [],
+      "paragraphs": [
+        "Relevant coursework: medical-surgical nursing, pharmacology, community health, nursing research."
+      ],
+      "bullets": []
+    }
+  ],
+  "skills": [
+    {
+      "subheading": "Clinical",
+      "paragraphs": [
+        "Patient assessment, medication administration, IV therapy, wound care, vital signs monitoring"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Systems",
+      "paragraphs": [
+        "Electronic medical records, patient charting, incident reporting, discharge documentation"
+      ],
+      "bullets": [],
+      "urls": []
+    },
+    {
+      "subheading": "Workplace",
+      "paragraphs": [
+        "Patient education, family communication, shift handover, teamwork under pressure"
+      ],
+      "bullets": [],
+      "urls": []
+    }
+  ],
+  "projects": null,
+  "certifications": [
+    {
+      "subheadings": [],
+      "dates": [
+        "2018",
+        "2024",
+        "2019"
+      ],
+      "urls": [],
+      "paragraphs": [],
+      "bullets": [
+        "Philippine Nurse Licensure Examination, passed 2018",
+        "Basic Life Support (BLS), American Heart Association, renewed 2024",
+        "Intravenous Therapy Training, Philippine Nurses Association, 2019"
+      ]
+    }
+  ],
+  "licenses": null,
+  "tools_equipment": null,
+  "languages": [
+    {
+      "subheadings": [],
+      "dates": [],
+      "urls": [],
+      "paragraphs": [
+        "Filipino: Native\nEnglish: Fluent, professional working proficiency"
+      ],
+      "bullets": []
+    }
+  ],
+  "volunteering": null,
+  "awards": null,
+  "publications": null,
+  "references": null,
+  "interests": null,
+  "others": null
+}

@@ -1,0 +1,98 @@
+{
+  "source": "12.ats.png",
+  "notes": [
+    "An image fixture: the resume arrives as a PNG, so every value depends on OCR quality and there is no native text to fall back on.",
+    "Synthetic, and drawn rather than photographed: a single-column ATS-friendly layout rendered at 150 dpi in greyscale, with no resolution metadata, which is what a screenshot or a phone photo also carries.",
+    "Deliberately plain: one column, no tables, no graphics, standard section headings, and metadata lines separated by pipes. It is the shape a resume is in when it is trying to be read by a machine.",
+    "The header tagline reads 'Registered Nurse | Medical-Surgical & Post-Operative Care'. Only the first half is a job title; the second names a specialization, as in fixtures 1, 2 and 6.",
+    "The employers are hospitals rather than 'Co., Ltd.' companies, which is new to this corpus: NER reads 'Riverside General Hospital' as a location, not an organization, and returns 'St. Bernadette Medical Center' as four spans, two of them starting mid-word."
+  ],
+  "header_profile": {
+    "name": "MARIA CLARA REYES",
+    "job_titles": [
+      "Registered Nurse"
+    ],
+    "location": "Quezon City, Philippines",
+    "emails": [
+      "maria.reyes.rn@example.com"
+    ],
+    "phones": [
+      "+63 917-555-0142"
+    ],
+    "urls": [
+      "linkedin.com/in/maria-reyes-rn"
+    ],
+    "date_of_birth": null,
+    "age": null,
+    "gender": null,
+    "marital_status": null,
+    "visa_status": null,
+    "nationality": null,
+    "current_residence": null
+  },
+  "sections_present": [
+    "summary",
+    "experience",
+    "education",
+    "skills",
+    "certifications",
+    "languages"
+  ],
+  "experience": [
+    {
+      "job_titles": [
+        "Senior Staff Nurse"
+      ],
+      "companies": [
+        "St. Bernadette Medical Center"
+      ],
+      "dates": [
+        "March 2021 - Present"
+      ],
+      "locations": [
+        "Quezon City, Philippines"
+      ]
+    },
+    {
+      "job_titles": [
+        "Staff Nurse"
+      ],
+      "companies": [
+        "Riverside General Hospital"
+      ],
+      "dates": [
+        "June 2018 - February 2021"
+      ],
+      "locations": [
+        "Pasig City, Philippines"
+      ]
+    },
+    {
+      "job_titles": [
+        "Nurse Intern"
+      ],
+      "companies": [
+        "Riverside General Hospital"
+      ],
+      "dates": [
+        "January 2018 - May 2018"
+      ],
+      "locations": [
+        "Pasig City, Philippines"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "titles": [
+        "Bachelor of Science in Nursing"
+      ],
+      "institutions": [
+        "Our Lady of Mercy College"
+      ],
+      "dates": [
+        "2014 - 2018"
+      ]
+    }
+  ]
+}
