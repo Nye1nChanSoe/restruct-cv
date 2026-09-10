@@ -1,7 +1,7 @@
 [project]
 name = "restruct-cv"
-version = "0.2.3"
-description = "Turn messy PDF, DOCX, and scanned resumes into consistent, explainable, versioned JSON"
+version = "3.0.0"
+description = "Extract structured JSON from single-column PDF, DOCX, PNG, and JPEG resumes"
 readme = "README.md"
 authors = [
     { name = "Nyein Chan Soe", email = "contact@nyeinchansoe.com" }

@@ -4,25 +4,20 @@
   <a href="https://pypi.org/project/restruct-cv/">
     <img src="https://img.shields.io/pypi/v/restruct-cv.svg" alt="PyPI version">
   </a>
-
   <a href="https://pypi.org/project/restruct-cv/">
     <img src="https://img.shields.io/pypi/dm/restruct-cv.svg" alt="PyPI downloads">
   </a>
-
   <a href="https://pypi.org/project/restruct-cv/">
     <img src="https://img.shields.io/pypi/wheel/restruct-cv" alt="PyPI wheel">
   </a>
 </p>
-
 <p align="center" style="margin-top: 0;">
   <a href="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml">
     <img src="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml/badge.svg" alt="CI">
   </a>
-
   <a href="https://pypi.org/project/restruct-cv/">
     <img src="https://img.shields.io/pypi/pyversions/restruct-cv.svg" alt="Python versions">
   </a>
-
   <a href="https://github.com/Nye1nChanSoe/restruct-cv/blob/master/LICENSE">
     <img src="https://img.shields.io/pypi/l/restruct-cv.svg" alt="License">
   </a>
@@ -30,44 +25,28 @@
 
 <h3 align="center">Extract structured JSON from single-column resumes.</h3>
 
-<p align="center"><strong>PDF (native text or scanned pages with OCR) · DOCX · PNG · JPEG</strong></p>
-
-<h4 align="center">Runs on your machine. No resume upload and no API key.</h4>
-
-<br>
-
-<p align="center">
-  <img src="docs/readme-structured-json.png" width="900"
-       alt="A single-column resume PDF on the left and the resume.json it becomes on the right, showing schema_version, header_profile with the name and location, and an experience entry with its job title and dates.">
-</p>
+<p align="center"><strong>PDF (OCR) · DOCX · PNG · JPEG</strong></p>
+<p align="center"><i>Runs on your machine. No resume upload and no API key.</i></p>
 
 ---
 
-**Single column in, structured JSON out.** Restruct extracts names, contact details, jobs,
-dates, schools and skills from flat, single-column resumes.
-
-**Reading order matters, not file type.** v1 supports one top-to-bottom content stream.
-Sidebars and multiple columns are not reliable; detected layout problems are reported
-instead of silently rearranged.
-
 <p align="center">
-  <img src="docs/readme-reading-order.png" width="900"
-       alt="Two resumes side by side. The single-column one is outlined in green and labelled SUPPORTED, with its name, job titles, section headings and skill groups identified. The two-column one is outlined in red and labelled NOT RELIABLE in v1, with its columns marked as a detected layout problem.">
+  <img src="https://raw.githubusercontent.com/Nye1nChanSoe/restruct-cv/master/docs/readme-pipeline.webp" width="900"
+       alt="Animated walkthrough: a single-column resume is supported while multi-column and sidebar layouts are not reliable; Restruct reads text or OCR, detects document structure, extracts fields, and writes a stable resume.json file.">
 </p>
 
-**See exactly what it understood.** Use `--ats` to draw detected fields on the source page,
-including job titles, companies and dates. Use `--reconstruct` to inspect a document drawn
-from the extracted JSON.
+Restruct is built for **flat, single-column resumes with one top-to-bottom reading order**. It
+finds the document's sections and extracts names, contact details, jobs, dates, schools and skills.
 
-<p align="center">
-  <img src="docs/readme-overlay.png" width="900"
-       alt="A close-up of one experience entry with boxes drawn over it: arrows label the job title, the company and the date range, and every bullet beneath them is outlined as extracted content.">
-</p>
+The output follows one published JSON schema. A missing section does not become a missing key, and
+a layout the parser cannot read reliably is reported instead of silently rearranged.
 
 - **Inputs:** PDF, including scanned PDFs through OCR; DOCX; PNG; and JPEG.
+- **Layout scope:** one content column. Sidebars, multiple columns, text inside graphics and nested
+  tables are detected as unsupported layouts rather than repaired by guesswork.
 - **Local processing:** after the model files are installed, resume extraction makes no network request.
 - **Stable output:** sixteen sections in a fixed order, validated against `resume.schema.json`.
-  Absent sections keep their keys.
+- **Inspectable results:** reconstruct the extracted JSON or draw the detected fields on the source page.
 
 <br>
 
@@ -87,6 +66,8 @@ document itself does not settle the meaning of a span.
   <img src="https://img.shields.io/badge/DistilBERT-FFD21E?style=flat&amp;logo=huggingface&amp;logoColor=black" alt="DistilBERT">
   <img src="https://img.shields.io/badge/all--MiniLM--L6--v2-FFD21E?style=flat&amp;logo=huggingface&amp;logoColor=black" alt="all-MiniLM-L6-v2">
   <img src="https://img.shields.io/badge/Tesseract-OCR-5A5A5A?style=flat" alt="Tesseract OCR">
+</p>
+<p>
   <img src="https://img.shields.io/badge/PDF-PyMuPDF-EC1C24?style=flat" alt="PyMuPDF">
   <img src="https://img.shields.io/badge/DOCX-python--docx-2B579A?style=flat" alt="python-docx">
   <img src="https://img.shields.io/badge/Local--First-111111?style=flat" alt="Local First">
@@ -152,7 +133,7 @@ uv run restruct resume.pdf -o . --reconstruct
 ```
 
 <p align="center">
-  <img src="examples/7.anomaly-reconstruction-page-1.png" width="620"
+  <img src="https://raw.githubusercontent.com/Nye1nChanSoe/restruct-cv/master/examples/7.anomaly-reconstruction-page-1.png" width="620"
        alt="A resume redrawn from the extracted JSON: name, titles and contact line at the top, then SUMMARY and EXPERIENCE sections with job title, employer, location, dates and bullets.">
 </p>
 
@@ -185,7 +166,7 @@ uv run restruct resume.pdf -o . --ats
 ```
 
 <p align="center">
-  <img src="examples/7.anomaly/debug/page-1.png" width="620"
+  <img src="https://raw.githubusercontent.com/Nye1nChanSoe/restruct-cv/master/examples/7.anomaly/debug/page-1.png" width="620"
        alt="The same resume with coloured boxes drawn over it: name, job titles, phone, email and location in the header, then boxes around each section heading, each skill group and each bullet.">
 </p>
 
@@ -203,7 +184,7 @@ proportions and read as a scan, and OCR is rebuilt into the same geometry a nati
 so a photographed page gets an overlay that looks like any other:
 
 <p align="center">
-  <img src="examples/9.ocr/debug/page-1.png" width="620"
+  <img src="https://raw.githubusercontent.com/Nye1nChanSoe/restruct-cv/master/examples/9.ocr/debug/page-1.png" width="620"
        alt="A scanned resume page with the same style of extraction overlay drawn on it.">
 </p>
 
@@ -239,24 +220,23 @@ something that reads plausibly and is wrong.
 
 <br>
 
-## Accuracy and known failures
+## How accuracy is measured
 
-Accuracy numbers are useful only when they say **what was tested**: the number and kind of resumes,
-the fields scored, and the failures behind the average. The repository already has a reproducible
-field-level scorecard:
+A parser's failures matter more than its average. Restruct is scored **per field**, not with a
+single headline number that hides which fields to trust.
 
 ```bash
 uv run tools/dev.py scorecard
 ```
 
-A public accuracy summary will be added here as the evaluation corpus grows. It will include
-precision, recall and F1 by field—not one unexplained headline number—and example images showing
-where extraction fails. Until then, the included examples and golden tests should be read as
-regression evidence, not as a broad accuracy claim.
+This currently reports field-level precision, recall and F1 (name, dates, job titles, ...) and
+section-routing accuracy - the percent of content assigned to the right one of 16 fixed sections
+versus landing in `others`. Scored against 10 hand-labeled resumes in `tests/labels/`: enough to
+catch regressions, not enough to claim broad accuracy yet.
 
-Known layout boundary: **multi-column resumes, sidebars, text embedded in graphics and nested
-tables are not parsed reliably in v1**. Use `--ats` to see those warnings and inspect the detected
-reading order.
+**Next release:** strict exact-match accuracy (no containment leniency) and OCR character/word
+error rate, once the labeled corpus is large enough to make those numbers meaningful rather than
+noisy.
 
 <br>
 
