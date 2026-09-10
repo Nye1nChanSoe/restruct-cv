@@ -1,26 +1,14 @@
 <h1 align="center">Restruct</h1>
 
-<p align="center" style="margin-bottom: 2px;">
-  <a href="https://pypi.org/project/restruct-cv/">
-    <img src="https://img.shields.io/pypi/v/restruct-cv.svg" alt="PyPI version">
-  </a>
-  <a href="https://pypi.org/project/restruct-cv/">
-    <img src="https://img.shields.io/pypi/dm/restruct-cv.svg" alt="PyPI downloads">
-  </a>
-  <a href="https://pypi.org/project/restruct-cv/">
-    <img src="https://img.shields.io/pypi/wheel/restruct-cv" alt="PyPI wheel">
-  </a>
+<p align="center">
+  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/v/restruct-cv.svg" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/dm/restruct-cv.svg" alt="PyPI downloads"></a>
+  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/wheel/restruct-cv" alt="PyPI wheel"></a>
 </p>
-<p align="center" style="margin-top: 0;">
-  <a href="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml">
-    <img src="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml/badge.svg" alt="CI">
-  </a>
-  <a href="https://pypi.org/project/restruct-cv/">
-    <img src="https://img.shields.io/pypi/pyversions/restruct-cv.svg" alt="Python versions">
-  </a>
-  <a href="https://github.com/Nye1nChanSoe/restruct-cv/blob/master/LICENSE">
-    <img src="https://img.shields.io/pypi/l/restruct-cv.svg" alt="License">
-  </a>
+<p align="center">
+  <a href="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml"><img src="https://github.com/Nye1nChanSoe/restruct-cv/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://pypi.org/project/restruct-cv/"><img src="https://img.shields.io/pypi/pyversions/restruct-cv.svg" alt="Python versions"></a>
+  <a href="https://github.com/Nye1nChanSoe/restruct-cv/blob/master/LICENSE"><img src="https://img.shields.io/pypi/l/restruct-cv.svg" alt="License"></a>
 </p>
 
 <h3 align="center">Extract structured JSON from single-column resumes.</h3>

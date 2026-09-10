@@ -19,8 +19,10 @@ import pymupdf
 import pytest
 
 from restruct.document.stats import measure
+from restruct.ingestion.image import is_image, read_image
 from restruct.ingestion.native import read_document
 from restruct.layout.unsupported import LayoutWarning, detect_unsupported_layouts
+from tests.conftest import require_tesseract_for
 from tests.helpers import (
     SYNTHETIC_DIRECTORY,
     fixture_path,
@@ -38,6 +40,13 @@ def warnings_for(source_path: Path) -> tuple[LayoutWarning, ...]:
 
         document = read_docx(source_path)
         return detect_unsupported_layouts(document, measure(document))
+    # An image is opened the way the pipeline opens one -- MuPDF would hand
+    # back a page whose box is the image's pixel count, and every measurement
+    # taken here would then be taken from a page that does not exist.
+    if is_image(source_path):
+        with read_image(source_path) as image_document:
+            document = read_document(image_document)
+            return detect_unsupported_layouts(document, measure(document))
     with pymupdf.open(source_path) as pdf:
         document = read_document(pdf)
         return detect_unsupported_layouts(document, measure(document))
@@ -68,9 +77,8 @@ def test_every_page_of_a_two_column_resume_is_reported(stem: str) -> None:
 
 @pytest.mark.parametrize("stem", synthetic_stems())
 def test_a_supported_resume_raises_nothing(stem: str) -> None:
-    """The whole value of the warning is that these six do not trigger it."""
-    if stem.endswith(".ocr") and not tesseract_available():
-        pytest.skip("needs tesseract")
+    """The whole value of the warning is that these do not trigger it."""
+    require_tesseract_for(stem)
     assert warnings_for(fixture_path(stem)) == ()
 
 

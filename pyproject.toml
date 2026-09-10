@@ -1,6 +1,6 @@
 [project]
 name = "restruct-cv"
-version = "3.0.0"
+version = "0.3.0"
 description = "Extract structured JSON from single-column PDF, DOCX, PNG, and JPEG resumes"
 readme = "README.md"
 authors = [

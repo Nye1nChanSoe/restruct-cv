@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 uv run pytest                                  # full suite (~50s; loads both models once)
+uv run pytest --fresh-clone                    # as a contributor sees it: no engine, no weights
 uv run pytest tests/test_patterns.py           # fast, model-free unit tests
 uv run pytest -k "golden and 7.anomaly"        # one fixture
 uv run pytest --update-golden                  # re-baseline snapshots (see Change budget)
@@ -68,6 +69,12 @@ measured to cost, and the change budget below is what rejected them.
 Tesseract is a system dependency (`brew install tesseract`), needed only for the scanned
 fixtures and for image input, which has no other reader. Tests **skip** rather than fail when
 models or Tesseract are absent, so a fresh clone stays green.
+
+**Check that claim with `uv run pytest --fresh-clone`**, which takes away both on a machine that
+has them. It exists because the claim is otherwise unfalsifiable by anyone who works on this:
+they have both installed, a test that should have skipped runs and passes instead, and the break
+surfaces only in CI. That has happened twice — once to a font the runner does not ship, once to a
+fixture whose skip guard still tested for a `.ocr` suffix rather than asking `OCR_STEMS`.
 
 It is looked for by `ingestion/ocr.find_tesseract()` on PATH first and then where installers put
 it (Program Files on Windows, both Homebrew prefixes on macOS), and **only on a page that has

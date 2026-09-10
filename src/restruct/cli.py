@@ -259,13 +259,6 @@ def _validate(path: Path) -> None:
     from restruct.ingestion.image import is_image, read_image
 
     source_is_image = is_image(path)
-    if source_is_image:
-        # An image is pixels and nothing else: no native text to fall back on
-        # and no styles to state, so OCR is not a fallback for it but the only
-        # reader it has. Saying so now costs a PATH lookup; saying so where the
-        # render happens costs the model load first.
-        _validate_ocr_is_available(path)
-
     try:
         with (read_image(path) if source_is_image else pymupdf.open(path)) as document:
             if document.needs_pass:
@@ -276,6 +269,15 @@ def _validate(path: Path) -> None:
         raise
     except Exception as error:  # pymupdf raises several unrelated types
         raise InvalidDocument(path, str(error)) from error
+
+    if source_is_image:
+        # After the file, deliberately. An image is pixels and nothing else, so
+        # OCR is not a fallback for it but the only reader it has -- but that is
+        # a fact about this machine, while a file that will not decode is a fact
+        # about what was handed over. Reporting the engine first told someone
+        # with a corrupt PNG to install Tesseract, which would not have helped.
+        # Still long before the models: this costs a PATH lookup.
+        _validate_ocr_is_available(path)
 
 
 MODELS_DIRECTORY_VARIABLE = "RESTRUCT_MODELS_DIRECTORY"

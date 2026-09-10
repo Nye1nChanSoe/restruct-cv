@@ -19,9 +19,13 @@ uv sync
 ```
 
 Model weights are local-only and gitignored; see [README.md](README.md#model-weights) for the two
-directories and where they are looked for. Tesseract is only needed for the scanned fixtures. If
-either is missing, the tests skip rather than fail, so a fresh clone stays green and you can start
-on the model-free parts right away.
+directories and where they are looked for. Tesseract is needed for the scanned fixtures and for
+image input, which has no other reader. If either is missing, the tests skip rather than fail, so
+a fresh clone stays green and you can start on the model-free parts right away.
+
+Once you have installed both, `uv run pytest --fresh-clone` puts you back in a new contributor's
+shoes — it hides the engine and the weights for one run, so a test that should skip and does not
+fails here rather than in CI.
 
 ## The dev CLI
 

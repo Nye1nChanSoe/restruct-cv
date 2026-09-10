@@ -22,6 +22,40 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=False,
         help="Rewrite tests/golden/ from the current pipeline output.",
     )
+    parser.addoption(
+        "--fresh-clone",
+        action="store_true",
+        default=False,
+        help="Pretend this machine has neither an OCR engine nor model weights.",
+    )
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    """Make a developed machine look like the runner a contributor arrives on.
+
+    CONTRIBUTING.md claims a fresh clone is green because the tests that need
+    weights or Tesseract *skip*. That claim is unfalsifiable on the machine of
+    anyone who works on this: they have both installed, so a test that should
+    have skipped runs and passes, and the break only appears in CI. It has
+    twice.
+
+    Patched in ``pytest_configure``, before any test module is imported. It
+    takes away what ``find_tesseract`` *consults* rather than replacing the
+    function, because two tests in ``test_ocr.py`` are about that function
+    finding a binary, and they set ``shutil.which`` themselves -- replacing the
+    lookup would make them assert against this fixture instead of against the
+    code. One patch still covers the whole suite: the pipeline calls
+    ``find_tesseract``, and ``tesseract_available`` delegates to it.
+    """
+    if not config.getoption("--fresh-clone"):
+        return
+
+    from restruct.ingestion import ocr
+    import tests.helpers as helpers
+
+    ocr.shutil.which = lambda command: None
+    ocr._known_install_locations = tuple
+    helpers.models_available = lambda: False
 
 
 @dataclass(frozen=True)
