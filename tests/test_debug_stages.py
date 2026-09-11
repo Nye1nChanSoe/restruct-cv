@@ -150,9 +150,9 @@ def test_both_halves_of_a_split_heading_stay_visible(tmp_path: Path) -> None:
     render_sections(pdf, sections[:1], tmp_path / "single")
 
     with Image.open(tmp_path / "split" / "page-1.png") as split_image:
-        split_pixels = list(split_image.convert("RGB").getdata())
+        split_pixels = split_image.convert("RGB").tobytes()
     with Image.open(tmp_path / "single" / "page-1.png") as single_image:
-        single_pixels = list(single_image.convert("RGB").getdata())
+        single_pixels = single_image.convert("RGB").tobytes()
     assert split_pixels != single_pixels, "second half of the split drew nothing new"
 
 
